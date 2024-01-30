@@ -1,4 +1,4 @@
-import {ensure_end} from '@grogarden/util/string.js';
+import {ensure_end} from '@ryanatkn/belt/string.js';
 
 import type {Github_Pull_Request} from '$lib/github.js';
 import type {Fetched_Deployment, Deployment} from '$lib/fetch_deployments.js';

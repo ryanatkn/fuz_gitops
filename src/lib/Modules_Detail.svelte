@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type {Src_Module} from '@grogarden/gro/src_json.js';
-	import {ensure_end} from '@grogarden/util/string.js';
+	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
+	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {base} from '$app/paths';
 
 	import Modules_Menu from '$lib/Modules_Menu.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Package_Summary from '@fuz.dev/fuz_library/Package_Summary.svelte';
 	import Package_Detail from '@fuz.dev/fuz_library/Package_Detail.svelte';
-	import {strip_end, strip_start} from '@grogarden/util/string.js';
+	import {strip_end, strip_start} from '@ryanatkn/belt/string.js';
 	import {base} from '$app/paths';
 
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';

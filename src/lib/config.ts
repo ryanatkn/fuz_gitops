@@ -1,5 +1,5 @@
-import {paths, Url} from '@grogarden/gro/paths.js';
-import type {Logger} from '@grogarden/util/log.js';
+import {paths, Url} from '@ryanatkn/gro/paths.js';
+import type {Logger} from '@ryanatkn/belt/log.js';
 import {join} from 'node:path';
 import {z} from 'zod';
 

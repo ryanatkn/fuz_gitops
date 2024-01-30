@@ -2,7 +2,7 @@
 	import {format_host} from '@fuz.dev/fuz_library/package_meta.js';
 	import {page} from '$app/stores';
 	import {base} from '$app/paths';
-	import {ensure_end} from '@grogarden/util/string.js';
+	import {ensure_end} from '@ryanatkn/belt/string.js';
 
 	import type {Deployment} from '$lib/fetch_deployments.js';
 	import {to_pull_url} from '$lib/github_helpers.js';
