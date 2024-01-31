@@ -4,10 +4,10 @@
 	import {base} from '$app/paths';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
 
-	import type {Deployment} from '$lib/fetch_deployments.js';
+	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 	import {to_pull_url} from '$lib/github_helpers.js';
 
-	export let deployments: Deployment[];
+	export let deployments: Fetched_Deployment[];
 	export let deps = ['@fuz.dev/fuz', '@fuz.dev/fuz_library', '@grogarden/gro']; // TODO add felt
 
 	// TODO fade out the `version` column if all deps are upgraded to the latest
@@ -15,7 +15,7 @@
 	// TODO gray out the latest of each version for deps, but only if the max is knowable via a local dep, don't assume for externals
 
 	// TODO hacky, handle regular deps too
-	const lookup_dep_version = (deployment: Deployment, dep: string): string | null => {
+	const lookup_dep_version = (deployment: Fetched_Deployment, dep: string): string | null => {
 		if (!deployment.package_json) return null;
 		for (const key in deployment.package_json.dependencies) {
 			if (key === dep) {
@@ -41,7 +41,10 @@
 	const format_version = (version: string | null): string =>
 		version === null ? '' : version.replace(/^(\^|>=)\s*/u, '');
 
-	const lookup_pull_requests = (deployments: Deployment[] | null, deployment: Deployment) => {
+	const lookup_pull_requests = (
+		deployments: Fetched_Deployment[] | null,
+		deployment: Fetched_Deployment,
+	) => {
 		const found = deployments?.find((p) => p.url === deployment.url);
 		if (!found?.package_json) return null;
 		const {pull_requests} = found;
