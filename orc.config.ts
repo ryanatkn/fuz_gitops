@@ -24,7 +24,6 @@ const config: Orc_Config = {
 		'https://orc.ryanatkn.com/',
 		// spiderspace
 		'https://www.spiderspace.org/',
-		'https://9000.spiderspace.org/',
 	],
 };
 
