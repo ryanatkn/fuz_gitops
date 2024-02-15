@@ -1,5 +1,11 @@
 # @ryanatkn/orc
 
+## 0.18.0
+
+### Minor Changes
+
+- republish ([9cc181e](https://github.com/ryanatkn/orc/commit/9cc181e))
+
 ## 0.17.0
 
 ### Minor Changes
