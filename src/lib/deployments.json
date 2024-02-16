@@ -2,7 +2,7 @@
 	{
 		"url": "https://www.fuz.dev/",
 		"package_json": {
-			"name": "@fuz.dev/fuz",
+			"name": "@ryanatkn/fuz",
 			"version": "0.81.0",
 			"description": "design system for CSS, Svelte, and SvelteKit",
 			"icon": "🧶",
@@ -30,9 +30,9 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz_code": "^0.5.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz_code": "^0.5.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.108.0",
 				"@ryanatkn/orc": "^0.17.0",
 				"@sveltejs/adapter-static": "^3.0.1",
@@ -106,7 +106,7 @@
 			}
 		},
 		"src_json": {
-			"name": "@fuz.dev/fuz",
+			"name": "@ryanatkn/fuz",
 			"version": "0.81.0",
 			"modules": {
 				"./Color_Scheme_Input.svelte": {"path": "Color_Scheme_Input.svelte", "declarations": []},
@@ -165,12 +165,12 @@
 				}
 			}
 		},
-		"name": "@fuz.dev/fuz",
+		"name": "@ryanatkn/fuz",
 		"repo_name": "fuz",
 		"repo_url": "https://github.com/fuz-dev/fuz",
 		"owner_name": "fuz-dev",
 		"homepage_url": "https://www.fuz.dev/",
-		"npm_url": "https://www.npmjs.com/package/@fuz.dev/fuz",
+		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz",
 		"changelog_url": "https://github.com/fuz-dev/fuz/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
@@ -181,7 +181,7 @@
 	{
 		"url": "https://template.fuz.dev/",
 		"package_json": {
-			"name": "@fuz.dev/fuz_template",
+			"name": "@ryanatkn/fuz_template",
 			"version": "0.0.1",
 			"description": "a static web app and Node library template with TypeScript, Svelte, SvelteKit, Vite, esbuild, Fuz, and Gro",
 			"icon": "❄",
@@ -199,10 +199,10 @@
 			},
 			"files": ["dist"],
 			"devDependencies": {
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_contextmenu": "^0.7.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.7.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@ryanatkn/belt": "^0.20.3",
 				"@ryanatkn/eslint-config": "^0.1.0",
 				"@ryanatkn/gro": "^0.112.0",
@@ -231,8 +231,8 @@
 				"overrides": [{"files": "package.json", "options": {"useTabs": false}}]
 			}
 		},
-		"src_json": {"name": "@fuz.dev/fuz_template", "version": "0.0.1"},
-		"name": "@fuz.dev/fuz_template",
+		"src_json": {"name": "@ryanatkn/fuz_template", "version": "0.0.1"},
+		"name": "@ryanatkn/fuz_template",
 		"repo_name": "fuz_template",
 		"repo_url": "https://github.com/fuz-dev/fuz_template",
 		"owner_name": "fuz-dev",
@@ -246,7 +246,7 @@
 	{
 		"url": "https://library.fuz.dev/",
 		"package_json": {
-			"name": "@fuz.dev/fuz_library",
+			"name": "@ryanatkn/fuz",
 			"version": "0.23.0",
 			"description": "components and helpers for Svelte, SvelteKit, and Fuz",
 			"icon": "🧶",
@@ -273,8 +273,8 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_code": "^0.5.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz_code": "^0.5.0",
 				"@grogarden/gro": "^0.107.0",
 				"@grogarden/util": "^0.18.1",
 				"@sveltejs/adapter-static": "^3.0.1",
@@ -428,7 +428,7 @@
 			}
 		},
 		"src_json": {
-			"name": "@fuz.dev/fuz_library",
+			"name": "@ryanatkn/fuz",
 			"version": "0.23.0",
 			"modules": {
 				"./Alert.svelte": {"path": "Alert.svelte", "declarations": []},
@@ -498,12 +498,12 @@
 				}
 			}
 		},
-		"name": "@fuz.dev/fuz_library",
+		"name": "@ryanatkn/fuz",
 		"repo_name": "fuz_library",
 		"repo_url": "https://github.com/fuz-dev/fuz_library",
 		"owner_name": "fuz-dev",
 		"homepage_url": "https://library.fuz.dev/",
-		"npm_url": "https://www.npmjs.com/package/@fuz.dev/fuz_library",
+		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz",
 		"changelog_url": "https://github.com/fuz-dev/fuz_library/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
@@ -519,7 +519,7 @@
 	{
 		"url": "https://contextmenu.fuz.dev/",
 		"package_json": {
-			"name": "@fuz.dev/fuz_contextmenu",
+			"name": "@ryanatkn/fuz",
 			"description": "contextmenu for Svelte and Fuz",
 			"version": "0.7.0",
 			"public": true,
@@ -541,14 +541,14 @@
 				"deploy": "gro deploy"
 			},
 			"files": ["dist"],
-			"peerDependencies": {"@fuz.dev/fuz_library": "*", "@grogarden/util": "*", "svelte": "*"},
+			"peerDependencies": {"@ryanatkn/fuz": "*", "@grogarden/util": "*", "svelte": "*"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_code": "^0.5.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz_code": "^0.5.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.107.0",
 				"@grogarden/util": "^0.18.1",
 				"@sveltejs/adapter-static": "^3.0.1",
@@ -609,7 +609,7 @@
 			}
 		},
 		"src_json": {
-			"name": "@fuz.dev/fuz_contextmenu",
+			"name": "@ryanatkn/fuz",
 			"version": "0.7.0",
 			"modules": {
 				"./Contextmenu_Entry.svelte": {"path": "Contextmenu_Entry.svelte", "declarations": []},
@@ -649,12 +649,12 @@
 				}
 			}
 		},
-		"name": "@fuz.dev/fuz_contextmenu",
+		"name": "@ryanatkn/fuz",
 		"repo_name": "fuz_contextmenu",
 		"repo_url": "https://github.com/fuz-dev/fuz_contextmenu",
 		"owner_name": "fuz-dev",
 		"homepage_url": "https://contextmenu.fuz.dev/",
-		"npm_url": "https://www.npmjs.com/package/@fuz.dev/fuz_contextmenu",
+		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz",
 		"changelog_url": "https://github.com/fuz-dev/fuz_contextmenu/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
@@ -663,7 +663,7 @@
 	{
 		"url": "https://dialog.fuz.dev/",
 		"package_json": {
-			"name": "@fuz.dev/fuz_dialog",
+			"name": "@ryanatkn/fuz",
 			"description": "dialog component for Svelte with Fuz",
 			"version": "0.6.0",
 			"public": true,
@@ -685,13 +685,13 @@
 				"deploy": "gro deploy"
 			},
 			"files": ["dist"],
-			"peerDependencies": {"@fuz.dev/fuz_library": "*", "@grogarden/util": "*", "svelte": "*"},
+			"peerDependencies": {"@ryanatkn/fuz": "*", "@grogarden/util": "*", "svelte": "*"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_code": "^0.5.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz_code": "^0.5.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.107.0",
 				"@grogarden/util": "^0.18.1",
 				"@sveltejs/adapter-static": "^3.0.1",
@@ -736,7 +736,7 @@
 			}
 		},
 		"src_json": {
-			"name": "@fuz.dev/fuz_dialog",
+			"name": "@ryanatkn/fuz",
 			"version": "0.6.0",
 			"modules": {
 				"./Dialog.svelte": {"path": "Dialog.svelte", "declarations": []},
@@ -752,12 +752,12 @@
 				"./Dialogs.svelte": {"path": "Dialogs.svelte", "declarations": []}
 			}
 		},
-		"name": "@fuz.dev/fuz_dialog",
+		"name": "@ryanatkn/fuz",
 		"repo_name": "fuz_dialog",
 		"repo_url": "https://github.com/fuz-dev/fuz_dialog",
 		"owner_name": "fuz-dev",
 		"homepage_url": "https://dialog.fuz.dev/",
-		"npm_url": "https://www.npmjs.com/package/@fuz.dev/fuz_dialog",
+		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz",
 		"changelog_url": "https://github.com/fuz-dev/fuz_dialog/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
@@ -766,7 +766,7 @@
 	{
 		"url": "https://code.fuz.dev/",
 		"package_json": {
-			"name": "@fuz.dev/fuz_code",
+			"name": "@ryanatkn/fuz_code",
 			"description": "syntax highlighting using prismjs for Svelte, SvelteKit, TypeScript, and Fuz",
 			"version": "0.5.0",
 			"public": true,
@@ -792,8 +792,8 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.107.0",
 				"@grogarden/util": "^0.18.1",
 				"@sveltejs/adapter-static": "^3.0.1",
@@ -838,7 +838,7 @@
 			}
 		},
 		"src_json": {
-			"name": "@fuz.dev/fuz_code",
+			"name": "@ryanatkn/fuz_code",
 			"version": "0.5.0",
 			"modules": {
 				"./Code.svelte": {"path": "Code.svelte", "declarations": []},
@@ -849,12 +849,12 @@
 				}
 			}
 		},
-		"name": "@fuz.dev/fuz_code",
+		"name": "@ryanatkn/fuz_code",
 		"repo_name": "fuz_code",
 		"repo_url": "https://github.com/fuz-dev/fuz_code",
 		"owner_name": "fuz-dev",
 		"homepage_url": "https://code.fuz.dev/",
-		"npm_url": "https://www.npmjs.com/package/@fuz.dev/fuz_code",
+		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz_code",
 		"changelog_url": "https://github.com/fuz-dev/fuz_code/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
@@ -863,7 +863,7 @@
 	{
 		"url": "https://mastodon.fuz.dev/",
 		"package_json": {
-			"name": "@fuz.dev/fuz_mastodon",
+			"name": "@ryanatkn/fuz_mastodon",
 			"description": "Mastodon components and helpers for Svelte, SvelteKit, and Fuz",
 			"version": "0.6.0",
 			"public": true,
@@ -887,7 +887,7 @@
 			},
 			"files": ["dist"],
 			"peerDependencies": {
-				"@fuz.dev/fuz_library": "*",
+				"@ryanatkn/fuz": "*",
 				"@ryanatkn/belt": "*",
 				"@sveltejs/kit": "*",
 				"svelte": "*",
@@ -895,11 +895,11 @@
 			},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_code": "^0.5.0",
-				"@fuz.dev/fuz_contextmenu": "^0.7.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz_code": "^0.5.0",
+				"@ryanatkn/fuz": "^0.7.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@ryanatkn/belt": "^0.20.3",
 				"@ryanatkn/eslint-config": "^0.1.0",
 				"@ryanatkn/gro": "^0.112.0",
@@ -963,7 +963,7 @@
 			}
 		},
 		"src_json": {
-			"name": "@fuz.dev/fuz_mastodon",
+			"name": "@ryanatkn/fuz_mastodon",
 			"version": "0.6.0",
 			"modules": {
 				"./Mastodon_Status_Item.svelte": {
@@ -1005,12 +1005,12 @@
 				"./Toot.svelte": {"path": "Toot.svelte", "declarations": []}
 			}
 		},
-		"name": "@fuz.dev/fuz_mastodon",
+		"name": "@ryanatkn/fuz_mastodon",
 		"repo_name": "fuz_mastodon",
 		"repo_url": "https://github.com/fuz-dev/fuz_mastodon",
 		"owner_name": "fuz-dev",
 		"homepage_url": "https://mastodon.fuz.dev/",
-		"npm_url": "https://www.npmjs.com/package/@fuz.dev/fuz_mastodon",
+		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz_mastodon",
 		"changelog_url": "https://github.com/fuz-dev/fuz_mastodon/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
@@ -1044,9 +1044,9 @@
 			},
 			"files": ["dist"],
 			"devDependencies": {
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
-				"@fuz.dev/fuz_mastodon": "^0.5.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.23.0",
+				"@ryanatkn/fuz_mastodon": "^0.5.0",
 				"@prettier/plugin-xml": "^3.2.2",
 				"@ryanatkn/belt": "^0.20.1",
 				"@ryanatkn/eslint-config": "^0.1.0",
@@ -1245,8 +1245,8 @@
 				"@changesets/changelog-git": "^0.2.0",
 				"@changesets/types": "^6.0.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@sveltejs/adapter-static": "^3.0.1",
 				"@sveltejs/kit": "^2.0.6",
 				"@sveltejs/package": "^2.2.5",
@@ -2167,8 +2167,8 @@
 			"peerDependencies": {"kleur": "^4.0.0"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.0",
 				"@ryanatkn/gro": "^0.112.0",
 				"@sveltejs/adapter-static": "^3.0.1",
@@ -2548,10 +2548,10 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_contextmenu": "^0.7.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.7.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.107.1",
 				"@grogarden/util": "^0.18.1",
 				"@pixi/app": "^7.3.2",
@@ -2646,7 +2646,7 @@
 			},
 			"files": ["dist"],
 			"peerDependencies": {
-				"@fuz.dev/fuz": "*",
+				"@ryanatkn/fuz": "*",
 				"@grogarden/util": "*",
 				"@sveltejs/kit": "*",
 				"svelte": "*"
@@ -2654,7 +2654,7 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.81.0",
 				"@grogarden/gro": "^0.107.1",
 				"@grogarden/util": "^0.18.1",
 				"@sveltejs/adapter-static": "^3.0.1",
@@ -3178,7 +3178,7 @@
 			},
 			"files": ["dist"],
 			"peerDependencies": {
-				"@fuz.dev/fuz": "*",
+				"@ryanatkn/fuz": "*",
 				"@grogarden/util": "*",
 				"@pixi/app": "^7",
 				"@pixi/core": "^7",
@@ -3192,9 +3192,9 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.107.1",
 				"@grogarden/util": "^0.18.1",
 				"@pixi/app": "^7.3.2",
@@ -3771,9 +3771,9 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.107.1",
 				"@grogarden/util": "^0.18.1",
 				"@preact/signals-core": "^1.5.1",
@@ -4476,9 +4476,9 @@
 			"peerDependencies": {"svelte": "*"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_code": "^0.5.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz_code": "^0.5.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@ryanatkn/belt": "^0.20.3",
 				"@ryanatkn/eslint-config": "^0.1.0",
 				"@ryanatkn/gro": "^0.112.0",
@@ -4574,8 +4574,8 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@feltjs/eslint-config": "^0.4.1",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.107.1",
 				"@sveltejs/adapter-static": "^3.0.1",
 				"@sveltejs/kit": "^2.0.4",
@@ -4727,10 +4727,10 @@
 			"peerDependencies": {"@sveltejs/kit": "*", "dequal": "*", "svelte": "*"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_contextmenu": "^0.7.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.7.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@ryanatkn/belt": "^0.20.3",
 				"@ryanatkn/eslint-config": "^0.1.0",
 				"@ryanatkn/gro": "^0.112.0",
@@ -4982,10 +4982,10 @@
 			},
 			"files": ["dist"],
 			"devDependencies": {
-				"@fuz.dev/fuz": "^0.81.0",
-				"@fuz.dev/fuz_contextmenu": "^0.7.0",
-				"@fuz.dev/fuz_dialog": "^0.6.0",
-				"@fuz.dev/fuz_library": "^0.23.0",
+				"@ryanatkn/fuz": "^0.81.0",
+				"@ryanatkn/fuz": "^0.7.0",
+				"@ryanatkn/fuz": "^0.6.0",
+				"@ryanatkn/fuz": "^0.23.0",
 				"@ryanatkn/belt": "^0.20.3",
 				"@ryanatkn/eslint-config": "^0.1.0",
 				"@ryanatkn/gro": "^0.112.0",

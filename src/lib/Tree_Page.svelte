@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Breadcrumb from '@fuz.dev/fuz_library/Breadcrumb.svelte';
+	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
 	import Deployments_Tree from '$lib/Deployments_Tree.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';

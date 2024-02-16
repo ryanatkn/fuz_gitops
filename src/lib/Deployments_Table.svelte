@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {format_host} from '@fuz.dev/fuz_library/package_meta.js';
+	import {format_host} from '@ryanatkn/fuz/package_meta.js';
 	import {page} from '$app/stores';
 	import {base} from '$app/paths';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
@@ -8,7 +8,7 @@
 	import {to_pull_url} from '$lib/github_helpers.js';
 
 	export let deployments: Fetched_Deployment[];
-	export let deps = ['@fuz.dev/fuz', '@fuz.dev/fuz_library', '@grogarden/gro']; // TODO add felt
+	export let deps = ['@ryanatkn/fuz', '@ryanatkn/fuz', '@grogarden/gro']; // TODO add felt
 
 	// TODO fade out the `version` column if all deps are upgraded to the latest
 

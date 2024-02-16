@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Library_Footer from '@fuz.dev/fuz_library/Library_Footer.svelte';
-	import Card from '@fuz.dev/fuz_library/Card.svelte';
+	import Library_Footer from '@ryanatkn/fuz/Library_Footer.svelte';
+	import Card from '@ryanatkn/fuz/Card.svelte';
 	import {base} from '$app/paths';
 
 	import Main_Header from '$routes/Main_Header.svelte';
