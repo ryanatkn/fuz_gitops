@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Package_Detail from '@fuz.dev/fuz_library/Package_Detail.svelte';
+	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
 
 	import Page_Footer from '$lib/Page_Footer.svelte';
 	import {get_deployments} from '$lib/deployments.js';

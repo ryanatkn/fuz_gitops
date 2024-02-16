@@ -3,7 +3,7 @@ import type {Url} from '@ryanatkn/gro/paths.js';
 import {ensure_end} from '@ryanatkn/belt/string.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {wait} from '@ryanatkn/belt/async.js';
-import {parse_package_meta, type Package_Meta} from '@fuz.dev/fuz_library/package_meta.js';
+import {parse_package_meta, type Package_Meta} from '@ryanatkn/fuz/package_meta.js';
 import {create_src_json, Src_Json} from '@ryanatkn/gro/src_json.js';
 import {join} from 'node:path';
 import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';

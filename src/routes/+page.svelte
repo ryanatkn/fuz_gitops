@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Library_Footer from '@fuz.dev/fuz_library/Library_Footer.svelte';
-	import Card from '@fuz.dev/fuz_library/Card.svelte';
+	import Library_Footer from '@ryanatkn/fuz/Library_Footer.svelte';
+	import Card from '@ryanatkn/fuz/Card.svelte';
 	import {base} from '$app/paths';
 
 	import Main_Header from '$routes/Main_Header.svelte';
@@ -16,11 +16,6 @@
 <main class="box">
 	<section>
 		<Main_Header />
-	</section>
-	<section class="prose">
-		<aside class="text_align_center">
-			for a real usage example see <a href="https://www.spiderspace.org/">spiderspace.org</a>
-		</aside>
 	</section>
 	<section>
 		<menu>

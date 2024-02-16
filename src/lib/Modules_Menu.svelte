@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {page} from '$app/stores';
-	import Library_Panel from '@fuz.dev/fuz_library/Library_Panel.svelte';
+	import Library_Panel from '@ryanatkn/fuz/Library_Panel.svelte';
 	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
 
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Package_Summary from '@fuz.dev/fuz_library/Package_Summary.svelte';
-	import Package_Detail from '@fuz.dev/fuz_library/Package_Detail.svelte';
+	import Package_Summary from '@ryanatkn/fuz/Package_Summary.svelte';
+	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
 	import {strip_end, strip_start} from '@ryanatkn/belt/string.js';
 	import {base} from '$app/paths';
 

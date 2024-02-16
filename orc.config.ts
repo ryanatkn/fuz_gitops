@@ -2,15 +2,10 @@ import type {Orc_Config} from '$lib/config.js';
 
 const config: Orc_Config = {
 	deployments: [
-		// fuz
 		'https://www.fuz.dev/',
 		'https://template.fuz.dev/',
-		'https://library.fuz.dev/',
-		'https://contextmenu.fuz.dev/',
-		'https://dialog.fuz.dev/',
 		'https://code.fuz.dev/',
 		'https://mastodon.fuz.dev/',
-		// ryanatkn
 		'https://www.ryanatkn.com/',
 		'https://gro.ryanatkn.com/',
 		'https://belt.ryanatkn.com/',
@@ -22,8 +17,6 @@ const config: Orc_Config = {
 		'https://svelte-intersect.ryanatkn.com/',
 		'https://collisions.ryanatkn.com/',
 		'https://orc.ryanatkn.com/',
-		// spiderspace
-		'https://www.spiderspace.org/',
 	],
 };
 
