@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/orc",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "a tool for orchestrating many repos",
   "icon": "🪄",
   "public": true,

@@ -1,5 +1,11 @@
 # @ryanatkn/orc
 
+## 0.19.0
+
+### Minor Changes
+
+- upgrade ([205563c](https://github.com/ryanatkn/orc/commit/205563c))
+
 ## 0.18.0
 
 ### Minor Changes
