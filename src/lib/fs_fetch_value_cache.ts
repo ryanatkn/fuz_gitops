@@ -3,7 +3,6 @@ import {exists} from '@ryanatkn/gro/fs.js';
 import {dirname, join} from 'node:path';
 import {paths} from '@ryanatkn/gro/paths.js';
 import {format_file} from '@ryanatkn/gro/format_file.js';
-import {dequal} from 'dequal';
 import {deserialize_cache, serialize_cache, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
 // TODO upstream to Gro probably, and rename/redesign?
@@ -39,7 +38,7 @@ export const create_fs_fetch_value_cache = async (
 		name,
 		data,
 		save: async () => {
-			if (dequal(initial, data)) {
+			if (deep_equal_maps(initial, data)) {
 				return false; // no changes to save
 			}
 			await mkdir(dirname(data_path), {recursive: true});
@@ -47,4 +46,17 @@ export const create_fs_fetch_value_cache = async (
 			return true;
 		},
 	};
+};
+
+// TODO this is quick and dirty, but fine because it's only expected to be called during development
+const deep_equal_maps = (a: Map<unknown, unknown>, b: Map<unknown, unknown>): boolean => {
+	if (a.size !== b.size) {
+		return false;
+	}
+	for (const [key, value] of a) {
+		if (!b.has(key) || JSON.stringify(b.get(key)) !== JSON.stringify(value)) {
+			return false;
+		}
+	}
+	return true;
 };
