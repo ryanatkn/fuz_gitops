@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {format_host} from '@ryanatkn/fuz/package_meta.js';
+	import {format_host} from '@ryanatkn/gro/package_meta.js';
 	import {page} from '$app/stores';
 	import {base} from '$app/paths';
 	import {ensure_end} from '@ryanatkn/belt/string.js';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {format_host} from '@ryanatkn/fuz/package_meta.js';
+	import {format_host} from '@ryanatkn/gro/package_meta.js';
 	import {base} from '$app/paths';
 
 	import {to_pull_requests, type Filter_Pull_Request} from '$lib/github_helpers.js';
