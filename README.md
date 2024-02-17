@@ -24,6 +24,10 @@ planned additions:
 
 ## Usage
 
+```bash
+npm i -D @ryanatkn/fuz_gitops
+```
+
 - configure [`fuz.config.ts`](/fuz.config.ts)
 - Orc calls the GitHub API using the environment variable `GITHUB_TOKEN_SECRET` for authorization,
   which is a [GitHub token](https://github.com/settings/tokens)
