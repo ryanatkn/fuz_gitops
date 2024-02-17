@@ -1,5 +1,5 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import type {Package_Meta} from '@ryanatkn/fuz/package_meta.js';
+import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
 import {z} from 'zod';
 import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
