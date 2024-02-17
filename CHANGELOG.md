@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.20.1
+
+### Patch Changes
+
+- fix imports ([cf7aecd](https://github.com/ryanatkn/fuz_gitops/commit/cf7aecd))
+
 ## 0.20.0
 
 ### Minor Changes
