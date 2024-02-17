@@ -31,16 +31,16 @@ planned additions:
   in either `process.env`, a project-local `.env`, or the parent directory at `../.env`
   (currently optional to read public repos, but it's recommended regardless,
   and you'll need to select options to support private repos)
-- re-export the `gro deployments` task by creating `$lib/deployments.task.ts` with
+- re-export the `gro gitops` task by creating `$lib/deployments.task.ts` with
   the contents `export * from '@ryanatkn/fuz_gitops/deployments.task.js';`
-- run `gro deployments` to update the local data
+- run `gro gitops` to update the local data
 
 Getting started as a dev? Start with [Gro](https://github.com/grogarden/gro)
 and the [Fuz template](https://github.com/fuz-dev/fuz_template).
 
 TODO
 
-- figure out better automation than manually running `gro deployments`
+- figure out better automation than manually running `gro gitops`
 - show the rate limit info
 - think about how Orc could better leverage both GitHub Actions and
   [Forgejo Actions](https://forgejo.org/docs/v1.20/user/actions/)

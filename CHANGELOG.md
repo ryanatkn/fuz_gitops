@@ -40,7 +40,7 @@
 
 ### Minor Changes
 
-- fix local package `gro deployments` ([#15](https://github.com/ryanatkn/fuz_gitops/pull/15))
+- fix local package `gro gitops` ([#15](https://github.com/ryanatkn/fuz_gitops/pull/15))
 
 ### Patch Changes
 
@@ -200,7 +200,7 @@
 
 ### Minor Changes
 
-- add cache for `gro deployments` ([#7](https://github.com/ryanatkn/fuz_gitops/pull/7))
+- add cache for `gro gitops` ([#7](https://github.com/ryanatkn/fuz_gitops/pull/7))
 - snake_case everywhere ([#7](https://github.com/ryanatkn/fuz_gitops/pull/7))
 
 ## 0.6.2
