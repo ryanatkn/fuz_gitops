@@ -4,7 +4,7 @@ import {parse_package_meta} from '@ryanatkn/fuz/package_meta.js';
 import type {Fetched_Deployment, Deployment, Unfetched_Deployment} from '$lib/fetch_deployments.js';
 
 export interface Deployments {
-	deployment: Fetched_Deployment; // TODO this type is wrong because it may not be fetched, but should it even be here?
+	deployment: Fetched_Deployment;
 	deployments: Fetched_Deployment[];
 	unfetched_deployments: Unfetched_Deployment[];
 }
