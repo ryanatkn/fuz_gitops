@@ -114,7 +114,7 @@
 
 ### Patch Changes
 
-- add `orc.task.ts` ([1e2dc8f](https://github.com/ryanatkn/fuz_gitops/commit/1e2dc8f))
+- add `gitops.task.ts` ([1e2dc8f](https://github.com/ryanatkn/fuz_gitops/commit/1e2dc8f))
 - use `if-modified-since` and `last-modified` headers ([68e4f47](https://github.com/ryanatkn/fuz_gitops/commit/68e4f47))
 
 ## 0.10.7

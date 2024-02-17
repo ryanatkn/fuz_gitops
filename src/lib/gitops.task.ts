@@ -41,7 +41,7 @@ export const task: Task<Args> = {
 
 		const outfile = join(paths.lib, 'deployments.json');
 
-		const orc_config = await load_fuz_config(path, dir, log);
+		const fuz_config = await load_fuz_config(path, dir, log);
 
 		const cache = await create_fs_fetch_value_cache('deployments');
 
@@ -51,7 +51,7 @@ export const task: Task<Args> = {
 			log.warn('the env var GITHUB_TOKEN_SECRET was not found, so API calls with be unauthorized');
 		}
 		const fetched_deployments = await fetch_deployments(
-			orc_config.deployments,
+			fuz_config.deployments,
 			token,
 			cache.data,
 			dir,
