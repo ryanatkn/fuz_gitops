@@ -29,7 +29,7 @@ npm i -D @ryanatkn/fuz_gitops
 ```
 
 - configure [`fuz.config.ts`](/fuz.config.ts)
-- Orc calls the GitHub API using the environment variable `GITHUB_TOKEN_SECRET` for authorization,
+- fuz_gitops calls the GitHub API using the environment variable `GITHUB_TOKEN_SECRET` for authorization,
   which is a [GitHub token](https://github.com/settings/tokens)
   (with "public access" for public repos, no options selected)
   in either `process.env`, a project-local `.env`, or the parent directory at `../.env`
@@ -46,7 +46,7 @@ TODO
 
 - figure out better automation than manually running `gro gitops`
 - show the rate limit info
-- think about how Orc could better leverage both GitHub Actions and
+- think about how fuz_gitops could better leverage both GitHub Actions and
   [Forgejo Actions](https://forgejo.org/docs/v1.20/user/actions/)
   without unwieldy compat
 

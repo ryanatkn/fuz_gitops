@@ -244,7 +244,7 @@
 
 ### Minor Changes
 
-- parse Orc_Config ([1ed8dc4](https://github.com/ryanatkn/fuz_gitops/commit/1ed8dc4))
+- parse `Fuz_Config` ([1ed8dc4](https://github.com/ryanatkn/fuz_gitops/commit/1ed8dc4))
 
 ### Patch Changes
 
@@ -254,7 +254,7 @@
 
 ### Minor Changes
 
-- rename `Orc_Config` `deployments` from `repos` ([0e16e6f](https://github.com/ryanatkn/fuz_gitops/commit/0e16e6f))
+- rename `Fuz_Config` `deployments` from `repos` ([0e16e6f](https://github.com/ryanatkn/fuz_gitops/commit/0e16e6f))
 
 ## 0.2.1
 
