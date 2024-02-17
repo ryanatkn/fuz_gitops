@@ -73,10 +73,6 @@
     ]
   },
   "exports": {
-    "./config.js": {
-      "default": "./dist/config.js",
-      "types": "./dist/config.d.ts"
-    },
     "./Deployments_Table.svelte": {
       "svelte": "./dist/Deployments_Table.svelte",
       "default": "./dist/Deployments_Table.svelte",
@@ -116,6 +112,11 @@
       "default": "./dist/github.js",
       "types": "./dist/github.d.ts"
     },
+    "./Gitops_Menu.svelte": {
+      "svelte": "./dist/Gitops_Menu.svelte",
+      "default": "./dist/Gitops_Menu.svelte",
+      "types": "./dist/Gitops_Menu.svelte.d.ts"
+    },
     "./gitops.task.js": {
       "default": "./dist/gitops.task.js",
       "types": "./dist/gitops.task.d.ts"
@@ -135,16 +136,6 @@
       "default": "./dist/Modules_Page.svelte",
       "types": "./dist/Modules_Page.svelte.d.ts"
     },
-    "./Page_Footer.svelte": {
-      "svelte": "./dist/Page_Footer.svelte",
-      "default": "./dist/Page_Footer.svelte",
-      "types": "./dist/Page_Footer.svelte.d.ts"
-    },
-    "./Page_Header.svelte": {
-      "svelte": "./dist/Page_Header.svelte",
-      "default": "./dist/Page_Header.svelte",
-      "types": "./dist/Page_Header.svelte.d.ts"
-    },
     "./Pull_Requests_Detail.svelte": {
       "svelte": "./dist/Pull_Requests_Detail.svelte",
       "default": "./dist/Pull_Requests_Detail.svelte",
@@ -154,6 +145,10 @@
       "svelte": "./dist/Pull_Requests_Page.svelte",
       "default": "./dist/Pull_Requests_Page.svelte",
       "types": "./dist/Pull_Requests_Page.svelte.d.ts"
+    },
+    "./run_gitops.task.js": {
+      "default": "./dist/run_gitops.task.js",
+      "types": "./dist/run_gitops.task.d.ts"
     },
     "./Table_Page.svelte": {
       "svelte": "./dist/Table_Page.svelte",
