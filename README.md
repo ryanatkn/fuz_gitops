@@ -1,6 +1,6 @@
 # orc
 
-> a tool for orchestrating many repos 🪄 [orc.ryanatkn.com](https://orc.ryanatkn.com/)
+> a tool for managing many repos 🪄 [gitops.ryanatkn.com](https://gitops.ryanatkn.com/)
 
 I maintain a lot of git repos between
 [Spiderspace](https://github.com/spiderspace), [Fuz](https://github.com/fuz-dev),
@@ -36,7 +36,7 @@ planned additions:
   (currently optional to read public repos, but it's recommended regardless,
   and you'll need to select options to support private repos)
 - re-export the `gro deployments` task by creating `$lib/deployments.task.ts` with
-  the contents `export * from '@ryanatkn/orc/deployments.task.js';`
+  the contents `export * from '@ryanatkn/fuz_gitops/deployments.task.js';`
 - run `gro deployments` to update the local data
 
 Getting started as a dev? Start with [Gro](https://github.com/grogarden/gro)

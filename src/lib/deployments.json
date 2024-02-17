@@ -34,7 +34,7 @@
 				"@ryanatkn/fuz": "^0.6.0",
 				"@ryanatkn/fuz": "^0.23.0",
 				"@grogarden/gro": "^0.108.0",
-				"@ryanatkn/orc": "^0.17.0",
+				"@ryanatkn/fuz_gitops": "^0.17.0",
 				"@sveltejs/adapter-static": "^3.0.1",
 				"@sveltejs/kit": "^2.0.6",
 				"@sveltejs/package": "^2.2.5",
@@ -4704,16 +4704,16 @@
 		"pull_requests": []
 	},
 	{
-		"url": "https://orc.ryanatkn.com/",
+		"url": "https://gitops.ryanatkn.com/",
 		"package_json": {
-			"name": "@ryanatkn/orc",
+			"name": "@ryanatkn/fuz_gitops",
 			"version": "0.17.0",
-			"description": "a tool for orchestrating many repos",
+			"description": "a tool for managing many repos",
 			"icon": "🪄",
 			"public": true,
 			"license": "MIT",
-			"homepage": "https://orc.ryanatkn.com/",
-			"repository": "https://github.com/ryanatkn/orc",
+			"homepage": "https://gitops.ryanatkn.com/",
+			"repository": "https://github.com/ryanatkn/fuz_gitops",
 			"type": "module",
 			"engines": {"node": ">=20.10"},
 			"scripts": {
@@ -4857,7 +4857,7 @@
 			}
 		},
 		"src_json": {
-			"name": "@ryanatkn/orc",
+			"name": "@ryanatkn/fuz_gitops",
 			"version": "0.17.0",
 			"modules": {
 				"./config.js": {
@@ -4950,13 +4950,13 @@
 				"./Tree_Page.svelte": {"path": "Tree_Page.svelte", "declarations": []}
 			}
 		},
-		"name": "@ryanatkn/orc",
+		"name": "@ryanatkn/fuz_gitops",
 		"repo_name": "orc",
-		"repo_url": "https://github.com/ryanatkn/orc",
+		"repo_url": "https://github.com/ryanatkn/fuz_gitops",
 		"owner_name": "ryanatkn",
-		"homepage_url": "https://orc.ryanatkn.com/",
-		"npm_url": "https://www.npmjs.com/package/@ryanatkn/orc",
-		"changelog_url": "https://github.com/ryanatkn/orc/blob/main/CHANGELOG.md",
+		"homepage_url": "https://gitops.ryanatkn.com/",
+		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz_gitops",
+		"changelog_url": "https://github.com/ryanatkn/fuz_gitops/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "failure"},
 		"pull_requests": []
