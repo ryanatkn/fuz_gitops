@@ -19,7 +19,7 @@ export const Args = z
 	.object({
 		dir: z
 			.string({
-				description: 'path to the directory containing the source package.json and orc.config.ts',
+				description: 'path to the directory containing the source package.json and fuz.config.ts',
 			})
 			.optional(),
 	})

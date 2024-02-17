@@ -11,12 +11,12 @@ export const Orc_Config = z
 export type Orc_Config = z.infer<typeof Orc_Config>;
 
 export const load_orc_config = async (log?: Logger, dir = paths.root): Promise<Orc_Config> => {
-	const config = (await import(join(dir, 'orc.config.ts'))).default;
+	const config = (await import(join(dir, 'fuz.config.ts'))).default;
 	try {
 		return Orc_Config.parse(config);
 	} catch (err) {
 		try {
-			log?.error('invalid orc.config.ts: ' + JSON.parse(err.message)[0].message);
+			log?.error('invalid fuz.config.ts: ' + JSON.parse(err.message)[0].message);
 		} catch (err) {}
 		throw err;
 	}
