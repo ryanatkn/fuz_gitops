@@ -112,11 +112,6 @@
       "default": "./dist/github.js",
       "types": "./dist/github.d.ts"
     },
-    "./Gitops_Menu.svelte": {
-      "svelte": "./dist/Gitops_Menu.svelte",
-      "default": "./dist/Gitops_Menu.svelte",
-      "types": "./dist/Gitops_Menu.svelte.d.ts"
-    },
     "./gitops.task.js": {
       "default": "./dist/gitops.task.js",
       "types": "./dist/gitops.task.d.ts"
