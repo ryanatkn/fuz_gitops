@@ -4,7 +4,7 @@ import {parse_package_meta} from '@ryanatkn/fuz/package_meta.js';
 import type {Fetched_Deployment, Deployment, Unfetched_Deployment} from '$lib/fetch_deployments.js';
 
 export interface Deployments {
-	deployment: Fetched_Deployment; // TODO this type is wrong because it may not be fetched, but should it even be here?
+	deployment: Fetched_Deployment;
 	deployments: Fetched_Deployment[];
 	unfetched_deployments: Unfetched_Deployment[];
 }
@@ -41,7 +41,7 @@ export const parse_deployments = (
 		}
 	}
 
-	// TODO see the comment above, this is hacky
+	// We expect to find this because it's sourced from the local package.json
 	const deployment = deployments.find((d) => d.homepage_url === homepage_url);
 	if (!deployment) throw Error(`Cannot find deployment with homepage_url: ${homepage_url}`);
 

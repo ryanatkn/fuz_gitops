@@ -14,13 +14,13 @@
 
 	const contextmenu = create_contextmenu();
 
-	set_deployments(parse_deployments(maybe_deployments, 'https://orc.ryanatkn.com/'));
+	set_deployments(parse_deployments(maybe_deployments, 'https://gitops.fuz.dev/'));
 
 	let show_settings = false;
 </script>
 
 <svelte:head>
-	<title>@ryanatkn/orc</title>
+	<title>@ryanatkn/fuz_gitops</title>
 </svelte:head>
 
 <svelte:body

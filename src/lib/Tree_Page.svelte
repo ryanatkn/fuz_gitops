@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
+	import Page_Header from '@ryanatkn/fuz/Page_Header.svelte';
+	import Page_Footer from '@ryanatkn/fuz/Page_Footer.svelte';
 
 	import Deployments_Tree from '$lib/Deployments_Tree.svelte';
-	import Page_Header from '$lib/Page_Header.svelte';
-	import Page_Footer from '$lib/Page_Footer.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
 	export let deployment: Fetched_Deployment;

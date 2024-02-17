@@ -8,7 +8,7 @@
 	import {to_pull_url} from '$lib/github_helpers.js';
 
 	export let deployments: Fetched_Deployment[];
-	export let deps = ['@ryanatkn/fuz', '@ryanatkn/fuz', '@grogarden/gro']; // TODO add felt
+	export let deps = ['@ryanatkn/fuz', '@ryanatkn/gro'];
 
 	// TODO fade out the `version` column if all deps are upgraded to the latest
 

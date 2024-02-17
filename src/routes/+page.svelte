@@ -49,7 +49,7 @@
 		<a class="chip" href="{base}/about">about</a>
 	</section>
 	<section>
-		<Library_Footer pkg={deployment} root_url="https://www.ryanatkn.com/" />
+		<Library_Footer pkg={deployment} root_url="https://www.fuz.dev/" />
 	</section>
 </main>
 
