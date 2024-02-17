@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.20.0
+
+### Minor Changes
+
+- gitops.fuz.dev ([#20](https://github.com/ryanatkn/fuz_gitops/pull/20))
+
 ## 0.19.0
 
 ### Minor Changes
