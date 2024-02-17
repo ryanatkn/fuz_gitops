@@ -16,7 +16,7 @@ const config: Orc_Config = {
 		'https://ryanatkn.github.io/corpus-activity-streams/',
 		'https://svelte-intersect.ryanatkn.com/',
 		'https://collisions.ryanatkn.com/',
-		'https://gitops.ryanatkn.com/',
+		'https://gitops.fuz.dev/',
 	],
 };
 

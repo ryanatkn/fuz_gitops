@@ -1,6 +1,6 @@
 # orc
 
-> a tool for managing many repos 🪄 [gitops.ryanatkn.com](https://gitops.ryanatkn.com/)
+> a tool for managing many repos 🪄 [gitops.fuz.dev](https://gitops.fuz.dev/)
 
 I maintain a lot of git repos between
 [Spiderspace](https://github.com/spiderspace), [Fuz](https://github.com/fuz-dev),

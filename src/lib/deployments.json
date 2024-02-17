@@ -4704,7 +4704,7 @@
 		"pull_requests": []
 	},
 	{
-		"url": "https://gitops.ryanatkn.com/",
+		"url": "https://gitops.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz_gitops",
 			"version": "0.17.0",
@@ -4712,7 +4712,7 @@
 			"icon": "🪄",
 			"public": true,
 			"license": "MIT",
-			"homepage": "https://gitops.ryanatkn.com/",
+			"homepage": "https://gitops.fuz.dev/",
 			"repository": "https://github.com/ryanatkn/fuz_gitops",
 			"type": "module",
 			"engines": {"node": ">=20.10"},
@@ -4954,7 +4954,7 @@
 		"repo_name": "orc",
 		"repo_url": "https://github.com/ryanatkn/fuz_gitops",
 		"owner_name": "ryanatkn",
-		"homepage_url": "https://gitops.ryanatkn.com/",
+		"homepage_url": "https://gitops.fuz.dev/",
 		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz_gitops",
 		"changelog_url": "https://github.com/ryanatkn/fuz_gitops/blob/main/CHANGELOG.md",
 		"published": true,

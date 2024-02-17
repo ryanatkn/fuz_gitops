@@ -14,7 +14,7 @@
 
 	const contextmenu = create_contextmenu();
 
-	set_deployments(parse_deployments(maybe_deployments, 'https://gitops.ryanatkn.com/'));
+	set_deployments(parse_deployments(maybe_deployments, 'https://gitops.fuz.dev/'));
 
 	let show_settings = false;
 </script>
