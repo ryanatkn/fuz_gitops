@@ -96,10 +96,6 @@
       "default": "./dist/deployments.json",
       "types": "./dist/deployments.json.d.ts"
     },
-    "./deployments.task.js": {
-      "default": "./dist/deployments.task.js",
-      "types": "./dist/deployments.task.d.ts"
-    },
     "./deployments.js": {
       "default": "./dist/deployments.js",
       "types": "./dist/deployments.d.ts"
@@ -120,6 +116,10 @@
       "default": "./dist/github.js",
       "types": "./dist/github.d.ts"
     },
+    "./gitops.task.js": {
+      "default": "./dist/gitops.task.js",
+      "types": "./dist/gitops.task.d.ts"
+    },
     "./Modules_Detail.svelte": {
       "svelte": "./dist/Modules_Detail.svelte",
       "default": "./dist/Modules_Detail.svelte",
@@ -134,10 +134,6 @@
       "svelte": "./dist/Modules_Page.svelte",
       "default": "./dist/Modules_Page.svelte",
       "types": "./dist/Modules_Page.svelte.d.ts"
-    },
-    "./orc.task.js": {
-      "default": "./dist/orc.task.js",
-      "types": "./dist/orc.task.d.ts"
     },
     "./Page_Footer.svelte": {
       "svelte": "./dist/Page_Footer.svelte",

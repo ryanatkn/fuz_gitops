@@ -31,8 +31,8 @@ planned additions:
   in either `process.env`, a project-local `.env`, or the parent directory at `../.env`
   (currently optional to read public repos, but it's recommended regardless,
   and you'll need to select options to support private repos)
-- re-export the `gro gitops` task by creating `$lib/deployments.task.ts` with
-  the contents `export * from '@ryanatkn/fuz_gitops/deployments.task.js';`
+- re-export the `gro gitops` task by creating `$lib/gitops.task.ts` with
+  the contents `export * from '@ryanatkn/fuz_gitops/gitops.task.js';`
 - run `gro gitops` to update the local data
 
 Getting started as a dev? Start with [Gro](https://github.com/grogarden/gro)

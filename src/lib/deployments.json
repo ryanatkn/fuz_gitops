@@ -73,9 +73,9 @@
 					"default": "./dist/deployments.json",
 					"types": "./dist/deployments.json.d.ts"
 				},
-				"./deployments.task.js": {
-					"default": "./dist/deployments.task.js",
-					"types": "./dist/deployments.task.d.ts"
+				"./gitops.task.js": {
+					"default": "./dist/gitops.task.js",
+					"types": "./dist/gitops.task.d.ts"
 				},
 				"./orc.task.js": {"default": "./dist/orc.task.js", "types": "./dist/orc.task.d.ts"},
 				"./style.css": {"default": "./dist/style.css"},
@@ -111,7 +111,7 @@
 			"modules": {
 				"./Color_Scheme_Input.svelte": {"path": "Color_Scheme_Input.svelte", "declarations": []},
 				"./deployments.json": {"path": "deployments.json", "declarations": []},
-				"./deployments.task.js": {"path": "deployments.task.ts", "declarations": []},
+				"./gitops.task.js": {"path": "gitops.task.ts", "declarations": []},
 				"./orc.task.js": {"path": "orc.task.ts", "declarations": []},
 				"./style.css": {"path": "style.css", "declarations": []},
 				"./swallow.js": {
@@ -4782,9 +4782,9 @@
 					"default": "./dist/deployments.json",
 					"types": "./dist/deployments.json.d.ts"
 				},
-				"./deployments.task.js": {
-					"default": "./dist/deployments.task.js",
-					"types": "./dist/deployments.task.d.ts"
+				"./gitops.task.js": {
+					"default": "./dist/gitops.task.js",
+					"types": "./dist/gitops.task.d.ts"
 				},
 				"./deployments.js": {
 					"default": "./dist/deployments.js",
@@ -4874,8 +4874,8 @@
 				},
 				"./Deployments_Tree.svelte": {"path": "Deployments_Tree.svelte", "declarations": []},
 				"./deployments.json": {"path": "deployments.json", "declarations": []},
-				"./deployments.task.js": {
-					"path": "deployments.task.ts",
+				"./gitops.task.js": {
+					"path": "gitops.task.ts",
 					"declarations": [
 						{"name": "Args", "kind": "variable"},
 						{"name": "task", "kind": "variable"}
