@@ -1,12 +1,10 @@
 import type {EntryGenerator} from './$types';
 
-import maybe_deployments from '$lib/deployments.json';
 import {parse_deployments} from '$lib/deployments.js';
+import deployments from '$lib/deployments.json';
 
-const {deployments} = parse_deployments(maybe_deployments, 'https://gitops.fuz.dev/');
+const parsed = parse_deployments(deployments, 'https://gitops.fuz.dev/');
 
 export const entries: EntryGenerator = async () => {
-	return deployments.map((deployment) => {
-		return {slug: deployment.repo_name};
-	});
+	return parsed.deployments.map((d) => ({slug: d.repo_name}));
 };
