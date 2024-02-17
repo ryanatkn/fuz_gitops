@@ -41,7 +41,7 @@ export const parse_deployments = (
 		}
 	}
 
-	// TODO see the comment above, this is hacky
+	// We expect to find this because it's sourced from the local package.json
 	const deployment = deployments.find((d) => d.homepage_url === homepage_url);
 	if (!deployment) throw Error(`Cannot find deployment with homepage_url: ${homepage_url}`);
 
