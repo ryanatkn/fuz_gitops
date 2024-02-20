@@ -1,0 +1,175 @@
+<script lang="ts">
+	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
+	import {ensure_end} from '@ryanatkn/belt/string.js';
+	import {base} from '$app/paths';
+
+	import Modules_Menu from '$lib/Modules_Menu.svelte';
+	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
+
+	export let deployments: Fetched_Deployment[]; // TODO normalized version with cached primitives?
+
+	// TODO add sorting options
+
+	// TODO show other data (bytes and lines of code per module?)
+
+	// TODO hacky, needs helpers or rethinking
+	let deployments_modules: Array<{
+		deployment: Fetched_Deployment;
+		modules: Src_Module[];
+	}>;
+	$: deployments_modules = deployments.reduce(
+		(v, deployment) => {
+			const {package_json, src_json} = deployment;
+			if (
+				!src_json?.modules ||
+				!(
+					!!package_json.devDependencies?.['@sveltejs/package'] ||
+					!!package_json.dependencies?.['@sveltejs/package']
+				)
+			) {
+				return v;
+			}
+			v.push({deployment, modules: Object.values(src_json.modules)});
+			return v;
+		},
+		[] as Array<{deployment: Fetched_Deployment; modules: Src_Module[]}>,
+	);
+
+	// TODO add favicon (from library? gro?)
+</script>
+
+<div class="modules_detail">
+	<div class="nav">
+		<Modules_Menu {deployments_modules} />
+		<slot name="nav" />
+	</div>
+	<ul class="width_md box">
+		{#each deployments_modules as deployment_modules (deployment_modules)}
+			{@const {deployment, modules} = deployment_modules}
+			<li class="deployment_module">
+				<header class="width_full relative">
+					<a href="#{deployment.name}" id={deployment.name} class="subtitle">🔗</a>
+					<a href="{base}/tree/{deployment.repo_name}">{deployment.name}</a>
+				</header>
+				<ul class="modules panel">
+					{#each modules as deployment_module (deployment_module)}
+						{@const {path, declarations} = deployment_module}
+						<li
+							class="module"
+							class:ts={path.endsWith('.ts')}
+							class:svelte={path.endsWith('.svelte')}
+							class:css={path.endsWith('.css')}
+							class:json={path.endsWith('.json')}
+						>
+							<div>
+								{#if deployment.repo_url}
+									<div class="chip row">
+										<a href="{ensure_end(deployment.repo_url, '/')}blob/main/src/lib/{path}"
+											>{path}</a
+										>
+									</div>
+								{:else}
+									<span class="chip">{path}</span>
+								{/if}
+							</div>
+							<ul class="declarations">
+								{#each declarations as { name, kind }}
+									<li class="declaration chip {kind}_declaration">
+										{name}
+									</li>
+								{/each}
+							</ul>
+						</li>
+					{/each}
+				</ul>
+			</li>
+		{/each}
+	</ul>
+</div>
+
+<!-- TODO better rendering, also show author, etc -->
+
+<style>
+	.modules_detail {
+		position: relative;
+		padding: var(--spacing_lg);
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		width: 100%;
+		gap: var(--spacing_1);
+	}
+	.subtitle {
+		position: absolute;
+		right: 0;
+		top: 0;
+		text-align: right;
+	}
+	.deployment_module {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		margin-bottom: var(--spacing_5);
+	}
+	.deployment_module > header {
+		display: flex;
+		padding: var(--spacing_xs) var(--spacing_md);
+		font-size: var(--size_lg);
+		position: sticky;
+		top: 0;
+		background-color: var(--bg);
+	}
+	.modules {
+		/* TODO delete? */
+		padding: var(--spacing_sm);
+	}
+	.module {
+		margin-bottom: var(--spacing_xs);
+		--link_color: var(--text_2);
+	}
+	.ts {
+		--link_color: var(--color_a);
+	}
+	.svelte {
+		--link_color: var(--color_e);
+	}
+	.css {
+		--link_color: var(--color_b);
+	}
+	.json {
+		--link_color: var(--color_f);
+	}
+	/* TODO extract */
+	.declarations {
+		display: flex;
+		flex: 1;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: var(--spacing_xs);
+		padding-left: var(--spacing_xs);
+	}
+	.declaration {
+		font-family: var(--font_family_mono);
+		font-size: var(--size_sm);
+	}
+	.variable_declaration {
+		color: var(--color_d);
+	}
+	.function_declaration {
+		color: var(--color_c);
+	}
+	.type_declaration {
+		color: var(--color_g);
+	}
+	.class_declaration {
+		color: var(--color_f);
+	}
+	/* TODO extract  */
+	.nav {
+		position: sticky;
+		top: var(--spacing_1);
+		display: flex;
+		flex-direction: column;
+	}
+</style>
