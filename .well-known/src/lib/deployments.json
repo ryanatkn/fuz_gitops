@@ -435,7 +435,9 @@
 		"changelog_url": "https://github.com/ryanatkn/fuz/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
-		"pull_requests": []
+		"pull_requests": [
+			{"number": 9, "title": "add color vars", "user": {"login": "ryanatkn"}, "draft": false}
+		]
 	},
 	{
 		"url": "https://template.fuz.dev/",
