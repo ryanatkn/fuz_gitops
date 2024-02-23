@@ -7,6 +7,7 @@ const config: Fuz_Config = {
 		'https://gitops.fuz.dev/',
 		'https://code.fuz.dev/',
 		'https://mastodon.fuz.dev/',
+		'https://gro.ryanatkn.com/',
 	],
 };
 
