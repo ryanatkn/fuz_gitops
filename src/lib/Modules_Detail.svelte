@@ -128,16 +128,16 @@
 		--link_color: var(--text_2);
 	}
 	.ts {
-		--link_color: var(--color_a);
+		--link_color: var(--color_a_5);
 	}
 	.svelte {
-		--link_color: var(--color_e);
+		--link_color: var(--color_e_5);
 	}
 	.css {
-		--link_color: var(--color_b);
+		--link_color: var(--color_b_5);
 	}
 	.json {
-		--link_color: var(--color_f);
+		--link_color: var(--color_f_5);
 	}
 	/* TODO extract */
 	.declarations {
@@ -154,16 +154,16 @@
 		font-size: var(--size_sm);
 	}
 	.variable_declaration {
-		color: var(--color_d);
+		color: var(--color_d_5);
 	}
 	.function_declaration {
-		color: var(--color_c);
+		color: var(--color_c_5);
 	}
 	.type_declaration {
-		color: var(--color_g);
+		color: var(--color_g_5);
 	}
 	.class_declaration {
-		color: var(--color_f);
+		color: var(--color_f_5);
 	}
 	/* TODO extract  */
 	.nav {
