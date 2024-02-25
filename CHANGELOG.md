@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.21.0
+
+### Minor Changes
+
+- upgrade deps ([d6e8234](https://github.com/ryanatkn/fuz_gitops/commit/d6e8234))
+
 ## 0.20.1
 
 ### Patch Changes
