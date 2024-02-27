@@ -59,8 +59,8 @@
 		align-items: flex-start;
 	}
 	.summaries {
-		padding: var(--spacing_lg);
-		gap: var(--spacing_lg);
+		padding: var(--space_lg);
+		gap: var(--space_lg);
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
@@ -68,15 +68,15 @@
 		align-items: flex-start;
 	}
 	.summaries li {
-		margin-bottom: var(--spacing_1);
+		margin-bottom: var(--space_xl);
 	}
 	.repo_name {
-		font-size: var(--size_2);
+		font-size: var(--size_xl2);
 		font-weight: 500;
 		text-align: center;
 	}
 	.detail_wrapper {
-		padding: var(--spacing_lg);
+		padding: var(--space_lg);
 		width: 100%;
 	}
 	.detail {

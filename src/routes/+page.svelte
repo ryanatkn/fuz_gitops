@@ -61,21 +61,21 @@
 		margin: 0 auto;
 	}
 	section {
-		margin-bottom: var(--spacing_4);
+		margin-bottom: var(--space_xl4);
 	}
 	section:first-child {
-		margin-top: var(--spacing_4);
+		margin-top: var(--space_xl4);
 	}
 	menu {
-		gap: var(--spacing_lg);
+		gap: var(--space_lg);
 		width: 100%;
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: column;
 		align-items: center;
-		font-size: var(--size_3);
+		font-size: var(--size_xl3);
 	}
 	li {
-		margin-bottom: var(--spacing_1);
+		margin-bottom: var(--space_xl);
 	}
 </style>

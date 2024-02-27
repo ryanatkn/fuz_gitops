@@ -32,12 +32,12 @@
 <style>
 	section {
 		width: 100%;
-		margin-bottom: var(--spacing_4);
+		margin-bottom: var(--space_xl4);
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
 	}
 	section:first-child {
-		margin-top: var(--spacing_4);
+		margin-top: var(--space_xl4);
 	}
 </style>

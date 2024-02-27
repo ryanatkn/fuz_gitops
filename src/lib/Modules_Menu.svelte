@@ -39,9 +39,9 @@
 		width: 100%;
 	}
 	h6 {
-		padding-bottom: var(--spacing_sm);
+		padding-bottom: var(--space_sm);
 	}
 	h6:not(:first-child) {
-		margin-top: var(--spacing_1);
+		margin-top: var(--space_xl);
 	}
 </style>
