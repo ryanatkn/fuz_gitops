@@ -36,13 +36,13 @@
 		display: flex;
 		flex-direction: column;
 		position: sticky;
-		top: var(--spacing_md);
+		top: var(--space_md);
 		width: var(--nav_width, 240px);
-		padding: var(--spacing_lg);
+		padding: var(--space_lg);
 		padding-right: 0;
 	}
 	.names {
-		padding: var(--spacing_md);
+		padding: var(--space_md);
 	}
 	/* TODO should be a CSS class or variable, probably add :focus behavior */
 	.names a:hover {

@@ -52,9 +52,9 @@
 <style>
 	th,
 	td {
-		padding: 0 var(--spacing_md);
+		padding: 0 var(--space_md);
 	}
 	section {
-		margin-bottom: var(--spacing_5);
+		margin-bottom: var(--space_xl5);
 	}
 </style>

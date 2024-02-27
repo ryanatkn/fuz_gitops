@@ -84,7 +84,7 @@
 								alt="favicon to homepage at {homepage_url}"
 								style:width="16px"
 								style:height="16px"
-								style:margin-right="var(--spacing_xs)"
+								style:margin-right="var(--space_xs)"
 							/>
 							{format_host(homepage_url)}
 						</a>
@@ -160,7 +160,7 @@
 	}
 	th,
 	td {
-		padding: 0 var(--spacing_xs);
+		padding: 0 var(--space_xs);
 	}
 	tr:hover {
 		background-color: var(--bg_5);
@@ -168,8 +168,8 @@
 	.latest {
 		/* TODO even lighter, add `--text_4` to Fuz probably, or change the scaling of `--text_2` and `--text_3` */
 		color: var(--text_3);
-		/* TODO this is too subtle as `--faded_1`, change in Fuz to either lighter or `--faded_2` */
+		/* TODO this is too subtle as `--fade_1`, change in Fuz to either lighter or `--fade_2` */
 		/* opacity: var(--disabled_opacity); */
-		opacity: var(--faded_2);
+		opacity: var(--fade_2);
 	}
 </style>

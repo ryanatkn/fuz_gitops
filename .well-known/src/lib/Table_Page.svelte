@@ -35,9 +35,9 @@
 		margin: 0 auto;
 	}
 	section {
-		margin-bottom: var(--spacing_4);
+		margin-bottom: var(--space_xl4);
 	}
 	section:first-child {
-		margin-top: var(--spacing_4);
+		margin-top: var(--space_xl4);
 	}
 </style>

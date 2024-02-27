@@ -35,12 +35,12 @@
 <style>
 	section {
 		width: 100%;
-		margin-bottom: var(--spacing_4);
+		margin-bottom: var(--space_xl4);
 		display: flex;
 		justify-content: center;
 	}
 	section:first-child {
-		margin-top: var(--spacing_4);
+		margin-top: var(--space_xl4);
 	}
 	.tree {
 		display: flex;
@@ -49,7 +49,7 @@
 	}
 	.deployments_tree_nav {
 		display: flex;
-		margin-top: var(--spacing_1);
+		margin-top: var(--space_xl);
 	}
 	/* TODO hacky */
 	.deployments_tree_nav :global(.breadcrumb) {

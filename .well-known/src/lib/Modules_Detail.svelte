@@ -92,12 +92,12 @@
 <style>
 	.modules_detail {
 		position: relative;
-		padding: var(--spacing_lg);
+		padding: var(--space_lg);
 		display: flex;
 		flex-direction: row;
 		align-items: flex-start;
 		width: 100%;
-		gap: var(--spacing_1);
+		gap: var(--space_xl);
 	}
 	.subtitle {
 		position: absolute;
@@ -109,11 +109,11 @@
 		width: 100%;
 		display: flex;
 		flex-direction: column;
-		margin-bottom: var(--spacing_5);
+		margin-bottom: var(--space_xl5);
 	}
 	.deployment_module > header {
 		display: flex;
-		padding: var(--spacing_xs) var(--spacing_md);
+		padding: var(--space_xs) var(--space_md);
 		font-size: var(--size_lg);
 		position: sticky;
 		top: 0;
@@ -121,10 +121,10 @@
 	}
 	.modules {
 		/* TODO delete? */
-		padding: var(--spacing_sm);
+		padding: var(--space_sm);
 	}
 	.module {
-		margin-bottom: var(--spacing_xs);
+		margin-bottom: var(--space_xs);
 		--link_color: var(--text_2);
 	}
 	.ts {
@@ -146,8 +146,8 @@
 		flex-direction: row;
 		flex-wrap: wrap;
 		align-items: flex-start;
-		gap: var(--spacing_xs);
-		padding-left: var(--spacing_xs);
+		gap: var(--space_xs);
+		padding-left: var(--space_xs);
 	}
 	.declaration {
 		font-family: var(--font_family_mono);
@@ -168,7 +168,7 @@
 	/* TODO extract  */
 	.nav {
 		position: sticky;
-		top: var(--spacing_1);
+		top: var(--space_xl);
 		display: flex;
 		flex-direction: column;
 	}
