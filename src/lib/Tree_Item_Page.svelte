@@ -21,13 +21,13 @@
 	<title>{slug} - tree {deployment.package_json.icon} {deployment.package_json.name}</title>
 </svelte:head>
 
-<main class="box width_full">
+<main class="box w_100">
 	<section>
 		<Page_Header pkg={deployment} />
 	</section>
 	<section class="tree">
 		{#if !route_deployment}
-			<div class="spaced">
+			<div class="mb_lg">
 				<Alert status="error"><p>cannot find <code>{slug}</code></p></Alert>
 			</div>
 		{/if}

@@ -18,7 +18,7 @@
 		<Page_Header pkg={deployment} />
 	</section>
 	<section>
-		<div class="panel padded_md">
+		<div class="panel p_md">
 			<Deployments_Table {deployments} />
 		</div>
 	</section>

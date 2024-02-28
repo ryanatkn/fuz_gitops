@@ -28,7 +28,7 @@
 	{:else}
 		<menu class="summaries">
 			{#each deployments as deployment}
-				<li class="panel padded_md box">
+				<li class="panel p_md box">
 					{#if deployment.package_json}
 						<Package_Summary pkg={deployment}>
 							<svelte:fragment slot="repo_name" let:repo_name>
