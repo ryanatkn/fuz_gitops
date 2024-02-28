@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.23.0
+
+### Minor Changes
+
+- upgrade `@ryanatkn/fuz@0.91.0` ([1a5a0f7](https://github.com/ryanatkn/fuz_gitops/commit/1a5a0f7))
+
 ## 0.22.0
 
 ### Minor Changes
