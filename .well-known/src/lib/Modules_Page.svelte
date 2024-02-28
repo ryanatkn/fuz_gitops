@@ -14,7 +14,7 @@
 	<title>modules {deployment.package_json.icon} {deployment.package_json.name}</title>
 </svelte:head>
 
-<main class="box width_full">
+<main class="box w_100">
 	<section>
 		<Page_Header pkg={deployment} />
 	</section>

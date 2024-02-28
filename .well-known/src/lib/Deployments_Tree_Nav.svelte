@@ -12,7 +12,7 @@
 </script>
 
 <nav>
-	<menu class="names panel padded_md">
+	<menu class="names panel p_md">
 		{#each deployments as deployment}
 			{@const selected = deployment === selected_deployment}
 			<li style:display="contents">

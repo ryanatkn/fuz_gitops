@@ -47,7 +47,7 @@
 		{#each deployments_modules as deployment_modules (deployment_modules)}
 			{@const {deployment, modules} = deployment_modules}
 			<li class="deployment_module">
-				<header class="width_full relative">
+				<header class="w_100 relative">
 					<a href="#{deployment.name}" id={deployment.name} class="subtitle">🔗</a>
 					<a href="{base}/tree/{deployment.repo_name}">{deployment.name}</a>
 				</header>

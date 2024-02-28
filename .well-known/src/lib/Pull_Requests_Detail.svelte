@@ -14,7 +14,7 @@
 </script>
 
 <div class="width_md">
-	<section class="panel padded_sm">
+	<section class="panel p_sm">
 		<table>
 			<thead><th>repo</th><th>number</th><th>title</th></thead>
 			{#each pull_requests as pull_request}
@@ -38,7 +38,7 @@
 		</table>
 	</section>
 	{#if unfetched_deployments.length}
-		<section class="panel padded_sm prose">
+		<section class="panel p_sm prose">
 			<p>⚠️ Some deployments could not be fetched:</p>
 			<ul>
 				{#each unfetched_deployments as { url }}
