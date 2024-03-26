@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Package_Summary from '@ryanatkn/fuz/Package_Summary.svelte';
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
-	import {strip_end, strip_start} from '@ryanatkn/belt/string.js';
 	import {base} from '$app/paths';
+	import {format_url} from '@ryanatkn/belt/url.js';
 
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 	import Deployments_Tree_Nav from '$lib/Deployments_Tree_Nav.svelte';
@@ -39,9 +39,7 @@
 						<div class="prose width_sm">
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
-								<a href={deployment.url}
-									>{strip_end(strip_start(deployment.url, 'https://'), '/')}</a
-								>
+								<a href={deployment.url}>{format_url(deployment.url)}</a>
 							</p>
 						</div>
 					{/if}

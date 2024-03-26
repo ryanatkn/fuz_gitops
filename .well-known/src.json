@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.23.1",
+  "version": "0.24.0",
   "modules": {
     "./Deployments_Table.svelte": {
       "path": "Deployments_Table.svelte",
