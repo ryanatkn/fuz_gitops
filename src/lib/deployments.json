@@ -3,7 +3,7 @@
 		"url": "https://www.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz",
-			"version": "0.91.3",
+			"version": "0.91.5",
 			"description": "Svelte UI library and CSS design system",
 			"icon": "🧶",
 			"public": true,
@@ -285,7 +285,7 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz",
-			"version": "0.91.3",
+			"version": "0.91.5",
 			"modules": {
 				"./Alert.svelte": {"path": "Alert.svelte", "declarations": []},
 				"./alert.js": {
@@ -736,23 +736,23 @@
 			},
 			"files": ["dist"],
 			"devDependencies": {
-				"@ryanatkn/belt": "^0.20.5",
+				"@ryanatkn/belt": "^0.20.9",
 				"@ryanatkn/eslint-config": "^0.1.0",
-				"@ryanatkn/fuz": "^0.90.0",
-				"@ryanatkn/gro": "^0.112.4",
+				"@ryanatkn/fuz": "^0.91.5",
+				"@ryanatkn/gro": "^0.112.5",
 				"@sveltejs/adapter-static": "^3.0.1",
-				"@sveltejs/kit": "^2.5.2",
+				"@sveltejs/kit": "^2.5.4",
 				"@sveltejs/vite-plugin-svelte": "^3.0.2",
-				"@typescript-eslint/eslint-plugin": "^7.1.0",
-				"@typescript-eslint/parser": "^7.1.0",
+				"@typescript-eslint/eslint-plugin": "^7.3.1",
+				"@typescript-eslint/parser": "^7.3.1",
 				"eslint": "^8.57.0",
 				"eslint-plugin-svelte": "^2.35.1",
 				"prettier": "^3.2.5",
-				"prettier-plugin-svelte": "^3.2.1",
+				"prettier-plugin-svelte": "^3.2.2",
 				"svelte": "^4.2.12",
-				"svelte-check": "^3.6.4",
+				"svelte-check": "^3.6.8",
 				"tslib": "^2.6.2",
-				"typescript": "^5.3.3",
+				"typescript": "^5.4.3",
 				"uvu": "^0.5.6"
 			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn"},
@@ -775,7 +775,9 @@
 		"changelog_url": null,
 		"published": false,
 		"check_runs": {"status": "completed", "conclusion": "success"},
-		"pull_requests": []
+		"pull_requests": [
+			{"number": 18, "title": "upgrade to svelte5", "user": {"login": "ryanatkn"}, "draft": false}
+		]
 	},
 	{
 		"url": "https://gitops.fuz.dev/",
@@ -1043,7 +1045,7 @@
 				"@changesets/changelog-git": "^0.2.0",
 				"@ryanatkn/belt": "^0.20.5",
 				"@ryanatkn/eslint-config": "^0.1.0",
-				"@ryanatkn/fuz": "^0.91.0",
+				"@ryanatkn/fuz": "^0.91.3",
 				"@ryanatkn/gro": "^0.112.4",
 				"@sveltejs/adapter-static": "^3.0.1",
 				"@sveltejs/kit": "^2.5.2",
@@ -1055,11 +1057,11 @@
 				"eslint": "^8.57.0",
 				"eslint-plugin-svelte": "^2.35.1",
 				"prettier": "^3.2.5",
-				"prettier-plugin-svelte": "^3.2.1",
+				"prettier-plugin-svelte": "^3.2.2",
 				"prism-svelte": "^0.5.0",
 				"prismjs": "^1.29.0",
 				"svelte": "^4.2.12",
-				"svelte-check": "^3.6.5",
+				"svelte-check": "^3.6.6",
 				"tslib": "^2.6.2",
 				"typescript": "^5.3.3",
 				"uvu": "^0.5.6"
@@ -1107,14 +1109,16 @@
 		"changelog_url": "https://github.com/ryanatkn/fuz_code/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
-		"pull_requests": []
+		"pull_requests": [
+			{"number": 4, "title": "upgrade to svelte5", "user": {"login": "ryanatkn"}, "draft": false}
+		]
 	},
 	{
 		"url": "https://mastodon.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz_mastodon",
 			"description": "Mastodon components and helpers for Svelte, SvelteKit, and Fuz",
-			"version": "0.8.0",
+			"version": "0.10.0",
 			"public": true,
 			"icon": "🦣",
 			"license": "MIT",
@@ -1144,29 +1148,29 @@
 			},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@ryanatkn/belt": "^0.20.5",
+				"@ryanatkn/belt": "^0.20.6",
 				"@ryanatkn/eslint-config": "^0.1.0",
-				"@ryanatkn/fuz": "^0.90.0",
+				"@ryanatkn/fuz": "^0.91.3",
 				"@ryanatkn/fuz_code": "^0.11.0",
-				"@ryanatkn/gro": "^0.112.3",
+				"@ryanatkn/gro": "^0.112.4",
 				"@sveltejs/adapter-static": "^3.0.1",
-				"@sveltejs/kit": "^2.5.2",
-				"@sveltejs/package": "^2.2.7",
+				"@sveltejs/kit": "^2.5.3",
+				"@sveltejs/package": "^2.3.0",
 				"@sveltejs/vite-plugin-svelte": "^3.0.2",
-				"@typescript-eslint/eslint-plugin": "^7.1.0",
-				"@typescript-eslint/parser": "^7.1.0",
+				"@typescript-eslint/eslint-plugin": "^7.1.1",
+				"@typescript-eslint/parser": "^7.1.1",
 				"date-fns": "^3.3.1",
 				"eslint": "^8.57.0",
 				"eslint-plugin-svelte": "^2.35.1",
 				"prettier": "^3.2.5",
-				"prettier-plugin-svelte": "^3.2.1",
+				"prettier-plugin-svelte": "^3.2.2",
 				"prism-svelte": "^0.5.0",
 				"prismjs": "^1.29.0",
 				"svelte": "^4.2.12",
-				"svelte-check": "^3.6.4",
-				"svelte-intersect": "^0.11.0",
+				"svelte-check": "^3.6.6",
+				"svelte-intersect": "^0.12.1",
 				"tslib": "^2.6.2",
-				"typescript": "^5.3.3",
+				"typescript": "^5.4.2",
 				"uvu": "^0.5.6"
 			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn", "rules": {"no-console": 1}},
@@ -1210,7 +1214,7 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz_mastodon",
-			"version": "0.8.0",
+			"version": "0.10.0",
 			"modules": {
 				"./Mastodon_Status_Item.svelte": {
 					"path": "Mastodon_Status_Item.svelte",
@@ -1260,13 +1264,15 @@
 		"changelog_url": "https://github.com/ryanatkn/fuz_mastodon/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
-		"pull_requests": []
+		"pull_requests": [
+			{"number": 3, "title": "upgrade to svelte5", "user": {"login": "ryanatkn"}, "draft": false}
+		]
 	},
 	{
 		"url": "https://gro.ryanatkn.com/",
 		"package_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.112.4",
+			"version": "0.112.5",
 			"description": "task runner and toolkit extending SvelteKit",
 			"icon": "🌰",
 			"public": true,
@@ -1300,16 +1306,16 @@
 			],
 			"files": ["dist"],
 			"dependencies": {
-				"@ryanatkn/belt": "^0.20.5",
+				"@ryanatkn/belt": "^0.20.9",
 				"chokidar": "^3.6.0",
 				"dotenv": "^16.4.5",
-				"es-module-lexer": "^1.4.1",
+				"es-module-lexer": "^1.4.2",
 				"kleur": "^4.1.5",
 				"mri": "^1.2.0",
 				"prettier": "^3.2.5",
-				"prettier-plugin-svelte": "^3.2.1",
+				"prettier-plugin-svelte": "^3.2.2",
 				"tiny-glob": "^0.2.9",
-				"ts-morph": "^21.0.1",
+				"ts-morph": "^22.0.0",
 				"tslib": "^2.6.2",
 				"zod": "^3.22.4"
 			},
@@ -1318,21 +1324,21 @@
 				"@changesets/changelog-git": "^0.2.0",
 				"@changesets/types": "^6.0.0",
 				"@ryanatkn/eslint-config": "^0.1.0",
-				"@ryanatkn/fuz": "^0.91.0",
+				"@ryanatkn/fuz": "^0.91.5",
 				"@sveltejs/adapter-static": "^3.0.1",
-				"@sveltejs/kit": "^2.5.2",
-				"@sveltejs/package": "^2.2.7",
+				"@sveltejs/kit": "^2.5.4",
+				"@sveltejs/package": "^2.3.0",
 				"@sveltejs/vite-plugin-svelte": "^3.0.2",
 				"@types/fs-extra": "^11.0.4",
-				"@types/node": "^20.11.21",
-				"@typescript-eslint/eslint-plugin": "^7.1.0",
-				"@typescript-eslint/parser": "^7.1.0",
+				"@types/node": "^20.11.30",
+				"@typescript-eslint/eslint-plugin": "^7.3.1",
+				"@typescript-eslint/parser": "^7.3.1",
 				"esbuild": "^0.19.0",
 				"eslint": "^8.57.0",
 				"eslint-plugin-svelte": "^2.35.1",
 				"svelte": "^4.2.12",
-				"svelte-check": "^3.6.5",
-				"typescript": "^5.3.3",
+				"svelte-check": "^3.6.8",
+				"typescript": "^5.4.3",
 				"uvu": "^0.5.6"
 			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn", "rules": {"no-console": 1}},
@@ -1541,7 +1547,7 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.112.4",
+			"version": "0.112.5",
 			"modules": {
 				".": {
 					"path": "index.ts",
@@ -2221,6 +2227,7 @@
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
 		"pull_requests": [
+			{"number": 454, "title": "upgrade to svelte5", "user": {"login": "ryanatkn"}, "draft": false},
 			{
 				"number": 452,
 				"title": "enable running tasks from outside `src/lib`",
