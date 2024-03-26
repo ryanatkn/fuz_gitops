@@ -1,5 +1,17 @@
 # @ryanatkn/fuz_gitops
 
+## 0.24.0
+
+### Minor Changes
+
+- upgrade deps ([1e0ef29](https://github.com/ryanatkn/fuz_gitops/commit/1e0ef29))
+
+## 0.23.1
+
+### Patch Changes
+
+- format URLs correctly with pathname ([89c315f](https://github.com/ryanatkn/fuz_gitops/commit/89c315f))
+
 ## 0.23.0
 
 ### Minor Changes
