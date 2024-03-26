@@ -1,8 +1,7 @@
 <script lang="ts">
-	import {format_host} from '@ryanatkn/gro/package_meta.js';
 	import {page} from '$app/stores';
 	import {base} from '$app/paths';
-	import {ensure_end} from '@ryanatkn/belt/string.js';
+	import {ensure_end, strip_end, strip_start} from '@ryanatkn/belt/string.js';
 
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 	import {to_pull_url} from '$lib/github_helpers.js';
@@ -86,7 +85,7 @@
 								style:height="16px"
 								style:margin-right="var(--space_xs)"
 							/>
-							{format_host(homepage_url)}
+							{strip_end(strip_start(homepage_url, 'https://'), '/')}
 						</a>
 					{/if}
 				</div>
@@ -108,7 +107,7 @@
 							>
 						{/if}
 					{:else}
-						<a href={deployment.url}>{format_host(deployment.url)}</a>
+						<a href={deployment.url}>{strip_end(strip_start(deployment.url, 'https://'), '/')}</a>
 					{/if}
 				</div>
 			</td>

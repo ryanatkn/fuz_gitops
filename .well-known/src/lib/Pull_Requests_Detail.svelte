@@ -1,9 +1,9 @@
 <script lang="ts">
-	import {format_host} from '@ryanatkn/gro/package_meta.js';
 	import {base} from '$app/paths';
 
 	import {to_pull_requests, type Filter_Pull_Request} from '$lib/github_helpers.js';
 	import type {Fetched_Deployment, Unfetched_Deployment} from '$lib/fetch_deployments.js';
+	import {strip_end, strip_start} from '@ryanatkn/belt/string.js';
 
 	export let deployments: Fetched_Deployment[];
 	export let unfetched_deployments: Unfetched_Deployment[];
@@ -42,7 +42,7 @@
 			<p>⚠️ Some deployments could not be fetched:</p>
 			<ul>
 				{#each unfetched_deployments as { url }}
-					<li><a href={url}>{format_host(url)}</a></li>
+					<li><a href={url}>{strip_end(strip_start(url, 'https://'), '/')}</a></li>
 				{/each}
 			</ul>
 		</section>
