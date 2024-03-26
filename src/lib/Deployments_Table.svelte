@@ -54,7 +54,7 @@
 
 <table>
 	<thead>
-		<th>detail</th>
+		<th>tree</th>
 		<th>homepage</th>
 		<th>repo</th>
 		<th>npm</th>
