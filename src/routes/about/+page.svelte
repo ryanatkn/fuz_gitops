@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
-	import Page_Footer from '@ryanatkn/fuz/Page_Footer.svelte';
 
+	import Page_Footer from '$lib/Page_Footer.svelte';
 	import {get_deployments} from '$lib/deployments.js';
 
 	const {deployment} = get_deployments();

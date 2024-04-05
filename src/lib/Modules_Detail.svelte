@@ -150,7 +150,7 @@
 		padding-left: var(--space_xs);
 	}
 	.declaration {
-		font-family: var(--font_family_mono);
+		font-family: var(--font_mono);
 		font-size: var(--size_sm);
 	}
 	.variable_declaration {

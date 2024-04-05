@@ -1,7 +1,6 @@
 <script lang="ts">
-	import Page_Header from '@ryanatkn/fuz/Page_Header.svelte';
-	import Page_Footer from '@ryanatkn/fuz/Page_Footer.svelte';
-
+	import Page_Header from '$lib/Page_Header.svelte';
+	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Deployments_Table from '$lib/Deployments_Table.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
