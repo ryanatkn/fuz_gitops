@@ -34,8 +34,9 @@
 		</menu>
 	</section>
 	<section class="mb_xl7">
-		<Library_Footer pkg={deployment} root_url="https://www.fuz.dev/">
+		<Library_Footer pkg={deployment}>
 			{#snippet logo_header()}<a href="{base}/about" class="mb_xs">about</a>{/snippet}
+			{#snippet logo_footer()}<a href="https://www.fuz.dev/" class="mt_xs">fuz.dev</a>{/snippet}
 		</Library_Footer>
 	</section>
 </main>
