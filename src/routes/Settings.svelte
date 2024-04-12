@@ -4,7 +4,7 @@
 </script>
 
 <div class="p_xl box">
-	<h1>Settings</h1>
+	<h1 class="mb_0">Settings</h1>
 	<h2>Color Scheme</h2>
 	<Color_Scheme_Input />
 	<h2>Theme</h2>
