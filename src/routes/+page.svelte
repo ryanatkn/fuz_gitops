@@ -14,34 +14,22 @@
 </svelte:head>
 
 <main class="box">
-	<section>
+	<section class="pt_xl">
 		<Main_Header />
 	</section>
 	<section>
-		<menu>
+		<menu class="unstyled">
 			<li>
-				<Card href="{base}/table">
-					table
-					<svelte:fragment slot="icon">{''}</svelte:fragment>
-				</Card>
+				<Card href="{base}/table" icon="">table</Card>
 			</li>
 			<li>
-				<Card href="{base}/modules">
-					modules
-					<svelte:fragment slot="icon">{''}</svelte:fragment>
-				</Card>
+				<Card href="{base}/modules" icon="">modules</Card>
 			</li>
 			<li>
-				<Card href="{base}/pull_requests">
-					pull requests
-					<svelte:fragment slot="icon">{''}</svelte:fragment>
-				</Card>
+				<Card href="{base}/pull_requests" icon="">pull requests</Card>
 			</li>
 			<li>
-				<Card href="{base}/tree">
-					tree
-					<svelte:fragment slot="icon">{''}</svelte:fragment>
-				</Card>
+				<Card href="{base}/tree" icon="">tree</Card>
 			</li>
 		</menu>
 	</section>
@@ -59,12 +47,6 @@
 		flex-direction: column;
 		align-items: center;
 		margin: 0 auto;
-	}
-	section {
-		margin-bottom: var(--space_xl4);
-	}
-	section:first-child {
-		margin-top: var(--space_xl4);
 	}
 	menu {
 		gap: var(--space_lg);

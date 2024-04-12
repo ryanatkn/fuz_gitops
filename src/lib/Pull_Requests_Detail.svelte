@@ -38,7 +38,7 @@
 		</table>
 	</section>
 	{#if unfetched_deployments.length}
-		<section class="panel p_sm prose">
+		<section class="panel p_sm">
 			<p>⚠️ Some deployments could not be fetched:</p>
 			<ul>
 				{#each unfetched_deployments as { url }}

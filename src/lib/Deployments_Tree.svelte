@@ -36,7 +36,7 @@
 							</svelte:fragment>
 						</Package_Summary>
 					{:else}
-						<div class="prose width_sm">
+						<div class="width_sm">
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
 								<a href={deployment.url}>{format_url(deployment.url)}</a>
