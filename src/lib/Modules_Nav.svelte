@@ -15,7 +15,7 @@
 	// TODO add favicon (from library? gro?)
 </script>
 
-<div class="modules_menu">
+<nav class="modules_nav">
 	<h6>packages</h6>
 	<ul class="unstyled">
 		{#each deployments_modules as pkg_modules (pkg_modules)}
@@ -28,10 +28,10 @@
 			</li>
 		{/each}
 	</ul>
-</div>
+</nav>
 
 <style>
-	.modules_menu {
+	.modules_nav {
 		width: 100%;
 	}
 	h6 {

@@ -879,10 +879,10 @@
 					"default": "./dist/Modules_Detail.svelte",
 					"types": "./dist/Modules_Detail.svelte.d.ts"
 				},
-				"./Modules_Menu.svelte": {
-					"svelte": "./dist/Modules_Menu.svelte",
-					"default": "./dist/Modules_Menu.svelte",
-					"types": "./dist/Modules_Menu.svelte.d.ts"
+				"./Modules_Nav.svelte": {
+					"svelte": "./dist/Modules_Nav.svelte",
+					"default": "./dist/Modules_Nav.svelte",
+					"types": "./dist/Modules_Nav.svelte.d.ts"
 				},
 				"./Modules_Page.svelte": {
 					"svelte": "./dist/Modules_Page.svelte",
@@ -986,7 +986,7 @@
 					]
 				},
 				"./Modules_Detail.svelte": {"path": "Modules_Detail.svelte", "declarations": []},
-				"./Modules_Menu.svelte": {"path": "Modules_Menu.svelte", "declarations": []},
+				"./Modules_Nav.svelte": {"path": "Modules_Nav.svelte", "declarations": []},
 				"./Modules_Page.svelte": {"path": "Modules_Page.svelte", "declarations": []},
 				"./Pull_Requests_Detail.svelte": {
 					"path": "Pull_Requests_Detail.svelte",

@@ -3,7 +3,7 @@
 	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {base} from '$app/paths';
 
-	import Modules_Menu from '$lib/Modules_Menu.svelte';
+	import Modules_Nav from '$lib/Modules_Nav.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
 	export let deployments: Fetched_Deployment[]; // TODO normalized version with cached primitives?
@@ -39,8 +39,10 @@
 </script>
 
 <div class="modules_detail">
-	<div class="nav">
-		<Modules_Menu {deployments_modules} />
+	<div class="nav_wrapper">
+		<section>
+			<Modules_Nav {deployments_modules} />
+		</section>
 		<slot name="nav" />
 	</div>
 	<ul class="width_md box unstyled">
@@ -168,7 +170,7 @@
 		color: var(--color_f_5);
 	}
 	/* TODO extract  */
-	.nav {
+	.nav_wrapper {
 		position: sticky;
 		top: var(--space_xl);
 		display: flex;
