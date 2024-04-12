@@ -54,103 +54,110 @@
 
 <table>
 	<thead>
-		<th>tree</th>
-		<th>homepage</th>
-		<th>repo</th>
-		<th>npm</th>
-		<th>version</th>
-		{#each deps as dep (dep)}
-			<th>{dep}</th>
-		{/each}
-		<th>pull requests</th>
-	</thead>
-	{#each deployments as deployment}
-		{@const package_json = deployment.package_json}
-		{@const homepage_url = package_json ? deployment.homepage_url : null}
 		<tr>
-			<td>
-				<div class="row">
-					{#if package_json}
-						<a href="{base}/tree/{deployment.repo_name}">{deployment.package_json.icon || '🌳'}</a>
-					{/if}
-				</div>
-			</td>
-			<td>
-				<div class="row">
-					{#if homepage_url}
-						<a class:selected={homepage_url === $page.url.href} href={homepage_url} class="row">
-							<img
-								src="{ensure_end(homepage_url, '/')}favicon.png"
-								alt="favicon to homepage at {homepage_url}"
-								style:width="16px"
-								style:height="16px"
-								style:margin-right="var(--space_xs)"
-							/>
-							{format_url(homepage_url)}
-						</a>
-					{/if}
-				</div>
-			</td>
-			<td>
-				<div class="row">
-					{#if package_json}
-						<a href={deployment.repo_url}>{deployment.repo_name}</a>
-						{@const check_runs = deployment.check_runs}
-						{@const check_runs_completed = check_runs?.status === 'completed'}
-						{@const check_runs_success = check_runs?.conclusion === 'success'}
-						{#if check_runs && (!check_runs_completed || !check_runs_success)}
-							<a
-								href="{deployment.repo_url}/commits/main"
-								title={!check_runs_completed
-									? `status: ${check_runs.status}`
-									: `CI failed: ${check_runs.conclusion}`}
-								>{#if !check_runs_completed}🟡{:else}⚠️{/if}</a
+			<th>tree</th>
+			<th>homepage</th>
+			<th>repo</th>
+			<th>npm</th>
+			<th>version</th>
+			{#each deps as dep (dep)}
+				<th>{dep}</th>
+			{/each}
+			<th>pull requests</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each deployments as deployment}
+			{@const package_json = deployment.package_json}
+			{@const homepage_url = package_json ? deployment.homepage_url : null}
+			<tr>
+				<td>
+					<div class="row">
+						{#if package_json}
+							<a href="{base}/tree/{deployment.repo_name}">{deployment.package_json.icon || '🌳'}</a
 							>
 						{/if}
-					{:else}
-						<a href={deployment.url}>{format_url(deployment.url)}</a>
-					{/if}
-				</div>
-			</td>
-			<td>
-				{#if package_json && deployment.npm_url}
-					<div class="row">
-						<a href={deployment.npm_url}><code>{deployment.name}</code></a>
-					</div>
-				{/if}
-			</td>
-			<td>
-				{#if package_json && package_json.version !== '0.0.1'}
-					<a href={deployment.changelog_url}>{format_version(package_json.version)}</a>
-				{/if}
-			</td>
-			{#each deps as dep (dep)}
-				{@const dep_version = lookup_dep_version(deployment, dep)}
-				{@const formatted_dep_version = format_version(dep_version)}
-				{@const dep_latest_version = latest_version_by_dep.get(dep)}
-				<td>
-					<div class:latest={!!dep_latest_version && formatted_dep_version === dep_latest_version}>
-						{formatted_dep_version}
 					</div>
 				</td>
-			{/each}
-			<td>
-				{#if package_json && deployment.repo_url}
-					{@const pull_requests = lookup_pull_requests(deployments, deployment)}
-					<!-- TODO show something like `and N more` with a link to a dialog list -->
+				<td>
 					<div class="row">
-						{#if pull_requests}
-							{#each pull_requests as pull (pull)}
-								<a href={to_pull_url(deployment.repo_url, pull)} class="chip" title={pull.title}
-									>#{pull.number}</a
-								>
-							{/each}
+						{#if homepage_url}
+							<a class:selected={homepage_url === $page.url.href} href={homepage_url} class="row">
+								<img
+									src="{ensure_end(homepage_url, '/')}favicon.png"
+									alt="favicon to homepage at {homepage_url}"
+									style:width="16px"
+									style:height="16px"
+									style:margin-right="var(--space_xs)"
+								/>
+								{format_url(homepage_url)}
+							</a>
 						{/if}
 					</div>
-				{/if}
-			</td>
-		</tr>
-	{/each}
+				</td>
+				<td>
+					<div class="row">
+						{#if package_json}
+							<a href={deployment.repo_url}>{deployment.repo_name}</a>
+							{@const check_runs = deployment.check_runs}
+							{@const check_runs_completed = check_runs?.status === 'completed'}
+							{@const check_runs_success = check_runs?.conclusion === 'success'}
+							{#if check_runs && (!check_runs_completed || !check_runs_success)}
+								<a
+									href="{deployment.repo_url}/commits/main"
+									title={!check_runs_completed
+										? `status: ${check_runs.status}`
+										: `CI failed: ${check_runs.conclusion}`}
+									>{#if !check_runs_completed}🟡{:else}⚠️{/if}</a
+								>
+							{/if}
+						{:else}
+							<a href={deployment.url}>{format_url(deployment.url)}</a>
+						{/if}
+					</div>
+				</td>
+				<td>
+					{#if package_json && deployment.npm_url}
+						<div class="row">
+							<a href={deployment.npm_url}><code>{deployment.name}</code></a>
+						</div>
+					{/if}
+				</td>
+				<td>
+					{#if package_json && package_json.version !== '0.0.1'}
+						<a href={deployment.changelog_url}>{format_version(package_json.version)}</a>
+					{/if}
+				</td>
+				{#each deps as dep (dep)}
+					{@const dep_version = lookup_dep_version(deployment, dep)}
+					{@const formatted_dep_version = format_version(dep_version)}
+					{@const dep_latest_version = latest_version_by_dep.get(dep)}
+					<td>
+						<div
+							class:latest={!!dep_latest_version && formatted_dep_version === dep_latest_version}
+						>
+							{formatted_dep_version}
+						</div>
+					</td>
+				{/each}
+				<td>
+					{#if package_json && deployment.repo_url}
+						{@const pull_requests = lookup_pull_requests(deployments, deployment)}
+						<!-- TODO show something like `and N more` with a link to a dialog list -->
+						<div class="row">
+							{#if pull_requests}
+								{#each pull_requests as pull (pull)}
+									<a href={to_pull_url(deployment.repo_url, pull)} class="chip" title={pull.title}
+										>#{pull.number}</a
+									>
+								{/each}
+							{/if}
+						</div>
+					{/if}
+				</td>
+			</tr>
+		{/each}
+	</tbody>
 </table>
 
 <style>
