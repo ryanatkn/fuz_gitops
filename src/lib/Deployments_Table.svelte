@@ -7,8 +7,12 @@
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 	import {to_pull_url} from '$lib/github_helpers.js';
 
-	export let deployments: Fetched_Deployment[];
-	export let deps = ['@ryanatkn/fuz', '@ryanatkn/gro'];
+	interface Props {
+		deployments: Fetched_Deployment[];
+		deps?: string[];
+	}
+
+	const {deployments, deps = ['@ryanatkn/fuz', '@ryanatkn/gro']}: Props = $props();
 
 	// TODO fade out the `version` column if all deps are upgraded to the latest
 
@@ -30,12 +34,14 @@
 		return null;
 	};
 
-	$: latest_version_by_dep = new Map<string, string | null>(
-		deps.map((dep) => {
-			const deployment = deployments.find((deployment) => deployment.package_json?.name === dep);
-			if (!deployment?.package_json) return [dep, null];
-			return [dep, deployment.package_json.version];
-		}),
+	const latest_version_by_dep = $derived(
+		new Map<string, string | null>(
+			deps.map((dep) => {
+				const deployment = deployments.find((deployment) => deployment.package_json?.name === dep);
+				if (!deployment?.package_json) return [dep, null];
+				return [dep, deployment.package_json.version];
+			}),
+		),
 	);
 
 	const format_version = (version: string | null): string =>

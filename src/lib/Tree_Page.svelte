@@ -6,8 +6,12 @@
 	import Deployments_Tree from '$lib/Deployments_Tree.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployment: Fetched_Deployment;
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployment: Fetched_Deployment;
+		deployments: Fetched_Deployment[];
+	}
+
+	const {deployment, deployments}: Props = $props();
 
 	// TODO ideally there would be one `Deployments_Tree` mounted by the layout with transitions
 </script>
@@ -22,9 +26,11 @@
 	</div>
 	<section class="tree">
 		<Deployments_Tree {deployments}>
-			<div slot="nav" class="deployments_tree_nav">
-				<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
-			</div>
+			{#snippet nav()}
+				<div class="deployments_tree_nav">
+					<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
+				</div>
+			{/snippet}
 		</Deployments_Tree>
 	</section>
 	<section class="box mb_xl7">

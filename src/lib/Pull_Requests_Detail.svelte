@@ -5,12 +5,15 @@
 	import {to_pull_requests, type Filter_Pull_Request} from '$lib/github_helpers.js';
 	import type {Fetched_Deployment, Unfetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployments: Fetched_Deployment[];
-	export let unfetched_deployments: Unfetched_Deployment[];
+	interface Props {
+		deployments: Fetched_Deployment[];
+		unfetched_deployments: Unfetched_Deployment[];
+		filter_pull_request?: Filter_Pull_Request | undefined;
+	}
 
-	export let filter_pull_request: Filter_Pull_Request | undefined = undefined;
+	const {deployments, unfetched_deployments, filter_pull_request}: Props = $props();
 
-	$: pull_requests = to_pull_requests(deployments, filter_pull_request);
+	const pull_requests = $derived(to_pull_requests(deployments, filter_pull_request));
 </script>
 
 <div class="width_md">

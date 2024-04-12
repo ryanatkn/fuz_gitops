@@ -4,8 +4,12 @@
 	import Deployments_Table from '$lib/Deployments_Table.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployment: Fetched_Deployment;
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployment: Fetched_Deployment;
+		deployments: Fetched_Deployment[];
+	}
+
+	const {deployment, deployments}: Props = $props();
 </script>
 
 <svelte:head>

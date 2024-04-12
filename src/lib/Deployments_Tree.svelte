@@ -3,21 +3,26 @@
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
 	import {base} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
+	import type {Snippet} from 'svelte';
 
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 	import Deployments_Tree_Nav from '$lib/Deployments_Tree_Nav.svelte';
 
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployments: Fetched_Deployment[];
+		/**
+		 * The selected package, if any.
+		 */
+		selected_deployment?: Fetched_Deployment | undefined;
+		nav: Snippet;
+	}
 
-	/**
-	 * The selected package, if any.
-	 */
-	export let selected_deployment: Fetched_Deployment | undefined = undefined;
+	const {deployments, selected_deployment, nav}: Props = $props();
 </script>
 
 <div class="deployments_tree">
 	<Deployments_Tree_Nav {deployments} {selected_deployment}>
-		<slot name="nav" />
+		{@render nav()}
 	</Deployments_Tree_Nav>
 	{#if selected_deployment}
 		<section class="detail_wrapper">

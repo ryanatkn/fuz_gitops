@@ -5,11 +5,14 @@
 	import type {Filter_Pull_Request} from '$lib/github_helpers.js';
 	import type {Fetched_Deployment, Unfetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployment: Fetched_Deployment;
-	export let deployments: Fetched_Deployment[];
-	export let unfetched_deployments: Unfetched_Deployment[];
+	interface Props {
+		deployment: Fetched_Deployment;
+		deployments: Fetched_Deployment[];
+		unfetched_deployments: Unfetched_Deployment[];
+		filter_pull_request?: Filter_Pull_Request | undefined;
+	}
 
-	export let filter_pull_request: Filter_Pull_Request | undefined = undefined;
+	const {deployment, deployments, unfetched_deployments, filter_pull_request}: Props = $props();
 </script>
 
 <svelte:head>

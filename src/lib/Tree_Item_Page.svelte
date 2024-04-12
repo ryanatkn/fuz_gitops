@@ -7,14 +7,17 @@
 	import Deployments_Tree from '$lib/Deployments_Tree.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployment: Fetched_Deployment;
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployment: Fetched_Deployment;
+		deployments: Fetched_Deployment[];
+		slug: string;
+	}
 
-	export let slug: string;
+	const {deployment, deployments, slug}: Props = $props();
 
 	// TODO ideally there would be one `Deployments_Tree` mounted by the layout with transitions
 
-	$: route_deployment = deployments.find((p) => p.repo_name === slug);
+	const route_deployment = $derived(deployments.find((p) => p.repo_name === slug));
 </script>
 
 <svelte:head>
@@ -32,9 +35,11 @@
 			</div>
 		{/if}
 		<Deployments_Tree {deployments} selected_deployment={route_deployment}>
-			<div slot="nav" class="deployments_tree_nav">
-				<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
-			</div>
+			{#snippet nav()}
+				<div class="deployments_tree_nav">
+					<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
+				</div>
+			{/snippet}
 		</Deployments_Tree>
 	</section>
 	<section class="box mb_xl7">

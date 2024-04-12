@@ -2,37 +2,44 @@
 	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {base} from '$app/paths';
+	import type {Snippet} from 'svelte';
 
 	import Modules_Nav from '$lib/Modules_Nav.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployments: Fetched_Deployment[]; // TODO normalized version with cached primitives?
+	interface Props {
+		deployments: Fetched_Deployment[]; // TODO normalized version with cached primitives?
+		nav_footer?: Snippet;
+	}
+
+	const {deployments, nav_footer}: Props = $props();
 
 	// TODO add sorting options
 
 	// TODO show other data (bytes and lines of code per module?)
 
 	// TODO hacky, needs helpers or rethinking
-	let deployments_modules: Array<{
+	const deployments_modules: Array<{
 		deployment: Fetched_Deployment;
 		modules: Src_Module[];
-	}>;
-	$: deployments_modules = deployments.reduce(
-		(v, deployment) => {
-			const {package_json, src_json} = deployment;
-			if (
-				!src_json?.modules ||
-				!(
-					!!package_json.devDependencies?.['@sveltejs/package'] ||
-					!!package_json.dependencies?.['@sveltejs/package']
-				)
-			) {
+	}> = $derived(
+		deployments.reduce(
+			(v, deployment) => {
+				const {package_json, src_json} = deployment;
+				if (
+					!src_json?.modules ||
+					!(
+						!!package_json.devDependencies?.['@sveltejs/package'] ||
+						!!package_json.dependencies?.['@sveltejs/package']
+					)
+				) {
+					return v;
+				}
+				v.push({deployment, modules: Object.values(src_json.modules)});
 				return v;
-			}
-			v.push({deployment, modules: Object.values(src_json.modules)});
-			return v;
-		},
-		[] as Array<{deployment: Fetched_Deployment; modules: Src_Module[]}>,
+			},
+			[] as Array<{deployment: Fetched_Deployment; modules: Src_Module[]}>,
+		),
 	);
 
 	// TODO add favicon (from library? gro?)
@@ -43,7 +50,7 @@
 		<section>
 			<Modules_Nav {deployments_modules} />
 		</section>
-		<slot name="nav" />
+		{#if nav_footer}{@render nav_footer()}{/if}
 	</div>
 	<ul class="width_md box unstyled">
 		{#each deployments_modules as deployment_modules (deployment_modules)}

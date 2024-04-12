@@ -6,8 +6,12 @@
 	import Modules_Detail from '$lib/Modules_Detail.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployment: Fetched_Deployment;
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployment: Fetched_Deployment;
+		deployments: Fetched_Deployment[];
+	}
+
+	const {deployment, deployments}: Props = $props();
 </script>
 
 <svelte:head>
@@ -20,9 +24,11 @@
 	</div>
 	<section>
 		<Modules_Detail {deployments}>
-			<div slot="nav" class="row">
-				<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
-			</div>
+			{#snippet nav_footer()}
+				<nav class="row">
+					<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
+				</nav>
+			{/snippet}
 		</Modules_Detail>
 	</section>
 	<section class="box mb_xl7">
