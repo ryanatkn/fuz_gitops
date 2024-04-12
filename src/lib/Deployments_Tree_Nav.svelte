@@ -1,14 +1,19 @@
 <script lang="ts">
 	import {base} from '$app/paths';
+	import type {Snippet} from 'svelte';
 
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployments: Fetched_Deployment[];
+		/**
+		 * The selected package, if any.
+		 */
+		selected_deployment?: Fetched_Deployment;
+		children: Snippet;
+	}
 
-	/**
-	 * The selected package, if any.
-	 */
-	export let selected_deployment: Fetched_Deployment | undefined = undefined;
+	const {deployments, selected_deployment, children}: Props = $props();
 </script>
 
 <nav>
@@ -28,7 +33,7 @@
 			</li>
 		{/each}
 	</menu>
-	<slot />
+	{@render children()}
 </nav>
 
 <style>
