@@ -1,5 +1,16 @@
 # @ryanatkn/fuz_gitops
 
+## 0.25.0
+
+### Minor Changes
+
+- upgrade to svelte 5 ([#21](https://github.com/ryanatkn/fuz_gitops/pull/21))
+- rename `Modules_Nav` from `Modules_Menu` ([#21](https://github.com/ryanatkn/fuz_gitops/pull/21))
+
+### Patch Changes
+
+- add `Page_Header` and `Page_Footer` ([#21](https://github.com/ryanatkn/fuz_gitops/pull/21))
+
 ## 0.24.0
 
 ### Minor Changes
