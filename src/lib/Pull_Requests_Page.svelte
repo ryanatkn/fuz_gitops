@@ -24,7 +24,7 @@
 	<section>
 		<Pull_Requests_Detail {deployments} {unfetched_deployments} {filter_pull_request} />
 	</section>
-	<section class="box">
+	<section class="box mb_xl7">
 		<Library_Footer pkg={deployment} />
 	</section>
 </main>

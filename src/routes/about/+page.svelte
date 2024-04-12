@@ -20,9 +20,9 @@
 			<Package_Detail pkg={deployment} />
 		</div>
 	</section>
-	<div class="box">
+	<section class="box mb_xl7">
 		<Library_Footer pkg={deployment} />
-	</div>
+	</section>
 </main>
 
 <style>

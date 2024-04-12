@@ -22,7 +22,7 @@
 			<Deployments_Table {deployments} />
 		</div>
 	</section>
-	<section class="box">
+	<section class="box mb_xl7">
 		<Library_Footer pkg={deployment} />
 	</section>
 </main>
