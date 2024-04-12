@@ -31,9 +31,9 @@
 				<li class="panel p_md box">
 					{#if deployment.package_json}
 						<Package_Summary pkg={deployment}>
-							<svelte:fragment slot="repo_name" let:repo_name>
+							{#snippet repo_name(repo_name)}
 								<a href="{base}/tree/{repo_name}" class="repo_name">{repo_name}</a>
-							</svelte:fragment>
+							{/snippet}
 						</Package_Summary>
 					{:else}
 						<div class="width_sm">
