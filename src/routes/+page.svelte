@@ -33,11 +33,10 @@
 			</li>
 		</menu>
 	</section>
-	<section class="box">
-		<a class="chip" href="{base}/about">about</a>
-	</section>
 	<section>
-		<Library_Footer pkg={deployment} root_url="https://www.fuz.dev/" />
+		<Library_Footer pkg={deployment} root_url="https://www.fuz.dev/">
+			{#snippet logo_header()}<a href="{base}/about" class="mb_xs">about</a>{/snippet}
+		</Library_Footer>
 	</section>
 </main>
 

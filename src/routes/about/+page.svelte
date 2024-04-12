@@ -12,11 +12,9 @@
 </svelte:head>
 
 <main class="width_md">
-	<section>
-		<header>
-			<h1>{deployment.repo_name}</h1>
-		</header>
-	</section>
+	<header>
+		<h1 class="mt_xl4">About</h1>
+	</header>
 	<section class="box w_100 mb_lg">
 		<div class="panel p_md width_md">
 			<Package_Detail pkg={deployment} />
