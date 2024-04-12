@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Footer from '$lib/Page_Footer.svelte';
+	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Pull_Requests_Detail from '$lib/Pull_Requests_Detail.svelte';
 	import type {Filter_Pull_Request} from '$lib/github_helpers.js';
@@ -24,7 +24,7 @@
 		<Pull_Requests_Detail {deployments} {unfetched_deployments} {filter_pull_request} />
 	</section>
 	<section class="box mb_xl7">
-		<Footer />
+		<Page_Footer />
 	</section>
 </main>
 

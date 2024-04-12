@@ -21,7 +21,7 @@
 	</Deployments_Tree_Nav>
 	{#if selected_deployment}
 		<section class="detail_wrapper">
-			<div class="panel detail">
+			<div class="panel detail p_md">
 				<Package_Detail pkg={selected_deployment} />
 			</div>
 		</section>

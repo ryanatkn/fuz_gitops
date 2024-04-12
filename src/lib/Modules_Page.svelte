@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import Footer from '$lib/Page_Footer.svelte';
+	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Modules_Detail from '$lib/Modules_Detail.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
@@ -26,7 +26,7 @@
 		</Modules_Detail>
 	</section>
 	<section class="box mb_xl7">
-		<Footer />
+		<Page_Footer />
 	</section>
 </main>
 

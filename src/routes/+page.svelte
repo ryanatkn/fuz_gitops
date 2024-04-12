@@ -20,6 +20,9 @@
 	<section>
 		<menu class="unstyled">
 			<li>
+				<Card href="{base}/tree" icon="">tree</Card>
+			</li>
+			<li>
 				<Card href="{base}/table" icon="">table</Card>
 			</li>
 			<li>
@@ -27,9 +30,6 @@
 			</li>
 			<li>
 				<Card href="{base}/pull_requests" icon="">pull requests</Card>
-			</li>
-			<li>
-				<Card href="{base}/tree" icon="">tree</Card>
 			</li>
 		</menu>
 	</section>

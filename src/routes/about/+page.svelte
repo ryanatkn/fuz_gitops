@@ -2,7 +2,8 @@
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
 
 	import {get_deployments} from '$lib/deployments.js';
-	import Footer from '$lib/Page_Footer.svelte';
+	import Page_Footer from '$lib/Page_Footer.svelte';
+	import Page_Header from '$lib/Page_Header.svelte';
 
 	const {deployment} = get_deployments();
 </script>
@@ -12,15 +13,15 @@
 </svelte:head>
 
 <main class="width_md">
-	<header>
-		<h1 class="mt_xl4">About</h1>
-	</header>
+	<Page_Header pkg={deployment}>
+		<h1>About fuz_gitops</h1>
+	</Page_Header>
 	<section class="box w_100 mb_lg">
 		<div class="panel p_md width_md">
 			<Package_Detail pkg={deployment} />
 		</div>
 	</section>
-	<Footer />
+	<Page_Footer />
 </main>
 
 <style>

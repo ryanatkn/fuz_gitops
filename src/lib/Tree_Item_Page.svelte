@@ -2,7 +2,7 @@
 	import Alert from '@ryanatkn/fuz/Alert.svelte';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import Footer from '$lib/Page_Footer.svelte';
+	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Deployments_Tree from '$lib/Deployments_Tree.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
@@ -38,7 +38,7 @@
 		</Deployments_Tree>
 	</section>
 	<section class="box mb_xl7">
-		<Footer />
+		<Page_Footer />
 	</section>
 </main>
 
