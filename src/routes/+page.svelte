@@ -33,7 +33,7 @@
 			</li>
 		</menu>
 	</section>
-	<section>
+	<section class="mb_xl7">
 		<Library_Footer pkg={deployment} root_url="https://www.fuz.dev/">
 			{#snippet logo_header()}<a href="{base}/about" class="mb_xs">about</a>{/snippet}
 		</Library_Footer>
