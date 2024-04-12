@@ -1,6 +1,5 @@
 <script lang="ts">
-	import Library_Footer from '@ryanatkn/fuz/Library_Footer.svelte';
-
+	import Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Deployments_Table from '$lib/Deployments_Table.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
@@ -23,7 +22,7 @@
 		</div>
 	</section>
 	<section class="box mb_xl7">
-		<Library_Footer pkg={deployment} />
+		<Footer />
 	</section>
 </main>
 

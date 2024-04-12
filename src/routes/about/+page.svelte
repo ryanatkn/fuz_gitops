@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
-	import Library_Footer from '@ryanatkn/fuz/Library_Footer.svelte';
 
 	import {get_deployments} from '$lib/deployments.js';
+	import Footer from '$lib/Page_Footer.svelte';
 
 	const {deployment} = get_deployments();
 </script>
@@ -20,9 +20,7 @@
 			<Package_Detail pkg={deployment} />
 		</div>
 	</section>
-	<section class="box mb_xl7">
-		<Library_Footer pkg={deployment} />
-	</section>
+	<Footer />
 </main>
 
 <style>
