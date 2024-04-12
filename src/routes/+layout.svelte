@@ -14,7 +14,7 @@
 	import {parse_deployments, set_deployments} from '$lib/deployments.js';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	const {children}: Props = $props();
