@@ -1,5 +1,5 @@
 ---
-"@ryanatkn/fuz_gitops": minor
+'@ryanatkn/fuz_gitops': patch
 ---
 
-remove `Page_Footer`, use `Library_Footer` from fuz instead
+add `Page_Header` and `Page_Footer`
