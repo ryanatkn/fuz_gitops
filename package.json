@@ -140,6 +140,11 @@
       "default": "./dist/Modules_Page.svelte",
       "types": "./dist/Modules_Page.svelte.d.ts"
     },
+    "./Page_Footer.svelte": {
+      "svelte": "./dist/Page_Footer.svelte",
+      "default": "./dist/Page_Footer.svelte",
+      "types": "./dist/Page_Footer.svelte.d.ts"
+    },
     "./Page_Header.svelte": {
       "svelte": "./dist/Page_Header.svelte",
       "default": "./dist/Page_Header.svelte",

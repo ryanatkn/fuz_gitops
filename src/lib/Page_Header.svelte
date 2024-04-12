@@ -7,8 +7,6 @@
 	}
 
 	const {pkg}: Props = $props();
-
-	// TODO upstream to fuz?
 </script>
 
 <div>
