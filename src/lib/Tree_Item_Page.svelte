@@ -1,20 +1,23 @@
 <script lang="ts">
 	import Alert from '@ryanatkn/fuz/Alert.svelte';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
-	import Page_Header from '@ryanatkn/fuz/Page_Header.svelte';
-	import Page_Footer from '@ryanatkn/fuz/Page_Footer.svelte';
 
+	import Page_Footer from '$lib/Page_Footer.svelte';
+	import Page_Header from '$lib/Page_Header.svelte';
 	import Deployments_Tree from '$lib/Deployments_Tree.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployment: Fetched_Deployment;
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployment: Fetched_Deployment;
+		deployments: Fetched_Deployment[];
+		slug: string;
+	}
 
-	export let slug: string;
+	const {deployment, deployments, slug}: Props = $props();
 
 	// TODO ideally there would be one `Deployments_Tree` mounted by the layout with transitions
 
-	$: route_deployment = deployments.find((p) => p.repo_name === slug);
+	const route_deployment = $derived(deployments.find((p) => p.repo_name === slug));
 </script>
 
 <svelte:head>
@@ -22,9 +25,9 @@
 </svelte:head>
 
 <main class="box w_100">
-	<section>
+	<div class="p_lg">
 		<Page_Header pkg={deployment} />
-	</section>
+	</div>
 	<section class="tree">
 		{#if !route_deployment}
 			<div class="mb_lg">
@@ -32,13 +35,15 @@
 			</div>
 		{/if}
 		<Deployments_Tree {deployments} selected_deployment={route_deployment}>
-			<div slot="nav" class="deployments_tree_nav">
-				<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
-			</div>
+			{#snippet nav()}
+				<div class="deployments_tree_nav">
+					<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
+				</div>
+			{/snippet}
 		</Deployments_Tree>
 	</section>
-	<section class="box">
-		<Page_Footer pkg={deployment} />
+	<section class="box mb_xl7">
+		<Page_Footer />
 	</section>
 </main>
 

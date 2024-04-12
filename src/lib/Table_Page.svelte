@@ -1,12 +1,15 @@
 <script lang="ts">
-	import Page_Header from '@ryanatkn/fuz/Page_Header.svelte';
-	import Page_Footer from '@ryanatkn/fuz/Page_Footer.svelte';
-
+	import Page_Footer from '$lib/Page_Footer.svelte';
+	import Page_Header from '$lib/Page_Header.svelte';
 	import Deployments_Table from '$lib/Deployments_Table.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployment: Fetched_Deployment;
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployment: Fetched_Deployment;
+		deployments: Fetched_Deployment[];
+	}
+
+	const {deployment, deployments}: Props = $props();
 </script>
 
 <svelte:head>
@@ -14,16 +17,16 @@
 </svelte:head>
 
 <main class="box">
-	<section>
+	<div class="p_lg">
 		<Page_Header pkg={deployment} />
-	</section>
+	</div>
 	<section>
 		<div class="panel p_md">
 			<Deployments_Table {deployments} />
 		</div>
 	</section>
-	<section class="box">
-		<Page_Footer pkg={deployment} />
+	<section class="box mb_xl7">
+		<Page_Footer />
 	</section>
 </main>
 

@@ -14,42 +14,30 @@
 </svelte:head>
 
 <main class="box">
-	<section>
+	<section class="pt_xl">
 		<Main_Header />
 	</section>
 	<section>
-		<menu>
+		<menu class="unstyled">
 			<li>
-				<Card href="{base}/table">
-					table
-					<svelte:fragment slot="icon">{''}</svelte:fragment>
-				</Card>
+				<Card href="{base}/tree" icon="">tree</Card>
 			</li>
 			<li>
-				<Card href="{base}/modules">
-					modules
-					<svelte:fragment slot="icon">{''}</svelte:fragment>
-				</Card>
+				<Card href="{base}/table" icon="">table</Card>
 			</li>
 			<li>
-				<Card href="{base}/pull_requests">
-					pull requests
-					<svelte:fragment slot="icon">{''}</svelte:fragment>
-				</Card>
+				<Card href="{base}/modules" icon="">modules</Card>
 			</li>
 			<li>
-				<Card href="{base}/tree">
-					tree
-					<svelte:fragment slot="icon">{''}</svelte:fragment>
-				</Card>
+				<Card href="{base}/pull_requests" icon="">pull requests</Card>
 			</li>
 		</menu>
 	</section>
-	<section class="box">
-		<a class="chip" href="{base}/about">about</a>
-	</section>
-	<section>
-		<Library_Footer pkg={deployment} root_url="https://www.fuz.dev/" />
+	<section class="mb_xl7">
+		<Library_Footer pkg={deployment}>
+			{#snippet logo_header()}<a href="{base}/about" class="mb_xs">about</a>{/snippet}
+			{#snippet logo_footer()}<a href="https://www.fuz.dev/" class="mt_xs">fuz.dev</a>{/snippet}
+		</Library_Footer>
 	</section>
 </main>
 
@@ -59,12 +47,6 @@
 		flex-direction: column;
 		align-items: center;
 		margin: 0 auto;
-	}
-	section {
-		margin-bottom: var(--space_xl4);
-	}
-	section:first-child {
-		margin-top: var(--space_xl4);
 	}
 	menu {
 		gap: var(--space_lg);

@@ -4,13 +4,11 @@ import adapter from '@sveltejs/adapter-static';
 /** @type {import('@sveltejs/kit').Config} */
 export default {
 	preprocess: [vitePreprocess()],
-	compilerOptions: {immutable: true},
-	vitePlugin: {inspector: true}, // docs: https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/inspector.md
+	// TODO ideally this would use the default but it conflicts with ctrl+shift+c in Chrome,
+	// but it's strange to me that I'm resetting it to what the Mac default is
+	vitePlugin: {inspector: {toggleKeyCombo: 'meta-shift'}}, // docs: https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/inspector.md
 	kit: {
 		adapter: adapter(),
 		alias: {$routes: 'src/routes', $fixtures: 'src/fixtures'},
-		// This `paths` config is for non-root domains like the default GitHub Pages
-		// `username.github.io/repo` where `repo` is `base` - delete this comment for top-level domains.
-		// paths: import.meta.env.DEV ? undefined : {base: '/template'},
 	},
 };

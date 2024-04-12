@@ -36,24 +36,24 @@
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.0",
     "@ryanatkn/belt": "^0.20.10",
-    "@ryanatkn/eslint-config": "^0.1.0",
-    "@ryanatkn/fuz": "^0.91.5",
-    "@ryanatkn/gro": "^0.112.5",
+    "@ryanatkn/eslint-config": "^0.1.1",
+    "@ryanatkn/fuz": "^0.93.3",
+    "@ryanatkn/gro": "^0.115.0",
     "@sveltejs/adapter-static": "^3.0.1",
-    "@sveltejs/kit": "^2.5.4",
-    "@sveltejs/package": "^2.3.0",
-    "@sveltejs/vite-plugin-svelte": "^3.0.2",
-    "@types/node": "^20.11.30",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
-    "@typescript-eslint/parser": "^7.4.0",
+    "@sveltejs/kit": "^2.5.5",
+    "@sveltejs/package": "^2.3.1",
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
     "eslint": "^8.57.0",
-    "eslint-plugin-svelte": "^2.35.1",
+    "eslint-plugin-svelte": "^2.37.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-svelte": "^3.2.2",
-    "svelte": "^4.2.12",
-    "svelte-check": "^3.6.8",
+    "prettier-plugin-svelte": "^3.2.3",
+    "svelte": "^5.0.0-next.102",
+    "svelte-check": "^3.6.9",
     "tslib": "^2.6.2",
-    "typescript": "^5.4.3",
+    "typescript": "^5.4.5",
     "uvu": "^0.5.6"
   },
   "eslintConfig": {
@@ -81,6 +81,7 @@
     ]
   },
   "exports": {
+    "./package.json": "./package.json",
     "./Deployments_Table.svelte": {
       "svelte": "./dist/Deployments_Table.svelte",
       "default": "./dist/Deployments_Table.svelte",
@@ -129,15 +130,25 @@
       "default": "./dist/Modules_Detail.svelte",
       "types": "./dist/Modules_Detail.svelte.d.ts"
     },
-    "./Modules_Menu.svelte": {
-      "svelte": "./dist/Modules_Menu.svelte",
-      "default": "./dist/Modules_Menu.svelte",
-      "types": "./dist/Modules_Menu.svelte.d.ts"
+    "./Modules_Nav.svelte": {
+      "svelte": "./dist/Modules_Nav.svelte",
+      "default": "./dist/Modules_Nav.svelte",
+      "types": "./dist/Modules_Nav.svelte.d.ts"
     },
     "./Modules_Page.svelte": {
       "svelte": "./dist/Modules_Page.svelte",
       "default": "./dist/Modules_Page.svelte",
       "types": "./dist/Modules_Page.svelte.d.ts"
+    },
+    "./Page_Footer.svelte": {
+      "svelte": "./dist/Page_Footer.svelte",
+      "default": "./dist/Page_Footer.svelte",
+      "types": "./dist/Page_Footer.svelte.d.ts"
+    },
+    "./Page_Header.svelte": {
+      "svelte": "./dist/Page_Header.svelte",
+      "default": "./dist/Page_Header.svelte",
+      "types": "./dist/Page_Header.svelte.d.ts"
     },
     "./Pull_Requests_Detail.svelte": {
       "svelte": "./dist/Pull_Requests_Detail.svelte",

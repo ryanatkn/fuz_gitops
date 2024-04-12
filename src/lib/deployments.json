@@ -3,7 +3,7 @@
 		"url": "https://www.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz",
-			"version": "0.91.5",
+			"version": "0.93.3",
 			"description": "Svelte UI library and CSS design system",
 			"icon": "🧶",
 			"public": true,
@@ -15,7 +15,8 @@
 				"url": "https://www.ryanatkn.com/"
 			},
 			"repository": {"type": "git", "url": "git+https://github.com/ryanatkn/fuz.git"},
-			"bugs": {"url": "https://github.com/ryanatkn/fuz/issues", "email": "mail@ryanatkn.com"},
+			"bugs": "https://github.com/ryanatkn/fuz/issues",
+			"funding": "https://www.ryanatkn.com/funding",
 			"type": "module",
 			"engines": {"node": ">=20.10"},
 			"scripts": {
@@ -29,28 +30,28 @@
 			"peerDependencies": {"@ryanatkn/belt": "*", "@sveltejs/kit": "*", "svelte": "*"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@ryanatkn/belt": "^0.20.5",
-				"@ryanatkn/eslint-config": "^0.1.0",
+				"@ryanatkn/belt": "^0.20.10",
+				"@ryanatkn/eslint-config": "^0.1.1",
 				"@ryanatkn/fuz_code": "^0.11.0",
-				"@ryanatkn/gro": "^0.112.4",
+				"@ryanatkn/gro": "^0.115.0",
 				"@sveltejs/adapter-static": "^3.0.1",
-				"@sveltejs/kit": "^2.5.2",
-				"@sveltejs/package": "^2.2.7",
+				"@sveltejs/kit": "^2.5.5",
+				"@sveltejs/package": "^2.3.1",
 				"@sveltejs/vite-plugin-svelte": "^3.0.2",
-				"@types/node": "^20.11.24",
+				"@types/node": "^20.12.5",
 				"@types/prismjs": "^1.26.3",
-				"@typescript-eslint/eslint-plugin": "^7.1.0",
-				"@typescript-eslint/parser": "^7.1.0",
+				"@typescript-eslint/eslint-plugin": "^7.6.0",
+				"@typescript-eslint/parser": "^7.6.0",
 				"eslint": "^8.57.0",
-				"eslint-plugin-svelte": "^2.35.1",
+				"eslint-plugin-svelte": "^2.36.0-next.13",
 				"prettier": "^3.2.5",
 				"prettier-plugin-svelte": "^3.2.2",
 				"prism-svelte": "^0.5.0",
 				"prismjs": "^1.29.0",
-				"svelte": "^4.2.12",
-				"svelte-check": "^3.6.6",
+				"svelte": "^5.0.0-next.101",
+				"svelte-check": "^3.6.9",
 				"tslib": "^2.6.2",
-				"typescript": "^5.3.3",
+				"typescript": "^5.4.4",
 				"uvu": "^0.5.6"
 			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn", "rules": {"no-console": 1}},
@@ -63,13 +64,13 @@
 				"overrides": [{"files": "package.json", "options": {"useTabs": false}}]
 			},
 			"exports": {
+				"./package.json": "./package.json",
 				"./Alert.svelte": {
 					"svelte": "./dist/Alert.svelte",
 					"default": "./dist/Alert.svelte",
 					"types": "./dist/Alert.svelte.d.ts"
 				},
 				"./alert.js": {"default": "./dist/alert.js", "types": "./dist/alert.d.ts"},
-				"./animations.css": {"default": "./dist/animations.css"},
 				"./Breadcrumb.svelte": {
 					"svelte": "./dist/Breadcrumb.svelte",
 					"default": "./dist/Breadcrumb.svelte",
@@ -96,6 +97,11 @@
 					"default": "./dist/Contextmenu_Link_Entry.svelte",
 					"types": "./dist/Contextmenu_Link_Entry.svelte.d.ts"
 				},
+				"./Contextmenu_Root.svelte": {
+					"svelte": "./dist/Contextmenu_Root.svelte",
+					"default": "./dist/Contextmenu_Root.svelte",
+					"types": "./dist/Contextmenu_Root.svelte.d.ts"
+				},
 				"./Contextmenu_Submenu.svelte": {
 					"svelte": "./dist/Contextmenu_Submenu.svelte",
 					"default": "./dist/Contextmenu_Submenu.svelte",
@@ -111,9 +117,9 @@
 					"default": "./dist/Contextmenu.svelte",
 					"types": "./dist/Contextmenu.svelte.d.ts"
 				},
-				"./contextmenu.js": {
-					"default": "./dist/contextmenu.js",
-					"types": "./dist/contextmenu.d.ts"
+				"./contextmenu.svelte.js": {
+					"default": "./dist/contextmenu.svelte.js",
+					"types": "./dist/contextmenu.svelte.d.ts"
 				},
 				"./Copy_To_Clipboard.svelte": {
 					"svelte": "./dist/Copy_To_Clipboard.svelte",
@@ -125,12 +131,6 @@
 					"default": "./dist/Details.svelte",
 					"types": "./dist/Details.svelte.d.ts"
 				},
-				"./Devmode_Controls.svelte": {
-					"svelte": "./dist/Devmode_Controls.svelte",
-					"default": "./dist/Devmode_Controls.svelte",
-					"types": "./dist/Devmode_Controls.svelte.d.ts"
-				},
-				"./devmode.js": {"default": "./dist/devmode.js", "types": "./dist/devmode.d.ts"},
 				"./Dialog.svelte": {
 					"svelte": "./dist/Dialog.svelte",
 					"default": "./dist/Dialog.svelte",
@@ -142,46 +142,73 @@
 					"default": "./dist/Dialogs.svelte",
 					"types": "./dist/Dialogs.svelte.d.ts"
 				},
+				"./dimensions.svelte.js": {
+					"default": "./dist/dimensions.svelte.js",
+					"types": "./dist/dimensions.svelte.d.ts"
+				},
+				"./Fuz_Logo.svelte": {
+					"svelte": "./dist/Fuz_Logo.svelte",
+					"default": "./dist/Fuz_Logo.svelte",
+					"types": "./dist/Fuz_Logo.svelte.d.ts"
+				},
 				"./Github_Logo.svelte": {
 					"svelte": "./dist/Github_Logo.svelte",
 					"default": "./dist/Github_Logo.svelte",
 					"types": "./dist/Github_Logo.svelte.d.ts"
 				},
-				"./helpers.js": {"default": "./dist/helpers.js", "types": "./dist/helpers.d.ts"},
+				"./Hashlink.svelte": {
+					"svelte": "./dist/Hashlink.svelte",
+					"default": "./dist/Hashlink.svelte",
+					"types": "./dist/Hashlink.svelte.d.ts"
+				},
 				"./Hue_Input.svelte": {
 					"svelte": "./dist/Hue_Input.svelte",
 					"default": "./dist/Hue_Input.svelte",
 					"types": "./dist/Hue_Input.svelte.d.ts"
+				},
+				"./Library_Content.svelte": {
+					"svelte": "./dist/Library_Content.svelte",
+					"default": "./dist/Library_Content.svelte",
+					"types": "./dist/Library_Content.svelte.d.ts"
 				},
 				"./Library_Footer.svelte": {
 					"svelte": "./dist/Library_Footer.svelte",
 					"default": "./dist/Library_Footer.svelte",
 					"types": "./dist/Library_Footer.svelte.d.ts"
 				},
-				"./Library_Header.svelte": {
-					"svelte": "./dist/Library_Header.svelte",
-					"default": "./dist/Library_Header.svelte",
-					"types": "./dist/Library_Header.svelte.d.ts"
-				},
 				"./Library_Menu.svelte": {
 					"svelte": "./dist/Library_Menu.svelte",
 					"default": "./dist/Library_Menu.svelte",
 					"types": "./dist/Library_Menu.svelte.d.ts"
 				},
-				"./Library_Nav.svelte": {
-					"svelte": "./dist/Library_Nav.svelte",
-					"default": "./dist/Library_Nav.svelte",
-					"types": "./dist/Library_Nav.svelte.d.ts"
+				"./Library_Page_Links.svelte": {
+					"svelte": "./dist/Library_Page_Links.svelte",
+					"default": "./dist/Library_Page_Links.svelte",
+					"types": "./dist/Library_Page_Links.svelte.d.ts"
 				},
-				"./Library_Panel.svelte": {
-					"svelte": "./dist/Library_Panel.svelte",
-					"default": "./dist/Library_Panel.svelte",
-					"types": "./dist/Library_Panel.svelte.d.ts"
+				"./Library_Primary_Nav.svelte": {
+					"svelte": "./dist/Library_Primary_Nav.svelte",
+					"default": "./dist/Library_Primary_Nav.svelte",
+					"types": "./dist/Library_Primary_Nav.svelte.d.ts"
+				},
+				"./Library_Secondary_Nav.svelte": {
+					"svelte": "./dist/Library_Secondary_Nav.svelte",
+					"default": "./dist/Library_Secondary_Nav.svelte",
+					"types": "./dist/Library_Secondary_Nav.svelte.d.ts"
+				},
+				"./Library_Tertiary_Nav.svelte": {
+					"svelte": "./dist/Library_Tertiary_Nav.svelte",
+					"default": "./dist/Library_Tertiary_Nav.svelte",
+					"types": "./dist/Library_Tertiary_Nav.svelte.d.ts"
 				},
 				"./Library.svelte": {
 					"svelte": "./dist/Library.svelte",
 					"default": "./dist/Library.svelte",
 					"types": "./dist/Library.svelte.d.ts"
+				},
+				"./library.svelte.js": {
+					"default": "./dist/library.svelte.js",
+					"types": "./dist/library.svelte.d.ts"
 				},
 				"./Mdn_Link.svelte": {
 					"svelte": "./dist/Mdn_Link.svelte",
@@ -203,16 +230,6 @@
 					"default": "./dist/Package_Summary.svelte",
 					"types": "./dist/Package_Summary.svelte.d.ts"
 				},
-				"./Page_Footer.svelte": {
-					"svelte": "./dist/Page_Footer.svelte",
-					"default": "./dist/Page_Footer.svelte",
-					"types": "./dist/Page_Footer.svelte.d.ts"
-				},
-				"./Page_Header.svelte": {
-					"svelte": "./dist/Page_Header.svelte",
-					"default": "./dist/Page_Header.svelte",
-					"types": "./dist/Page_Header.svelte.d.ts"
-				},
 				"./Pending_Animation.svelte": {
 					"svelte": "./dist/Pending_Animation.svelte",
 					"default": "./dist/Pending_Animation.svelte",
@@ -228,9 +245,15 @@
 					"default": "./dist/Redirect.svelte",
 					"types": "./dist/Redirect.svelte.d.ts"
 				},
-				"./semantic_classes.css": {"default": "./dist/semantic_classes.css"},
+				"./style_animations.css": {"default": "./dist/style_animations.css"},
+				"./style_components.css": {"default": "./dist/style_components.css"},
+				"./style_reset.css": {"default": "./dist/style_reset.css"},
+				"./style_utilities.css": {"default": "./dist/style_utilities.css"},
 				"./style.css": {"default": "./dist/style.css"},
-				"./swallow.js": {"default": "./dist/swallow.js", "types": "./dist/swallow.d.ts"},
+				"./style.gen.css.js": {
+					"default": "./dist/style.gen.css.js",
+					"types": "./dist/style.gen.css.d.ts"
+				},
 				"./Teleport.svelte": {
 					"svelte": "./dist/Teleport.svelte",
 					"default": "./dist/Teleport.svelte",
@@ -268,14 +291,17 @@
 					"default": "./dist/Tome_Link.svelte",
 					"types": "./dist/Tome_Link.svelte.d.ts"
 				},
+				"./Tome_Subheading.svelte": {
+					"svelte": "./dist/Tome_Subheading.svelte",
+					"default": "./dist/Tome_Subheading.svelte",
+					"types": "./dist/Tome_Subheading.svelte.d.ts"
+				},
 				"./Tome_Title.svelte": {
 					"svelte": "./dist/Tome_Title.svelte",
 					"default": "./dist/Tome_Title.svelte",
 					"types": "./dist/Tome_Title.svelte.d.ts"
 				},
 				"./tome.js": {"default": "./dist/tome.js", "types": "./dist/tome.d.ts"},
-				"./utility_classes.css": {"default": "./dist/utility_classes.css"},
-				"./variable_classes.css": {"default": "./dist/variable_classes.css"},
 				"./variable_data.js": {
 					"default": "./dist/variable_data.js",
 					"types": "./dist/variable_data.d.ts"
@@ -285,8 +311,9 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz",
-			"version": "0.91.5",
+			"version": "0.93.3",
 			"modules": {
+				"./package.json": {"path": "package.json", "declarations": []},
 				"./Alert.svelte": {"path": "Alert.svelte", "declarations": []},
 				"./alert.js": {
 					"path": "alert.ts",
@@ -296,7 +323,6 @@
 						{"name": "alert_status_options", "kind": "variable"}
 					]
 				},
-				"./animations.css": {"path": "animations.css", "declarations": []},
 				"./Breadcrumb.svelte": {"path": "Breadcrumb.svelte", "declarations": []},
 				"./Card.svelte": {"path": "Card.svelte", "declarations": []},
 				"./Color_Scheme_Input.svelte": {"path": "Color_Scheme_Input.svelte", "declarations": []},
@@ -312,27 +338,25 @@
 					"path": "Contextmenu_Link_Entry.svelte",
 					"declarations": []
 				},
+				"./Contextmenu_Root.svelte": {"path": "Contextmenu_Root.svelte", "declarations": []},
 				"./Contextmenu_Submenu.svelte": {"path": "Contextmenu_Submenu.svelte", "declarations": []},
 				"./Contextmenu_Text_Entry.svelte": {
 					"path": "Contextmenu_Text_Entry.svelte",
 					"declarations": []
 				},
 				"./Contextmenu.svelte": {"path": "Contextmenu.svelte", "declarations": []},
-				"./contextmenu.js": {
-					"path": "contextmenu.ts",
+				"./contextmenu.svelte.js": {
+					"path": "contextmenu.svelte.ts",
 					"declarations": [
 						{"name": "Contextmenu_Params", "kind": "type"},
-						{"name": "Contextmenu_Action_Params", "kind": "type"},
-						{"name": "to_contextmenu_params", "kind": "function"},
 						{"name": "Item_State", "kind": "type"},
-						{"name": "Entry_State", "kind": "type"},
-						{"name": "Submenu_State", "kind": "type"},
-						{"name": "Root_Menu_State", "kind": "type"},
+						{"name": "Entry_State", "kind": "class"},
+						{"name": "Submenu_State", "kind": "class"},
+						{"name": "Root_Menu_State", "kind": "class"},
 						{"name": "Contextmenu_Run", "kind": "type"},
-						{"name": "Contextmenu", "kind": "type"},
-						{"name": "Contextmenu_Store", "kind": "type"},
 						{"name": "Contextmenu_Store_Options", "kind": "type"},
-						{"name": "create_contextmenu", "kind": "function"},
+						{"name": "Contextmenu_Store", "kind": "class"},
+						{"name": "contextmenu_action", "kind": "function"},
 						{"name": "open_contextmenu", "kind": "function"},
 						{"name": "set_contextmenu", "kind": "function"},
 						{"name": "get_contextmenu", "kind": "function"},
@@ -344,14 +368,6 @@
 				},
 				"./Copy_To_Clipboard.svelte": {"path": "Copy_To_Clipboard.svelte", "declarations": []},
 				"./Details.svelte": {"path": "Details.svelte", "declarations": []},
-				"./Devmode_Controls.svelte": {"path": "Devmode_Controls.svelte", "declarations": []},
-				"./devmode.js": {
-					"path": "devmode.ts",
-					"declarations": [
-						{"name": "get_devmode", "kind": "function"},
-						{"name": "set_devmode", "kind": "function"}
-					]
-				},
 				"./Dialog.svelte": {"path": "Dialog.svelte", "declarations": []},
 				"./dialog.js": {
 					"path": "dialog.ts",
@@ -363,35 +379,54 @@
 					]
 				},
 				"./Dialogs.svelte": {"path": "Dialogs.svelte", "declarations": []},
+				"./dimensions.svelte.js": {
+					"path": "dimensions.svelte.ts",
+					"declarations": [{"name": "Dimensions", "kind": "class"}]
+				},
+				"./Fuz_Logo.svelte": {"path": "Fuz_Logo.svelte", "declarations": []},
 				"./Github_Logo.svelte": {"path": "Github_Logo.svelte", "declarations": []},
-				"./helpers.js": {
-					"path": "helpers.ts",
+				"./Hashlink.svelte": {"path": "Hashlink.svelte", "declarations": []},
+				"./Hue_Input.svelte": {"path": "Hue_Input.svelte", "declarations": []},
+				"./Library_Content.svelte": {"path": "Library_Content.svelte", "declarations": []},
+				"./Library_Footer.svelte": {"path": "Library_Footer.svelte", "declarations": []},
+				"./Library_Menu.svelte": {"path": "Library_Menu.svelte", "declarations": []},
+				"./Library_Page_Links.svelte": {"path": "Library_Page_Links.svelte", "declarations": []},
+				"./Library_Primary_Nav.svelte": {"path": "Library_Primary_Nav.svelte", "declarations": []},
+				"./Library_Secondary_Nav.svelte": {
+					"path": "Library_Secondary_Nav.svelte",
+					"declarations": []
+				},
+				"./Library_Tertiary_Nav.svelte": {
+					"path": "Library_Tertiary_Nav.svelte",
+					"declarations": []
+				},
+				"./Library.svelte": {"path": "Library.svelte", "declarations": []},
+				"./library.svelte.js": {
+					"path": "library.svelte.ts",
 					"declarations": [
-						{"name": "LIBRARY_PATH", "kind": "variable"},
-						{"name": "to_library_path_info", "kind": "function"}
+						{"name": "DEFAULT_LIBRARY_PATH", "kind": "variable"},
+						{"name": "to_library_path_info", "kind": "function"},
+						{"name": "set_library_links", "kind": "function"},
+						{"name": "get_library_links", "kind": "function"},
+						{"name": "Library_Link_Data", "kind": "type"},
+						{"name": "Library_Links", "kind": "class"}
 					]
 				},
-				"./Hue_Input.svelte": {"path": "Hue_Input.svelte", "declarations": []},
-				"./Library_Footer.svelte": {"path": "Library_Footer.svelte", "declarations": []},
-				"./Library_Header.svelte": {"path": "Library_Header.svelte", "declarations": []},
-				"./Library_Menu.svelte": {"path": "Library_Menu.svelte", "declarations": []},
-				"./Library_Nav.svelte": {"path": "Library_Nav.svelte", "declarations": []},
-				"./Library_Panel.svelte": {"path": "Library_Panel.svelte", "declarations": []},
-				"./Library.svelte": {"path": "Library.svelte", "declarations": []},
 				"./Mdn_Link.svelte": {"path": "Mdn_Link.svelte", "declarations": []},
 				"./Mdn_Logo.svelte": {"path": "Mdn_Logo.svelte", "declarations": []},
 				"./Package_Detail.svelte": {"path": "Package_Detail.svelte", "declarations": []},
 				"./Package_Summary.svelte": {"path": "Package_Summary.svelte", "declarations": []},
-				"./Page_Footer.svelte": {"path": "Page_Footer.svelte", "declarations": []},
-				"./Page_Header.svelte": {"path": "Page_Header.svelte", "declarations": []},
 				"./Pending_Animation.svelte": {"path": "Pending_Animation.svelte", "declarations": []},
 				"./Pending_Button.svelte": {"path": "Pending_Button.svelte", "declarations": []},
 				"./Redirect.svelte": {"path": "Redirect.svelte", "declarations": []},
-				"./semantic_classes.css": {"path": "semantic_classes.css", "declarations": []},
+				"./style_animations.css": {"path": "style_animations.css", "declarations": []},
+				"./style_components.css": {"path": "style_components.css", "declarations": []},
+				"./style_reset.css": {"path": "style_reset.css", "declarations": []},
+				"./style_utilities.css": {"path": "style_utilities.css", "declarations": []},
 				"./style.css": {"path": "style.css", "declarations": []},
-				"./swallow.js": {
-					"path": "swallow.ts",
-					"declarations": [{"name": "swallow", "kind": "function"}]
+				"./style.gen.css.js": {
+					"path": "style.gen.css.ts",
+					"declarations": [{"name": "gen", "kind": "variable"}]
 				},
 				"./Teleport.svelte": {"path": "Teleport.svelte", "declarations": []},
 				"./Theme_Input.svelte": {"path": "Theme_Input.svelte", "declarations": []},
@@ -436,6 +471,7 @@
 				},
 				"./Tome_Detail.svelte": {"path": "Tome_Detail.svelte", "declarations": []},
 				"./Tome_Link.svelte": {"path": "Tome_Link.svelte", "declarations": []},
+				"./Tome_Subheading.svelte": {"path": "Tome_Subheading.svelte", "declarations": []},
 				"./Tome_Title.svelte": {"path": "Tome_Title.svelte", "declarations": []},
 				"./tome.js": {
 					"path": "tome.ts",
@@ -447,16 +483,15 @@
 						{"name": "get_tome", "kind": "function"}
 					]
 				},
-				"./utility_classes.css": {"path": "utility_classes.css", "declarations": []},
-				"./variable_classes.css": {"path": "variable_classes.css", "declarations": []},
 				"./variable_data.js": {
 					"path": "variable_data.ts",
 					"declarations": [
-						{"name": "font_sizes", "kind": "variable"},
-						{"name": "font_size_names", "kind": "variable"},
-						{"name": "font_size_names_set", "kind": "variable"},
-						{"name": "space_sizes", "kind": "variable"},
-						{"name": "radius_sizes", "kind": "variable"}
+						{"name": "size_variants", "kind": "variable"},
+						{"name": "size_names", "kind": "variable"},
+						{"name": "space_variants", "kind": "variable"},
+						{"name": "radius_variants", "kind": "variable"},
+						{"name": "line_height_variants", "kind": "variable"},
+						{"name": "line_height_names", "kind": "variable"}
 					]
 				},
 				"./variables.js": {
@@ -580,16 +615,13 @@
 						{"name": "text_3", "kind": "variable"},
 						{"name": "text_disabled", "kind": "variable"},
 						{"name": "text_active", "kind": "variable"},
-						{"name": "line_height", "kind": "variable"},
-						{"name": "line_height_1", "kind": "variable"},
-						{"name": "line_height_2", "kind": "variable"},
-						{"name": "line_height_3", "kind": "variable"},
-						{"name": "line_height_4", "kind": "variable"},
-						{"name": "line_height_5", "kind": "variable"},
-						{"name": "line_height_6", "kind": "variable"},
-						{"name": "line_height_7", "kind": "variable"},
-						{"name": "font_family_sans", "kind": "variable"},
-						{"name": "font_family_mono", "kind": "variable"},
+						{"name": "line_height_xs", "kind": "variable"},
+						{"name": "line_height_sm", "kind": "variable"},
+						{"name": "line_height_md", "kind": "variable"},
+						{"name": "line_height_lg", "kind": "variable"},
+						{"name": "line_height_xl", "kind": "variable"},
+						{"name": "font_sans", "kind": "variable"},
+						{"name": "font_mono", "kind": "variable"},
 						{"name": "size_xs", "kind": "variable"},
 						{"name": "size_sm", "kind": "variable"},
 						{"name": "size_md", "kind": "variable"},
@@ -654,7 +686,6 @@
 						{"name": "outline_width_3", "kind": "variable"},
 						{"name": "outline_style", "kind": "variable"},
 						{"name": "outline_color", "kind": "variable"},
-						{"name": "border_radius", "kind": "variable"},
 						{"name": "radius_xl", "kind": "variable"},
 						{"name": "radius_lg", "kind": "variable"},
 						{"name": "radius_md", "kind": "variable"},
@@ -673,10 +704,10 @@
 						{"name": "input_height", "kind": "variable"},
 						{"name": "input_height_sm", "kind": "variable"},
 						{"name": "input_height_inner", "kind": "variable"},
-						{"name": "shadow", "kind": "variable"},
+						{"name": "shadow_md", "kind": "variable"},
 						{"name": "shadow_lg", "kind": "variable"},
-						{"name": "shadow_inset", "kind": "variable"},
-						{"name": "shadow_inset_active", "kind": "variable"},
+						{"name": "shadow_inset_md", "kind": "variable"},
+						{"name": "shadow_inset_inverse_md", "kind": "variable"},
 						{"name": "icon_size", "kind": "variable"},
 						{"name": "icon_size_xs", "kind": "variable"},
 						{"name": "icon_size_sm", "kind": "variable"},
@@ -710,10 +741,8 @@
 		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz",
 		"changelog_url": "https://github.com/ryanatkn/fuz/blob/main/CHANGELOG.md",
 		"published": true,
-		"check_runs": {"status": "completed", "conclusion": "success"},
-		"pull_requests": [
-			{"number": 15, "title": "upgrade to svelte@5", "user": {"login": "ryanatkn"}, "draft": false}
-		]
+		"check_runs": {"status": "completed", "conclusion": "failure"},
+		"pull_requests": []
 	},
 	{
 		"url": "https://template.fuz.dev/",
@@ -783,13 +812,20 @@
 		"url": "https://gitops.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz_gitops",
-			"version": "0.23.1",
+			"version": "0.24.0",
 			"description": "a tool for managing many repos",
 			"icon": "🪄",
 			"public": true,
 			"license": "MIT",
 			"homepage": "https://gitops.fuz.dev/",
 			"repository": "https://github.com/ryanatkn/fuz_gitops",
+			"author": {
+				"name": "Ryan Atkinson",
+				"email": "mail@ryanatkn.com",
+				"url": "https://www.ryanatkn.com/"
+			},
+			"bugs": "https://github.com/ryanatkn/fuz_gitops/issues",
+			"funding": "https://www.ryanatkn.com/funding",
 			"type": "module",
 			"engines": {"node": ">=20.10"},
 			"scripts": {
@@ -804,24 +840,24 @@
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@ryanatkn/belt": "^0.20.10",
-				"@ryanatkn/eslint-config": "^0.1.0",
-				"@ryanatkn/fuz": "^0.91.5",
-				"@ryanatkn/gro": "^0.112.5",
+				"@ryanatkn/eslint-config": "^0.1.1",
+				"@ryanatkn/fuz": "^0.93.3",
+				"@ryanatkn/gro": "^0.115.0",
 				"@sveltejs/adapter-static": "^3.0.1",
-				"@sveltejs/kit": "^2.5.4",
-				"@sveltejs/package": "^2.3.0",
-				"@sveltejs/vite-plugin-svelte": "^3.0.2",
-				"@types/node": "^20.11.30",
-				"@typescript-eslint/eslint-plugin": "^7.4.0",
-				"@typescript-eslint/parser": "^7.4.0",
+				"@sveltejs/kit": "^2.5.5",
+				"@sveltejs/package": "^2.3.1",
+				"@sveltejs/vite-plugin-svelte": "^3.1.0",
+				"@types/node": "^20.12.7",
+				"@typescript-eslint/eslint-plugin": "^7.6.0",
+				"@typescript-eslint/parser": "^7.6.0",
 				"eslint": "^8.57.0",
-				"eslint-plugin-svelte": "^2.35.1",
+				"eslint-plugin-svelte": "^2.37.0",
 				"prettier": "^3.2.5",
-				"prettier-plugin-svelte": "^3.2.2",
-				"svelte": "^4.2.12",
-				"svelte-check": "^3.6.8",
+				"prettier-plugin-svelte": "^3.2.3",
+				"svelte": "^5.0.0-next.102",
+				"svelte-check": "^3.6.9",
 				"tslib": "^2.6.2",
-				"typescript": "^5.4.3",
+				"typescript": "^5.4.5",
 				"uvu": "^0.5.6"
 			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn", "rules": {"no-console": 1}},
@@ -834,6 +870,7 @@
 				"overrides": [{"files": "package.json", "options": {"useTabs": false}}]
 			},
 			"exports": {
+				"./package.json": "./package.json",
 				"./Deployments_Table.svelte": {
 					"svelte": "./dist/Deployments_Table.svelte",
 					"default": "./dist/Deployments_Table.svelte",
@@ -879,15 +916,25 @@
 					"default": "./dist/Modules_Detail.svelte",
 					"types": "./dist/Modules_Detail.svelte.d.ts"
 				},
-				"./Modules_Menu.svelte": {
-					"svelte": "./dist/Modules_Menu.svelte",
-					"default": "./dist/Modules_Menu.svelte",
-					"types": "./dist/Modules_Menu.svelte.d.ts"
+				"./Modules_Nav.svelte": {
+					"svelte": "./dist/Modules_Nav.svelte",
+					"default": "./dist/Modules_Nav.svelte",
+					"types": "./dist/Modules_Nav.svelte.d.ts"
 				},
 				"./Modules_Page.svelte": {
 					"svelte": "./dist/Modules_Page.svelte",
 					"default": "./dist/Modules_Page.svelte",
 					"types": "./dist/Modules_Page.svelte.d.ts"
+				},
+				"./Page_Footer.svelte": {
+					"svelte": "./dist/Page_Footer.svelte",
+					"default": "./dist/Page_Footer.svelte",
+					"types": "./dist/Page_Footer.svelte.d.ts"
+				},
+				"./Page_Header.svelte": {
+					"svelte": "./dist/Page_Header.svelte",
+					"default": "./dist/Page_Header.svelte",
+					"types": "./dist/Page_Header.svelte.d.ts"
 				},
 				"./Pull_Requests_Detail.svelte": {
 					"svelte": "./dist/Pull_Requests_Detail.svelte",
@@ -922,8 +969,9 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz_gitops",
-			"version": "0.23.1",
+			"version": "0.24.0",
 			"modules": {
+				"./package.json": {"path": "package.json", "declarations": []},
 				"./Deployments_Table.svelte": {"path": "Deployments_Table.svelte", "declarations": []},
 				"./Deployments_Tree_Nav.svelte": {
 					"path": "Deployments_Tree_Nav.svelte",
@@ -986,8 +1034,10 @@
 					]
 				},
 				"./Modules_Detail.svelte": {"path": "Modules_Detail.svelte", "declarations": []},
-				"./Modules_Menu.svelte": {"path": "Modules_Menu.svelte", "declarations": []},
+				"./Modules_Nav.svelte": {"path": "Modules_Nav.svelte", "declarations": []},
 				"./Modules_Page.svelte": {"path": "Modules_Page.svelte", "declarations": []},
+				"./Page_Footer.svelte": {"path": "Page_Footer.svelte", "declarations": []},
+				"./Page_Header.svelte": {"path": "Page_Header.svelte", "declarations": []},
 				"./Pull_Requests_Detail.svelte": {
 					"path": "Pull_Requests_Detail.svelte",
 					"declarations": []
@@ -1008,7 +1058,9 @@
 		"changelog_url": "https://github.com/ryanatkn/fuz_gitops/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
-		"pull_requests": []
+		"pull_requests": [
+			{"number": 21, "title": "upgrade to Svelte 5", "user": {"login": "ryanatkn"}, "draft": false}
+		]
 	},
 	{
 		"url": "https://code.fuz.dev/",
@@ -1026,6 +1078,8 @@
 				"email": "mail@ryanatkn.com",
 				"url": "https://www.ryanatkn.com/"
 			},
+			"bugs": "https://github.com/ryanatkn/fuz_code/issues",
+			"funding": "https://www.ryanatkn.com/funding",
 			"engines": {"node": ">=20.10"},
 			"scripts": {
 				"start": "gro dev",
@@ -1129,6 +1183,8 @@
 				"email": "mail@ryanatkn.com",
 				"url": "https://www.ryanatkn.com/"
 			},
+			"bugs": "https://github.com/ryanatkn/fuz_mastodon/issues",
+			"funding": "https://www.ryanatkn.com/funding",
 			"type": "module",
 			"engines": {"node": ">=20.10"},
 			"scripts": {
@@ -1272,7 +1328,7 @@
 		"url": "https://gro.ryanatkn.com/",
 		"package_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.112.5",
+			"version": "0.115.0",
 			"description": "task runner and toolkit extending SvelteKit",
 			"icon": "🌰",
 			"public": true,
@@ -1285,7 +1341,8 @@
 				"url": "https://www.ryanatkn.com/"
 			},
 			"repository": {"type": "git", "url": "git+https://github.com/ryanatkn/gro.git"},
-			"bugs": {"url": "https://github.com/ryanatkn/gro/issues", "email": "mail@ryanatkn.com"},
+			"bugs": "https://github.com/ryanatkn/gro/issues",
+			"funding": "https://www.ryanatkn.com/funding",
 			"type": "module",
 			"engines": {"node": ">=20.10"},
 			"scripts": {
@@ -1306,10 +1363,10 @@
 			],
 			"files": ["dist"],
 			"dependencies": {
-				"@ryanatkn/belt": "^0.20.9",
+				"@ryanatkn/belt": "^0.20.10",
 				"chokidar": "^3.6.0",
 				"dotenv": "^16.4.5",
-				"es-module-lexer": "^1.4.2",
+				"es-module-lexer": "^1.5.0",
 				"kleur": "^4.1.5",
 				"mri": "^1.2.0",
 				"prettier": "^3.2.5",
@@ -1324,15 +1381,15 @@
 				"@changesets/changelog-git": "^0.2.0",
 				"@changesets/types": "^6.0.0",
 				"@ryanatkn/eslint-config": "^0.1.0",
-				"@ryanatkn/fuz": "^0.91.5",
+				"@ryanatkn/fuz": "^0.92.0",
 				"@sveltejs/adapter-static": "^3.0.1",
 				"@sveltejs/kit": "^2.5.4",
 				"@sveltejs/package": "^2.3.0",
 				"@sveltejs/vite-plugin-svelte": "^3.0.2",
 				"@types/fs-extra": "^11.0.4",
 				"@types/node": "^20.11.30",
-				"@typescript-eslint/eslint-plugin": "^7.3.1",
-				"@typescript-eslint/parser": "^7.3.1",
+				"@typescript-eslint/eslint-plugin": "^7.4.0",
+				"@typescript-eslint/parser": "^7.4.0",
 				"esbuild": "^0.19.0",
 				"eslint": "^8.57.0",
 				"eslint-plugin-svelte": "^2.35.1",
@@ -1352,6 +1409,7 @@
 			},
 			"exports": {
 				".": {"default": "./dist/index.js", "types": "./dist/index.d.ts"},
+				"./package.json": "./package.json",
 				"./args.js": {"default": "./dist/args.js", "types": "./dist/args.d.ts"},
 				"./build.task.js": {"default": "./dist/build.task.js", "types": "./dist/build.task.d.ts"},
 				"./changelog.js": {"default": "./dist/changelog.js", "types": "./dist/changelog.d.ts"},
@@ -1547,7 +1605,7 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.112.5",
+			"version": "0.115.0",
 			"modules": {
 				".": {
 					"path": "index.ts",
@@ -1563,6 +1621,7 @@
 						{"name": "Task_Error", "kind": "class"}
 					]
 				},
+				"./package.json": {"path": "package.json", "declarations": []},
 				"./args.js": {
 					"path": "args.ts",
 					"declarations": [
@@ -1841,6 +1900,7 @@
 						{"name": "has_sveltekit_app", "kind": "function"},
 						{"name": "Options", "kind": "type"},
 						{"name": "Host_Target", "kind": "type"},
+						{"name": "Copy_File_Filter", "kind": "type"},
 						{"name": "gro_plugin_sveltekit_app", "kind": "function"}
 					]
 				},
@@ -1928,7 +1988,6 @@
 						{"name": "Package_Meta", "kind": "type"},
 						{"name": "parse_package_meta", "kind": "function"},
 						{"name": "parse_repo_name", "kind": "function"},
-						{"name": "format_host", "kind": "function"},
 						{"name": "parse_org_url", "kind": "function"}
 					]
 				},

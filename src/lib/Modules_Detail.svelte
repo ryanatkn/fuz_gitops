@@ -2,48 +2,57 @@
 	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {base} from '$app/paths';
+	import type {Snippet} from 'svelte';
 
-	import Modules_Menu from '$lib/Modules_Menu.svelte';
+	import Modules_Nav from '$lib/Modules_Nav.svelte';
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 
-	export let deployments: Fetched_Deployment[]; // TODO normalized version with cached primitives?
+	interface Props {
+		deployments: Fetched_Deployment[]; // TODO normalized version with cached primitives?
+		nav_footer?: Snippet;
+	}
+
+	const {deployments, nav_footer}: Props = $props();
 
 	// TODO add sorting options
 
 	// TODO show other data (bytes and lines of code per module?)
 
 	// TODO hacky, needs helpers or rethinking
-	let deployments_modules: Array<{
+	const deployments_modules: Array<{
 		deployment: Fetched_Deployment;
 		modules: Src_Module[];
-	}>;
-	$: deployments_modules = deployments.reduce(
-		(v, deployment) => {
-			const {package_json, src_json} = deployment;
-			if (
-				!src_json?.modules ||
-				!(
-					!!package_json.devDependencies?.['@sveltejs/package'] ||
-					!!package_json.dependencies?.['@sveltejs/package']
-				)
-			) {
+	}> = $derived(
+		deployments.reduce(
+			(v, deployment) => {
+				const {package_json, src_json} = deployment;
+				if (
+					!src_json?.modules ||
+					!(
+						!!package_json.devDependencies?.['@sveltejs/package'] ||
+						!!package_json.dependencies?.['@sveltejs/package']
+					)
+				) {
+					return v;
+				}
+				v.push({deployment, modules: Object.values(src_json.modules)});
 				return v;
-			}
-			v.push({deployment, modules: Object.values(src_json.modules)});
-			return v;
-		},
-		[] as Array<{deployment: Fetched_Deployment; modules: Src_Module[]}>,
+			},
+			[] as Array<{deployment: Fetched_Deployment; modules: Src_Module[]}>,
+		),
 	);
 
 	// TODO add favicon (from library? gro?)
 </script>
 
 <div class="modules_detail">
-	<div class="nav">
-		<Modules_Menu {deployments_modules} />
-		<slot name="nav" />
+	<div class="nav_wrapper">
+		<section>
+			<Modules_Nav {deployments_modules} />
+		</section>
+		{#if nav_footer}{@render nav_footer()}{/if}
 	</div>
-	<ul class="width_md box">
+	<ul class="width_md box unstyled">
 		{#each deployments_modules as deployment_modules (deployment_modules)}
 			{@const {deployment, modules} = deployment_modules}
 			<li class="deployment_module">
@@ -51,7 +60,7 @@
 					<a href="#{deployment.name}" id={deployment.name} class="subtitle">🔗</a>
 					<a href="{base}/tree/{deployment.repo_name}">{deployment.name}</a>
 				</header>
-				<ul class="modules panel">
+				<ul class="modules panel unstyled">
 					{#each modules as deployment_module (deployment_module)}
 						{@const {path, declarations} = deployment_module}
 						<li
@@ -61,7 +70,7 @@
 							class:css={path.endsWith('.css')}
 							class:json={path.endsWith('.json')}
 						>
-							<div>
+							<div class="module_file">
 								{#if deployment.repo_url}
 									<div class="chip row">
 										<a href="{ensure_end(deployment.repo_url, '/')}blob/main/src/lib/{path}"
@@ -72,7 +81,7 @@
 									<span class="chip">{path}</span>
 								{/if}
 							</div>
-							<ul class="declarations">
+							<ul class="declarations unstyled">
 								{#each declarations as { name, kind }}
 									<li class="declaration chip {kind}_declaration">
 										{name}
@@ -120,12 +129,14 @@
 		background-color: var(--bg);
 	}
 	.modules {
-		/* TODO delete? */
 		padding: var(--space_sm);
 	}
 	.module {
-		margin-bottom: var(--space_xs);
+		margin-bottom: var(--space_lg);
 		--link_color: var(--text_2);
+	}
+	.module_file {
+		margin-bottom: var(--space_xs);
 	}
 	.ts {
 		--link_color: var(--color_a_5);
@@ -150,7 +161,7 @@
 		padding-left: var(--space_xs);
 	}
 	.declaration {
-		font-family: var(--font_family_mono);
+		font-family: var(--font_mono);
 		font-size: var(--size_sm);
 	}
 	.variable_declaration {
@@ -166,7 +177,7 @@
 		color: var(--color_f_5);
 	}
 	/* TODO extract  */
-	.nav {
+	.nav_wrapper {
 		position: sticky;
 		top: var(--space_xl);
 		display: flex;

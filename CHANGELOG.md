@@ -218,7 +218,7 @@
 ### Patch Changes
 
 - publish sample data ([#8](https://github.com/ryanatkn/fuz_gitops/pull/8))
-- add `Modules_Detail.svelte` and `Modules_Menu.svelte` ([#8](https://github.com/ryanatkn/fuz_gitops/pull/8))
+- add `Modules_Detail.svelte` and `Modules_Nav.svelte` ([#8](https://github.com/ryanatkn/fuz_gitops/pull/8))
 
 ## 0.8.1
 

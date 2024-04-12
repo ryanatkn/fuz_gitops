@@ -3,25 +3,30 @@
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
 	import {base} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
+	import type {Snippet} from 'svelte';
 
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
 	import Deployments_Tree_Nav from '$lib/Deployments_Tree_Nav.svelte';
 
-	export let deployments: Fetched_Deployment[];
+	interface Props {
+		deployments: Fetched_Deployment[];
+		/**
+		 * The selected package, if any.
+		 */
+		selected_deployment?: Fetched_Deployment | undefined;
+		nav: Snippet;
+	}
 
-	/**
-	 * The selected package, if any.
-	 */
-	export let selected_deployment: Fetched_Deployment | undefined = undefined;
+	const {deployments, selected_deployment, nav}: Props = $props();
 </script>
 
 <div class="deployments_tree">
 	<Deployments_Tree_Nav {deployments} {selected_deployment}>
-		<slot name="nav" />
+		{@render nav()}
 	</Deployments_Tree_Nav>
 	{#if selected_deployment}
 		<section class="detail_wrapper">
-			<div class="panel detail">
+			<div class="panel detail p_md">
 				<Package_Detail pkg={selected_deployment} />
 			</div>
 		</section>
@@ -31,12 +36,12 @@
 				<li class="panel p_md box">
 					{#if deployment.package_json}
 						<Package_Summary pkg={deployment}>
-							<svelte:fragment slot="repo_name" let:repo_name>
+							{#snippet repo_name(repo_name)}
 								<a href="{base}/tree/{repo_name}" class="repo_name">{repo_name}</a>
-							</svelte:fragment>
+							{/snippet}
 						</Package_Summary>
 					{:else}
-						<div class="prose width_sm">
+						<div class="width_sm">
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
 								<a href={deployment.url}>{format_url(deployment.url)}</a>
@@ -72,6 +77,7 @@
 		font-size: var(--size_xl2);
 		font-weight: 500;
 		text-align: center;
+		margin-bottom: var(--space_xl);
 	}
 	.detail_wrapper {
 		padding: var(--space_lg);
