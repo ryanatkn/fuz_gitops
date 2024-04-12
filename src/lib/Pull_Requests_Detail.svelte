@@ -42,7 +42,7 @@
 	{#if unfetched_deployments.length}
 		<section class="panel p_sm">
 			<p>⚠️ Some deployments could not be fetched:</p>
-			<ul>
+			<ul class="unstyled">
 				{#each unfetched_deployments as { url }}
 					<li><a href={url}>{format_url(url)}</a></li>
 				{/each}
