@@ -72,6 +72,7 @@
 		font-size: var(--size_xl2);
 		font-weight: 500;
 		text-align: center;
+		margin-bottom: var(--space_xl);
 	}
 	.detail_wrapper {
 		padding: var(--space_lg);

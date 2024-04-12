@@ -17,9 +17,9 @@
 </svelte:head>
 
 <main class="box w_100">
-	<section>
+	<div class="p_lg">
 		<Page_Header pkg={deployment} />
-	</section>
+	</div>
 	<section class="tree">
 		<Deployments_Tree {deployments}>
 			<div slot="nav" class="deployments_tree_nav">

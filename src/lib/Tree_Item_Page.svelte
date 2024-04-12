@@ -22,9 +22,9 @@
 </svelte:head>
 
 <main class="box w_100">
-	<section>
+	<div class="p_lg">
 		<Page_Header pkg={deployment} />
-	</section>
+	</div>
 	<section class="tree">
 		{#if !route_deployment}
 			<div class="mb_lg">

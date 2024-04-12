@@ -17,9 +17,9 @@
 </svelte:head>
 
 <main class="box w_100">
-	<section>
+	<div class="p_lg">
 		<Page_Header pkg={deployment} />
-	</section>
+	</div>
 	<section>
 		<Pull_Requests_Detail {deployments} {unfetched_deployments} {filter_pull_request} />
 	</section>

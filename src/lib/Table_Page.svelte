@@ -13,9 +13,9 @@
 </svelte:head>
 
 <main class="box">
-	<section>
+	<div class="p_lg">
 		<Page_Header pkg={deployment} />
-	</section>
+	</div>
 	<section>
 		<div class="panel p_md">
 			<Deployments_Table {deployments} />

@@ -13,9 +13,9 @@
 </svelte:head>
 
 <main class="width_md">
-	<Page_Header pkg={deployment}>
-		<h1>About fuz_gitops</h1>
-	</Page_Header>
+	<div class="p_lg">
+		<Page_Header pkg={deployment}></Page_Header>
+	</div>
 	<section class="box w_100 mb_lg">
 		<div class="panel p_md width_md">
 			<Package_Detail pkg={deployment} />
@@ -30,10 +30,5 @@
 		flex-direction: column;
 		align-items: center;
 		margin: 0 auto;
-	}
-	h1 {
-		display: flex;
-		align-items: baseline;
-		text-align: center;
 	}
 </style>

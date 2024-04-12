@@ -9,7 +9,7 @@
 
 <section class="box mb_xl7">
 	<Library_Footer pkg={deployment}>
-		<div class="mb_xl3">
+		<div class="mb_xl5">
 			<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
 		</div>
 	</Library_Footer>

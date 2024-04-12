@@ -15,9 +15,9 @@
 </svelte:head>
 
 <main class="box w_100">
-	<section>
+	<div class="p_lg">
 		<Page_Header pkg={deployment} />
-	</section>
+	</div>
 	<section>
 		<Modules_Detail {deployments}>
 			<div slot="nav" class="row">
