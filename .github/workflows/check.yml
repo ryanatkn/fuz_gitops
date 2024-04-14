@@ -25,5 +25,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npx gro sync # TODO hack to init env
-      - run: npx gro check --workspace
+      - run: npx gro check --workspace --no-lint # TODO re-enable lint when Svelte 5 is stable
       - run: npx gro build
