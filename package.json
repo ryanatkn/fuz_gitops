@@ -33,8 +33,8 @@
     "@ryanatkn/fuz": "*",
     "@ryanatkn/gro": "*",
     "@ryanatkn/moss": "*",
-    "@sveltejs/kit": "*",
-    "svelte": "*"
+    "@sveltejs/kit": "^2",
+    "svelte": "^5"
   },
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.0",
