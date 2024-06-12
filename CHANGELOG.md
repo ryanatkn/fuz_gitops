@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.26.0
+
+### Minor Changes
+
+- set peer deps for `svelte` and `@sveltejs/kit` ([#23](https://github.com/ryanatkn/fuz_gitops/pull/23)) ([287df05](https://github.com/ryanatkn/fuz_gitops/commit/287df05))
+
 ## 0.25.0
 
 ### Minor Changes
