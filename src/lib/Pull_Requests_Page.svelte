@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	// TODO BLOCK is this the new required pattern?
+	// TODO is this the new required pattern?
 	export interface Props {
 		deployment: Fetched_Deployment;
 		deployments: Fetched_Deployment[];

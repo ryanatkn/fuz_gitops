@@ -1,5 +1,4 @@
-import {load_package_json, Package_Json} from '@ryanatkn/gro/package_json.js';
-import type {Url} from '@ryanatkn/gro/paths.js';
+import {load_package_json, Package_Json, type Url} from '@ryanatkn/gro/package_json.js';
 import {ensure_end} from '@ryanatkn/belt/string.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {wait} from '@ryanatkn/belt/async.js';
