@@ -30,8 +30,10 @@ npm i -D @ryanatkn/fuz_gitops
 
 - configure [`fuz.config.ts`](/fuz.config.ts)
 - fuz_gitops calls the GitHub API using the environment variable `GITHUB_TOKEN_SECRET` for authorization,
-  which is a [GitHub token](https://github.com/settings/tokens)
+  which is a [classic GitHub token](https://github.com/settings/tokens)
   (with "public access" for public repos, no options selected)
+  or a [fine-grainted GitHub token (beta)](https://github.com/settings/tokens?type=beta)
+  (with `"Public Repositories (read-only)"` selected)
   in either `process.env`, a project-local `.env`, or the parent directory at `../.env`
   (currently optional to read public repos, but it's recommended regardless,
   and you'll need to select options to support private repos)
