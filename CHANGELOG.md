@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.27.0
+
+### Minor Changes
+
+- throw on 401s in GitHub fetch helpers to abort on invalid tokens ([#24](https://github.com/ryanatkn/fuz_gitops/pull/24))
+
 ## 0.26.0
 
 ### Minor Changes
