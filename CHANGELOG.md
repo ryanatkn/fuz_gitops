@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.28.0
+
+### Minor Changes
+
+- upgrade `node@22.3` and `@ryanatkn/gro@0.120.0` ([eca969a](https://github.com/ryanatkn/fuz_gitops/commit/eca969a))
+
 ## 0.27.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.27.0",
+  "version": "0.28.0",
   "description": "a tool for managing many repos",
   "icon": "🪄",
   "public": true,
