@@ -2,11 +2,11 @@ import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {writeFile} from 'node:fs/promises';
 import {format_file} from '@ryanatkn/gro/format_file.js';
-import {exists} from '@ryanatkn/gro/fs.js';
 import {join} from 'node:path';
 import {paths} from '@ryanatkn/gro/paths.js';
 import {load_from_env} from '@ryanatkn/gro/env.js';
 import {load_fuz_config} from '@ryanatkn/fuz/config.js';
+import {existsSync} from 'node:fs';
 
 import {fetch_deployments} from '$lib/fetch_deployments.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
@@ -64,7 +64,7 @@ export const task: Task<Args> = {
 		);
 
 		const types_outfile = outfile + '.d.ts';
-		if (!(await exists(types_outfile))) {
+		if (!existsSync(types_outfile)) {
 			await writeFile(
 				types_outfile,
 				`declare module '$lib/deployments.json' {

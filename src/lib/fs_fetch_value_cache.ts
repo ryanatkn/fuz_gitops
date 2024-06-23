@@ -1,9 +1,9 @@
 import {mkdir, readFile, rm, writeFile} from 'node:fs/promises';
-import {exists} from '@ryanatkn/gro/fs.js';
 import {dirname, join} from 'node:path';
 import {paths} from '@ryanatkn/gro/paths.js';
 import {format_file} from '@ryanatkn/gro/format_file.js';
 import {deserialize_cache, serialize_cache, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
+import {existsSync} from 'node:fs';
 
 // TODO upstream to Gro probably, and rename/redesign?
 
@@ -22,7 +22,7 @@ export const create_fs_fetch_value_cache = async (
 ): Promise<Fetch_Cache> => {
 	const data_path = join(dir, name + '.json');
 	let data: Fetch_Value_Cache;
-	if (await exists(data_path)) {
+	if (existsSync(data_path)) {
 		try {
 			data = deserialize_cache(await readFile(data_path, 'utf8')); // TODO pass schema to parse so failures invalidate the cache
 		} catch (err) {
