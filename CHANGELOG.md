@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.29.0
+
+### Minor Changes
+
+- support `node@20.12` and later ([46b804b](https://github.com/ryanatkn/fuz_gitops/commit/46b804b))
+
 ## 0.28.0
 
 ### Minor Changes
