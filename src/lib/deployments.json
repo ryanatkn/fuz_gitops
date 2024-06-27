@@ -3,12 +3,19 @@
 		"url": "https://www.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz",
-			"version": "0.105.1",
+			"version": "0.105.2",
+			"public": true,
 			"description": "Svelte UI library",
 			"motto": "friendly user zystem",
-			"icon": "🧶",
-			"public": true,
+			"glyph": "🧶",
 			"license": "MIT",
+			"scripts": {
+				"dev": "gro dev",
+				"build": "gro build",
+				"deploy": "gro deploy",
+				"start": "gro start",
+				"test": "gro test"
+			},
 			"homepage": "https://www.fuz.dev/",
 			"author": {
 				"name": "Ryan Atkinson",
@@ -20,26 +27,12 @@
 			"funding": "https://www.ryanatkn.com/funding",
 			"type": "module",
 			"engines": {"node": ">=20.12"},
-			"scripts": {
-				"dev": "gro dev",
-				"build": "gro build",
-				"deploy": "gro deploy",
-				"start": "gro start",
-				"test": "gro test"
-			},
-			"files": ["dist", "CHANGELOG.md"],
-			"peerDependencies": {
-				"@ryanatkn/belt": "*",
-				"@ryanatkn/moss": "*",
-				"@sveltejs/kit": "^2",
-				"svelte": "^5.0.0-next.0"
-			},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@ryanatkn/belt": "^0.22.0",
+				"@ryanatkn/belt": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
 				"@ryanatkn/fuz_code": "^0.15.0",
-				"@ryanatkn/gro": "^0.124.0",
+				"@ryanatkn/gro": "^0.125.1",
 				"@ryanatkn/moss": "^0.6.0",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
@@ -61,6 +54,268 @@
 				"typescript": "^5.5.2",
 				"uvu": "^0.5.6"
 			},
+			"peerDependencies": {
+				"@ryanatkn/belt": "*",
+				"@ryanatkn/moss": "*",
+				"@sveltejs/kit": "^2",
+				"svelte": "^5.0.0-next.0"
+			},
+			"files": ["dist", "CHANGELOG.md"],
+			"exports": {
+				"./package.json": "./package.json",
+				"./Alert.svelte": {
+					"types": "./dist/Alert.svelte.d.ts",
+					"svelte": "./dist/Alert.svelte",
+					"default": "./dist/Alert.svelte"
+				},
+				"./alert.js": {"types": "./dist/alert.d.ts", "default": "./dist/alert.js"},
+				"./Breadcrumb.svelte": {
+					"types": "./dist/Breadcrumb.svelte.d.ts",
+					"svelte": "./dist/Breadcrumb.svelte",
+					"default": "./dist/Breadcrumb.svelte"
+				},
+				"./Card.svelte": {
+					"types": "./dist/Card.svelte.d.ts",
+					"svelte": "./dist/Card.svelte",
+					"default": "./dist/Card.svelte"
+				},
+				"./Color_Scheme_Input.svelte": {
+					"types": "./dist/Color_Scheme_Input.svelte.d.ts",
+					"svelte": "./dist/Color_Scheme_Input.svelte",
+					"default": "./dist/Color_Scheme_Input.svelte"
+				},
+				"./config.js": {"types": "./dist/config.d.ts", "default": "./dist/config.js"},
+				"./Contextmenu_Entry.svelte": {
+					"types": "./dist/Contextmenu_Entry.svelte.d.ts",
+					"svelte": "./dist/Contextmenu_Entry.svelte",
+					"default": "./dist/Contextmenu_Entry.svelte"
+				},
+				"./contextmenu_helpers.svelte.js": {
+					"types": "./dist/contextmenu_helpers.svelte.d.ts",
+					"default": "./dist/contextmenu_helpers.svelte.js"
+				},
+				"./Contextmenu_Link_Entry.svelte": {
+					"types": "./dist/Contextmenu_Link_Entry.svelte.d.ts",
+					"svelte": "./dist/Contextmenu_Link_Entry.svelte",
+					"default": "./dist/Contextmenu_Link_Entry.svelte"
+				},
+				"./Contextmenu_Root.svelte": {
+					"types": "./dist/Contextmenu_Root.svelte.d.ts",
+					"svelte": "./dist/Contextmenu_Root.svelte",
+					"default": "./dist/Contextmenu_Root.svelte"
+				},
+				"./Contextmenu_Submenu.svelte": {
+					"types": "./dist/Contextmenu_Submenu.svelte.d.ts",
+					"svelte": "./dist/Contextmenu_Submenu.svelte",
+					"default": "./dist/Contextmenu_Submenu.svelte"
+				},
+				"./Contextmenu_Text_Entry.svelte": {
+					"types": "./dist/Contextmenu_Text_Entry.svelte.d.ts",
+					"svelte": "./dist/Contextmenu_Text_Entry.svelte",
+					"default": "./dist/Contextmenu_Text_Entry.svelte"
+				},
+				"./Contextmenu.svelte": {
+					"types": "./dist/Contextmenu.svelte.d.ts",
+					"svelte": "./dist/Contextmenu.svelte",
+					"default": "./dist/Contextmenu.svelte"
+				},
+				"./Copy_To_Clipboard.svelte": {
+					"types": "./dist/Copy_To_Clipboard.svelte.d.ts",
+					"svelte": "./dist/Copy_To_Clipboard.svelte",
+					"default": "./dist/Copy_To_Clipboard.svelte"
+				},
+				"./Details.svelte": {
+					"types": "./dist/Details.svelte.d.ts",
+					"svelte": "./dist/Details.svelte",
+					"default": "./dist/Details.svelte"
+				},
+				"./Dialog.svelte": {
+					"types": "./dist/Dialog.svelte.d.ts",
+					"svelte": "./dist/Dialog.svelte",
+					"default": "./dist/Dialog.svelte"
+				},
+				"./dialog.js": {"types": "./dist/dialog.d.ts", "default": "./dist/dialog.js"},
+				"./Dialogs.svelte": {
+					"types": "./dist/Dialogs.svelte.d.ts",
+					"svelte": "./dist/Dialogs.svelte",
+					"default": "./dist/Dialogs.svelte"
+				},
+				"./dimensions.svelte.js": {
+					"types": "./dist/dimensions.svelte.d.ts",
+					"default": "./dist/dimensions.svelte.js"
+				},
+				"./Fuz_Logo.svelte": {
+					"types": "./dist/Fuz_Logo.svelte.d.ts",
+					"svelte": "./dist/Fuz_Logo.svelte",
+					"default": "./dist/Fuz_Logo.svelte"
+				},
+				"./Fuz_Template_Logo.svelte": {
+					"types": "./dist/Fuz_Template_Logo.svelte.d.ts",
+					"svelte": "./dist/Fuz_Template_Logo.svelte",
+					"default": "./dist/Fuz_Template_Logo.svelte"
+				},
+				"./Github_Logo.svelte": {
+					"types": "./dist/Github_Logo.svelte.d.ts",
+					"svelte": "./dist/Github_Logo.svelte",
+					"default": "./dist/Github_Logo.svelte"
+				},
+				"./Hashlink.svelte": {
+					"types": "./dist/Hashlink.svelte.d.ts",
+					"svelte": "./dist/Hashlink.svelte",
+					"default": "./dist/Hashlink.svelte"
+				},
+				"./Hue_Input.svelte": {
+					"types": "./dist/Hue_Input.svelte.d.ts",
+					"svelte": "./dist/Hue_Input.svelte",
+					"default": "./dist/Hue_Input.svelte"
+				},
+				"./Library_Content.svelte": {
+					"types": "./dist/Library_Content.svelte.d.ts",
+					"svelte": "./dist/Library_Content.svelte",
+					"default": "./dist/Library_Content.svelte"
+				},
+				"./Library_Footer.svelte": {
+					"types": "./dist/Library_Footer.svelte.d.ts",
+					"svelte": "./dist/Library_Footer.svelte",
+					"default": "./dist/Library_Footer.svelte"
+				},
+				"./library_helpers.svelte.js": {
+					"types": "./dist/library_helpers.svelte.d.ts",
+					"default": "./dist/library_helpers.svelte.js"
+				},
+				"./Library_Menu.svelte": {
+					"types": "./dist/Library_Menu.svelte.d.ts",
+					"svelte": "./dist/Library_Menu.svelte",
+					"default": "./dist/Library_Menu.svelte"
+				},
+				"./Library_Page_Links.svelte": {
+					"types": "./dist/Library_Page_Links.svelte.d.ts",
+					"svelte": "./dist/Library_Page_Links.svelte",
+					"default": "./dist/Library_Page_Links.svelte"
+				},
+				"./Library_Primary_Nav.svelte": {
+					"types": "./dist/Library_Primary_Nav.svelte.d.ts",
+					"svelte": "./dist/Library_Primary_Nav.svelte",
+					"default": "./dist/Library_Primary_Nav.svelte"
+				},
+				"./Library_Secondary_Nav.svelte": {
+					"types": "./dist/Library_Secondary_Nav.svelte.d.ts",
+					"svelte": "./dist/Library_Secondary_Nav.svelte",
+					"default": "./dist/Library_Secondary_Nav.svelte"
+				},
+				"./Library_Tertiary_Nav.svelte": {
+					"types": "./dist/Library_Tertiary_Nav.svelte.d.ts",
+					"svelte": "./dist/Library_Tertiary_Nav.svelte",
+					"default": "./dist/Library_Tertiary_Nav.svelte"
+				},
+				"./Library.svelte": {
+					"types": "./dist/Library.svelte.d.ts",
+					"svelte": "./dist/Library.svelte",
+					"default": "./dist/Library.svelte"
+				},
+				"./Mdn_Link.svelte": {
+					"types": "./dist/Mdn_Link.svelte.d.ts",
+					"svelte": "./dist/Mdn_Link.svelte",
+					"default": "./dist/Mdn_Link.svelte"
+				},
+				"./Mdn_Logo.svelte": {
+					"types": "./dist/Mdn_Logo.svelte.d.ts",
+					"svelte": "./dist/Mdn_Logo.svelte",
+					"default": "./dist/Mdn_Logo.svelte"
+				},
+				"./Moss_Logo.svelte": {
+					"types": "./dist/Moss_Logo.svelte.d.ts",
+					"svelte": "./dist/Moss_Logo.svelte",
+					"default": "./dist/Moss_Logo.svelte"
+				},
+				"./Package_Detail.svelte": {
+					"types": "./dist/Package_Detail.svelte.d.ts",
+					"svelte": "./dist/Package_Detail.svelte",
+					"default": "./dist/Package_Detail.svelte"
+				},
+				"./Package_Summary.svelte": {
+					"types": "./dist/Package_Summary.svelte.d.ts",
+					"svelte": "./dist/Package_Summary.svelte",
+					"default": "./dist/Package_Summary.svelte"
+				},
+				"./Pending_Animation.svelte": {
+					"types": "./dist/Pending_Animation.svelte.d.ts",
+					"svelte": "./dist/Pending_Animation.svelte",
+					"default": "./dist/Pending_Animation.svelte"
+				},
+				"./Pending_Button.svelte": {
+					"types": "./dist/Pending_Button.svelte.d.ts",
+					"svelte": "./dist/Pending_Button.svelte",
+					"default": "./dist/Pending_Button.svelte"
+				},
+				"./Redirect.svelte": {
+					"types": "./dist/Redirect.svelte.d.ts",
+					"svelte": "./dist/Redirect.svelte",
+					"default": "./dist/Redirect.svelte"
+				},
+				"./Spider.svelte": {
+					"types": "./dist/Spider.svelte.d.ts",
+					"svelte": "./dist/Spider.svelte",
+					"default": "./dist/Spider.svelte"
+				},
+				"./Spiders.svelte": {
+					"types": "./dist/Spiders.svelte.d.ts",
+					"svelte": "./dist/Spiders.svelte",
+					"default": "./dist/Spiders.svelte"
+				},
+				"./Spiderspace_Logo.svelte": {
+					"types": "./dist/Spiderspace_Logo.svelte.d.ts",
+					"svelte": "./dist/Spiderspace_Logo.svelte",
+					"default": "./dist/Spiderspace_Logo.svelte"
+				},
+				"./Teleport.svelte": {
+					"types": "./dist/Teleport.svelte.d.ts",
+					"svelte": "./dist/Teleport.svelte",
+					"default": "./dist/Teleport.svelte"
+				},
+				"./Theme_Input.svelte": {
+					"types": "./dist/Theme_Input.svelte.d.ts",
+					"svelte": "./dist/Theme_Input.svelte",
+					"default": "./dist/Theme_Input.svelte"
+				},
+				"./theme.js": {"types": "./dist/theme.d.ts", "default": "./dist/theme.js"},
+				"./Themed_Scope.svelte": {
+					"types": "./dist/Themed_Scope.svelte.d.ts",
+					"svelte": "./dist/Themed_Scope.svelte",
+					"default": "./dist/Themed_Scope.svelte"
+				},
+				"./Themed.svelte": {
+					"types": "./dist/Themed.svelte.d.ts",
+					"svelte": "./dist/Themed.svelte",
+					"default": "./dist/Themed.svelte"
+				},
+				"./Tome_Detail.svelte": {
+					"types": "./dist/Tome_Detail.svelte.d.ts",
+					"svelte": "./dist/Tome_Detail.svelte",
+					"default": "./dist/Tome_Detail.svelte"
+				},
+				"./Tome_Link.svelte": {
+					"types": "./dist/Tome_Link.svelte.d.ts",
+					"svelte": "./dist/Tome_Link.svelte",
+					"default": "./dist/Tome_Link.svelte"
+				},
+				"./Tome_Subheading.svelte": {
+					"types": "./dist/Tome_Subheading.svelte.d.ts",
+					"svelte": "./dist/Tome_Subheading.svelte",
+					"default": "./dist/Tome_Subheading.svelte"
+				},
+				"./Tome_Title.svelte": {
+					"types": "./dist/Tome_Title.svelte.d.ts",
+					"svelte": "./dist/Tome_Title.svelte",
+					"default": "./dist/Tome_Title.svelte"
+				},
+				"./tome.js": {"types": "./dist/tome.d.ts", "default": "./dist/tome.js"},
+				"./Zzz_Logo.svelte": {
+					"types": "./dist/Zzz_Logo.svelte.d.ts",
+					"svelte": "./dist/Zzz_Logo.svelte",
+					"default": "./dist/Zzz_Logo.svelte"
+				}
+			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn", "rules": {"no-console": 1}},
 			"prettier": {
 				"plugins": ["prettier-plugin-svelte"],
@@ -69,266 +324,11 @@
 				"singleQuote": true,
 				"bracketSpacing": false,
 				"overrides": [{"files": "package.json", "options": {"useTabs": false}}]
-			},
-			"exports": {
-				"./package.json": "./package.json",
-				"./Alert.svelte": {
-					"svelte": "./dist/Alert.svelte",
-					"default": "./dist/Alert.svelte",
-					"types": "./dist/Alert.svelte.d.ts"
-				},
-				"./alert.js": {"default": "./dist/alert.js", "types": "./dist/alert.d.ts"},
-				"./Breadcrumb.svelte": {
-					"svelte": "./dist/Breadcrumb.svelte",
-					"default": "./dist/Breadcrumb.svelte",
-					"types": "./dist/Breadcrumb.svelte.d.ts"
-				},
-				"./Card.svelte": {
-					"svelte": "./dist/Card.svelte",
-					"default": "./dist/Card.svelte",
-					"types": "./dist/Card.svelte.d.ts"
-				},
-				"./Color_Scheme_Input.svelte": {
-					"svelte": "./dist/Color_Scheme_Input.svelte",
-					"default": "./dist/Color_Scheme_Input.svelte",
-					"types": "./dist/Color_Scheme_Input.svelte.d.ts"
-				},
-				"./config.js": {"default": "./dist/config.js", "types": "./dist/config.d.ts"},
-				"./Contextmenu_Entry.svelte": {
-					"svelte": "./dist/Contextmenu_Entry.svelte",
-					"default": "./dist/Contextmenu_Entry.svelte",
-					"types": "./dist/Contextmenu_Entry.svelte.d.ts"
-				},
-				"./contextmenu_helpers.svelte.js": {
-					"default": "./dist/contextmenu_helpers.svelte.js",
-					"types": "./dist/contextmenu_helpers.svelte.d.ts"
-				},
-				"./Contextmenu_Link_Entry.svelte": {
-					"svelte": "./dist/Contextmenu_Link_Entry.svelte",
-					"default": "./dist/Contextmenu_Link_Entry.svelte",
-					"types": "./dist/Contextmenu_Link_Entry.svelte.d.ts"
-				},
-				"./Contextmenu_Root.svelte": {
-					"svelte": "./dist/Contextmenu_Root.svelte",
-					"default": "./dist/Contextmenu_Root.svelte",
-					"types": "./dist/Contextmenu_Root.svelte.d.ts"
-				},
-				"./Contextmenu_Submenu.svelte": {
-					"svelte": "./dist/Contextmenu_Submenu.svelte",
-					"default": "./dist/Contextmenu_Submenu.svelte",
-					"types": "./dist/Contextmenu_Submenu.svelte.d.ts"
-				},
-				"./Contextmenu_Text_Entry.svelte": {
-					"svelte": "./dist/Contextmenu_Text_Entry.svelte",
-					"default": "./dist/Contextmenu_Text_Entry.svelte",
-					"types": "./dist/Contextmenu_Text_Entry.svelte.d.ts"
-				},
-				"./Contextmenu.svelte": {
-					"svelte": "./dist/Contextmenu.svelte",
-					"default": "./dist/Contextmenu.svelte",
-					"types": "./dist/Contextmenu.svelte.d.ts"
-				},
-				"./Copy_To_Clipboard.svelte": {
-					"svelte": "./dist/Copy_To_Clipboard.svelte",
-					"default": "./dist/Copy_To_Clipboard.svelte",
-					"types": "./dist/Copy_To_Clipboard.svelte.d.ts"
-				},
-				"./Details.svelte": {
-					"svelte": "./dist/Details.svelte",
-					"default": "./dist/Details.svelte",
-					"types": "./dist/Details.svelte.d.ts"
-				},
-				"./Dialog.svelte": {
-					"svelte": "./dist/Dialog.svelte",
-					"default": "./dist/Dialog.svelte",
-					"types": "./dist/Dialog.svelte.d.ts"
-				},
-				"./dialog.js": {"default": "./dist/dialog.js", "types": "./dist/dialog.d.ts"},
-				"./Dialogs.svelte": {
-					"svelte": "./dist/Dialogs.svelte",
-					"default": "./dist/Dialogs.svelte",
-					"types": "./dist/Dialogs.svelte.d.ts"
-				},
-				"./dimensions.svelte.js": {
-					"default": "./dist/dimensions.svelte.js",
-					"types": "./dist/dimensions.svelte.d.ts"
-				},
-				"./Fuz_Logo.svelte": {
-					"svelte": "./dist/Fuz_Logo.svelte",
-					"default": "./dist/Fuz_Logo.svelte",
-					"types": "./dist/Fuz_Logo.svelte.d.ts"
-				},
-				"./Fuz_Template_Logo.svelte": {
-					"svelte": "./dist/Fuz_Template_Logo.svelte",
-					"default": "./dist/Fuz_Template_Logo.svelte",
-					"types": "./dist/Fuz_Template_Logo.svelte.d.ts"
-				},
-				"./Github_Logo.svelte": {
-					"svelte": "./dist/Github_Logo.svelte",
-					"default": "./dist/Github_Logo.svelte",
-					"types": "./dist/Github_Logo.svelte.d.ts"
-				},
-				"./Hashlink.svelte": {
-					"svelte": "./dist/Hashlink.svelte",
-					"default": "./dist/Hashlink.svelte",
-					"types": "./dist/Hashlink.svelte.d.ts"
-				},
-				"./Hue_Input.svelte": {
-					"svelte": "./dist/Hue_Input.svelte",
-					"default": "./dist/Hue_Input.svelte",
-					"types": "./dist/Hue_Input.svelte.d.ts"
-				},
-				"./Library_Content.svelte": {
-					"svelte": "./dist/Library_Content.svelte",
-					"default": "./dist/Library_Content.svelte",
-					"types": "./dist/Library_Content.svelte.d.ts"
-				},
-				"./Library_Footer.svelte": {
-					"svelte": "./dist/Library_Footer.svelte",
-					"default": "./dist/Library_Footer.svelte",
-					"types": "./dist/Library_Footer.svelte.d.ts"
-				},
-				"./library_helpers.svelte.js": {
-					"default": "./dist/library_helpers.svelte.js",
-					"types": "./dist/library_helpers.svelte.d.ts"
-				},
-				"./Library_Menu.svelte": {
-					"svelte": "./dist/Library_Menu.svelte",
-					"default": "./dist/Library_Menu.svelte",
-					"types": "./dist/Library_Menu.svelte.d.ts"
-				},
-				"./Library_Page_Links.svelte": {
-					"svelte": "./dist/Library_Page_Links.svelte",
-					"default": "./dist/Library_Page_Links.svelte",
-					"types": "./dist/Library_Page_Links.svelte.d.ts"
-				},
-				"./Library_Primary_Nav.svelte": {
-					"svelte": "./dist/Library_Primary_Nav.svelte",
-					"default": "./dist/Library_Primary_Nav.svelte",
-					"types": "./dist/Library_Primary_Nav.svelte.d.ts"
-				},
-				"./Library_Secondary_Nav.svelte": {
-					"svelte": "./dist/Library_Secondary_Nav.svelte",
-					"default": "./dist/Library_Secondary_Nav.svelte",
-					"types": "./dist/Library_Secondary_Nav.svelte.d.ts"
-				},
-				"./Library_Tertiary_Nav.svelte": {
-					"svelte": "./dist/Library_Tertiary_Nav.svelte",
-					"default": "./dist/Library_Tertiary_Nav.svelte",
-					"types": "./dist/Library_Tertiary_Nav.svelte.d.ts"
-				},
-				"./Library.svelte": {
-					"svelte": "./dist/Library.svelte",
-					"default": "./dist/Library.svelte",
-					"types": "./dist/Library.svelte.d.ts"
-				},
-				"./Mdn_Link.svelte": {
-					"svelte": "./dist/Mdn_Link.svelte",
-					"default": "./dist/Mdn_Link.svelte",
-					"types": "./dist/Mdn_Link.svelte.d.ts"
-				},
-				"./Mdn_Logo.svelte": {
-					"svelte": "./dist/Mdn_Logo.svelte",
-					"default": "./dist/Mdn_Logo.svelte",
-					"types": "./dist/Mdn_Logo.svelte.d.ts"
-				},
-				"./Moss_Logo.svelte": {
-					"svelte": "./dist/Moss_Logo.svelte",
-					"default": "./dist/Moss_Logo.svelte",
-					"types": "./dist/Moss_Logo.svelte.d.ts"
-				},
-				"./Package_Detail.svelte": {
-					"svelte": "./dist/Package_Detail.svelte",
-					"default": "./dist/Package_Detail.svelte",
-					"types": "./dist/Package_Detail.svelte.d.ts"
-				},
-				"./Package_Summary.svelte": {
-					"svelte": "./dist/Package_Summary.svelte",
-					"default": "./dist/Package_Summary.svelte",
-					"types": "./dist/Package_Summary.svelte.d.ts"
-				},
-				"./Pending_Animation.svelte": {
-					"svelte": "./dist/Pending_Animation.svelte",
-					"default": "./dist/Pending_Animation.svelte",
-					"types": "./dist/Pending_Animation.svelte.d.ts"
-				},
-				"./Pending_Button.svelte": {
-					"svelte": "./dist/Pending_Button.svelte",
-					"default": "./dist/Pending_Button.svelte",
-					"types": "./dist/Pending_Button.svelte.d.ts"
-				},
-				"./Redirect.svelte": {
-					"svelte": "./dist/Redirect.svelte",
-					"default": "./dist/Redirect.svelte",
-					"types": "./dist/Redirect.svelte.d.ts"
-				},
-				"./Spider.svelte": {
-					"svelte": "./dist/Spider.svelte",
-					"default": "./dist/Spider.svelte",
-					"types": "./dist/Spider.svelte.d.ts"
-				},
-				"./Spiders.svelte": {
-					"svelte": "./dist/Spiders.svelte",
-					"default": "./dist/Spiders.svelte",
-					"types": "./dist/Spiders.svelte.d.ts"
-				},
-				"./Spiderspace_Logo.svelte": {
-					"svelte": "./dist/Spiderspace_Logo.svelte",
-					"default": "./dist/Spiderspace_Logo.svelte",
-					"types": "./dist/Spiderspace_Logo.svelte.d.ts"
-				},
-				"./Teleport.svelte": {
-					"svelte": "./dist/Teleport.svelte",
-					"default": "./dist/Teleport.svelte",
-					"types": "./dist/Teleport.svelte.d.ts"
-				},
-				"./Theme_Input.svelte": {
-					"svelte": "./dist/Theme_Input.svelte",
-					"default": "./dist/Theme_Input.svelte",
-					"types": "./dist/Theme_Input.svelte.d.ts"
-				},
-				"./theme.js": {"default": "./dist/theme.js", "types": "./dist/theme.d.ts"},
-				"./Themed_Scope.svelte": {
-					"svelte": "./dist/Themed_Scope.svelte",
-					"default": "./dist/Themed_Scope.svelte",
-					"types": "./dist/Themed_Scope.svelte.d.ts"
-				},
-				"./Themed.svelte": {
-					"svelte": "./dist/Themed.svelte",
-					"default": "./dist/Themed.svelte",
-					"types": "./dist/Themed.svelte.d.ts"
-				},
-				"./Tome_Detail.svelte": {
-					"svelte": "./dist/Tome_Detail.svelte",
-					"default": "./dist/Tome_Detail.svelte",
-					"types": "./dist/Tome_Detail.svelte.d.ts"
-				},
-				"./Tome_Link.svelte": {
-					"svelte": "./dist/Tome_Link.svelte",
-					"default": "./dist/Tome_Link.svelte",
-					"types": "./dist/Tome_Link.svelte.d.ts"
-				},
-				"./Tome_Subheading.svelte": {
-					"svelte": "./dist/Tome_Subheading.svelte",
-					"default": "./dist/Tome_Subheading.svelte",
-					"types": "./dist/Tome_Subheading.svelte.d.ts"
-				},
-				"./Tome_Title.svelte": {
-					"svelte": "./dist/Tome_Title.svelte",
-					"default": "./dist/Tome_Title.svelte",
-					"types": "./dist/Tome_Title.svelte.d.ts"
-				},
-				"./tome.js": {"default": "./dist/tome.js", "types": "./dist/tome.d.ts"},
-				"./Zzz_Logo.svelte": {
-					"svelte": "./dist/Zzz_Logo.svelte",
-					"default": "./dist/Zzz_Logo.svelte",
-					"types": "./dist/Zzz_Logo.svelte.d.ts"
-				}
 			}
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz",
-			"version": "0.105.1",
+			"version": "0.105.2",
 			"modules": {
 				"./package.json": {"path": "package.json", "declarations": []},
 				"./Alert.svelte": {"path": "Alert.svelte", "declarations": []},
@@ -547,16 +547,16 @@
 		"npm_url": null,
 		"changelog_url": null,
 		"published": false,
-		"check_runs": {"status": "completed", "conclusion": "success"},
+		"check_runs": {"status": "in_progress", "conclusion": null},
 		"pull_requests": []
 	},
 	{
 		"url": "https://gitops.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz_gitops",
-			"version": "0.29.0",
+			"version": "0.29.1",
 			"description": "a tool for managing many repos",
-			"icon": "🪄",
+			"glyph": "🪄",
 			"public": true,
 			"license": "MIT",
 			"homepage": "https://gitops.fuz.dev/",
@@ -588,11 +588,11 @@
 			},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@ryanatkn/belt": "^0.22.0",
+				"@ryanatkn/belt": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.105.1",
-				"@ryanatkn/gro": "^0.124.0",
-				"@ryanatkn/moss": "^0.6.0",
+				"@ryanatkn/fuz": "^0.105.2",
+				"@ryanatkn/gro": "^0.125.1",
+				"@ryanatkn/moss": "^0.6.1",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -622,104 +622,104 @@
 			"exports": {
 				"./package.json": "./package.json",
 				"./Deployments_Table.svelte": {
+					"types": "./dist/Deployments_Table.svelte.d.ts",
 					"svelte": "./dist/Deployments_Table.svelte",
-					"default": "./dist/Deployments_Table.svelte",
-					"types": "./dist/Deployments_Table.svelte.d.ts"
+					"default": "./dist/Deployments_Table.svelte"
 				},
 				"./Deployments_Tree_Nav.svelte": {
+					"types": "./dist/Deployments_Tree_Nav.svelte.d.ts",
 					"svelte": "./dist/Deployments_Tree_Nav.svelte",
-					"default": "./dist/Deployments_Tree_Nav.svelte",
-					"types": "./dist/Deployments_Tree_Nav.svelte.d.ts"
+					"default": "./dist/Deployments_Tree_Nav.svelte"
 				},
 				"./Deployments_Tree.svelte": {
+					"types": "./dist/Deployments_Tree.svelte.d.ts",
 					"svelte": "./dist/Deployments_Tree.svelte",
-					"default": "./dist/Deployments_Tree.svelte",
-					"types": "./dist/Deployments_Tree.svelte.d.ts"
+					"default": "./dist/Deployments_Tree.svelte"
 				},
 				"./deployments.json": {
-					"default": "./dist/deployments.json",
-					"types": "./dist/deployments.json.d.ts"
+					"types": "./dist/deployments.json.d.ts",
+					"default": "./dist/deployments.json"
 				},
 				"./deployments.js": {
-					"default": "./dist/deployments.js",
-					"types": "./dist/deployments.d.ts"
+					"types": "./dist/deployments.d.ts",
+					"default": "./dist/deployments.js"
 				},
 				"./fetch_deployments.js": {
-					"default": "./dist/fetch_deployments.js",
-					"types": "./dist/fetch_deployments.d.ts"
+					"types": "./dist/fetch_deployments.d.ts",
+					"default": "./dist/fetch_deployments.js"
 				},
 				"./fs_fetch_value_cache.js": {
-					"default": "./dist/fs_fetch_value_cache.js",
-					"types": "./dist/fs_fetch_value_cache.d.ts"
+					"types": "./dist/fs_fetch_value_cache.d.ts",
+					"default": "./dist/fs_fetch_value_cache.js"
 				},
 				"./github_helpers.js": {
-					"default": "./dist/github_helpers.js",
-					"types": "./dist/github_helpers.d.ts"
+					"types": "./dist/github_helpers.d.ts",
+					"default": "./dist/github_helpers.js"
 				},
-				"./github.js": {"default": "./dist/github.js", "types": "./dist/github.d.ts"},
+				"./github.js": {"types": "./dist/github.d.ts", "default": "./dist/github.js"},
 				"./gitops.task.js": {
-					"default": "./dist/gitops.task.js",
-					"types": "./dist/gitops.task.d.ts"
+					"types": "./dist/gitops.task.d.ts",
+					"default": "./dist/gitops.task.js"
 				},
 				"./Modules_Detail.svelte": {
+					"types": "./dist/Modules_Detail.svelte.d.ts",
 					"svelte": "./dist/Modules_Detail.svelte",
-					"default": "./dist/Modules_Detail.svelte",
-					"types": "./dist/Modules_Detail.svelte.d.ts"
+					"default": "./dist/Modules_Detail.svelte"
 				},
 				"./Modules_Nav.svelte": {
+					"types": "./dist/Modules_Nav.svelte.d.ts",
 					"svelte": "./dist/Modules_Nav.svelte",
-					"default": "./dist/Modules_Nav.svelte",
-					"types": "./dist/Modules_Nav.svelte.d.ts"
+					"default": "./dist/Modules_Nav.svelte"
 				},
 				"./Modules_Page.svelte": {
+					"types": "./dist/Modules_Page.svelte.d.ts",
 					"svelte": "./dist/Modules_Page.svelte",
-					"default": "./dist/Modules_Page.svelte",
-					"types": "./dist/Modules_Page.svelte.d.ts"
+					"default": "./dist/Modules_Page.svelte"
 				},
 				"./Page_Footer.svelte": {
+					"types": "./dist/Page_Footer.svelte.d.ts",
 					"svelte": "./dist/Page_Footer.svelte",
-					"default": "./dist/Page_Footer.svelte",
-					"types": "./dist/Page_Footer.svelte.d.ts"
+					"default": "./dist/Page_Footer.svelte"
 				},
 				"./Page_Header.svelte": {
+					"types": "./dist/Page_Header.svelte.d.ts",
 					"svelte": "./dist/Page_Header.svelte",
-					"default": "./dist/Page_Header.svelte",
-					"types": "./dist/Page_Header.svelte.d.ts"
+					"default": "./dist/Page_Header.svelte"
 				},
 				"./Pull_Requests_Detail.svelte": {
+					"types": "./dist/Pull_Requests_Detail.svelte.d.ts",
 					"svelte": "./dist/Pull_Requests_Detail.svelte",
-					"default": "./dist/Pull_Requests_Detail.svelte",
-					"types": "./dist/Pull_Requests_Detail.svelte.d.ts"
+					"default": "./dist/Pull_Requests_Detail.svelte"
 				},
 				"./Pull_Requests_Page.svelte": {
+					"types": "./dist/Pull_Requests_Page.svelte.d.ts",
 					"svelte": "./dist/Pull_Requests_Page.svelte",
-					"default": "./dist/Pull_Requests_Page.svelte",
-					"types": "./dist/Pull_Requests_Page.svelte.d.ts"
+					"default": "./dist/Pull_Requests_Page.svelte"
 				},
 				"./run_gitops.task.js": {
-					"default": "./dist/run_gitops.task.js",
-					"types": "./dist/run_gitops.task.d.ts"
+					"types": "./dist/run_gitops.task.d.ts",
+					"default": "./dist/run_gitops.task.js"
 				},
 				"./Table_Page.svelte": {
+					"types": "./dist/Table_Page.svelte.d.ts",
 					"svelte": "./dist/Table_Page.svelte",
-					"default": "./dist/Table_Page.svelte",
-					"types": "./dist/Table_Page.svelte.d.ts"
+					"default": "./dist/Table_Page.svelte"
 				},
 				"./Tree_Item_Page.svelte": {
+					"types": "./dist/Tree_Item_Page.svelte.d.ts",
 					"svelte": "./dist/Tree_Item_Page.svelte",
-					"default": "./dist/Tree_Item_Page.svelte",
-					"types": "./dist/Tree_Item_Page.svelte.d.ts"
+					"default": "./dist/Tree_Item_Page.svelte"
 				},
 				"./Tree_Page.svelte": {
+					"types": "./dist/Tree_Page.svelte.d.ts",
 					"svelte": "./dist/Tree_Page.svelte",
-					"default": "./dist/Tree_Page.svelte",
-					"types": "./dist/Tree_Page.svelte.d.ts"
+					"default": "./dist/Tree_Page.svelte"
 				}
 			}
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz_gitops",
-			"version": "0.29.0",
+			"version": "0.29.1",
 			"modules": {
 				"./package.json": {"path": "package.json", "declarations": []},
 				"./Deployments_Table.svelte": {"path": "Deployments_Table.svelte", "declarations": []},
@@ -814,21 +814,11 @@
 		"url": "https://code.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz_code",
-			"description": "syntax highlighting using prismjs for Svelte, SvelteKit, TypeScript, and Fuz",
-			"version": "0.15.0",
+			"version": "0.15.1",
 			"public": true,
+			"description": "syntax highlighting using prismjs for Svelte, SvelteKit, TypeScript, and Fuz",
+			"glyph": "🎨",
 			"license": "MIT",
-			"type": "module",
-			"homepage": "https://code.fuz.dev/",
-			"repository": "https://github.com/ryanatkn/fuz_code",
-			"author": {
-				"name": "Ryan Atkinson",
-				"email": "mail@ryanatkn.com",
-				"url": "https://www.ryanatkn.com/"
-			},
-			"bugs": "https://github.com/ryanatkn/fuz_code/issues",
-			"funding": "https://www.ryanatkn.com/funding",
-			"engines": {"node": ">=20.12"},
 			"scripts": {
 				"start": "gro dev",
 				"dev": "gro dev",
@@ -836,14 +826,23 @@
 				"test": "gro test",
 				"deploy": "gro deploy"
 			},
-			"files": ["dist"],
-			"peerDependencies": {"prism-svelte": "^0.5", "prismjs": "^1", "svelte": "^5.0.0-next.0"},
+			"homepage": "https://code.fuz.dev/",
+			"author": {
+				"name": "Ryan Atkinson",
+				"email": "mail@ryanatkn.com",
+				"url": "https://www.ryanatkn.com/"
+			},
+			"repository": "https://github.com/ryanatkn/fuz_code",
+			"bugs": "https://github.com/ryanatkn/fuz_code/issues",
+			"funding": "https://www.ryanatkn.com/funding",
+			"type": "module",
+			"engines": {"node": ">=20.12"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@ryanatkn/belt": "^0.22.0",
+				"@ryanatkn/belt": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.104.1",
-				"@ryanatkn/gro": "^0.124.0",
+				"@ryanatkn/fuz": "^0.105.2",
+				"@ryanatkn/gro": "^0.125.1",
 				"@ryanatkn/moss": "^0.6.0",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
@@ -864,6 +863,21 @@
 				"typescript": "^5.5.2",
 				"uvu": "^0.5.6"
 			},
+			"peerDependencies": {"prism-svelte": "^0.5", "prismjs": "^1", "svelte": "^5.0.0-next.0"},
+			"files": ["dist"],
+			"exports": {
+				"./package.json": "./package.json",
+				"./Code.svelte": {
+					"types": "./dist/Code.svelte.d.ts",
+					"svelte": "./dist/Code.svelte",
+					"default": "./dist/Code.svelte"
+				},
+				"./prism.css": {"default": "./dist/prism.css"},
+				"./remove_prism_css_vite_plugin.js": {
+					"types": "./dist/remove_prism_css_vite_plugin.d.ts",
+					"default": "./dist/remove_prism_css_vite_plugin.js"
+				}
+			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn"},
 			"prettier": {
 				"plugins": ["prettier-plugin-svelte"],
@@ -872,24 +886,11 @@
 				"singleQuote": true,
 				"bracketSpacing": false,
 				"overrides": [{"files": "package.json", "options": {"useTabs": false}}]
-			},
-			"exports": {
-				"./package.json": "./package.json",
-				"./Code.svelte": {
-					"svelte": "./dist/Code.svelte",
-					"default": "./dist/Code.svelte",
-					"types": "./dist/Code.svelte.d.ts"
-				},
-				"./prism.css": {"default": "./dist/prism.css"},
-				"./remove_prism_css_vite_plugin.js": {
-					"default": "./dist/remove_prism_css_vite_plugin.js",
-					"types": "./dist/remove_prism_css_vite_plugin.d.ts"
-				}
 			}
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz_code",
-			"version": "0.15.0",
+			"version": "0.15.1",
 			"modules": {
 				"./package.json": {"path": "package.json", "declarations": []},
 				"./Code.svelte": {"path": "Code.svelte", "declarations": []},
@@ -915,22 +916,11 @@
 		"url": "https://mastodon.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz_mastodon",
-			"description": "Mastodon components and helpers for Svelte, SvelteKit, and Fuz",
-			"version": "0.13.0",
+			"version": "0.14.0",
 			"public": true,
-			"icon": "🦣",
+			"description": "Mastodon components and helpers for Svelte, SvelteKit, and Fuz",
+			"glyph": "🦣",
 			"license": "MIT",
-			"homepage": "https://mastodon.fuz.dev/",
-			"repository": "https://github.com/ryanatkn/fuz_mastodon",
-			"author": {
-				"name": "Ryan Atkinson",
-				"email": "mail@ryanatkn.com",
-				"url": "https://www.ryanatkn.com/"
-			},
-			"bugs": "https://github.com/ryanatkn/fuz_mastodon/issues",
-			"funding": "https://www.ryanatkn.com/funding",
-			"type": "module",
-			"engines": {"node": ">=20.12"},
 			"scripts": {
 				"start": "gro dev",
 				"dev": "gro dev",
@@ -938,22 +928,25 @@
 				"test": "gro test",
 				"deploy": "gro deploy"
 			},
-			"files": ["dist"],
-			"peerDependencies": {
-				"@ryanatkn/belt": "*",
-				"@ryanatkn/fuz": "*",
-				"@sveltejs/kit": "*",
-				"svelte": "*",
-				"svelte-intersect": "*"
+			"homepage": "https://mastodon.fuz.dev/",
+			"author": {
+				"name": "Ryan Atkinson",
+				"email": "mail@ryanatkn.com",
+				"url": "https://www.ryanatkn.com/"
 			},
+			"repository": "https://github.com/ryanatkn/fuz_mastodon",
+			"bugs": "https://github.com/ryanatkn/fuz_mastodon/issues",
+			"funding": "https://www.ryanatkn.com/funding",
+			"type": "module",
+			"engines": {"node": ">=20.12"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
-				"@ryanatkn/belt": "^0.22.0",
+				"@ryanatkn/belt": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.105.1",
-				"@ryanatkn/fuz_code": "^0.15.0",
-				"@ryanatkn/gro": "^0.124.0",
-				"@ryanatkn/moss": "^0.6.0",
+				"@ryanatkn/fuz": "^0.105.2",
+				"@ryanatkn/fuz_code": "^0.15.1",
+				"@ryanatkn/gro": "^0.125.1",
+				"@ryanatkn/moss": "^0.6.1",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -969,10 +962,48 @@
 				"prismjs": "^1.29.0",
 				"svelte": "^5.0.0-next.165",
 				"svelte-check": "^3.8.2",
-				"svelte-intersect": "^0.13.0",
+				"svelte-intersect": "^0.14.1",
 				"tslib": "^2.6.3",
 				"typescript": "^5.5.2",
 				"uvu": "^0.5.6"
+			},
+			"peerDependencies": {
+				"@ryanatkn/belt": "*",
+				"@ryanatkn/fuz": "*",
+				"@sveltejs/kit": "^2",
+				"svelte": "^5.0.0-next.0",
+				"svelte-intersect": "^0.14"
+			},
+			"files": ["dist"],
+			"exports": {
+				"./package.json": "./package.json",
+				"./Mastodon_Status_Item.svelte": {
+					"types": "./dist/Mastodon_Status_Item.svelte.d.ts",
+					"svelte": "./dist/Mastodon_Status_Item.svelte",
+					"default": "./dist/Mastodon_Status_Item.svelte"
+				},
+				"./Mastodon_Status_Tree.svelte": {
+					"types": "./dist/Mastodon_Status_Tree.svelte.d.ts",
+					"svelte": "./dist/Mastodon_Status_Tree.svelte",
+					"default": "./dist/Mastodon_Status_Tree.svelte"
+				},
+				"./mastodon.js": {"types": "./dist/mastodon.d.ts", "default": "./dist/mastodon.js"},
+				"./storage.js": {"types": "./dist/storage.d.ts", "default": "./dist/storage.js"},
+				"./Toot_Input.svelte": {
+					"types": "./dist/Toot_Input.svelte.d.ts",
+					"svelte": "./dist/Toot_Input.svelte",
+					"default": "./dist/Toot_Input.svelte"
+				},
+				"./Toot_Loader.svelte": {
+					"types": "./dist/Toot_Loader.svelte.d.ts",
+					"svelte": "./dist/Toot_Loader.svelte",
+					"default": "./dist/Toot_Loader.svelte"
+				},
+				"./Toot.svelte": {
+					"types": "./dist/Toot.svelte.d.ts",
+					"svelte": "./dist/Toot.svelte",
+					"default": "./dist/Toot.svelte"
+				}
 			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn", "rules": {"no-console": 1}},
 			"prettier": {
@@ -982,41 +1013,11 @@
 				"singleQuote": true,
 				"bracketSpacing": false,
 				"overrides": [{"files": "package.json", "options": {"useTabs": false}}]
-			},
-			"exports": {
-				"./package.json": "./package.json",
-				"./Mastodon_Status_Item.svelte": {
-					"svelte": "./dist/Mastodon_Status_Item.svelte",
-					"default": "./dist/Mastodon_Status_Item.svelte",
-					"types": "./dist/Mastodon_Status_Item.svelte.d.ts"
-				},
-				"./Mastodon_Status_Tree.svelte": {
-					"svelte": "./dist/Mastodon_Status_Tree.svelte",
-					"default": "./dist/Mastodon_Status_Tree.svelte",
-					"types": "./dist/Mastodon_Status_Tree.svelte.d.ts"
-				},
-				"./mastodon.js": {"default": "./dist/mastodon.js", "types": "./dist/mastodon.d.ts"},
-				"./storage.js": {"default": "./dist/storage.js", "types": "./dist/storage.d.ts"},
-				"./Toot_Input.svelte": {
-					"svelte": "./dist/Toot_Input.svelte",
-					"default": "./dist/Toot_Input.svelte",
-					"types": "./dist/Toot_Input.svelte.d.ts"
-				},
-				"./Toot_Loader.svelte": {
-					"svelte": "./dist/Toot_Loader.svelte",
-					"default": "./dist/Toot_Loader.svelte",
-					"types": "./dist/Toot_Loader.svelte.d.ts"
-				},
-				"./Toot.svelte": {
-					"svelte": "./dist/Toot.svelte",
-					"default": "./dist/Toot.svelte",
-					"types": "./dist/Toot.svelte.d.ts"
-				}
 			}
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz_mastodon",
-			"version": "0.13.0",
+			"version": "0.14.0",
 			"modules": {
 				"./package.json": {"path": "package.json", "declarations": []},
 				"./Mastodon_Status_Item.svelte": {
@@ -1073,13 +1074,17 @@
 		"url": "https://gro.ryanatkn.com/",
 		"package_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.124.0",
+			"version": "0.125.1",
+			"public": true,
 			"description": "task runner and toolkit extending SvelteKit",
 			"motto": "generate, run, optimize",
-			"icon": "🌰",
-			"public": true,
-			"bin": {"gro": "dist/gro.js"},
+			"glyph": "🌰",
 			"license": "MIT",
+			"scripts": {
+				"build": "rm -rf .gro dist && svelte-kit sync && svelte-package && chmod +x ./dist/gro.js && npm link -f",
+				"start": "gro dev",
+				"test": "gro test"
+			},
 			"homepage": "https://gro.ryanatkn.com/",
 			"author": {
 				"name": "Ryan Atkinson",
@@ -1089,13 +1094,6 @@
 			"repository": {"type": "git", "url": "git+https://github.com/ryanatkn/gro.git"},
 			"bugs": "https://github.com/ryanatkn/gro/issues",
 			"funding": "https://www.ryanatkn.com/funding",
-			"type": "module",
-			"engines": {"node": ">=20.12"},
-			"scripts": {
-				"build": "rm -rf .gro dist && svelte-kit sync && svelte-package && chmod +x ./dist/gro.js && npm link -f",
-				"start": "gro dev",
-				"test": "gro test"
-			},
 			"keywords": [
 				"web",
 				"tools",
@@ -1107,13 +1105,13 @@
 				"vite",
 				"typescript"
 			],
-			"files": ["dist"],
+			"type": "module",
+			"engines": {"node": ">=20.12"},
 			"dependencies": {
-				"@ryanatkn/belt": "^0.22.0",
+				"@ryanatkn/belt": "^0.23.0",
 				"chokidar": "^3.6.0",
 				"dotenv": "^16.4.5",
 				"es-module-lexer": "^1.5.4",
-				"kleur": "^4.1.5",
 				"mri": "^1.2.0",
 				"prettier": "^3.3.2",
 				"prettier-plugin-svelte": "^3.2.5",
@@ -1121,13 +1119,12 @@
 				"tslib": "^2.6.3",
 				"zod": "^3.23.8"
 			},
-			"peerDependencies": {"esbuild": "^0.20", "svelte": "^5.0.0-next.0"},
 			"devDependencies": {
 				"@changesets/changelog-git": "^0.2.0",
 				"@changesets/types": "^6.0.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.104.1",
-				"@ryanatkn/moss": "^0.5.0",
+				"@ryanatkn/fuz": "^0.105.2",
+				"@ryanatkn/moss": "^0.6.1",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -1144,6 +1141,231 @@
 				"typescript": "^5.5.2",
 				"uvu": "^0.5.6"
 			},
+			"peerDependencies": {"esbuild": "^0.20", "svelte": "^5.0.0-next.0"},
+			"bin": {"gro": "dist/gro.js"},
+			"files": ["dist"],
+			"exports": {
+				".": {"types": "./dist/index.d.ts", "default": "./dist/index.js"},
+				"./package.json": "./package.json",
+				"./args.js": {"types": "./dist/args.d.ts", "default": "./dist/args.js"},
+				"./build.task.js": {"types": "./dist/build.task.d.ts", "default": "./dist/build.task.js"},
+				"./changelog.js": {"types": "./dist/changelog.d.ts", "default": "./dist/changelog.js"},
+				"./changeset_helpers.js": {
+					"types": "./dist/changeset_helpers.d.ts",
+					"default": "./dist/changeset_helpers.js"
+				},
+				"./changeset.task.js": {
+					"types": "./dist/changeset.task.d.ts",
+					"default": "./dist/changeset.task.js"
+				},
+				"./check.task.js": {"types": "./dist/check.task.d.ts", "default": "./dist/check.task.js"},
+				"./clean_fs.js": {"types": "./dist/clean_fs.d.ts", "default": "./dist/clean_fs.js"},
+				"./clean.task.js": {"types": "./dist/clean.task.d.ts", "default": "./dist/clean.task.js"},
+				"./cli.js": {"types": "./dist/cli.d.ts", "default": "./dist/cli.js"},
+				"./commit.task.js": {
+					"types": "./dist/commit.task.d.ts",
+					"default": "./dist/commit.task.js"
+				},
+				"./config.js": {"types": "./dist/config.d.ts", "default": "./dist/config.js"},
+				"./deploy.task.js": {
+					"types": "./dist/deploy.task.d.ts",
+					"default": "./dist/deploy.task.js"
+				},
+				"./dev.task.js": {"types": "./dist/dev.task.d.ts", "default": "./dist/dev.task.js"},
+				"./env.js": {"types": "./dist/env.d.ts", "default": "./dist/env.js"},
+				"./esbuild_helpers.js": {
+					"types": "./dist/esbuild_helpers.d.ts",
+					"default": "./dist/esbuild_helpers.js"
+				},
+				"./esbuild_plugin_external_worker.js": {
+					"types": "./dist/esbuild_plugin_external_worker.d.ts",
+					"default": "./dist/esbuild_plugin_external_worker.js"
+				},
+				"./esbuild_plugin_svelte.js": {
+					"types": "./dist/esbuild_plugin_svelte.d.ts",
+					"default": "./dist/esbuild_plugin_svelte.js"
+				},
+				"./esbuild_plugin_sveltekit_local_imports.js": {
+					"types": "./dist/esbuild_plugin_sveltekit_local_imports.d.ts",
+					"default": "./dist/esbuild_plugin_sveltekit_local_imports.js"
+				},
+				"./esbuild_plugin_sveltekit_shim_alias.js": {
+					"types": "./dist/esbuild_plugin_sveltekit_shim_alias.d.ts",
+					"default": "./dist/esbuild_plugin_sveltekit_shim_alias.js"
+				},
+				"./esbuild_plugin_sveltekit_shim_app.js": {
+					"types": "./dist/esbuild_plugin_sveltekit_shim_app.d.ts",
+					"default": "./dist/esbuild_plugin_sveltekit_shim_app.js"
+				},
+				"./esbuild_plugin_sveltekit_shim_env.js": {
+					"types": "./dist/esbuild_plugin_sveltekit_shim_env.d.ts",
+					"default": "./dist/esbuild_plugin_sveltekit_shim_env.js"
+				},
+				"./format_directory.js": {
+					"types": "./dist/format_directory.d.ts",
+					"default": "./dist/format_directory.js"
+				},
+				"./format_file.js": {
+					"types": "./dist/format_file.d.ts",
+					"default": "./dist/format_file.js"
+				},
+				"./format.task.js": {
+					"types": "./dist/format.task.d.ts",
+					"default": "./dist/format.task.js"
+				},
+				"./fs.js": {"types": "./dist/fs.d.ts", "default": "./dist/fs.js"},
+				"./gen.task.js": {"types": "./dist/gen.task.d.ts", "default": "./dist/gen.task.js"},
+				"./gen.js": {"types": "./dist/gen.d.ts", "default": "./dist/gen.js"},
+				"./git.js": {"types": "./dist/git.d.ts", "default": "./dist/git.js"},
+				"./github.js": {"types": "./dist/github.d.ts", "default": "./dist/github.js"},
+				"./gro_helpers.js": {
+					"types": "./dist/gro_helpers.d.ts",
+					"default": "./dist/gro_helpers.js"
+				},
+				"./gro_plugin_gen.js": {
+					"types": "./dist/gro_plugin_gen.d.ts",
+					"default": "./dist/gro_plugin_gen.js"
+				},
+				"./gro_plugin_server.js": {
+					"types": "./dist/gro_plugin_server.d.ts",
+					"default": "./dist/gro_plugin_server.js"
+				},
+				"./gro_plugin_sveltekit_app.js": {
+					"types": "./dist/gro_plugin_sveltekit_app.d.ts",
+					"default": "./dist/gro_plugin_sveltekit_app.js"
+				},
+				"./gro_plugin_sveltekit_library.js": {
+					"types": "./dist/gro_plugin_sveltekit_library.d.ts",
+					"default": "./dist/gro_plugin_sveltekit_library.js"
+				},
+				"./gro.config.default.js": {
+					"types": "./dist/gro.config.default.d.ts",
+					"default": "./dist/gro.config.default.js"
+				},
+				"./gro.js": {"types": "./dist/gro.d.ts", "default": "./dist/gro.js"},
+				"./hash.js": {"types": "./dist/hash.d.ts", "default": "./dist/hash.js"},
+				"./input_path.js": {"types": "./dist/input_path.d.ts", "default": "./dist/input_path.js"},
+				"./invoke_task.js": {
+					"types": "./dist/invoke_task.d.ts",
+					"default": "./dist/invoke_task.js"
+				},
+				"./invoke.js": {"types": "./dist/invoke.d.ts", "default": "./dist/invoke.js"},
+				"./lint.task.js": {"types": "./dist/lint.task.d.ts", "default": "./dist/lint.task.js"},
+				"./loader.js": {"types": "./dist/loader.d.ts", "default": "./dist/loader.js"},
+				"./module.js": {"types": "./dist/module.d.ts", "default": "./dist/module.js"},
+				"./modules.js": {"types": "./dist/modules.d.ts", "default": "./dist/modules.js"},
+				"./package_json.js": {
+					"types": "./dist/package_json.d.ts",
+					"default": "./dist/package_json.js"
+				},
+				"./package_meta.js": {
+					"types": "./dist/package_meta.d.ts",
+					"default": "./dist/package_meta.js"
+				},
+				"./package.gen.js": {
+					"types": "./dist/package.gen.d.ts",
+					"default": "./dist/package.gen.js"
+				},
+				"./package.js": {"types": "./dist/package.d.ts", "default": "./dist/package.js"},
+				"./path_constants.js": {
+					"types": "./dist/path_constants.d.ts",
+					"default": "./dist/path_constants.js"
+				},
+				"./path.js": {"types": "./dist/path.d.ts", "default": "./dist/path.js"},
+				"./paths.js": {"types": "./dist/paths.d.ts", "default": "./dist/paths.js"},
+				"./plugin.js": {"types": "./dist/plugin.d.ts", "default": "./dist/plugin.js"},
+				"./publish.task.js": {
+					"types": "./dist/publish.task.d.ts",
+					"default": "./dist/publish.task.js"
+				},
+				"./register.js": {"types": "./dist/register.d.ts", "default": "./dist/register.js"},
+				"./reinstall.task.js": {
+					"types": "./dist/reinstall.task.d.ts",
+					"default": "./dist/reinstall.task.js"
+				},
+				"./release.task.js": {
+					"types": "./dist/release.task.d.ts",
+					"default": "./dist/release.task.js"
+				},
+				"./resolve_node_specifier.js": {
+					"types": "./dist/resolve_node_specifier.d.ts",
+					"default": "./dist/resolve_node_specifier.js"
+				},
+				"./resolve_specifier.js": {
+					"types": "./dist/resolve_specifier.d.ts",
+					"default": "./dist/resolve_specifier.js"
+				},
+				"./resolve.task.js": {
+					"types": "./dist/resolve.task.d.ts",
+					"default": "./dist/resolve.task.js"
+				},
+				"./run_gen.js": {"types": "./dist/run_gen.d.ts", "default": "./dist/run_gen.js"},
+				"./run_task.js": {"types": "./dist/run_task.d.ts", "default": "./dist/run_task.js"},
+				"./run.task.js": {"types": "./dist/run.task.d.ts", "default": "./dist/run.task.js"},
+				"./search_fs.js": {"types": "./dist/search_fs.d.ts", "default": "./dist/search_fs.js"},
+				"./src_json.js": {"types": "./dist/src_json.d.ts", "default": "./dist/src_json.js"},
+				"./svelte_helpers.js": {
+					"types": "./dist/svelte_helpers.d.ts",
+					"default": "./dist/svelte_helpers.js"
+				},
+				"./sveltekit_config_global.js": {
+					"types": "./dist/sveltekit_config_global.d.ts",
+					"default": "./dist/sveltekit_config_global.js"
+				},
+				"./sveltekit_config.js": {
+					"types": "./dist/sveltekit_config.d.ts",
+					"default": "./dist/sveltekit_config.js"
+				},
+				"./sveltekit_helpers.js": {
+					"types": "./dist/sveltekit_helpers.d.ts",
+					"default": "./dist/sveltekit_helpers.js"
+				},
+				"./sveltekit_shim_app_environment.js": {
+					"types": "./dist/sveltekit_shim_app_environment.d.ts",
+					"default": "./dist/sveltekit_shim_app_environment.js"
+				},
+				"./sveltekit_shim_app_forms.js": {
+					"types": "./dist/sveltekit_shim_app_forms.d.ts",
+					"default": "./dist/sveltekit_shim_app_forms.js"
+				},
+				"./sveltekit_shim_app_navigation.js": {
+					"types": "./dist/sveltekit_shim_app_navigation.d.ts",
+					"default": "./dist/sveltekit_shim_app_navigation.js"
+				},
+				"./sveltekit_shim_app_paths.js": {
+					"types": "./dist/sveltekit_shim_app_paths.d.ts",
+					"default": "./dist/sveltekit_shim_app_paths.js"
+				},
+				"./sveltekit_shim_app_stores.js": {
+					"types": "./dist/sveltekit_shim_app_stores.d.ts",
+					"default": "./dist/sveltekit_shim_app_stores.js"
+				},
+				"./sveltekit_shim_app.js": {
+					"types": "./dist/sveltekit_shim_app.d.ts",
+					"default": "./dist/sveltekit_shim_app.js"
+				},
+				"./sveltekit_shim_env.js": {
+					"types": "./dist/sveltekit_shim_env.d.ts",
+					"default": "./dist/sveltekit_shim_env.js"
+				},
+				"./sync.task.js": {"types": "./dist/sync.task.d.ts", "default": "./dist/sync.task.js"},
+				"./task_logging.js": {
+					"types": "./dist/task_logging.d.ts",
+					"default": "./dist/task_logging.js"
+				},
+				"./task.js": {"types": "./dist/task.d.ts", "default": "./dist/task.js"},
+				"./test.task.js": {"types": "./dist/test.task.d.ts", "default": "./dist/test.task.js"},
+				"./throttle.js": {"types": "./dist/throttle.d.ts", "default": "./dist/throttle.js"},
+				"./typecheck.task.js": {
+					"types": "./dist/typecheck.task.d.ts",
+					"default": "./dist/typecheck.task.js"
+				},
+				"./upgrade.task.js": {
+					"types": "./dist/upgrade.task.d.ts",
+					"default": "./dist/upgrade.task.js"
+				},
+				"./watch_dir.js": {"types": "./dist/watch_dir.d.ts", "default": "./dist/watch_dir.js"}
+			},
 			"eslintConfig": {"root": true, "extends": "@ryanatkn", "rules": {"no-console": 1}},
 			"prettier": {
 				"plugins": ["prettier-plugin-svelte"],
@@ -1152,235 +1374,18 @@
 				"singleQuote": true,
 				"bracketSpacing": false,
 				"overrides": [{"files": "package.json", "options": {"useTabs": false}}]
-			},
-			"exports": {
-				".": {"default": "./dist/index.js", "types": "./dist/index.d.ts"},
-				"./package.json": "./package.json",
-				"./args.js": {"default": "./dist/args.js", "types": "./dist/args.d.ts"},
-				"./build.task.js": {"default": "./dist/build.task.js", "types": "./dist/build.task.d.ts"},
-				"./changelog.js": {"default": "./dist/changelog.js", "types": "./dist/changelog.d.ts"},
-				"./changeset.task.js": {
-					"default": "./dist/changeset.task.js",
-					"types": "./dist/changeset.task.d.ts"
-				},
-				"./check.task.js": {"default": "./dist/check.task.js", "types": "./dist/check.task.d.ts"},
-				"./clean_fs.js": {"default": "./dist/clean_fs.js", "types": "./dist/clean_fs.d.ts"},
-				"./clean.task.js": {"default": "./dist/clean.task.js", "types": "./dist/clean.task.d.ts"},
-				"./cli.js": {"default": "./dist/cli.js", "types": "./dist/cli.d.ts"},
-				"./commit.task.js": {
-					"default": "./dist/commit.task.js",
-					"types": "./dist/commit.task.d.ts"
-				},
-				"./config.js": {"default": "./dist/config.js", "types": "./dist/config.d.ts"},
-				"./deploy.task.js": {
-					"default": "./dist/deploy.task.js",
-					"types": "./dist/deploy.task.d.ts"
-				},
-				"./dev.task.js": {"default": "./dist/dev.task.js", "types": "./dist/dev.task.d.ts"},
-				"./env.js": {"default": "./dist/env.js", "types": "./dist/env.d.ts"},
-				"./esbuild_helpers.js": {
-					"default": "./dist/esbuild_helpers.js",
-					"types": "./dist/esbuild_helpers.d.ts"
-				},
-				"./esbuild_plugin_external_worker.js": {
-					"default": "./dist/esbuild_plugin_external_worker.js",
-					"types": "./dist/esbuild_plugin_external_worker.d.ts"
-				},
-				"./esbuild_plugin_svelte.js": {
-					"default": "./dist/esbuild_plugin_svelte.js",
-					"types": "./dist/esbuild_plugin_svelte.d.ts"
-				},
-				"./esbuild_plugin_sveltekit_local_imports.js": {
-					"default": "./dist/esbuild_plugin_sveltekit_local_imports.js",
-					"types": "./dist/esbuild_plugin_sveltekit_local_imports.d.ts"
-				},
-				"./esbuild_plugin_sveltekit_shim_alias.js": {
-					"default": "./dist/esbuild_plugin_sveltekit_shim_alias.js",
-					"types": "./dist/esbuild_plugin_sveltekit_shim_alias.d.ts"
-				},
-				"./esbuild_plugin_sveltekit_shim_app.js": {
-					"default": "./dist/esbuild_plugin_sveltekit_shim_app.js",
-					"types": "./dist/esbuild_plugin_sveltekit_shim_app.d.ts"
-				},
-				"./esbuild_plugin_sveltekit_shim_env.js": {
-					"default": "./dist/esbuild_plugin_sveltekit_shim_env.js",
-					"types": "./dist/esbuild_plugin_sveltekit_shim_env.d.ts"
-				},
-				"./format_directory.js": {
-					"default": "./dist/format_directory.js",
-					"types": "./dist/format_directory.d.ts"
-				},
-				"./format_file.js": {
-					"default": "./dist/format_file.js",
-					"types": "./dist/format_file.d.ts"
-				},
-				"./format.task.js": {
-					"default": "./dist/format.task.js",
-					"types": "./dist/format.task.d.ts"
-				},
-				"./fs.js": {"default": "./dist/fs.js", "types": "./dist/fs.d.ts"},
-				"./gen.task.js": {"default": "./dist/gen.task.js", "types": "./dist/gen.task.d.ts"},
-				"./gen.js": {"default": "./dist/gen.js", "types": "./dist/gen.d.ts"},
-				"./git.js": {"default": "./dist/git.js", "types": "./dist/git.d.ts"},
-				"./github.js": {"default": "./dist/github.js", "types": "./dist/github.d.ts"},
-				"./gro_helpers.js": {
-					"default": "./dist/gro_helpers.js",
-					"types": "./dist/gro_helpers.d.ts"
-				},
-				"./gro_plugin_gen.js": {
-					"default": "./dist/gro_plugin_gen.js",
-					"types": "./dist/gro_plugin_gen.d.ts"
-				},
-				"./gro_plugin_server.js": {
-					"default": "./dist/gro_plugin_server.js",
-					"types": "./dist/gro_plugin_server.d.ts"
-				},
-				"./gro_plugin_sveltekit_app.js": {
-					"default": "./dist/gro_plugin_sveltekit_app.js",
-					"types": "./dist/gro_plugin_sveltekit_app.d.ts"
-				},
-				"./gro_plugin_sveltekit_library.js": {
-					"default": "./dist/gro_plugin_sveltekit_library.js",
-					"types": "./dist/gro_plugin_sveltekit_library.d.ts"
-				},
-				"./gro.config.default.js": {
-					"default": "./dist/gro.config.default.js",
-					"types": "./dist/gro.config.default.d.ts"
-				},
-				"./gro.js": {"default": "./dist/gro.js", "types": "./dist/gro.d.ts"},
-				"./hash.js": {"default": "./dist/hash.js", "types": "./dist/hash.d.ts"},
-				"./input_path.js": {"default": "./dist/input_path.js", "types": "./dist/input_path.d.ts"},
-				"./invoke_task.js": {
-					"default": "./dist/invoke_task.js",
-					"types": "./dist/invoke_task.d.ts"
-				},
-				"./invoke.js": {"default": "./dist/invoke.js", "types": "./dist/invoke.d.ts"},
-				"./lint.task.js": {"default": "./dist/lint.task.js", "types": "./dist/lint.task.d.ts"},
-				"./loader.js": {"default": "./dist/loader.js", "types": "./dist/loader.d.ts"},
-				"./module.js": {"default": "./dist/module.js", "types": "./dist/module.d.ts"},
-				"./modules.js": {"default": "./dist/modules.js", "types": "./dist/modules.d.ts"},
-				"./package_json.js": {
-					"default": "./dist/package_json.js",
-					"types": "./dist/package_json.d.ts"
-				},
-				"./package_meta.js": {
-					"default": "./dist/package_meta.js",
-					"types": "./dist/package_meta.d.ts"
-				},
-				"./package.gen.js": {
-					"default": "./dist/package.gen.js",
-					"types": "./dist/package.gen.d.ts"
-				},
-				"./package.js": {"default": "./dist/package.js", "types": "./dist/package.d.ts"},
-				"./path_constants.js": {
-					"default": "./dist/path_constants.js",
-					"types": "./dist/path_constants.d.ts"
-				},
-				"./path.js": {"default": "./dist/path.js", "types": "./dist/path.d.ts"},
-				"./paths.js": {"default": "./dist/paths.js", "types": "./dist/paths.d.ts"},
-				"./plugin.js": {"default": "./dist/plugin.js", "types": "./dist/plugin.d.ts"},
-				"./publish.task.js": {
-					"default": "./dist/publish.task.js",
-					"types": "./dist/publish.task.d.ts"
-				},
-				"./register.js": {"default": "./dist/register.js", "types": "./dist/register.d.ts"},
-				"./reinstall.task.js": {
-					"default": "./dist/reinstall.task.js",
-					"types": "./dist/reinstall.task.d.ts"
-				},
-				"./release.task.js": {
-					"default": "./dist/release.task.js",
-					"types": "./dist/release.task.d.ts"
-				},
-				"./resolve_node_specifier.js": {
-					"default": "./dist/resolve_node_specifier.js",
-					"types": "./dist/resolve_node_specifier.d.ts"
-				},
-				"./resolve_specifier.js": {
-					"default": "./dist/resolve_specifier.js",
-					"types": "./dist/resolve_specifier.d.ts"
-				},
-				"./resolve.task.js": {
-					"default": "./dist/resolve.task.js",
-					"types": "./dist/resolve.task.d.ts"
-				},
-				"./run_gen.js": {"default": "./dist/run_gen.js", "types": "./dist/run_gen.d.ts"},
-				"./run_task.js": {"default": "./dist/run_task.js", "types": "./dist/run_task.d.ts"},
-				"./run.task.js": {"default": "./dist/run.task.js", "types": "./dist/run.task.d.ts"},
-				"./search_fs.js": {"default": "./dist/search_fs.js", "types": "./dist/search_fs.d.ts"},
-				"./src_json.js": {"default": "./dist/src_json.js", "types": "./dist/src_json.d.ts"},
-				"./svelte_helpers.js": {
-					"default": "./dist/svelte_helpers.js",
-					"types": "./dist/svelte_helpers.d.ts"
-				},
-				"./sveltekit_config_global.js": {
-					"default": "./dist/sveltekit_config_global.js",
-					"types": "./dist/sveltekit_config_global.d.ts"
-				},
-				"./sveltekit_config.js": {
-					"default": "./dist/sveltekit_config.js",
-					"types": "./dist/sveltekit_config.d.ts"
-				},
-				"./sveltekit_helpers.js": {
-					"default": "./dist/sveltekit_helpers.js",
-					"types": "./dist/sveltekit_helpers.d.ts"
-				},
-				"./sveltekit_shim_app_environment.js": {
-					"default": "./dist/sveltekit_shim_app_environment.js",
-					"types": "./dist/sveltekit_shim_app_environment.d.ts"
-				},
-				"./sveltekit_shim_app_forms.js": {
-					"default": "./dist/sveltekit_shim_app_forms.js",
-					"types": "./dist/sveltekit_shim_app_forms.d.ts"
-				},
-				"./sveltekit_shim_app_navigation.js": {
-					"default": "./dist/sveltekit_shim_app_navigation.js",
-					"types": "./dist/sveltekit_shim_app_navigation.d.ts"
-				},
-				"./sveltekit_shim_app_paths.js": {
-					"default": "./dist/sveltekit_shim_app_paths.js",
-					"types": "./dist/sveltekit_shim_app_paths.d.ts"
-				},
-				"./sveltekit_shim_app_stores.js": {
-					"default": "./dist/sveltekit_shim_app_stores.js",
-					"types": "./dist/sveltekit_shim_app_stores.d.ts"
-				},
-				"./sveltekit_shim_app.js": {
-					"default": "./dist/sveltekit_shim_app.js",
-					"types": "./dist/sveltekit_shim_app.d.ts"
-				},
-				"./sveltekit_shim_env.js": {
-					"default": "./dist/sveltekit_shim_env.js",
-					"types": "./dist/sveltekit_shim_env.d.ts"
-				},
-				"./sync.task.js": {"default": "./dist/sync.task.js", "types": "./dist/sync.task.d.ts"},
-				"./task_logging.js": {
-					"default": "./dist/task_logging.js",
-					"types": "./dist/task_logging.d.ts"
-				},
-				"./task.js": {"default": "./dist/task.js", "types": "./dist/task.d.ts"},
-				"./test.task.js": {"default": "./dist/test.task.js", "types": "./dist/test.task.d.ts"},
-				"./throttle.js": {"default": "./dist/throttle.js", "types": "./dist/throttle.d.ts"},
-				"./typecheck.task.js": {
-					"default": "./dist/typecheck.task.js",
-					"types": "./dist/typecheck.task.d.ts"
-				},
-				"./upgrade.task.js": {
-					"default": "./dist/upgrade.task.js",
-					"types": "./dist/upgrade.task.d.ts"
-				},
-				"./watch_dir.js": {"default": "./dist/watch_dir.js", "types": "./dist/watch_dir.d.ts"}
 			}
 		},
 		"src_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.124.0",
+			"version": "0.125.1",
 			"modules": {
 				".": {
 					"path": "index.ts",
 					"declarations": [
 						{"name": "Gro_Config", "kind": "type"},
 						{"name": "Create_Gro_Config", "kind": "type"},
+						{"name": "Raw_Gro_Config", "kind": "type"},
 						{"name": "Plugin", "kind": "type"},
 						{"name": "replace_plugin", "kind": "function"},
 						{"name": "Gen", "kind": "type"},
@@ -1417,10 +1422,20 @@
 					"path": "changelog.ts",
 					"declarations": [{"name": "update_changelog", "kind": "function"}]
 				},
+				"./changeset_helpers.js": {
+					"path": "changeset_helpers.ts",
+					"declarations": [
+						{"name": "CHANGESET_RESTRICTED_ACCESS", "kind": "variable"},
+						{"name": "CHANGESET_PUBLIC_ACCESS", "kind": "variable"},
+						{"name": "Changeset_Access", "kind": "variable"},
+						{"name": "CHANGESET_CLI", "kind": "variable"},
+						{"name": "CHANGESET_DIR", "kind": "variable"},
+						{"name": "Changeset_Bump", "kind": "variable"}
+					]
+				},
 				"./changeset.task.js": {
 					"path": "changeset.task.ts",
 					"declarations": [
-						{"name": "Changeset_Bump", "kind": "variable"},
 						{"name": "Args", "kind": "variable"},
 						{"name": "task", "kind": "variable"}
 					]
@@ -1446,8 +1461,12 @@
 				"./cli.js": {
 					"path": "cli.ts",
 					"declarations": [
+						{"name": "Cli", "kind": "type"},
 						{"name": "find_cli", "kind": "function"},
-						{"name": "spawn_cli", "kind": "function"}
+						{"name": "spawn_cli", "kind": "function"},
+						{"name": "spawn_cli_process", "kind": "function"},
+						{"name": "resolve_cli", "kind": "function"},
+						{"name": "to_cli_name", "kind": "function"}
 					]
 				},
 				"./commit.task.js": {
@@ -1461,10 +1480,12 @@
 					"path": "config.ts",
 					"declarations": [
 						{"name": "Gro_Config", "kind": "type"},
+						{"name": "Raw_Gro_Config", "kind": "type"},
 						{"name": "Create_Gro_Config", "kind": "type"},
 						{"name": "create_empty_config", "kind": "function"},
 						{"name": "DEFAULT_SEARCH_EXCLUDER", "kind": "variable"},
 						{"name": "DEFAULT_EXPORTS_EXCLUDER", "kind": "variable"},
+						{"name": "normalize_config", "kind": "function"},
 						{"name": "Gro_Config_Module", "kind": "type"},
 						{"name": "load_config", "kind": "function"},
 						{"name": "validate_config_module", "kind": "function"}
@@ -1668,7 +1689,10 @@
 				},
 				"./gro_plugin_sveltekit_library.js": {
 					"path": "gro_plugin_sveltekit_library.ts",
-					"declarations": [{"name": "gro_plugin_sveltekit_library", "kind": "function"}]
+					"declarations": [
+						{"name": "Options", "kind": "type"},
+						{"name": "gro_plugin_sveltekit_library", "kind": "function"}
+					]
 				},
 				"./gro.config.default.js": {
 					"path": "gro.config.default.ts",
@@ -1952,8 +1976,10 @@
 					"path": "sveltekit_helpers.ts",
 					"declarations": [
 						{"name": "SVELTEKIT_CLI", "kind": "variable"},
+						{"name": "SVELTE_CHECK_CLI", "kind": "variable"},
 						{"name": "SVELTE_PACKAGE_CLI", "kind": "variable"},
 						{"name": "SVELTE_PACKAGE_DEP_NAME", "kind": "variable"},
+						{"name": "VITE_CLI", "kind": "variable"},
 						{"name": "has_sveltekit_app", "kind": "function"},
 						{"name": "has_sveltekit_library", "kind": "function"},
 						{"name": "sveltekit_sync", "kind": "function"},
@@ -2090,8 +2116,6 @@
 		"changelog_url": "https://github.com/ryanatkn/gro/blob/main/CHANGELOG.md",
 		"published": true,
 		"check_runs": {"status": "completed", "conclusion": "success"},
-		"pull_requests": [
-			{"number": 473, "title": "normalized config", "user": {"login": "ryanatkn"}, "draft": false}
-		]
+		"pull_requests": []
 	}
 ]
