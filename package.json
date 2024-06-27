@@ -2,7 +2,7 @@
   "name": "@ryanatkn/fuz_gitops",
   "version": "0.29.0",
   "description": "a tool for managing many repos",
-  "icon": "🪄",
+  "glyph": "🪄",
   "public": true,
   "license": "MIT",
   "homepage": "https://gitops.fuz.dev/",
@@ -38,11 +38,11 @@
   },
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.0",
-    "@ryanatkn/belt": "^0.22.0",
+    "@ryanatkn/belt": "^0.23.0",
     "@ryanatkn/eslint-config": "^0.1.3",
-    "@ryanatkn/fuz": "^0.105.1",
-    "@ryanatkn/gro": "^0.124.0",
-    "@ryanatkn/moss": "^0.6.0",
+    "@ryanatkn/fuz": "^0.105.2",
+    "@ryanatkn/gro": "^0.125.1",
+    "@ryanatkn/moss": "^0.6.1",
     "@sveltejs/adapter-static": "^3.0.2",
     "@sveltejs/kit": "^2.5.17",
     "@sveltejs/package": "^2.3.2",
@@ -87,101 +87,101 @@
   "exports": {
     "./package.json": "./package.json",
     "./Deployments_Table.svelte": {
+      "types": "./dist/Deployments_Table.svelte.d.ts",
       "svelte": "./dist/Deployments_Table.svelte",
-      "default": "./dist/Deployments_Table.svelte",
-      "types": "./dist/Deployments_Table.svelte.d.ts"
+      "default": "./dist/Deployments_Table.svelte"
     },
     "./Deployments_Tree_Nav.svelte": {
+      "types": "./dist/Deployments_Tree_Nav.svelte.d.ts",
       "svelte": "./dist/Deployments_Tree_Nav.svelte",
-      "default": "./dist/Deployments_Tree_Nav.svelte",
-      "types": "./dist/Deployments_Tree_Nav.svelte.d.ts"
+      "default": "./dist/Deployments_Tree_Nav.svelte"
     },
     "./Deployments_Tree.svelte": {
+      "types": "./dist/Deployments_Tree.svelte.d.ts",
       "svelte": "./dist/Deployments_Tree.svelte",
-      "default": "./dist/Deployments_Tree.svelte",
-      "types": "./dist/Deployments_Tree.svelte.d.ts"
+      "default": "./dist/Deployments_Tree.svelte"
     },
     "./deployments.json": {
-      "default": "./dist/deployments.json",
-      "types": "./dist/deployments.json.d.ts"
+      "types": "./dist/deployments.json.d.ts",
+      "default": "./dist/deployments.json"
     },
     "./deployments.js": {
-      "default": "./dist/deployments.js",
-      "types": "./dist/deployments.d.ts"
+      "types": "./dist/deployments.d.ts",
+      "default": "./dist/deployments.js"
     },
     "./fetch_deployments.js": {
-      "default": "./dist/fetch_deployments.js",
-      "types": "./dist/fetch_deployments.d.ts"
+      "types": "./dist/fetch_deployments.d.ts",
+      "default": "./dist/fetch_deployments.js"
     },
     "./fs_fetch_value_cache.js": {
-      "default": "./dist/fs_fetch_value_cache.js",
-      "types": "./dist/fs_fetch_value_cache.d.ts"
+      "types": "./dist/fs_fetch_value_cache.d.ts",
+      "default": "./dist/fs_fetch_value_cache.js"
     },
     "./github_helpers.js": {
-      "default": "./dist/github_helpers.js",
-      "types": "./dist/github_helpers.d.ts"
+      "types": "./dist/github_helpers.d.ts",
+      "default": "./dist/github_helpers.js"
     },
     "./github.js": {
-      "default": "./dist/github.js",
-      "types": "./dist/github.d.ts"
+      "types": "./dist/github.d.ts",
+      "default": "./dist/github.js"
     },
     "./gitops.task.js": {
-      "default": "./dist/gitops.task.js",
-      "types": "./dist/gitops.task.d.ts"
+      "types": "./dist/gitops.task.d.ts",
+      "default": "./dist/gitops.task.js"
     },
     "./Modules_Detail.svelte": {
+      "types": "./dist/Modules_Detail.svelte.d.ts",
       "svelte": "./dist/Modules_Detail.svelte",
-      "default": "./dist/Modules_Detail.svelte",
-      "types": "./dist/Modules_Detail.svelte.d.ts"
+      "default": "./dist/Modules_Detail.svelte"
     },
     "./Modules_Nav.svelte": {
+      "types": "./dist/Modules_Nav.svelte.d.ts",
       "svelte": "./dist/Modules_Nav.svelte",
-      "default": "./dist/Modules_Nav.svelte",
-      "types": "./dist/Modules_Nav.svelte.d.ts"
+      "default": "./dist/Modules_Nav.svelte"
     },
     "./Modules_Page.svelte": {
+      "types": "./dist/Modules_Page.svelte.d.ts",
       "svelte": "./dist/Modules_Page.svelte",
-      "default": "./dist/Modules_Page.svelte",
-      "types": "./dist/Modules_Page.svelte.d.ts"
+      "default": "./dist/Modules_Page.svelte"
     },
     "./Page_Footer.svelte": {
+      "types": "./dist/Page_Footer.svelte.d.ts",
       "svelte": "./dist/Page_Footer.svelte",
-      "default": "./dist/Page_Footer.svelte",
-      "types": "./dist/Page_Footer.svelte.d.ts"
+      "default": "./dist/Page_Footer.svelte"
     },
     "./Page_Header.svelte": {
+      "types": "./dist/Page_Header.svelte.d.ts",
       "svelte": "./dist/Page_Header.svelte",
-      "default": "./dist/Page_Header.svelte",
-      "types": "./dist/Page_Header.svelte.d.ts"
+      "default": "./dist/Page_Header.svelte"
     },
     "./Pull_Requests_Detail.svelte": {
+      "types": "./dist/Pull_Requests_Detail.svelte.d.ts",
       "svelte": "./dist/Pull_Requests_Detail.svelte",
-      "default": "./dist/Pull_Requests_Detail.svelte",
-      "types": "./dist/Pull_Requests_Detail.svelte.d.ts"
+      "default": "./dist/Pull_Requests_Detail.svelte"
     },
     "./Pull_Requests_Page.svelte": {
+      "types": "./dist/Pull_Requests_Page.svelte.d.ts",
       "svelte": "./dist/Pull_Requests_Page.svelte",
-      "default": "./dist/Pull_Requests_Page.svelte",
-      "types": "./dist/Pull_Requests_Page.svelte.d.ts"
+      "default": "./dist/Pull_Requests_Page.svelte"
     },
     "./run_gitops.task.js": {
-      "default": "./dist/run_gitops.task.js",
-      "types": "./dist/run_gitops.task.d.ts"
+      "types": "./dist/run_gitops.task.d.ts",
+      "default": "./dist/run_gitops.task.js"
     },
     "./Table_Page.svelte": {
+      "types": "./dist/Table_Page.svelte.d.ts",
       "svelte": "./dist/Table_Page.svelte",
-      "default": "./dist/Table_Page.svelte",
-      "types": "./dist/Table_Page.svelte.d.ts"
+      "default": "./dist/Table_Page.svelte"
     },
     "./Tree_Item_Page.svelte": {
+      "types": "./dist/Tree_Item_Page.svelte.d.ts",
       "svelte": "./dist/Tree_Item_Page.svelte",
-      "default": "./dist/Tree_Item_Page.svelte",
-      "types": "./dist/Tree_Item_Page.svelte.d.ts"
+      "default": "./dist/Tree_Item_Page.svelte"
     },
     "./Tree_Page.svelte": {
+      "types": "./dist/Tree_Page.svelte.d.ts",
       "svelte": "./dist/Tree_Page.svelte",
-      "default": "./dist/Tree_Page.svelte",
-      "types": "./dist/Tree_Page.svelte.d.ts"
+      "default": "./dist/Tree_Page.svelte"
     }
   }
 }

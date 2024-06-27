@@ -19,7 +19,7 @@
 </script>
 
 <svelte:head>
-	<title>pull requests {deployment.package_json.icon} {deployment.package_json.name}</title>
+	<title>pull requests {deployment.package_json.glyph} {deployment.package_json.name}</title>
 </svelte:head>
 
 <main class="box w_100">

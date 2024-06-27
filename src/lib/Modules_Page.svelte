@@ -15,7 +15,7 @@
 </script>
 
 <svelte:head>
-	<title>modules {deployment.package_json.icon} {deployment.package_json.name}</title>
+	<title>modules {deployment.package_json.glyph} {deployment.package_json.name}</title>
 </svelte:head>
 
 <main class="box w_100">
@@ -26,7 +26,7 @@
 		<Modules_Detail {deployments}>
 			{#snippet nav_footer()}
 				<nav class="row">
-					<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
+					<Breadcrumb>{deployment.package_json.glyph}</Breadcrumb>
 				</nav>
 			{/snippet}
 		</Modules_Detail>

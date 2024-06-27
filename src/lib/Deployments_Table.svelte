@@ -80,7 +80,8 @@
 				<td>
 					<div class="row">
 						{#if package_json}
-							<a href="{base}/tree/{deployment.repo_name}">{deployment.package_json.icon || '🌳'}</a
+							<a href="{base}/tree/{deployment.repo_name}"
+								>{deployment.package_json.glyph || '🌳'}</a
 							>
 						{/if}
 					</div>

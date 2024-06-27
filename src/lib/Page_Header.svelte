@@ -20,7 +20,7 @@
 	{#if nav}
 		{@render nav()}
 	{:else}
-		<nav {...nav_attrs}><Breadcrumb>{pkg.package_json?.icon}</Breadcrumb></nav>
+		<nav {...nav_attrs}><Breadcrumb>{pkg.package_json?.glyph}</Breadcrumb></nav>
 	{/if}
 </header>
 

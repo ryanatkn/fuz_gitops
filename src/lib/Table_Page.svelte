@@ -13,7 +13,7 @@
 </script>
 
 <svelte:head>
-	<title>table {deployment.package_json.icon} {deployment.package_json.name}</title>
+	<title>table {deployment.package_json.glyph} {deployment.package_json.name}</title>
 </svelte:head>
 
 <main class="box">

@@ -26,8 +26,8 @@
 						class:selected
 						href="{base}/tree/{deployment.repo_name}"
 						><div class="ellipsis">
-							{deployment.repo_name}{#if deployment.package_json.icon}{' '}{deployment.package_json
-									.icon}{/if}
+							{deployment.repo_name}{#if deployment.package_json.glyph}{' '}{deployment.package_json
+									.glyph}{/if}
 						</div></a
 					>{/if}
 			</li>

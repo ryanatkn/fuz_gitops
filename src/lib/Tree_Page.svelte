@@ -17,7 +17,7 @@
 </script>
 
 <svelte:head>
-	<title>tree {deployment.package_json.icon} {deployment.name}</title>
+	<title>tree {deployment.package_json.glyph} {deployment.name}</title>
 </svelte:head>
 
 <main class="box w_100">
@@ -28,7 +28,7 @@
 		<Deployments_Tree {deployments}>
 			{#snippet nav()}
 				<div class="deployments_tree_nav">
-					<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
+					<Breadcrumb>{deployment.package_json.glyph}</Breadcrumb>
 				</div>
 			{/snippet}
 		</Deployments_Tree>

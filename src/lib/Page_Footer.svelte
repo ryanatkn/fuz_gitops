@@ -10,7 +10,7 @@
 <section class="box mb_xl7">
 	<Library_Footer pkg={deployment}>
 		<nav class="mb_xl5">
-			<Breadcrumb>{deployment.package_json.icon}</Breadcrumb>
+			<Breadcrumb>{deployment.package_json.glyph}</Breadcrumb>
 		</nav>
 	</Library_Footer>
 </section>

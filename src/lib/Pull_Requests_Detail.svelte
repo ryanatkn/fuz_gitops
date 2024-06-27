@@ -26,8 +26,8 @@
 						<td
 							><a href="{base}/tree/{pull_request.deployment.repo_name}"
 								>{pull_request.deployment
-									.repo_name}{#if pull_request.deployment.package_json.icon}{' '}{pull_request
-										.deployment.package_json.icon}{/if}</a
+									.repo_name}{#if pull_request.deployment.package_json.glyph}{' '}{pull_request
+										.deployment.package_json.glyph}{/if}</a
 							></td
 						>
 						<td

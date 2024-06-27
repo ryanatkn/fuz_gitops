@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<title>about {deployment.package_json.icon} {deployment.package_json.name}</title>
+	<title>about {deployment.package_json.glyph} {deployment.package_json.name}</title>
 </svelte:head>
 
 <main class="width_md">
