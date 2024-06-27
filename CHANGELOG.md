@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.29.1
+
+### Patch Changes
+
+- upgrade gro with correctly formatted exports ([28379ed](https://github.com/ryanatkn/fuz_gitops/commit/28379ed))
+
 ## 0.29.0
 
 ### Minor Changes
