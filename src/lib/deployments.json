@@ -32,8 +32,8 @@
 				"@ryanatkn/belt": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
 				"@ryanatkn/fuz_code": "^0.15.0",
-				"@ryanatkn/gro": "^0.125.1",
-				"@ryanatkn/moss": "^0.6.0",
+				"@ryanatkn/gro": "^0.126.0",
+				"@ryanatkn/moss": "^0.6.2",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -492,13 +492,9 @@
 		"package_json": {
 			"name": "@ryanatkn/fuz_template",
 			"version": "0.0.1",
-			"description": "a static web app and Node library template with TypeScript, Svelte, SvelteKit, Vite, esbuild, Fuz, and Gro",
-			"icon": "❄",
 			"public": true,
-			"homepage": "https://template.fuz.dev/",
-			"repository": "https://github.com/ryanatkn/fuz_template",
-			"type": "module",
-			"engines": {"node": ">=20.12"},
+			"description": "a static web app and Node library template with TypeScript, Svelte, SvelteKit, Vite, esbuild, Fuz, and Gro",
+			"glyph": "❄",
 			"scripts": {
 				"start": "gro dev",
 				"dev": "gro dev",
@@ -506,13 +502,16 @@
 				"test": "gro test",
 				"deploy": "gro deploy"
 			},
-			"files": ["dist"],
+			"homepage": "https://template.fuz.dev/",
+			"repository": "https://github.com/ryanatkn/fuz_template",
+			"type": "module",
+			"engines": {"node": ">=20.12"},
 			"devDependencies": {
-				"@ryanatkn/belt": "^0.22.0",
+				"@ryanatkn/belt": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.105.1",
-				"@ryanatkn/gro": "^0.124.0",
-				"@ryanatkn/moss": "^0.6.0",
+				"@ryanatkn/fuz": "^0.105.2",
+				"@ryanatkn/gro": "^0.126.0",
+				"@ryanatkn/moss": "^0.6.2",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/vite-plugin-svelte": "^3.1.1",
@@ -528,6 +527,7 @@
 				"typescript": "^5.5.2",
 				"uvu": "^0.5.6"
 			},
+			"files": ["dist"],
 			"eslintConfig": {"root": true, "extends": "@ryanatkn"},
 			"prettier": {
 				"plugins": ["prettier-plugin-svelte"],
@@ -547,7 +547,7 @@
 		"npm_url": null,
 		"changelog_url": null,
 		"published": false,
-		"check_runs": {"status": "in_progress", "conclusion": null},
+		"check_runs": {"status": "completed", "conclusion": "success"},
 		"pull_requests": []
 	},
 	{
@@ -591,8 +591,8 @@
 				"@ryanatkn/belt": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
 				"@ryanatkn/fuz": "^0.105.2",
-				"@ryanatkn/gro": "^0.125.1",
-				"@ryanatkn/moss": "^0.6.1",
+				"@ryanatkn/gro": "^0.126.0",
+				"@ryanatkn/moss": "^0.6.2",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -842,8 +842,8 @@
 				"@ryanatkn/belt": "^0.23.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
 				"@ryanatkn/fuz": "^0.105.2",
-				"@ryanatkn/gro": "^0.125.1",
-				"@ryanatkn/moss": "^0.6.0",
+				"@ryanatkn/gro": "^0.126.0",
+				"@ryanatkn/moss": "^0.6.2",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -945,8 +945,8 @@
 				"@ryanatkn/eslint-config": "^0.1.3",
 				"@ryanatkn/fuz": "^0.105.2",
 				"@ryanatkn/fuz_code": "^0.15.1",
-				"@ryanatkn/gro": "^0.125.1",
-				"@ryanatkn/moss": "^0.6.1",
+				"@ryanatkn/gro": "^0.126.0",
+				"@ryanatkn/moss": "^0.6.2",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -1074,7 +1074,7 @@
 		"url": "https://gro.ryanatkn.com/",
 		"package_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.125.1",
+			"version": "0.126.0",
 			"public": true,
 			"description": "task runner and toolkit extending SvelteKit",
 			"motto": "generate, run, optimize",
@@ -1124,7 +1124,7 @@
 				"@changesets/types": "^6.0.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
 				"@ryanatkn/fuz": "^0.105.2",
-				"@ryanatkn/moss": "^0.6.1",
+				"@ryanatkn/moss": "^0.6.2",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -1378,7 +1378,7 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.125.1",
+			"version": "0.126.0",
 			"modules": {
 				".": {
 					"path": "index.ts",
@@ -1649,6 +1649,7 @@
 				"./github.js": {
 					"path": "github.ts",
 					"declarations": [
+						{"name": "GITHUB_REPO_MATCHER", "kind": "variable"},
 						{"name": "Github_Pull_Request", "kind": "variable"},
 						{"name": "github_fetch_commit_prs", "kind": "function"}
 					]
@@ -1983,7 +1984,8 @@
 						{"name": "has_sveltekit_app", "kind": "function"},
 						{"name": "has_sveltekit_library", "kind": "function"},
 						{"name": "sveltekit_sync", "kind": "function"},
-						{"name": "sveltekit_sync_if_obviously_needed", "kind": "function"}
+						{"name": "sveltekit_sync_if_obviously_needed", "kind": "function"},
+						{"name": "Svelte_Package_Options", "kind": "type"}
 					]
 				},
 				"./sveltekit_shim_app_environment.js": {
