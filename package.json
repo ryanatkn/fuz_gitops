@@ -25,9 +25,6 @@
     "test": "gro test",
     "deploy": "gro deploy"
   },
-  "files": [
-    "dist"
-  ],
   "peerDependencies": {
     "@ryanatkn/belt": "*",
     "@ryanatkn/fuz": "*",
@@ -84,6 +81,12 @@
       }
     ]
   },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
   "exports": {
     "./package.json": "./package.json",
     "./Deployments_Table.svelte": {
