@@ -4,7 +4,7 @@
   "description": "a tool for managing many repos",
   "glyph": "🪄",
   "logo": "logo.svg",
-  "logo_alt": "a friendly pixelated spider facing you",
+  "logo_alt": "a friendly blue spider facing you",
   "public": true,
   "license": "MIT",
   "homepage": "https://gitops.fuz.dev/",
