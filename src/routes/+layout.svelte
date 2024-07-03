@@ -10,7 +10,7 @@
 	import type {Snippet} from 'svelte';
 
 	import Settings from '$routes/Settings.svelte';
-	import maybe_deployments from '$lib/deployments.json';
+	import deployments from '$lib/deployments.json';
 	import {parse_deployments, set_deployments} from '$lib/deployments.js';
 
 	interface Props {
@@ -21,7 +21,8 @@
 
 	const contextmenu = new Contextmenu_Store();
 
-	set_deployments(parse_deployments(maybe_deployments, 'https://gitops.fuz.dev/'));
+	// TODO fix JSON types
+	set_deployments(parse_deployments(deployments as any, 'https://gitops.fuz.dev/'));
 
 	let show_settings = $state(false);
 </script>

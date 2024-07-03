@@ -2,7 +2,7 @@
 	import {page} from '$app/stores';
 
 	import Tree_Item_Page from '$lib/Tree_Item_Page.svelte';
-	import {get_deployments} from '$lib/deployments';
+	import {get_deployments} from '$lib/deployments.js';
 
 	const {deployment, deployments} = get_deployments();
 </script>

@@ -16,6 +16,7 @@ export const set_deployments = (deployments: Deployments): Deployments =>
 
 export const get_deployments = (): Deployments => getContext(KEY);
 
+// TODO the types here are hacky, needs rethinking
 export const parse_deployments = (
 	maybe_deployments: Deployment[],
 	homepage_url: string,
