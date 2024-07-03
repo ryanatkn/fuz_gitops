@@ -176,10 +176,6 @@
       "path": "Pull_Requests_Page.svelte",
       "declarations": []
     },
-    "./run_gitops.task.js": {
-      "path": "run_gitops.task.ts",
-      "declarations": []
-    },
     "./Table_Page.svelte": {
       "path": "Table_Page.svelte",
       "declarations": []
