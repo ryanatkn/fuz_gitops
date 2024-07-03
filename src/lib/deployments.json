@@ -3,7 +3,7 @@
 		"url": "https://www.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz",
-			"version": "0.106.3",
+			"version": "0.107.1",
 			"public": true,
 			"description": "Svelte UI library",
 			"motto": "friendly user zystem",
@@ -12,11 +12,13 @@
 			"logo_alt": "a friendly brown spider facing you",
 			"license": "MIT",
 			"scripts": {
+				"start": "gro dev",
 				"dev": "gro dev",
 				"build": "gro build",
-				"deploy": "gro deploy",
-				"start": "gro start",
-				"test": "gro test"
+				"check": "gro check",
+				"test": "gro test",
+				"preview": "vite preview",
+				"deploy": "gro deploy"
 			},
 			"homepage": "https://www.fuz.dev/",
 			"author": {
@@ -34,7 +36,7 @@
 				"@ryanatkn/belt": "^0.24.1",
 				"@ryanatkn/eslint-config": "^0.1.3",
 				"@ryanatkn/fuz_code": "^0.15.0",
-				"@ryanatkn/gro": "^0.128.0",
+				"@ryanatkn/gro": "^0.129.0",
 				"@ryanatkn/moss": "^0.6.3",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
@@ -46,6 +48,7 @@
 				"@typescript-eslint/parser": "^7.13.1",
 				"eslint": "^8.57.0",
 				"eslint-plugin-svelte": "^2.41.0",
+				"esm-env": "^1.0.0",
 				"prettier": "^3.3.2",
 				"prettier-plugin-svelte": "^3.2.5",
 				"prism-svelte": "^0.5.0",
@@ -162,6 +165,11 @@
 					"svelte": "./dist/Github_Logo.svelte",
 					"default": "./dist/Github_Logo.svelte"
 				},
+				"./Gro_Logo.svelte": {
+					"types": "./dist/Gro_Logo.svelte.d.ts",
+					"svelte": "./dist/Gro_Logo.svelte",
+					"default": "./dist/Gro_Logo.svelte"
+				},
 				"./Hashlink.svelte": {
 					"types": "./dist/Hashlink.svelte.d.ts",
 					"svelte": "./dist/Hashlink.svelte",
@@ -256,6 +264,10 @@
 					"svelte": "./dist/Redirect.svelte",
 					"default": "./dist/Redirect.svelte"
 				},
+				"./rune_helpers.svelte.js": {
+					"types": "./dist/rune_helpers.svelte.d.ts",
+					"default": "./dist/rune_helpers.svelte.js"
+				},
 				"./Spider.svelte": {
 					"types": "./dist/Spider.svelte.d.ts",
 					"svelte": "./dist/Spider.svelte",
@@ -336,7 +348,7 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz",
-			"version": "0.106.3",
+			"version": "0.107.1",
 			"modules": {
 				"./package.json": {"path": "package.json", "declarations": []},
 				"./Alert.svelte": {"path": "Alert.svelte", "declarations": []},
@@ -411,6 +423,7 @@
 				"./Fuz_Logo.svelte": {"path": "Fuz_Logo.svelte", "declarations": []},
 				"./Fuzling.svelte": {"path": "Fuzling.svelte", "declarations": []},
 				"./Github_Logo.svelte": {"path": "Github_Logo.svelte", "declarations": []},
+				"./Gro_Logo.svelte": {"path": "Gro_Logo.svelte", "declarations": []},
 				"./Hashlink.svelte": {"path": "Hashlink.svelte", "declarations": []},
 				"./Hue_Input.svelte": {"path": "Hue_Input.svelte", "declarations": []},
 				"./Library_Content.svelte": {"path": "Library_Content.svelte", "declarations": []},
@@ -447,6 +460,10 @@
 				"./Pending_Animation.svelte": {"path": "Pending_Animation.svelte", "declarations": []},
 				"./Pending_Button.svelte": {"path": "Pending_Button.svelte", "declarations": []},
 				"./Redirect.svelte": {"path": "Redirect.svelte", "declarations": []},
+				"./rune_helpers.svelte.js": {
+					"path": "rune_helpers.svelte.ts",
+					"declarations": [{"name": "effect_skip", "kind": "function"}]
+				},
 				"./Spider.svelte": {"path": "Spider.svelte", "declarations": []},
 				"./Spiders.svelte": {"path": "Spiders.svelte", "declarations": []},
 				"./Spiderspace_Logo.svelte": {"path": "Spiderspace_Logo.svelte", "declarations": []},
@@ -510,7 +527,9 @@
 				"start": "gro dev",
 				"dev": "gro dev",
 				"build": "gro build",
+				"check": "gro check",
 				"test": "gro test",
+				"preview": "vite preview",
 				"deploy": "gro deploy"
 			},
 			"homepage": "https://template.fuz.dev/",
@@ -520,9 +539,9 @@
 			"devDependencies": {
 				"@ryanatkn/belt": "^0.24.1",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.106.3",
-				"@ryanatkn/gro": "^0.128.0",
-				"@ryanatkn/moss": "^0.6.2",
+				"@ryanatkn/fuz": "^0.107.1",
+				"@ryanatkn/gro": "^0.129.0",
+				"@ryanatkn/moss": "^0.6.3",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.18",
 				"@sveltejs/vite-plugin-svelte": "^3.1.1",
@@ -586,7 +605,9 @@
 				"start": "gro dev",
 				"dev": "gro dev",
 				"build": "gro build",
+				"check": "gro check",
 				"test": "gro test",
+				"preview": "vite preview",
 				"deploy": "gro deploy"
 			},
 			"type": "module",
@@ -603,9 +624,9 @@
 				"@changesets/changelog-git": "^0.2.0",
 				"@ryanatkn/belt": "^0.24.1",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.106.3",
-				"@ryanatkn/gro": "^0.128.0",
-				"@ryanatkn/moss": "^0.6.2",
+				"@ryanatkn/fuz": "^0.107.1",
+				"@ryanatkn/gro": "^0.129.0",
+				"@ryanatkn/moss": "^0.6.3",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -711,10 +732,6 @@
 					"svelte": "./dist/Pull_Requests_Page.svelte",
 					"default": "./dist/Pull_Requests_Page.svelte"
 				},
-				"./run_gitops.task.js": {
-					"types": "./dist/run_gitops.task.d.ts",
-					"default": "./dist/run_gitops.task.js"
-				},
 				"./Table_Page.svelte": {
 					"types": "./dist/Table_Page.svelte.d.ts",
 					"svelte": "./dist/Table_Page.svelte",
@@ -808,7 +825,6 @@
 					"declarations": []
 				},
 				"./Pull_Requests_Page.svelte": {"path": "Pull_Requests_Page.svelte", "declarations": []},
-				"./run_gitops.task.js": {"path": "run_gitops.task.ts", "declarations": []},
 				"./Table_Page.svelte": {"path": "Table_Page.svelte", "declarations": []},
 				"./Tree_Item_Page.svelte": {"path": "Tree_Item_Page.svelte", "declarations": []},
 				"./Tree_Page.svelte": {"path": "Tree_Page.svelte", "declarations": []}
@@ -822,7 +838,7 @@
 		"npm_url": "https://www.npmjs.com/package/@ryanatkn/fuz_gitops",
 		"changelog_url": "https://github.com/ryanatkn/fuz_gitops/blob/main/CHANGELOG.md",
 		"published": true,
-		"check_runs": {"status": "completed", "conclusion": "success"},
+		"check_runs": {"status": "in_progress", "conclusion": null},
 		"pull_requests": []
 	},
 	{
@@ -840,7 +856,9 @@
 				"start": "gro dev",
 				"dev": "gro dev",
 				"build": "gro build",
+				"check": "gro check",
 				"test": "gro test",
+				"preview": "vite preview",
 				"deploy": "gro deploy"
 			},
 			"homepage": "https://code.fuz.dev/",
@@ -858,9 +876,9 @@
 				"@changesets/changelog-git": "^0.2.0",
 				"@ryanatkn/belt": "^0.24.1",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.106.3",
-				"@ryanatkn/gro": "^0.128.0",
-				"@ryanatkn/moss": "^0.6.2",
+				"@ryanatkn/fuz": "^0.107.1",
+				"@ryanatkn/gro": "^0.129.0",
+				"@ryanatkn/moss": "^0.6.3",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -934,7 +952,7 @@
 		"url": "https://mastodon.fuz.dev/",
 		"package_json": {
 			"name": "@ryanatkn/fuz_mastodon",
-			"version": "0.14.0",
+			"version": "0.14.1",
 			"public": true,
 			"description": "Mastodon components and helpers for Svelte, SvelteKit, and Fuz",
 			"glyph": "🦣",
@@ -945,7 +963,9 @@
 				"start": "gro dev",
 				"dev": "gro dev",
 				"build": "gro build",
+				"check": "gro check",
 				"test": "gro test",
+				"preview": "vite preview",
 				"deploy": "gro deploy"
 			},
 			"homepage": "https://mastodon.fuz.dev/",
@@ -963,10 +983,10 @@
 				"@changesets/changelog-git": "^0.2.0",
 				"@ryanatkn/belt": "^0.24.1",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.106.3",
+				"@ryanatkn/fuz": "^0.107.1",
 				"@ryanatkn/fuz_code": "^0.15.1",
-				"@ryanatkn/gro": "^0.128.0",
-				"@ryanatkn/moss": "^0.6.2",
+				"@ryanatkn/gro": "^0.129.0",
+				"@ryanatkn/moss": "^0.6.3",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.17",
 				"@sveltejs/package": "^2.3.2",
@@ -976,6 +996,7 @@
 				"date-fns": "^3.6.0",
 				"eslint": "^8.57.0",
 				"eslint-plugin-svelte": "^2.41.0",
+				"esm-env": "^1.0.0",
 				"prettier": "^3.3.2",
 				"prettier-plugin-svelte": "^3.2.5",
 				"prism-svelte": "^0.5.0",
@@ -1038,7 +1059,7 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/fuz_mastodon",
-			"version": "0.14.0",
+			"version": "0.14.1",
 			"modules": {
 				"./package.json": {"path": "package.json", "declarations": []},
 				"./Mastodon_Status_Item.svelte": {
@@ -1095,18 +1116,23 @@
 		"url": "https://gro.ryanatkn.com/",
 		"package_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.128.0",
+			"version": "0.129.0",
 			"public": true,
 			"description": "task runner and toolkit extending SvelteKit",
 			"motto": "generate, run, optimize",
 			"glyph": "🌰",
-			"logo": "favicon.png",
+			"logo": "logo.svg",
 			"logo_alt": "a pixelated green oak acorn with a glint of sun",
 			"license": "MIT",
 			"scripts": {
-				"build": "rm -rf .gro dist && svelte-kit sync && svelte-package && chmod +x ./dist/gro.js && npm link -f",
+				"bootstrap": "rm -rf .gro dist && svelte-kit sync && svelte-package && chmod +x ./dist/gro.js && npm link -f",
 				"start": "gro dev",
-				"test": "gro test"
+				"dev": "gro dev",
+				"build": "gro build",
+				"check": "gro check",
+				"test": "gro test",
+				"preview": "vite preview",
+				"deploy": "gro deploy"
 			},
 			"homepage": "https://gro.ryanatkn.com/",
 			"author": {
@@ -1135,6 +1161,7 @@
 				"chokidar": "^3.6.0",
 				"dotenv": "^16.4.5",
 				"es-module-lexer": "^1.5.4",
+				"esm-env": "^1.0.0",
 				"mri": "^1.2.0",
 				"prettier": "^3.3.2",
 				"prettier-plugin-svelte": "^3.2.5",
@@ -1146,7 +1173,7 @@
 				"@changesets/changelog-git": "^0.2.0",
 				"@changesets/types": "^6.0.0",
 				"@ryanatkn/eslint-config": "^0.1.3",
-				"@ryanatkn/fuz": "^0.106.3",
+				"@ryanatkn/fuz": "^0.107.1",
 				"@ryanatkn/moss": "^0.6.3",
 				"@sveltejs/adapter-static": "^3.0.2",
 				"@sveltejs/kit": "^2.5.18",
@@ -1402,7 +1429,7 @@
 		},
 		"src_json": {
 			"name": "@ryanatkn/gro",
-			"version": "0.128.0",
+			"version": "0.129.0",
 			"modules": {
 				".": {
 					"path": "index.ts",
@@ -2141,7 +2168,7 @@
 		"npm_url": "https://www.npmjs.com/package/@ryanatkn/gro",
 		"changelog_url": "https://github.com/ryanatkn/gro/blob/main/CHANGELOG.md",
 		"published": true,
-		"check_runs": {"status": "completed", "conclusion": "success"},
+		"check_runs": {"status": "completed", "conclusion": "failure"},
 		"pull_requests": []
 	}
 ]
