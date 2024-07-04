@@ -6,10 +6,10 @@ import {join} from 'node:path';
 import {paths} from '@ryanatkn/gro/paths.js';
 import {load_from_env} from '@ryanatkn/gro/env.js';
 import {load_fuz_config} from '@ryanatkn/fuz/config.js';
-import {existsSync} from 'node:fs';
 
 import {fetch_deployments} from '$lib/fetch_deployments.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
+import {embed_json} from '@ryanatkn/belt/json.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
@@ -58,10 +58,10 @@ export const task: Task<Args> = {
 			log,
 		);
 
-		await writeFile(
-			outfile,
-			await format_file(JSON.stringify(fetched_deployments), {filepath: outfile}),
-		);
+		// JSON is faster to parse than JS so this is a small optimization.
+		const contents = `import type {Deployment} from '@ryanatkn/fuz_gitops/fetch_deployments.js';
+export const deployments: Deployment[] = ${embed_json(fetched_deployments)}`;
+		await writeFile(outfile, await format_file(contents, {filepath: outfile}));
 
 		const changed = await cache.save();
 		if (changed) {
