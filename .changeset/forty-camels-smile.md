@@ -2,4 +2,4 @@
 '@ryanatkn/fuz_gitops': minor
 ---
 
-change `repos.ts` from `deployments.json`
+change `$routes/repos.ts` from `$lib/deployments.json`
