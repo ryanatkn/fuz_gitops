@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.30.1
+
+### Patch Changes
+
+- improve `gro gitops` path handling and add a banner to the generated `repos.ts` ([f18720d](https://github.com/ryanatkn/fuz_gitops/commit/f18720d))
+
 ## 0.30.0
 
 ### Minor Changes
