@@ -2,7 +2,7 @@ import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {readFile, writeFile} from 'node:fs/promises';
 import {format_file} from '@ryanatkn/gro/format_file.js';
-import {resolve} from 'node:path';
+import {join} from 'node:path';
 import {paths, print_path} from '@ryanatkn/gro/paths.js';
 import {load_from_env} from '@ryanatkn/gro/env.js';
 import {load_fuz_config} from '@ryanatkn/fuz/config.js';
@@ -28,6 +28,11 @@ export const Args = z
 				description: 'path to the directory containing the source package.json and fuz config',
 			})
 			.default(paths.root),
+		outdir: z
+			.string({
+				description: 'path to the directory for the generated files, defaults to $routes/',
+			})
+			.optional(),
 	})
 	.strict();
 export type Args = z.infer<typeof Args>;
@@ -39,9 +44,9 @@ export const task: Task<Args> = {
 	Args,
 	summary: 'download metadata for the given deployments',
 	run: async ({args, log, sveltekit_config}) => {
-		const {path, dir} = args;
+		const {path, dir, outdir = sveltekit_config.routes_path} = args;
 
-		const outfile = resolve(dir, sveltekit_config.routes_path, 'repos.ts');
+		const outfile = join(outdir, 'repos.ts');
 
 		const fuz_config = await load_fuz_config(path, dir, log);
 
