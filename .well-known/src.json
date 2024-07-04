@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.29.1",
+  "version": "0.30.0",
   "modules": {
     "./package.json": {
       "path": "package.json",
@@ -16,10 +16,6 @@
     },
     "./Deployments_Tree.svelte": {
       "path": "Deployments_Tree.svelte",
-      "declarations": []
-    },
-    "./deployments.json": {
-      "path": "deployments.json",
       "declarations": []
     },
     "./deployments.js": {
