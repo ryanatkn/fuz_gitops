@@ -3,9 +3,10 @@ import {ensure_end} from '@ryanatkn/belt/string.js';
 import type {Github_Pull_Request} from '$lib/github.js';
 import type {Fetched_Deployment, Deployment} from '$lib/fetch_deployments.js';
 
-export interface Filter_Pull_Request {
-	(pull_request: Github_Pull_Request, deployment: Deployment): boolean;
-}
+export type Filter_Pull_Request = (
+	pull_request: Github_Pull_Request,
+	deployment: Deployment,
+) => boolean;
 
 export interface Pull_Request_Meta {
 	deployment: Fetched_Deployment;
@@ -21,7 +22,7 @@ export const to_pull_requests = (
 			if (!deployment.pull_requests) return null!;
 			// TODO hacky, figure out the data structure
 			return deployment.pull_requests.map((pull_request) =>
-				deployment.package_json?.homepage &&
+				deployment.package_json.homepage &&
 				(!filter_pull_request || filter_pull_request(pull_request, deployment))
 					? {deployment, pull_request}
 					: null!,

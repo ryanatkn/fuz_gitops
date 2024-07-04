@@ -20,7 +20,6 @@
 
 	// TODO hacky, handle regular deps too
 	const lookup_dep_version = (deployment: Fetched_Deployment, dep: string): string | null => {
-		if (!deployment.package_json) return null;
 		for (const key in deployment.package_json.dependencies) {
 			if (key === dep) {
 				return deployment.package_json.dependencies[key];
@@ -37,7 +36,7 @@
 	const latest_version_by_dep = $derived(
 		new Map<string, string | null>(
 			deps.map((dep) => {
-				const deployment = deployments.find((deployment) => deployment.package_json?.name === dep);
+				const deployment = deployments.find((deployment) => deployment.package_json.name === dep);
 				if (!deployment?.package_json) return [dep, null];
 				return [dep, deployment.package_json.version];
 			}),
@@ -75,13 +74,13 @@
 	<tbody>
 		{#each deployments as deployment}
 			{@const package_json = deployment.package_json}
-			{@const homepage_url = package_json ? deployment.homepage_url : null}
+			{@const homepage_url = deployment.homepage_url}
 			<tr>
 				<td>
 					<div class="row">
 						{#if package_json}
 							<a href="{base}/tree/{deployment.repo_name}"
-								>{deployment.package_json.glyph || '🌳'}</a
+								>{deployment.package_json.glyph ?? '🌳'}</a
 							>
 						{/if}
 					</div>
@@ -124,14 +123,14 @@
 					</div>
 				</td>
 				<td>
-					{#if package_json && deployment.npm_url}
+					{#if deployment.npm_url}
 						<div class="row">
 							<a href={deployment.npm_url}><code>{deployment.name}</code></a>
 						</div>
 					{/if}
 				</td>
 				<td>
-					{#if package_json && package_json.version !== '0.0.1'}
+					{#if package_json.version !== '0.0.1'}
 						<a href={deployment.changelog_url}>{format_version(package_json.version)}</a>
 					{/if}
 				</td>
@@ -148,7 +147,7 @@
 					</td>
 				{/each}
 				<td>
-					{#if package_json && deployment.repo_url}
+					{#if deployment.repo_url}
 						{@const pull_requests = lookup_pull_requests(deployments, deployment)}
 						<!-- TODO show something like `and N more` with a link to a dialog list -->
 						<div class="row">

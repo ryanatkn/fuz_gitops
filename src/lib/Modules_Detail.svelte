@@ -23,11 +23,11 @@
 		deployment: Fetched_Deployment;
 		modules: Src_Module[];
 	}> = $derived(
-		deployments.reduce(
+		deployments.reduce<Array<{deployment: Fetched_Deployment; modules: Src_Module[]}>>(
 			(v, deployment) => {
 				const {package_json, src_json} = deployment;
 				if (
-					!src_json?.modules ||
+					!src_json.modules ||
 					!(
 						!!package_json.devDependencies?.['@sveltejs/package'] ||
 						!!package_json.dependencies?.['@sveltejs/package']
@@ -38,7 +38,7 @@
 				v.push({deployment, modules: Object.values(src_json.modules)});
 				return v;
 			},
-			[] as Array<{deployment: Fetched_Deployment; modules: Src_Module[]}>,
+			[],
 		),
 	);
 

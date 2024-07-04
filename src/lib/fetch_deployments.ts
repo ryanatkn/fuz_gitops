@@ -76,7 +76,6 @@ export const fetch_deployments = async (
 				log,
 				dir ? join(dir, 'src/lib') : undefined,
 			);
-			if (!src_json) log?.error('failed to fetch src_json: ' + homepage_url);
 		} else {
 			// Fetch the remote package data
 			log?.info('fetching data for', homepage_url);

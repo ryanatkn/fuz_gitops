@@ -97,9 +97,11 @@ export const fetch_github_check_runs = async (
 
 const reduce_check_runs = (check_runs: Github_Check_Runs_Item[]): Github_Check_Runs_Item | null => {
 	if (!check_runs.length) return null;
+	// TODO fix these types and remove the eslint disable, `Github_Check_Runs_Item` should maybe have nullable properties?
 	let status!: Github_Check_Runs_Item['status'];
 	let conclusion!: Github_Check_Runs_Item['conclusion'];
 	for (const check_run of check_runs) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (!status || status === 'completed') {
 			status = check_run.status;
 		}
