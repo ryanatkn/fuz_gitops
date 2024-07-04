@@ -36,11 +36,10 @@ export type Args = z.infer<typeof Args>;
 export const task: Task<Args> = {
 	Args,
 	summary: 'download metadata for the given deployments',
-	run: async ({args, log}) => {
+	run: async ({args, log, sveltekit_config}) => {
 		const {path, dir} = args;
 
-		// TODO BLOCK output to routes and take an arg
-		const outfile = join(paths.lib, 'deployments.json');
+		const outfile = join(sveltekit_config.routes_path, 'repos.ts');
 
 		const fuz_config = await load_fuz_config(path, dir, log);
 
@@ -63,19 +62,6 @@ export const task: Task<Args> = {
 			outfile,
 			await format_file(JSON.stringify(fetched_deployments), {filepath: outfile}),
 		);
-
-		const types_outfile = outfile + '.d.ts';
-		if (!existsSync(types_outfile)) {
-			await writeFile(
-				types_outfile,
-				`declare module '$lib/deployments.json' {
-	import type {Deployment} from '@ryanatkn/fuz_gitops/fetch_deployments.js';
-	const data: Deployment[];
-	export default data;
-}
-`,
-			);
-		}
 
 		const changed = await cache.save();
 		if (changed) {
