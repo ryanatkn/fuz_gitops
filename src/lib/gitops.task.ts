@@ -1,11 +1,13 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
-import {writeFile} from 'node:fs/promises';
+import {readFile, writeFile} from 'node:fs/promises';
 import {format_file} from '@ryanatkn/gro/format_file.js';
 import {join} from 'node:path';
-import {paths} from '@ryanatkn/gro/paths.js';
+import {paths, print_path} from '@ryanatkn/gro/paths.js';
 import {load_from_env} from '@ryanatkn/gro/env.js';
 import {load_fuz_config} from '@ryanatkn/fuz/config.js';
+import {embed_json} from '@ryanatkn/belt/json.js';
+import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {existsSync} from 'node:fs';
 
 import {fetch_deployments} from '$lib/fetch_deployments.js';
@@ -26,6 +28,11 @@ export const Args = z
 				description: 'path to the directory containing the source package.json and fuz config',
 			})
 			.default(paths.root),
+		outdir: z
+			.string({
+				description: 'path to the directory for the generated files, defaults to $routes/',
+			})
+			.optional(),
 	})
 	.strict();
 export type Args = z.infer<typeof Args>;
@@ -36,10 +43,10 @@ export type Args = z.infer<typeof Args>;
 export const task: Task<Args> = {
 	Args,
 	summary: 'download metadata for the given deployments',
-	run: async ({args, log}) => {
-		const {path, dir} = args;
+	run: async ({args, log, sveltekit_config}) => {
+		const {path, dir, outdir = sveltekit_config.routes_path} = args;
 
-		const outfile = join(paths.lib, 'deployments.json');
+		const outfile = join(outdir, 'repos.ts');
 
 		const fuz_config = await load_fuz_config(path, dir, log);
 
@@ -58,22 +65,26 @@ export const task: Task<Args> = {
 			log,
 		);
 
-		await writeFile(
-			outfile,
-			await format_file(JSON.stringify(fetched_deployments), {filepath: outfile}),
-		);
+		// TODO should package_json be provided in the Gro task/gen contexts? check if it's always loaded
+		const package_json = await load_package_json(dir);
+		const specifier =
+			package_json.name === '@ryanatkn/fuz_gitops'
+				? '$lib/fetch_deployments.js'
+				: '@ryanatkn/fuz_gitops/fetch_deployments.js';
 
-		const types_outfile = outfile + '.d.ts';
-		if (!existsSync(types_outfile)) {
-			await writeFile(
-				types_outfile,
-				`declare module '$lib/deployments.json' {
-	import type {Deployment} from '@ryanatkn/fuz_gitops/fetch_deployments.js';
-	const data: Deployment[];
-	export default data;
-}
-`,
-			);
+		// JSON is faster to parse than JS so we optimize it by embedding the data as a string.
+		const contents = `
+			import type {Deployment} from '${specifier}';
+			export const deployments: Deployment[] = ${embed_json(fetched_deployments)}
+		`;
+		// TODO think about possibly using the `gen` functionality in this task, not sure what the API design could look like
+		const formatted = await format_file(contents, {filepath: outfile});
+		const existing = existsSync(outfile) ? await readFile(outfile, 'utf8') : '';
+		if (existing === formatted) {
+			log.info(`no changes to ${print_path(outfile)}`);
+		} else {
+			log.info(`writing changes to ${print_path(outfile)}`);
+			await writeFile(outfile, formatted);
 		}
 
 		const changed = await cache.save();
