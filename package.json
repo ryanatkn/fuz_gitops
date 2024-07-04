@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.29.1",
+  "version": "0.30.0",
   "description": "a tool for managing many repos",
   "glyph": "🪄",
   "logo": "logo.svg",
@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.0",
-    "@ryanatkn/belt": "^0.24.1",
+    "@ryanatkn/belt": "^0.24.2",
     "@ryanatkn/eslint-config": "^0.1.3",
     "@ryanatkn/fuz": "^0.107.1",
     "@ryanatkn/gro": "^0.129.0",
@@ -100,10 +100,6 @@
       "types": "./dist/Deployments_Tree.svelte.d.ts",
       "svelte": "./dist/Deployments_Tree.svelte",
       "default": "./dist/Deployments_Tree.svelte"
-    },
-    "./deployments.json": {
-      "types": "./dist/deployments.json.d.ts",
-      "default": "./dist/deployments.json"
     },
     "./deployments.js": {
       "types": "./dist/deployments.d.ts",
