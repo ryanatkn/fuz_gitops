@@ -1,5 +1,15 @@
 # @ryanatkn/fuz_gitops
 
+## 0.30.0
+
+### Minor Changes
+
+- change `$routes/repos.ts` from `$lib/deployments.json` and add `outdir` to `gro gitops` to customize it ([#28](https://github.com/ryanatkn/fuz_gitops/pull/28))
+
+### Patch Changes
+
+- add `sideEffects` to `package.json` ([c91c043](https://github.com/ryanatkn/fuz_gitops/commit/c91c043))
+
 ## 0.29.1
 
 ### Patch Changes
