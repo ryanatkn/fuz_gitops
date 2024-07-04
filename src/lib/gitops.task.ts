@@ -39,6 +39,7 @@ export const task: Task<Args> = {
 	run: async ({args, log}) => {
 		const {path, dir} = args;
 
+		// TODO BLOCK output to routes and take an arg
 		const outfile = join(paths.lib, 'deployments.json');
 
 		const fuz_config = await load_fuz_config(path, dir, log);
