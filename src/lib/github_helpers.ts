@@ -19,16 +19,16 @@ export const to_pull_requests = (
 ): Pull_Request_Meta[] =>
 	deployments
 		.flatMap((deployment) => {
-			if (!deployment.pull_requests) return null!;
+			if (!deployment.pull_requests) return null;
 			// TODO hacky, figure out the data structure
 			return deployment.pull_requests.map((pull_request) =>
 				deployment.package_json.homepage &&
 				(!filter_pull_request || filter_pull_request(pull_request, deployment))
 					? {deployment, pull_request}
-					: null!,
+					: null,
 			);
 		})
-		.filter(Boolean);
+		.filter((v) => v !== null);
 
 export const to_pull_url = (repo_url: string, pull: Github_Pull_Request): string =>
 	ensure_end(repo_url, '/') + 'pull/' + pull.number;
