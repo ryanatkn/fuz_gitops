@@ -25,7 +25,7 @@ export const parse_deployments = (
 	const unfetched_deployments: Unfetched_Deployment[] = [];
 
 	for (const {url, package_json, src_json, check_runs, pull_requests} of maybe_deployments) {
-		if (package_json && src_json) {
+		if (package_json) {
 			deployments.push({
 				...parse_package_meta(url, package_json, src_json),
 				check_runs,

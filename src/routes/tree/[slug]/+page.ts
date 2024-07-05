@@ -5,6 +5,6 @@ import {deployments} from '$routes/repos.js';
 
 const parsed = parse_deployments(deployments, 'https://gitops.fuz.dev/');
 
-export const entries: EntryGenerator = async () => {
+export const entries: EntryGenerator = () => {
 	return parsed.deployments.map((d) => ({slug: d.repo_name}));
 };
