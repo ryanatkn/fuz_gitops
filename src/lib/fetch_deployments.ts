@@ -52,7 +52,7 @@ export const fetch_deployments = async (
 	// use the local information as much as possible to ensure we're up to date.
 	// If this isn't done, the local package's info will be pulled from the web,
 	// making it perpetually behind by one deployment.
-	const local_package_json = await load_package_json(dir);
+	const local_package_json = load_package_json(dir);
 	const local_homepage_url = local_package_json.homepage
 		? ensure_end(local_package_json.homepage, '/')
 		: undefined;
@@ -71,11 +71,7 @@ export const fetch_deployments = async (
 			log?.info('resolving data locally for', homepage_url);
 			package_json = local_package_json;
 
-			src_json = await create_src_json(
-				local_package_json,
-				log,
-				dir ? join(dir, 'src/lib') : undefined,
-			);
+			src_json = create_src_json(local_package_json, log, dir ? join(dir, 'src/lib') : undefined);
 		} else {
 			// Fetch the remote package data
 			log?.info('fetching data for', homepage_url);

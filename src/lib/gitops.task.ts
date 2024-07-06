@@ -53,7 +53,7 @@ export const task: Task<Args> = {
 		const cache = await create_fs_fetch_value_cache('deployments');
 
 		// This searches the parent directory for the env var, so we don't use SvelteKit's $env imports
-		const token = await load_from_env('GITHUB_TOKEN_SECRET');
+		const token = load_from_env('GITHUB_TOKEN_SECRET');
 		if (!token) {
 			log.warn('the env var GITHUB_TOKEN_SECRET was not found, so API calls with be unauthorized');
 		}
@@ -66,7 +66,7 @@ export const task: Task<Args> = {
 		);
 
 		// TODO should package_json be provided in the Gro task/gen contexts? check if it's always loaded
-		const package_json = await load_package_json(dir);
+		const package_json = load_package_json(dir);
 		const specifier =
 			package_json.name === '@ryanatkn/fuz_gitops'
 				? '$lib/fetch_deployments.js'

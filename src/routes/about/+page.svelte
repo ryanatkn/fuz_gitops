@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
+	import Community_Links_Panel from '@ryanatkn/fuz/Community_Links_Panel.svelte';
 
 	import {get_deployments} from '$lib/deployments.js';
 	import Page_Footer from '$lib/Page_Footer.svelte';
@@ -16,6 +17,7 @@
 	<div class="p_lg">
 		<Page_Header pkg={deployment}></Page_Header>
 	</div>
+	<Community_Links_Panel />
 	<section class="box w_100 mb_lg">
 		<div class="panel p_md width_md">
 			<Package_Detail pkg={deployment} />
