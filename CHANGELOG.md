@@ -1,5 +1,13 @@
 # @ryanatkn/fuz_gitops
 
+## 0.30.2
+
+### Patch Changes
+
+- add tsconfig `sourceRoot` ([b50c370](https://github.com/ryanatkn/fuz_gitops/commit/b50c370))
+- publish src files ([68129cc](https://github.com/ryanatkn/fuz_gitops/commit/68129cc))
+- enable tsconfig `declaration` and `declarationMap` ([936beb5](https://github.com/ryanatkn/fuz_gitops/commit/936beb5))
+
 ## 0.30.1
 
 ### Patch Changes
