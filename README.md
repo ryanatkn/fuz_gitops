@@ -1,6 +1,6 @@
 # fuz_gitops
 
-[<img src="/static/log.svg" alt="a friendly blue spider facing you" align="right" width="192" height="192">](https://gitops.fuz.dev/)
+[<img src="/static/logo.svg" alt="a friendly blue spider facing you" align="right" width="192" height="192">](https://gitops.fuz.dev/)
 
 > a tool for managing many repos 🪄 [gitops.fuz.dev](https://gitops.fuz.dev/)
 
