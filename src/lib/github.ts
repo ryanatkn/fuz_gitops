@@ -39,7 +39,7 @@ export const fetch_github_pull_requests = async (
 		log,
 	});
 	if (!fetched.ok) {
-		// TODO @multiple this is messy but I think it's the main case we need to worry about?
+		// TODO @many this is messy but I think it's the main case we need to worry about?
 		if (fetched.status === 401) {
 			throw Error('401 response fetching github pull requests - check your GITHUB_TOKEN_SECRET');
 		}
@@ -86,7 +86,7 @@ export const fetch_github_check_runs = async (
 		log,
 	});
 	if (!fetched.ok) {
-		// TODO @multiple this is messy but I think it's the main case we need to worry about?
+		// TODO @many this is messy but I think it's the main case we need to worry about?
 		if (fetched.status === 401) {
 			throw Error('401 response fetching github CI status - check your GITHUB_TOKEN_SECRET');
 		}
