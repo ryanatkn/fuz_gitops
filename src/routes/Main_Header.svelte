@@ -7,7 +7,7 @@
 		<h1 class="p_sm mb_0">fuz_gitops</h1>
 		<!-- TODO Fuz_Gitops_Logo -->
 		<Spider
-			fill="var(--color_a_5)"
+			fill="hsl(var(--color_a_5))"
 			size="var(--icon_size_xl2)"
 			label="a friendly blue spider facing you"
 		/>

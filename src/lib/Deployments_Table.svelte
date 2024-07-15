@@ -44,7 +44,7 @@
 	);
 
 	const format_version = (version: string | null): string =>
-		version === null ? '' : version.replace(/^(\^|>=)\s*/u, '');
+		version === null ? '' : version.replace(/^(\^|>=)\s*/, '');
 
 	const lookup_pull_requests = (
 		deployments: Fetched_Deployment[] | null,
