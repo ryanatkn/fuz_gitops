@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.31.0
+
+### Minor Changes
+
+- upgrade `@ryanatkn/fuz@0.110.4` from `0.108.4` ([acb7bb4](https://github.com/ryanatkn/fuz_gitops/commit/acb7bb4))
+
 ## 0.30.2
 
 ### Patch Changes
