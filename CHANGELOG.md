@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.31.1
+
+### Patch Changes
+
+- format repos with multiline strings ([7799fc2](https://github.com/ryanatkn/fuz_gitops/commit/7799fc2))
+
 ## 0.31.0
 
 ### Minor Changes
