@@ -1,5 +1,12 @@
 # @ryanatkn/fuz_gitops
 
+## 0.32.0
+
+### Minor Changes
+
+- pin peer deps ([#29](https://github.com/ryanatkn/fuz_gitops/pull/29))
+- rename `Repo` from `Deployment` ([#29](https://github.com/ryanatkn/fuz_gitops/pull/29))
+
 ## 0.31.1
 
 ### Patch Changes
