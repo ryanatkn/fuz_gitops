@@ -1,13 +1,13 @@
 <script lang="ts">
 	import Pull_Requests_Page from '$lib/Pull_Requests_Page.svelte';
-	import {get_deployments} from '$lib/deployments.js';
+	import {get_repos} from '$lib/repo.js';
 
-	const {deployment, deployments, unfetched_deployments} = get_deployments();
+	const {repo, repos, unfetched_repos} = get_repos();
 </script>
 
 <Pull_Requests_Page
-	{deployment}
-	{deployments}
-	{unfetched_deployments}
+	{repo}
+	{repos}
+	{unfetched_repos}
 	filter_pull_request={(pull) => pull.user.login === 'ryanatkn'}
 />

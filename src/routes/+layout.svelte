@@ -10,8 +10,8 @@
 	import type {Snippet} from 'svelte';
 
 	import Settings from '$routes/Settings.svelte';
-	import {deployments} from '$routes/repos.js';
-	import {parse_deployments, set_deployments} from '$lib/deployments.js';
+	import {repos} from '$routes/repos.js';
+	import {parse_repos, set_repos} from '$lib/repo.js';
 
 	interface Props {
 		children: Snippet;
@@ -21,7 +21,7 @@
 
 	const contextmenu = new Contextmenu_Store();
 
-	set_deployments(parse_deployments(deployments, 'https://gitops.fuz.dev/'));
+	set_repos(parse_repos(repos, 'https://gitops.fuz.dev/'));
 
 	let show_settings = $state(false);
 </script>

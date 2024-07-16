@@ -2,9 +2,9 @@
 	import {page} from '$app/stores';
 
 	import Tree_Item_Page from '$lib/Tree_Item_Page.svelte';
-	import {get_deployments} from '$lib/deployments.js';
+	import {get_repos} from '$lib/repo.js';
 
-	const {deployment, deployments} = get_deployments();
+	const {repo, repos} = get_repos();
 </script>
 
-<Tree_Item_Page {deployment} {deployments} slug={$page.params.slug} />
+<Tree_Item_Page {repo} {repos} slug={$page.params.slug} />

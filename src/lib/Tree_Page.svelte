@@ -3,35 +3,35 @@
 
 	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
-	import Deployments_Tree from '$lib/Deployments_Tree.svelte';
-	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
+	import Repos_Tree from '$lib/Repos_Tree.svelte';
+	import type {Fetched_Repo} from '$lib/repo.js';
 
 	interface Props {
-		deployment: Fetched_Deployment;
-		deployments: Fetched_Deployment[];
+		repo: Fetched_Repo;
+		repos: Fetched_Repo[];
 	}
 
-	const {deployment, deployments}: Props = $props();
+	const {repo, repos}: Props = $props();
 
-	// TODO ideally there would be one `Deployments_Tree` mounted by the layout with transitions
+	// TODO ideally there would be one `Repos_Tree` mounted by the layout with transitions
 </script>
 
 <svelte:head>
-	<title>tree {deployment.package_json.glyph} {deployment.name}</title>
+	<title>tree {repo.package_json.glyph} {repo.name}</title>
 </svelte:head>
 
 <main class="box w_100">
 	<div class="p_lg">
-		<Page_Header pkg={deployment} />
+		<Page_Header pkg={repo} />
 	</div>
 	<section class="tree">
-		<Deployments_Tree {deployments}>
+		<Repos_Tree {repos}>
 			{#snippet nav()}
-				<div class="deployments_tree_nav">
-					<Breadcrumb>{deployment.package_json.glyph}</Breadcrumb>
+				<div class="repos_tree_nav">
+					<Breadcrumb>{repo.package_json.glyph}</Breadcrumb>
 				</div>
 			{/snippet}
-		</Deployments_Tree>
+		</Repos_Tree>
 	</section>
 	<section class="box mb_xl7">
 		<Page_Footer />
@@ -53,12 +53,12 @@
 		flex-direction: row;
 		align-items: flex-start;
 	}
-	.deployments_tree_nav {
+	.repos_tree_nav {
 		display: flex;
 		margin-top: var(--space_xl);
 	}
 	/* TODO hacky */
-	.deployments_tree_nav :global(.breadcrumb) {
+	.repos_tree_nav :global(.breadcrumb) {
 		justify-content: flex-start;
 	}
 </style>

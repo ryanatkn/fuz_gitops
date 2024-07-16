@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Table_Page from '$lib/Table_Page.svelte';
-	import {get_deployments} from '$lib/deployments.js';
+	import {get_repos} from '$lib/repo.js';
 
-	const {deployment, deployments} = get_deployments();
+	const {repo, repos} = get_repos();
 </script>
 
-<Table_Page {deployment} {deployments} />
+<Table_Page {repo} {repos} />

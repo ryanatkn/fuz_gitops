@@ -4,29 +4,29 @@
 	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Modules_Detail from '$lib/Modules_Detail.svelte';
-	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
+	import type {Fetched_Repo} from '$lib/repo.js';
 
 	interface Props {
-		deployment: Fetched_Deployment;
-		deployments: Fetched_Deployment[];
+		repo: Fetched_Repo;
+		repos: Fetched_Repo[];
 	}
 
-	const {deployment, deployments}: Props = $props();
+	const {repo, repos}: Props = $props();
 </script>
 
 <svelte:head>
-	<title>modules {deployment.package_json.glyph} {deployment.package_json.name}</title>
+	<title>modules {repo.package_json.glyph} {repo.package_json.name}</title>
 </svelte:head>
 
 <main class="box w_100">
 	<div class="p_lg">
-		<Page_Header pkg={deployment} />
+		<Page_Header pkg={repo} />
 	</div>
 	<section>
-		<Modules_Detail {deployments}>
+		<Modules_Detail {repos}>
 			{#snippet nav_footer()}
 				<nav class="row">
-					<Breadcrumb>{deployment.package_json.glyph}</Breadcrumb>
+					<Breadcrumb>{repo.package_json.glyph}</Breadcrumb>
 				</nav>
 			{/snippet}
 		</Modules_Detail>

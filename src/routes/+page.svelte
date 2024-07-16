@@ -4,13 +4,13 @@
 	import {base} from '$app/paths';
 
 	import Main_Header from '$routes/Main_Header.svelte';
-	import {get_deployments} from '$lib/deployments.js';
+	import {get_repos} from '$lib/repo.js';
 
-	const {deployment} = get_deployments();
+	const {repo} = get_repos();
 </script>
 
 <svelte:head>
-	<title>{deployment.package_json.name}</title>
+	<title>{repo.package_json.name}</title>
 </svelte:head>
 
 <main class="box">
@@ -34,7 +34,7 @@
 		</menu>
 	</section>
 	<section class="mb_xl7">
-		<Library_Footer pkg={deployment}>
+		<Library_Footer pkg={repo}>
 			{#snippet logo_header()}<a href="{base}/about" class="mb_xs">about</a>{/snippet}
 			{#snippet logo_footer()}<a href="https://www.fuz.dev/" class="mt_xs">fuz.dev</a>{/snippet}
 		</Library_Footer>

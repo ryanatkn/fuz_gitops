@@ -5,37 +5,37 @@
 	import {format_url} from '@ryanatkn/belt/url.js';
 	import type {Snippet} from 'svelte';
 
-	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
-	import Deployments_Tree_Nav from '$lib/Deployments_Tree_Nav.svelte';
+	import type {Fetched_Repo} from '$lib/repo.js';
+	import Repos_Tree_Nav from '$lib/Repos_Tree_Nav.svelte';
 
 	interface Props {
-		deployments: Fetched_Deployment[];
+		repos: Fetched_Repo[];
 		/**
 		 * The selected package, if any.
 		 */
-		selected_deployment?: Fetched_Deployment | undefined;
+		selected_repo?: Fetched_Repo | undefined;
 		nav: Snippet;
 	}
 
-	const {deployments, selected_deployment, nav}: Props = $props();
+	const {repos, selected_repo, nav}: Props = $props();
 </script>
 
-<div class="deployments_tree">
-	<Deployments_Tree_Nav {deployments} {selected_deployment}>
+<div class="repos_tree">
+	<Repos_Tree_Nav {repos} {selected_repo}>
 		{@render nav()}
-	</Deployments_Tree_Nav>
-	{#if selected_deployment}
+	</Repos_Tree_Nav>
+	{#if selected_repo}
 		<section class="detail_wrapper">
 			<div class="panel detail p_md">
-				<Package_Detail pkg={selected_deployment} />
+				<Package_Detail pkg={selected_repo} />
 			</div>
 		</section>
 	{:else}
 		<menu class="summaries">
-			{#each deployments as deployment}
+			{#each repos as repo}
 				<li class="panel p_md box">
-					{#if deployment.package_json}
-						<Package_Summary pkg={deployment}>
+					{#if repo.package_json}
+						<Package_Summary pkg={repo}>
 							{#snippet repo_name(repo_name)}
 								<a href="{base}/tree/{repo_name}" class="repo_name">{repo_name}</a>
 							{/snippet}
@@ -44,7 +44,7 @@
 						<div class="width_sm">
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
-								<a href={deployment.url}>{format_url(deployment.url)}</a>
+								<a href={repo.url}>{format_url(repo.url)}</a>
 							</p>
 						</div>
 					{/if}
@@ -55,7 +55,7 @@
 </div>
 
 <style>
-	.deployments_tree {
+	.repos_tree {
 		width: 100%;
 		display: flex;
 		flex-direction: row;

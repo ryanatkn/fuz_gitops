@@ -5,41 +5,38 @@
 	import type {Snippet} from 'svelte';
 
 	import Modules_Nav from '$lib/Modules_Nav.svelte';
-	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
+	import type {Fetched_Repo} from '$lib/repo.js';
 
 	interface Props {
-		deployments: Fetched_Deployment[]; // TODO normalized version with cached primitives?
+		repos: Fetched_Repo[]; // TODO normalized version with cached primitives?
 		nav_footer?: Snippet;
 	}
 
-	const {deployments, nav_footer}: Props = $props();
+	const {repos, nav_footer}: Props = $props();
 
 	// TODO add sorting options
 
 	// TODO show other data (bytes and lines of code per module?)
 
 	// TODO hacky, needs helpers or rethinking
-	const deployments_modules: Array<{
-		deployment: Fetched_Deployment;
+	const repos_modules: Array<{
+		repo: Fetched_Repo;
 		modules: Src_Module[];
 	}> = $derived(
-		deployments.reduce<Array<{deployment: Fetched_Deployment; modules: Src_Module[]}>>(
-			(v, deployment) => {
-				const {package_json, src_json} = deployment;
-				if (
-					!src_json.modules ||
-					!(
-						!!package_json.devDependencies?.['@sveltejs/package'] ||
-						!!package_json.dependencies?.['@sveltejs/package']
-					)
-				) {
-					return v;
-				}
-				v.push({deployment, modules: Object.values(src_json.modules)});
+		repos.reduce<Array<{repo: Fetched_Repo; modules: Src_Module[]}>>((v, repo) => {
+			const {package_json, src_json} = repo;
+			if (
+				!src_json.modules ||
+				!(
+					!!package_json.devDependencies?.['@sveltejs/package'] ||
+					!!package_json.dependencies?.['@sveltejs/package']
+				)
+			) {
 				return v;
-			},
-			[],
-		),
+			}
+			v.push({repo, modules: Object.values(src_json.modules)});
+			return v;
+		}, []),
 	);
 
 	// TODO add favicon (from library? gro?)
@@ -48,21 +45,21 @@
 <div class="modules_detail">
 	<div class="nav_wrapper">
 		<section>
-			<Modules_Nav {deployments_modules} />
+			<Modules_Nav {repos_modules} />
 		</section>
 		{#if nav_footer}{@render nav_footer()}{/if}
 	</div>
 	<ul class="width_md box unstyled">
-		{#each deployments_modules as deployment_modules (deployment_modules)}
-			{@const {deployment, modules} = deployment_modules}
-			<li class="deployment_module">
+		{#each repos_modules as repo_modules (repo_modules)}
+			{@const {repo, modules} = repo_modules}
+			<li class="repo_module">
 				<header class="w_100 relative">
-					<a href="#{deployment.name}" id={deployment.name} class="subtitle">🔗</a>
-					<a href="{base}/tree/{deployment.repo_name}">{deployment.name}</a>
+					<a href="#{repo.name}" id={repo.name} class="subtitle">🔗</a>
+					<a href="{base}/tree/{repo.repo_name}">{repo.name}</a>
 				</header>
 				<ul class="modules panel unstyled">
-					{#each modules as deployment_module (deployment_module)}
-						{@const {path, declarations} = deployment_module}
+					{#each modules as repo_module (repo_module)}
+						{@const {path, declarations} = repo_module}
 						<li
 							class="module"
 							class:ts={path.endsWith('.ts')}
@@ -71,11 +68,9 @@
 							class:json={path.endsWith('.json')}
 						>
 							<div class="module_file">
-								{#if deployment.repo_url}
+								{#if repo.repo_url}
 									<div class="chip row">
-										<a href="{ensure_end(deployment.repo_url, '/')}blob/main/src/lib/{path}"
-											>{path}</a
-										>
+										<a href="{ensure_end(repo.repo_url, '/')}blob/main/src/lib/{path}">{path}</a>
 									</div>
 								{:else}
 									<span class="chip">{path}</span>
@@ -114,13 +109,13 @@
 		top: 0;
 		text-align: right;
 	}
-	.deployment_module {
+	.repo_module {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
 		margin-bottom: var(--space_xl5);
 	}
-	.deployment_module > header {
+	.repo_module > header {
 		display: flex;
 		padding: var(--space_xs) var(--space_md);
 		font-size: var(--size_lg);

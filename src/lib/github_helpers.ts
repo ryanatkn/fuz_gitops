@@ -1,30 +1,27 @@
 import {ensure_end} from '@ryanatkn/belt/string.js';
 
 import type {Github_Pull_Request} from '$lib/github.js';
-import type {Fetched_Deployment, Deployment} from '$lib/fetch_deployments.js';
+import type {Fetched_Repo, Repo} from '$lib/repo.js';
 
-export type Filter_Pull_Request = (
-	pull_request: Github_Pull_Request,
-	deployment: Deployment,
-) => boolean;
+export type Filter_Pull_Request = (pull_request: Github_Pull_Request, repo: Repo) => boolean;
 
 export interface Pull_Request_Meta {
-	deployment: Fetched_Deployment;
+	repo: Fetched_Repo;
 	pull_request: Github_Pull_Request;
 }
 
 export const to_pull_requests = (
-	deployments: Fetched_Deployment[],
+	repos: Fetched_Repo[],
 	filter_pull_request?: Filter_Pull_Request,
 ): Pull_Request_Meta[] =>
-	deployments
-		.flatMap((deployment) => {
-			if (!deployment.pull_requests) return null;
+	repos
+		.flatMap((repo) => {
+			if (!repo.pull_requests) return null;
 			// TODO hacky, figure out the data structure
-			return deployment.pull_requests.map((pull_request) =>
-				deployment.package_json.homepage &&
-				(!filter_pull_request || filter_pull_request(pull_request, deployment))
-					? {deployment, pull_request}
+			return repo.pull_requests.map((pull_request) =>
+				repo.package_json.homepage &&
+				(!filter_pull_request || filter_pull_request(pull_request, repo))
+					? {repo, pull_request}
 					: null,
 			);
 		})

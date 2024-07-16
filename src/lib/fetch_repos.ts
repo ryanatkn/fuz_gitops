@@ -12,31 +12,13 @@ import {
 	fetch_github_pull_requests,
 	Github_Check_Runs_Item,
 	Github_Pull_Requests,
-	type Github_Pull_Request,
 } from '$lib/github.js';
-
-export type Deployment = Fetched_Deployment | Unfetched_Deployment;
-
-// TODO ideally all of the deployments stuff would be in a different repo,
-// but this usage of `Package_Meta` would cause a circular dependency between this repo and that one,
-// so maybe `Package_Meta` belongs in Gro?
-export interface Fetched_Deployment extends Package_Meta {
-	check_runs: Github_Check_Runs_Item | null;
-	pull_requests: Github_Pull_Request[] | null;
-}
-
-export interface Unfetched_Deployment {
-	url: Url;
-	package_json: null;
-	src_json: null;
-	check_runs: null;
-	pull_requests: null;
-}
+import type {Repo} from '$lib/repo.js';
 
 /* eslint-disable no-await-in-loop */
 
 // TODO this is all very hacky
-export const fetch_deployments = async (
+export const fetch_repos = async (
 	homepage_urls: Url[],
 	token?: string,
 	cache?: Fetch_Value_Cache,
@@ -45,19 +27,19 @@ export const fetch_deployments = async (
 	delay = 50,
 	github_api_version?: string,
 	github_refs?: Record<string, string>, // if not 'main', mapping from the provided raw `homepage_url` to branch name
-): Promise<Deployment[]> => {
+): Promise<Repo[]> => {
 	log?.info(`homepage_urls`, homepage_urls);
 
 	// If one of the `homepage_urls` is the local package.json's `homepage` (local in `dir`),
 	// use the local information as much as possible to ensure we're up to date.
 	// If this isn't done, the local package's info will be pulled from the web,
-	// making it perpetually behind by one deployment.
+	// making it perpetually behind by one repo.
 	const local_package_json = load_package_json(dir);
 	const local_homepage_url = local_package_json.homepage
 		? ensure_end(local_package_json.homepage, '/')
 		: undefined;
 
-	const deployments: Deployment[] = [];
+	const repos: Repo[] = [];
 	for (const raw_homepage_url of homepage_urls) {
 		const homepage_url = ensure_end(raw_homepage_url, '/');
 		let package_json: Package_Json | null;
@@ -119,9 +101,9 @@ export const fetch_deployments = async (
 		}
 
 		if (pkg) {
-			deployments.push({...pkg, check_runs, pull_requests});
+			repos.push({...pkg, check_runs, pull_requests});
 		} else {
-			deployments.push({
+			repos.push({
 				url: homepage_url,
 				package_json: null,
 				src_json: null,
@@ -130,7 +112,7 @@ export const fetch_deployments = async (
 			});
 		}
 	}
-	return deployments;
+	return repos;
 };
 
 export const fetch_package_json = async (

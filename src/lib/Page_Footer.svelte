@@ -2,15 +2,15 @@
 	import Library_Footer from '@ryanatkn/fuz/Library_Footer.svelte';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import {get_deployments} from '$lib/deployments.js';
+	import {get_repos} from '$lib/repo.js';
 
-	const {deployment} = get_deployments();
+	const {repo} = get_repos();
 </script>
 
 <section class="box mb_xl7">
-	<Library_Footer pkg={deployment}>
+	<Library_Footer pkg={repo}>
 		<nav class="mb_xl5">
-			<Breadcrumb>{deployment.package_json.glyph}</Breadcrumb>
+			<Breadcrumb>{repo.package_json.glyph}</Breadcrumb>
 		</nav>
 	</Library_Footer>
 </section>
