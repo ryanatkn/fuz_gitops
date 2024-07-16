@@ -1200,10 +1200,6 @@ export const repos: Repo[] = JSON.parse(
 					"svelte": "./dist/Repos_Tree.svelte",\
 					"default": "./dist/Repos_Tree.svelte"\
 				},\
-				"./repos.js": {\
-					"types": "./dist/repos.d.ts",\
-					"default": "./dist/repos.js"\
-				},\
 				"./Table_Page.svelte": {\
 					"types": "./dist/Table_Page.svelte.d.ts",\
 					"svelte": "./dist/Table_Page.svelte",\
@@ -1364,6 +1360,22 @@ export const repos: Repo[] = JSON.parse(
 						{\
 							"name": "Unfetched_Repo",\
 							"kind": "type"\
+						},\
+						{\
+							"name": "Repos",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "set_repos",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "get_repos",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "parse_repos",\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -1378,23 +1390,6 @@ export const repos: Repo[] = JSON.parse(
 				"./Repos_Tree.svelte": {\
 					"path": "Repos_Tree.svelte",\
 					"declarations": []\
-				},\
-				"./repos.js": {\
-					"path": "repos.ts",\
-					"declarations": [\
-						{\
-							"name": "fetch_repos",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "fetch_package_json",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "fetch_src_json",\
-							"kind": "function"\
-						}\
-					]\
 				},\
 				"./Table_Page.svelte": {\
 					"path": "Table_Page.svelte",\
