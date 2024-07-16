@@ -5,7 +5,7 @@
 	import {format_url} from '@ryanatkn/belt/url.js';
 	import type {Snippet} from 'svelte';
 
-	import type {Fetched_Repo} from '$lib/fetch_repos.js';
+	import type {Fetched_Repo} from '$lib/repo.js';
 	import Repos_Tree_Nav from '$lib/Repos_Tree_Nav.svelte';
 
 	interface Props {

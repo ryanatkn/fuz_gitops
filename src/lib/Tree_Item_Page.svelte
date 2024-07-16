@@ -5,7 +5,7 @@
 	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Repos_Tree from '$lib/Repos_Tree.svelte';
-	import type {Fetched_Repo} from '$lib/fetch_repos.js';
+	import type {Fetched_Repo} from '$lib/repo.js';
 
 	interface Props {
 		repo: Fetched_Repo;

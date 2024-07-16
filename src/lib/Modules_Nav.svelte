@@ -2,7 +2,7 @@
 	import {page} from '$app/stores';
 	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
 
-	import type {Fetched_Repo} from '$lib/fetch_repos.js';
+	import type {Fetched_Repo} from '$lib/repo.js';
 
 	// TODO add highlighting of the items that are onscreen
 

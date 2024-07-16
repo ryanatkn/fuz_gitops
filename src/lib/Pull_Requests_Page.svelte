@@ -13,7 +13,7 @@
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Pull_Requests_Detail from '$lib/Pull_Requests_Detail.svelte';
 	import type {Filter_Pull_Request} from '$lib/github_helpers.js';
-	import type {Fetched_Repo, Unfetched_Repo} from '$lib/fetch_repos.js';
+	import type {Fetched_Repo, Unfetched_Repo} from '$lib/repo.js';
 
 	const {repo, repos, unfetched_repos, filter_pull_request}: Props = $props();
 </script>

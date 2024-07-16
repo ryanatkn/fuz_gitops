@@ -1,7 +1,7 @@
 import {getContext, setContext} from 'svelte';
 import {parse_package_meta} from '@ryanatkn/gro/package_meta.js';
 
-import type {Fetched_Repo, Repo, Unfetched_Repo} from '$lib/fetch_repos.js';
+import type {Fetched_Repo, Repo, Unfetched_Repo} from '$lib/repo.js';
 
 export interface Repos {
 	repo: Fetched_Repo;

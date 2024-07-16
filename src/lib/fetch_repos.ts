@@ -13,6 +13,7 @@ import {
 	Github_Check_Runs_Item,
 	Github_Pull_Requests,
 } from '$lib/github.js';
+import type {Repo} from '$lib/repo.js';
 
 /* eslint-disable no-await-in-loop */
 

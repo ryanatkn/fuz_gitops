@@ -2,7 +2,7 @@
 	import {base} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
-	import type {Fetched_Repo} from '$lib/fetch_repos.js';
+	import type {Fetched_Repo} from '$lib/repo.js';
 
 	interface Props {
 		repos: Fetched_Repo[];
