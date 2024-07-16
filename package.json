@@ -30,10 +30,10 @@
     "node": ">=20.12"
   },
   "peerDependencies": {
-    "@ryanatkn/belt": "*",
-    "@ryanatkn/fuz": "*",
-    "@ryanatkn/gro": "*",
-    "@ryanatkn/moss": "*",
+    "@ryanatkn/belt": "^0.24",
+    "@ryanatkn/fuz": "^0.112",
+    "@ryanatkn/gro": "^0.132",
+    "@ryanatkn/moss": "^0.8",
     "@sveltejs/kit": "^2",
     "svelte": "^5.0.0-next.0"
   },
