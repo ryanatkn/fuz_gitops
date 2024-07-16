@@ -2,7 +2,7 @@
 	import Library_Footer from '@ryanatkn/fuz/Library_Footer.svelte';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import {get_repos} from '$lib/repos.js';
+	import {get_repos} from '$lib/repo.js';
 
 	const {repo} = get_repos();
 </script>

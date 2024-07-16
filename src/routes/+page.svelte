@@ -4,7 +4,7 @@
 	import {base} from '$app/paths';
 
 	import Main_Header from '$routes/Main_Header.svelte';
-	import {get_repos} from '$lib/repos.js';
+	import {get_repos} from '$lib/repo.js';
 
 	const {repo} = get_repos();
 </script>

@@ -1,6 +1,6 @@
 import type {EntryGenerator} from './$types.js';
 
-import {parse_repos} from '$lib/repos.js';
+import {parse_repos} from '$lib/repo.js';
 import {repos} from '$routes/repos.js';
 
 const parsed = parse_repos(repos, 'https://gitops.fuz.dev/');

@@ -2,7 +2,7 @@
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
 	import Community_Links_Panel from '@ryanatkn/fuz/Community_Links_Panel.svelte';
 
-	import {get_repos} from '$lib/repos.js';
+	import {get_repos} from '$lib/repo.js';
 	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
 

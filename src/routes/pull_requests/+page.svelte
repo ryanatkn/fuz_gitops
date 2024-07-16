@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Pull_Requests_Page from '$lib/Pull_Requests_Page.svelte';
-	import {get_repos} from '$lib/repos.js';
+	import {get_repos} from '$lib/repo.js';
 
 	const {repo, repos, unfetched_repos} = get_repos();
 </script>

@@ -11,7 +11,7 @@
 
 	import Settings from '$routes/Settings.svelte';
 	import {repos} from '$routes/repos.js';
-	import {parse_repos, set_repos} from '$lib/repos.js';
+	import {parse_repos, set_repos} from '$lib/repo.js';
 
 	interface Props {
 		children: Snippet;

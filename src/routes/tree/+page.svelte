@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Tree_Page from '$lib/Tree_Page.svelte';
-	import {get_repos} from '$lib/repos.js';
+	import {get_repos} from '$lib/repo.js';
 
 	const {repo, repos} = get_repos();
 
