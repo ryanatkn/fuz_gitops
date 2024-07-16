@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {page} from '$app/stores';
 	import {base} from '$app/paths';
-	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {format_url} from '@ryanatkn/belt/url.js';
 
 	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
@@ -73,15 +72,12 @@
 	</thead>
 	<tbody>
 		{#each deployments as deployment}
-			{@const package_json = deployment.package_json}
-			{@const homepage_url = deployment.homepage_url}
+			{@const {package_json, homepage_url} = deployment}
 			<tr>
 				<td>
 					<div class="row">
 						{#if package_json}
-							<a href="{base}/tree/{deployment.repo_name}"
-								>{deployment.package_json.glyph ?? '🌳'}</a
-							>
+							<a href="{base}/tree/{deployment.repo_name}">{package_json.glyph ?? '🌳'}</a>
 						{/if}
 					</div>
 				</td>
@@ -90,8 +86,8 @@
 						{#if homepage_url}
 							<a class:selected={homepage_url === $page.url.href} href={homepage_url} class="row">
 								<img
-									src="{ensure_end(homepage_url, '/')}favicon.png"
-									alt="favicon to homepage at {homepage_url}"
+									src={deployment.logo_url}
+									alt={deployment.logo_alt}
 									style:width="16px"
 									style:height="16px"
 									style:margin-right="var(--space_xs)"
