@@ -69,8 +69,8 @@ export const task: Task<Args> = {
 		const package_json = load_package_json(dir);
 		const specifier =
 			package_json.name === '@ryanatkn/fuz_gitops'
-				? '$lib/fetch_repos.js'
-				: '@ryanatkn/fuz_gitops/fetch_repos.js';
+				? '$lib/repo.js'
+				: '@ryanatkn/fuz_gitops/repo.js';
 
 		// JSON is faster to parse than JS so we optimize it by embedding the data as a string.
 		// TODO the `basename` is used here because we don't have an `origin_id` like with gen,
