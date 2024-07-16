@@ -1,61 +1,16 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "modules": {
     "./package.json": {
       "path": "package.json",
       "declarations": []
     },
-    "./Deployments_Table.svelte": {
-      "path": "Deployments_Table.svelte",
-      "declarations": []
-    },
-    "./Deployments_Tree_Nav.svelte": {
-      "path": "Deployments_Tree_Nav.svelte",
-      "declarations": []
-    },
-    "./Deployments_Tree.svelte": {
-      "path": "Deployments_Tree.svelte",
-      "declarations": []
-    },
-    "./deployments.js": {
-      "path": "deployments.ts",
+    "./fetch_repos.js": {
+      "path": "fetch_repos.ts",
       "declarations": [
         {
-          "name": "Deployments",
-          "kind": "type"
-        },
-        {
-          "name": "set_deployments",
-          "kind": "function"
-        },
-        {
-          "name": "get_deployments",
-          "kind": "function"
-        },
-        {
-          "name": "parse_deployments",
-          "kind": "function"
-        }
-      ]
-    },
-    "./fetch_deployments.js": {
-      "path": "fetch_deployments.ts",
-      "declarations": [
-        {
-          "name": "Deployment",
-          "kind": "type"
-        },
-        {
-          "name": "Fetched_Deployment",
-          "kind": "type"
-        },
-        {
-          "name": "Unfetched_Deployment",
-          "kind": "type"
-        },
-        {
-          "name": "fetch_deployments",
+          "name": "fetch_repos",
           "kind": "function"
         },
         {
@@ -170,6 +125,51 @@
     },
     "./Pull_Requests_Page.svelte": {
       "path": "Pull_Requests_Page.svelte",
+      "declarations": []
+    },
+    "./repo.js": {
+      "path": "repo.ts",
+      "declarations": [
+        {
+          "name": "Repo",
+          "kind": "type"
+        },
+        {
+          "name": "Fetched_Repo",
+          "kind": "type"
+        },
+        {
+          "name": "Unfetched_Repo",
+          "kind": "type"
+        },
+        {
+          "name": "Repos",
+          "kind": "type"
+        },
+        {
+          "name": "set_repos",
+          "kind": "function"
+        },
+        {
+          "name": "get_repos",
+          "kind": "function"
+        },
+        {
+          "name": "parse_repos",
+          "kind": "function"
+        }
+      ]
+    },
+    "./Repos_Table.svelte": {
+      "path": "Repos_Table.svelte",
+      "declarations": []
+    },
+    "./Repos_Tree_Nav.svelte": {
+      "path": "Repos_Tree_Nav.svelte",
+      "declarations": []
+    },
+    "./Repos_Tree.svelte": {
+      "path": "Repos_Tree.svelte",
       "declarations": []
     },
     "./Table_Page.svelte": {
