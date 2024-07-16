@@ -162,10 +162,6 @@
       "svelte": "./dist/Repos_Tree.svelte",
       "default": "./dist/Repos_Tree.svelte"
     },
-    "./repos.js": {
-      "types": "./dist/repos.d.ts",
-      "default": "./dist/repos.js"
-    },
     "./Table_Page.svelte": {
       "types": "./dist/Table_Page.svelte.d.ts",
       "svelte": "./dist/Table_Page.svelte",
