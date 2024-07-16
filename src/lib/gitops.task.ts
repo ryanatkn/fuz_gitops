@@ -5,7 +5,7 @@ import {format_file} from '@ryanatkn/gro/format_file.js';
 import {basename, resolve} from 'node:path';
 import {paths, print_path} from '@ryanatkn/gro/paths.js';
 import {load_from_env} from '@ryanatkn/gro/env.js';
-import {load_fuz_config} from '@ryanatkn/fuz/config.js';
+import {load_fuz_config} from '@ryanatkn/fuz/fuz_config.js';
 import {embed_json} from '@ryanatkn/belt/json.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {existsSync} from 'node:fs';
