@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Modules_Page from '$lib/Modules_Page.svelte';
-	import {get_deployments} from '$lib/deployments.js';
+	import {get_repos} from '$lib/repos.js';
 
-	const {deployment, deployments} = get_deployments();
+	const {repo, repos} = get_repos();
 </script>
 
-<Modules_Page {deployment} {deployments} />
+<Modules_Page {repo} {repos} />

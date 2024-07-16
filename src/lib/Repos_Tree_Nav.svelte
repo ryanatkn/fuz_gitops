@@ -2,32 +2,31 @@
 	import {base} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
-	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
+	import type {Fetched_Repo} from '$lib/fetch_repos.js';
 
 	interface Props {
-		deployments: Fetched_Deployment[];
+		repos: Fetched_Repo[];
 		/**
 		 * The selected package, if any.
 		 */
-		selected_deployment?: Fetched_Deployment;
+		selected_repo?: Fetched_Repo;
 		children: Snippet;
 	}
 
-	const {deployments, selected_deployment, children}: Props = $props();
+	const {repos, selected_repo, children}: Props = $props();
 </script>
 
 <nav>
 	<menu class="names panel p_md">
-		{#each deployments as deployment}
-			{@const selected = deployment === selected_deployment}
+		{#each repos as repo}
+			{@const selected = repo === selected_repo}
 			<li style:display="contents">
-				{#if deployment.package_json}<a
+				{#if repo.package_json}<a
 						class="menu_item"
 						class:selected
-						href="{base}/tree/{deployment.repo_name}"
+						href="{base}/tree/{repo.repo_name}"
 						><div class="ellipsis">
-							{deployment.repo_name}{#if deployment.package_json.glyph}{' '}{deployment.package_json
-									.glyph}{/if}
+							{repo.repo_name}{#if repo.package_json.glyph}{' '}{repo.package_json.glyph}{/if}
 						</div></a
 					>{/if}
 			</li>

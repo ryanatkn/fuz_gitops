@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Tree_Page from '$lib/Tree_Page.svelte';
-	import {get_deployments} from '$lib/deployments.js';
+	import {get_repos} from '$lib/repos.js';
 
-	const {deployment, deployments} = get_deployments();
+	const {repo, repos} = get_repos();
 
-	// TODO ideally there would be one `Deployments_Tree` mounted by the layout
+	// TODO ideally there would be one `Repos_Tree` mounted by the layout
 </script>
 
-<Tree_Page {deployment} {deployments} />
+<Tree_Page {repo} {repos} />

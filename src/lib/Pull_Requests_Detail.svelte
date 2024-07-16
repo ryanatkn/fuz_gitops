@@ -3,17 +3,17 @@
 	import {format_url} from '@ryanatkn/belt/url.js';
 
 	import {to_pull_requests, type Filter_Pull_Request} from '$lib/github_helpers.js';
-	import type {Fetched_Deployment, Unfetched_Deployment} from '$lib/fetch_deployments.js';
+	import type {Fetched_Repo, Unfetched_Repo} from '$lib/fetch_repos.js';
 
 	interface Props {
-		deployments: Fetched_Deployment[];
-		unfetched_deployments: Unfetched_Deployment[];
+		repos: Fetched_Repo[];
+		unfetched_repos: Unfetched_Repo[];
 		filter_pull_request?: Filter_Pull_Request | undefined;
 	}
 
-	const {deployments, unfetched_deployments, filter_pull_request}: Props = $props();
+	const {repos, unfetched_repos, filter_pull_request}: Props = $props();
 
-	const pull_requests = $derived(to_pull_requests(deployments, filter_pull_request));
+	const pull_requests = $derived(to_pull_requests(repos, filter_pull_request));
 </script>
 
 <div class="width_md">
@@ -24,15 +24,15 @@
 				{#each pull_requests as pull_request}
 					<tr>
 						<td
-							><a href="{base}/tree/{pull_request.deployment.repo_name}"
-								>{pull_request.deployment
-									.repo_name}{#if pull_request.deployment.package_json.glyph}{' '}{pull_request
-										.deployment.package_json.glyph}{/if}</a
+							><a href="{base}/tree/{pull_request.repo.repo_name}"
+								>{pull_request.repo
+									.repo_name}{#if pull_request.repo.package_json.glyph}{' '}{pull_request.repo
+										.package_json.glyph}{/if}</a
 							></td
 						>
 						<td
 							><a
-								href="{pull_request.deployment.repo_url}/pull/{pull_request.pull_request.number}"
+								href="{pull_request.repo.repo_url}/pull/{pull_request.pull_request.number}"
 								title={pull_request.pull_request.title}>#{pull_request.pull_request.number}</a
 							></td
 						>
@@ -42,11 +42,11 @@
 			</tbody>
 		</table>
 	</section>
-	{#if unfetched_deployments.length}
+	{#if unfetched_repos.length}
 		<section class="panel p_sm">
-			<p>⚠️ Some deployments could not be fetched:</p>
+			<p>⚠️ Some repos could not be fetched:</p>
 			<ul class="unstyled">
-				{#each unfetched_deployments as { url }}
+				{#each unfetched_repos as { url }}
 					<li><a href={url}>{format_url(url)}</a></li>
 				{/each}
 			</ul>

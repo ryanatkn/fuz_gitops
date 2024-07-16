@@ -88,28 +88,9 @@
   ],
   "exports": {
     "./package.json": "./package.json",
-    "./Deployments_Table.svelte": {
-      "types": "./dist/Deployments_Table.svelte.d.ts",
-      "svelte": "./dist/Deployments_Table.svelte",
-      "default": "./dist/Deployments_Table.svelte"
-    },
-    "./Deployments_Tree_Nav.svelte": {
-      "types": "./dist/Deployments_Tree_Nav.svelte.d.ts",
-      "svelte": "./dist/Deployments_Tree_Nav.svelte",
-      "default": "./dist/Deployments_Tree_Nav.svelte"
-    },
-    "./Deployments_Tree.svelte": {
-      "types": "./dist/Deployments_Tree.svelte.d.ts",
-      "svelte": "./dist/Deployments_Tree.svelte",
-      "default": "./dist/Deployments_Tree.svelte"
-    },
-    "./deployments.js": {
-      "types": "./dist/deployments.d.ts",
-      "default": "./dist/deployments.js"
-    },
-    "./fetch_deployments.js": {
-      "types": "./dist/fetch_deployments.d.ts",
-      "default": "./dist/fetch_deployments.js"
+    "./fetch_repos.js": {
+      "types": "./dist/fetch_repos.d.ts",
+      "default": "./dist/fetch_repos.js"
     },
     "./fs_fetch_value_cache.js": {
       "types": "./dist/fs_fetch_value_cache.d.ts",
@@ -161,6 +142,29 @@
       "types": "./dist/Pull_Requests_Page.svelte.d.ts",
       "svelte": "./dist/Pull_Requests_Page.svelte",
       "default": "./dist/Pull_Requests_Page.svelte"
+    },
+    "./repo.js": {
+      "types": "./dist/repo.d.ts",
+      "default": "./dist/repo.js"
+    },
+    "./Repos_Table.svelte": {
+      "types": "./dist/Repos_Table.svelte.d.ts",
+      "svelte": "./dist/Repos_Table.svelte",
+      "default": "./dist/Repos_Table.svelte"
+    },
+    "./Repos_Tree_Nav.svelte": {
+      "types": "./dist/Repos_Tree_Nav.svelte.d.ts",
+      "svelte": "./dist/Repos_Tree_Nav.svelte",
+      "default": "./dist/Repos_Tree_Nav.svelte"
+    },
+    "./Repos_Tree.svelte": {
+      "types": "./dist/Repos_Tree.svelte.d.ts",
+      "svelte": "./dist/Repos_Tree.svelte",
+      "default": "./dist/Repos_Tree.svelte"
+    },
+    "./repos.js": {
+      "types": "./dist/repos.d.ts",
+      "default": "./dist/repos.js"
     },
     "./Table_Page.svelte": {
       "types": "./dist/Table_Page.svelte.d.ts",

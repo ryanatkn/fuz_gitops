@@ -1,28 +1,28 @@
 <script lang="ts">
 	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
-	import Deployments_Table from '$lib/Deployments_Table.svelte';
-	import type {Fetched_Deployment} from '$lib/fetch_deployments.js';
+	import Repos_Table from '$lib/Repos_Table.svelte';
+	import type {Fetched_Repo} from '$lib/fetch_repos.js';
 
 	interface Props {
-		deployment: Fetched_Deployment;
-		deployments: Fetched_Deployment[];
+		repo: Fetched_Repo;
+		repos: Fetched_Repo[];
 	}
 
-	const {deployment, deployments}: Props = $props();
+	const {repo, repos}: Props = $props();
 </script>
 
 <svelte:head>
-	<title>table {deployment.package_json.glyph} {deployment.package_json.name}</title>
+	<title>table {repo.package_json.glyph} {repo.package_json.name}</title>
 </svelte:head>
 
 <main class="box">
 	<div class="p_lg">
-		<Page_Header pkg={deployment} />
+		<Page_Header pkg={repo} />
 	</div>
 	<section>
 		<div class="panel p_md">
-			<Deployments_Table {deployments} />
+			<Repos_Table {repos} />
 		</div>
 	</section>
 	<section class="box mb_xl7">
