@@ -1,4 +1,4 @@
-import type {Task} from '@ryanatkn/gro';
+import {Task_Error, type Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {readFile, writeFile} from 'node:fs/promises';
 import {format_file} from '@ryanatkn/gro/format_file.js';
@@ -12,7 +12,7 @@ import {existsSync} from 'node:fs';
 import {load_fuz_config} from '$lib/gitops_config.js';
 import {fetch_repos} from '$lib/fetch_repos.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
-import {resolve_gitops_config} from '$lib/gitops.js';
+import {resolve_gitops_config} from '$lib/resolve_gitops_config.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
@@ -50,6 +50,7 @@ export const task: Task<Args> = {
 		}
 
 		const resolved_gitops_config = resolve_gitops_config(fuz_config);
+		console.log(`resolved_gitops_config`, resolved_gitops_config);
 		const {resolved_local_repos, unresolved_local_repos} = resolved_gitops_config;
 
 		if (unresolved_local_repos) {
@@ -57,7 +58,10 @@ export const task: Task<Args> = {
 				'Failed to resolve local configs - do you need to fetch them or configure the directory?',
 				unresolved_local_repos.map((r) => r.repo_url),
 			);
-			return;
+			throw new Task_Error('Failed to resolve local configs');
+		}
+		if (!resolved_local_repos) {
+			throw new Task_Error('No repos are configured in `gitops_config.ts`');
 		}
 
 		const fetched_repos = await fetch_repos(resolved_local_repos, token, cache.data, dir, log);

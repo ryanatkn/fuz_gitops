@@ -1,10 +1,9 @@
-import {load_package_json, Package_Json, type Url} from '@ryanatkn/gro/package_json.js';
+import {load_package_json, Package_Json} from '@ryanatkn/gro/package_json.js';
 import {ensure_end} from '@ryanatkn/belt/string.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {wait} from '@ryanatkn/belt/async.js';
-import {parse_package_meta, type Package_Meta} from '@ryanatkn/gro/package_meta.js';
-import {create_src_json, Src_Json} from '@ryanatkn/gro/src_json.js';
-import {join} from 'node:path';
+import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
+import {Src_Json} from '@ryanatkn/gro/src_json.js';
 import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
 import {
@@ -14,6 +13,7 @@ import {
 	Github_Pull_Requests,
 } from '$lib/github.js';
 import type {Repo} from '$lib/repo.js';
+import type {Resolved_Local_Repo} from '$lib/resolve_gitops_config.js';
 
 /* eslint-disable no-await-in-loop */
 
@@ -21,7 +21,7 @@ import type {Repo} from '$lib/repo.js';
  * Fetches repo data from the web.
  */
 export const fetch_repos = async (
-	pkgs: Package_Meta[],
+	resolved_repos: Resolved_Local_Repo[],
 	token?: string,
 	cache?: Fetch_Value_Cache,
 	dir?: string,
@@ -40,18 +40,18 @@ export const fetch_repos = async (
 		: undefined;
 
 	const repos: Repo[] = [];
-	for (const pkg of pkgs) {
-		const raw_homepage_url = pkg?.homepage_url;
+	for (const resolved_repo of resolved_repos) {
+		const raw_homepage_url = resolved_repo?.homepage_url;
 		const homepage_url = ensure_end(raw_homepage_url, '/');
 
 		let check_runs: Github_Check_Runs_Item | null;
 		let pull_requests: Github_Pull_Requests | null;
 
-		if (pkg) {
+		if (resolved_repo) {
 			// CI status
 			await wait(delay);
 			check_runs = await fetch_github_check_runs(
-				pkg,
+				resolved_repo,
 				cache,
 				log,
 				token,
@@ -62,15 +62,21 @@ export const fetch_repos = async (
 
 			// pull requests
 			await wait(delay);
-			pull_requests = await fetch_github_pull_requests(pkg, cache, log, token, github_api_version);
+			pull_requests = await fetch_github_pull_requests(
+				resolved_repo,
+				cache,
+				log,
+				token,
+				github_api_version,
+			);
 			if (!pull_requests) log?.error('failed to fetch issues: ' + homepage_url);
 		} else {
 			check_runs = null;
 			pull_requests = null;
 		}
 
-		if (pkg) {
-			repos.push({...pkg, check_runs, pull_requests});
+		if (resolved_repo) {
+			repos.push({...resolved_repo, check_runs, pull_requests});
 		} else {
 			repos.push({
 				homepage_url,
