@@ -7,7 +7,7 @@ import {join} from 'node:path';
 import type {Gitops_Config, Fuz_Repo_Config} from '$lib/gitops_config.js';
 
 export interface Resolved_Gitops_Config {
-	local_repos: Local_Repo[];
+	local_repos: Local_Repo[] | null;
 	resolved_local_repos: Resolved_Local_Repo[] | null;
 	unresolved_local_repos: Unresolved_Local_Repo[] | null;
 }
@@ -44,7 +44,7 @@ export const resolve_gitops_config = (fuz_config: Gitops_Config): Resolved_Gitop
 	const unresolved_local_repos = local_repos.filter((r) => r.type === 'unresolved_local_repo');
 
 	const config: Resolved_Gitops_Config = {
-		local_repos,
+		local_repos: local_repos.length ? local_repos : null,
 		resolved_local_repos: resolved_local_repos.length ? resolved_local_repos : null,
 		unresolved_local_repos: unresolved_local_repos.length ? unresolved_local_repos : null,
 	};
