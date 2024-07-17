@@ -68,6 +68,8 @@ export const task: Task<Args> = {
 			dir,
 			log,
 		);
+		console.log(`fetched_repos`, fetched_repos);
+		return;
 
 		// TODO should package_json be provided in the Gro task/gen contexts? check if it's always loaded
 		const package_json = load_package_json(dir);
