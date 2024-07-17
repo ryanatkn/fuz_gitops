@@ -19,7 +19,7 @@ export const fetch_repos = async (
 	token?: string,
 	cache?: Fetch_Value_Cache,
 	log?: Logger,
-	delay = 50,
+	delay = 33,
 	github_api_version?: string,
 ): Promise<Repo[]> => {
 	const repos: Repo[] = [];
