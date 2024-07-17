@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.33.0
+
+### Minor Changes
+
+- change the gitops config source of truth from a deployment url to the repo url ([#30](https://github.com/ryanatkn/fuz_gitops/pull/30))
+
 ## 0.32.0
 
 ### Minor Changes
