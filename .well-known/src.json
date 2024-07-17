@@ -1,13 +1,13 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "modules": {
     "./package.json": {
       "path": "package.json",
       "declarations": []
     },
-    "./fetch_repos.js": {
-      "path": "fetch_repos.ts",
+    "./fetch_repo_data.js": {
+      "path": "fetch_repo_data.ts",
       "declarations": [
         {
           "name": "fetch_repos",
@@ -86,6 +86,51 @@
         }
       ]
     },
+    "./gitops_config.js": {
+      "path": "gitops_config.ts",
+      "declarations": [
+        {
+          "name": "Gitops_Config",
+          "kind": "type"
+        },
+        {
+          "name": "Create_Gitops_Config",
+          "kind": "type"
+        },
+        {
+          "name": "Raw_Gitops_Config",
+          "kind": "type"
+        },
+        {
+          "name": "Gitops_Repo_Config",
+          "kind": "type"
+        },
+        {
+          "name": "Raw_Gitops_Repo_Config",
+          "kind": "type"
+        },
+        {
+          "name": "create_empty_gitops_config",
+          "kind": "function"
+        },
+        {
+          "name": "normalize_gitops_config",
+          "kind": "function"
+        },
+        {
+          "name": "Gitops_Config_Module",
+          "kind": "type"
+        },
+        {
+          "name": "load_gitops_config",
+          "kind": "function"
+        },
+        {
+          "name": "validate_gitops_config_module",
+          "kind": "function"
+        }
+      ]
+    },
     "./gitops.task.js": {
       "path": "gitops.task.ts",
       "declarations": [
@@ -135,14 +180,6 @@
           "kind": "type"
         },
         {
-          "name": "Fetched_Repo",
-          "kind": "type"
-        },
-        {
-          "name": "Unfetched_Repo",
-          "kind": "type"
-        },
-        {
           "name": "Repos",
           "kind": "type"
         },
@@ -171,6 +208,31 @@
     "./Repos_Tree.svelte": {
       "path": "Repos_Tree.svelte",
       "declarations": []
+    },
+    "./resolve_gitops_config.js": {
+      "path": "resolve_gitops_config.ts",
+      "declarations": [
+        {
+          "name": "Resolved_Gitops_Config",
+          "kind": "type"
+        },
+        {
+          "name": "Local_Repo",
+          "kind": "type"
+        },
+        {
+          "name": "Resolved_Local_Repo",
+          "kind": "type"
+        },
+        {
+          "name": "Unresolved_Local_Repo",
+          "kind": "type"
+        },
+        {
+          "name": "resolve_gitops_config",
+          "kind": "function"
+        }
+      ]
     },
     "./Table_Page.svelte": {
       "path": "Table_Page.svelte",

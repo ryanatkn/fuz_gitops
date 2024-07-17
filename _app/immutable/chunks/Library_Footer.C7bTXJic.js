@@ -1,4 +1,4 @@
-import{c as n,a as s,n as F,r as v,s as l,t as H,u as C,f as m,b as M}from"./disclose-version.5m5JqT-C.js";import{t as w,g as L,d as k,p as Z,a as q}from"./runtime.DJOM48EQ.js";import{p as x,i as c}from"./props.D7c6iWJG.js";import{b as A,c as y,s as D,a as z,d as G,f as b}from"./repo.bplLaxfd.js";const E=_=>A(y(y(_,"https://"),"www."),"/");var I=F(`<svg><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02
+import{c as n,a as s,n as F,r as v,s as l,t as H,u as C,f as m,b as M}from"./disclose-version.5m5JqT-C.js";import{t as w,g as L,d as k,p as Z,a as q}from"./runtime.DJOM48EQ.js";import{p as x,i as c}from"./props.D7c6iWJG.js";import{b as A,c as y,s as D,a as z,d as G,f as b}from"./repo.vl2ouA47.js";const E=_=>A(y(y(_,"https://"),"www."),"/");var I=F(`<svg><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02
 		15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32
 		12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12
 		11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33
