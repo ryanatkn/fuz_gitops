@@ -14,5 +14,3 @@ const config: Create_Gitops_Config = () => {
 };
 
 export default config;
-
-// TODO BLOCK named scripts here to run in each repo
