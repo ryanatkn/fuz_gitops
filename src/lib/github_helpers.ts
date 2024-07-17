@@ -1,7 +1,7 @@
 import {ensure_end} from '@ryanatkn/belt/string.js';
 
 import type {Github_Pull_Request} from '$lib/github.js';
-import type {Repo, Repo} from '$lib/repo.js';
+import type {Repo} from '$lib/repo.js';
 
 export type Filter_Pull_Request = (pull_request: Github_Pull_Request, repo: Repo) => boolean;
 
