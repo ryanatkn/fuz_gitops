@@ -3,6 +3,7 @@ import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
+import {cyan} from '@ryanatkn/belt/styletext.js';
 
 import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
 
@@ -52,21 +53,21 @@ export const resolve_gitops_config = (gitops_config: Gitops_Config): Resolved_Gi
 // TODO BLOCK return value?
 const resolve_local_repo = (repo_config: Gitops_Repo_Config): Local_Repo => {
 	const {repo_url} = repo_config;
-	console.log(`repo_config.repo_url`, repo_url);
+	console.log(cyan('[resolve_local_repo]'), `repo_config.repo_url`, repo_url);
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);
 	if (!repo_name) throw new Error('invalid `repo_config.repo_url` ' + repo_url);
 
-	console.log(`repo_name`, repo_name);
+	console.log(cyan('[resolve_local_repo]'), `repo_name`, repo_name);
 
 	// TODO BLOCK use the dir?
 	const repo_dir = repo_config.repo_dir ?? join(process.cwd(), '..', repo_name);
-	console.log(`dir`, repo_dir);
+	console.log(cyan('[resolve_local_repo]'), `dir`, repo_dir);
 	if (!existsSync(repo_dir)) {
 		return {type: 'unresolved_local_repo', repo_url, repo_config};
 	}
 
 	const package_json = load_package_json(repo_dir);
-	console.log(`package_json.homepage`, package_json.homepage);
+	console.log(cyan('[resolve_local_repo]'), `package_json.homepage`, package_json.homepage);
 	return;
 
 	// Handle the local package data, if available

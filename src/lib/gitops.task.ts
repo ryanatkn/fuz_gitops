@@ -60,7 +60,7 @@ export const task: Task<Args> = {
 		}
 
 		const resolved_gitops_config = resolve_gitops_config(gitops_config);
-		console.log(`resolved_gitops_config`, resolved_gitops_config);
+		console.log(red(`[resolved_gitops_config]`), resolved_gitops_config);
 		const {resolved_local_repos, unresolved_local_repos} = resolved_gitops_config;
 
 		if (unresolved_local_repos) {
