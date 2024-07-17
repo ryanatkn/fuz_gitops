@@ -1,0 +1,99 @@
+import {Url} from '@ryanatkn/gro/package_json.js';
+import {join} from 'node:path';
+import {existsSync} from 'node:fs';
+import {strip_end} from '@ryanatkn/belt/string.js';
+
+export interface Gitops_Config {
+	repos: Fuz_Repo_Config[];
+}
+
+export type Create_Gitops_Config = (
+	base_config: Gitops_Config,
+) => Raw_Gitops_Config | Promise<Raw_Gitops_Config>;
+
+export interface Raw_Gitops_Config {
+	repos?: Array<Url | Raw_Fuz_Repo_Config>;
+}
+
+export interface Fuz_Repo_Config {
+	/**
+	 * The HTTPS URL to the repo. Does not include a `.git` suffix.
+	 * @example 'https://github.com/ryanatkn/fuz'
+	 */
+	repo_url: Url;
+	/**
+	 * Relative or absolute path to the repo's local directory.
+	 * If `null`, the directory is inferred from the URL and cwd.
+	 * @example 'relative/path/to/repo'
+	 * @example '/absolute/path/to/repo'
+	 */
+	repo_dir: string | null;
+}
+
+export interface Raw_Fuz_Repo_Config {
+	repo_url: Url;
+	repo_dir?: string | null;
+}
+
+export const create_empty_fuz_config = (): Gitops_Config => ({
+	repos: [],
+});
+
+/**
+ * Transforms a `Raw_Gitops_Config` to the more strict `Gitops_Config`.
+ * This allows users to provide a more relaxed config.
+ */
+export const normalize_fuz_config = (raw_config: Raw_Gitops_Config): Gitops_Config => {
+	const empty_config = create_empty_fuz_config();
+	// All of the raw config properties are optional,
+	// so fall back to the empty values when `undefined`.
+	const {repos} = raw_config;
+	return {
+		repos: repos ? repos.map((r) => parse_fuz_repo_config(r)) : empty_config.repos,
+	};
+};
+
+const parse_fuz_repo_config = (r: Url | Raw_Fuz_Repo_Config): Fuz_Repo_Config => {
+	if (typeof r === 'string') {
+		return {repo_url: r, repo_dir: null};
+	}
+	return {
+		repo_url: strip_end(r.repo_url, '.git'),
+		repo_dir: r.repo_dir ?? null,
+	};
+};
+
+export interface Gitops_Config_Module {
+	readonly default: Raw_Gitops_Config | Create_Gitops_Config;
+}
+
+export const load_fuz_config = async (path: string, dir: string): Promise<Gitops_Config> => {
+	const default_config = create_empty_fuz_config();
+	const config_path = join(dir, path);
+	if (!existsSync(config_path)) {
+		// No user config file found, so return the default.
+		return default_config;
+	}
+	// Import the user's `fuz.config.ts`.
+	const config_module = await import(config_path);
+	validate_fuz_config_module(config_module, config_path);
+	return normalize_fuz_config(
+		typeof config_module.default === 'function'
+			? await config_module.default(default_config)
+			: config_module.default,
+	);
+};
+
+export const validate_fuz_config_module: (
+	config_module: any,
+	config_path: string,
+) => asserts config_module is Gitops_Config_Module = (config_module, config_path) => {
+	const config = config_module.default;
+	if (!config) {
+		throw Error(`Invalid Fuz config module at ${config_path}: expected a default export`);
+	} else if (!(typeof config === 'function' || typeof config === 'object')) {
+		throw Error(
+			`Invalid Fuz config module at ${config_path}: the default export must be a function or object`,
+		);
+	}
+};

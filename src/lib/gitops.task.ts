@@ -5,34 +5,24 @@ import {format_file} from '@ryanatkn/gro/format_file.js';
 import {basename, resolve} from 'node:path';
 import {paths, print_path} from '@ryanatkn/gro/paths.js';
 import {load_from_env} from '@ryanatkn/gro/env.js';
-import {load_fuz_config} from '@ryanatkn/fuz/fuz_config.js';
 import {embed_json} from '@ryanatkn/belt/json.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {existsSync} from 'node:fs';
 
+import {load_fuz_config} from '$lib/gitops_config.js';
 import {fetch_repos} from '$lib/fetch_repos.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
-import {create_gitops_config} from '$lib/gitops.js';
+import {resolve_gitops_config} from '$lib/gitops.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
 // TODO maybe support `--check` for CI
 export const Args = z
 	.object({
-		path: z
-			.string({
-				description: 'path to the fuz config file',
-			})
-			.default('fuz.config.ts'),
-		dir: z
-			.string({
-				description: 'path to the directory containing the source package.json and fuz config',
-			})
-			.default(paths.root),
+		path: z.string({description: 'path to the fuz config file'}).default('fuz.config.ts'),
+		dir: z.string({description: 'path to the repos directory'}).default(paths.root),
 		outdir: z
-			.string({
-				description: 'path to the directory for the generated files, defaults to $routes/',
-			})
+			.string({description: 'path to the directory for the generated files, defaults to $routes/'})
 			.optional(),
 	})
 	.strict();
@@ -59,15 +49,18 @@ export const task: Task<Args> = {
 			log.warn('the env var GITHUB_TOKEN_SECRET was not found, so API calls with be unauthorized');
 		}
 
-		const gitops_config = create_gitops_config(fuz_config);
+		const resolved_gitops_config = resolve_gitops_config(fuz_config);
+		const {resolved_local_repos, unresolved_local_repos} = resolved_gitops_config;
 
-		const fetched_repos = await fetch_repos(
-			gitops_config.repos.map((r) => r.homepage_url),
-			token,
-			cache.data,
-			dir,
-			log,
-		);
+		if (unresolved_local_repos) {
+			log.error(
+				'Failed to resolve local configs - do you need to fetch them or configure the directory?',
+				unresolved_local_repos.map((r) => r.repo_url),
+			);
+			return;
+		}
+
+		const fetched_repos = await fetch_repos(resolved_local_repos, token, cache.data, dir, log);
 		console.log(`fetched_repos`, fetched_repos);
 		return;
 

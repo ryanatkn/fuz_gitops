@@ -31,7 +31,7 @@
   },
   "peerDependencies": {
     "@ryanatkn/belt": "^0.24",
-    "@ryanatkn/fuz": "^0.113.0",
+    "@ryanatkn/fuz": "^0.114.0",
     "@ryanatkn/gro": "^0.132",
     "@ryanatkn/moss": "^0.8",
     "@sveltejs/kit": "^2",
@@ -42,7 +42,7 @@
     "@changesets/changelog-git": "^0.2.0",
     "@ryanatkn/belt": "^0.24.9",
     "@ryanatkn/eslint-config": "^0.4.2",
-    "@ryanatkn/fuz": "^0.113.0",
+    "@ryanatkn/fuz": "^0.114.0",
     "@ryanatkn/gro": "^0.132.0",
     "@ryanatkn/moss": "^0.8.0",
     "@sveltejs/adapter-static": "^3.0.2",

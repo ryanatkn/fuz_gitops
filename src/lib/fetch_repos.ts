@@ -17,9 +17,11 @@ import type {Repo} from '$lib/repo.js';
 
 /* eslint-disable no-await-in-loop */
 
-// TODO this is all very hacky
+/**
+ * Fetches repo data from the web.
+ */
 export const fetch_repos = async (
-	homepage_urls: Url[],
+	pkgs: Package_Meta[],
 	token?: string,
 	cache?: Fetch_Value_Cache,
 	dir?: string,
@@ -28,8 +30,6 @@ export const fetch_repos = async (
 	github_api_version?: string,
 	github_refs?: Record<string, string>, // if not 'main', mapping from the provided raw `homepage_url` to branch name
 ): Promise<Repo[]> => {
-	log?.info(`homepage_urls`, homepage_urls);
-
 	// If one of the `homepage_urls` is the local package.json's `homepage` (local in `dir`),
 	// use the local information as much as possible to ensure we're up to date.
 	// If this isn't done, the local package's info will be pulled from the web,
@@ -40,43 +40,12 @@ export const fetch_repos = async (
 		: undefined;
 
 	const repos: Repo[] = [];
-	for (const raw_homepage_url of homepage_urls) {
+	for (const pkg of pkgs) {
+		const raw_homepage_url = pkg?.homepage_url;
 		const homepage_url = ensure_end(raw_homepage_url, '/');
-		let package_json: Package_Json | null;
-		let src_json: Src_Json | null;
-		let pkg: Package_Meta | null;
+
 		let check_runs: Github_Check_Runs_Item | null;
 		let pull_requests: Github_Pull_Requests | null;
-
-		// Handle the local package data, if available
-		if (homepage_url === local_homepage_url) {
-			log?.info('resolving data locally for', homepage_url);
-			package_json = local_package_json;
-
-			src_json = create_src_json(local_package_json, log, dir ? join(dir, 'src/lib') : undefined);
-		} else {
-			// Fetch the remote package data
-			log?.info('fetching data for', homepage_url);
-
-			await wait(delay);
-			package_json = await fetch_package_json(homepage_url, cache, log);
-			if (!package_json) log?.error('failed to load package_json: ' + homepage_url);
-
-			await wait(delay);
-			src_json = await fetch_src_json(homepage_url, cache, log);
-			if (!src_json) log?.error('failed to load src_json: ' + homepage_url);
-		}
-
-		if (package_json && src_json) {
-			try {
-				pkg = parse_package_meta(package_json, src_json);
-			} catch (err) {
-				pkg = null;
-				log?.error('failed to parse package meta: ' + err);
-			}
-		} else {
-			pkg = null;
-		}
 
 		if (pkg) {
 			// CI status
@@ -104,7 +73,7 @@ export const fetch_repos = async (
 			repos.push({...pkg, check_runs, pull_requests});
 		} else {
 			repos.push({
-				url: homepage_url,
+				homepage_url,
 				package_json: null,
 				src_json: null,
 				check_runs: null,

@@ -4,6 +4,7 @@ import {parse_package_meta, type Package_Meta} from '@ryanatkn/gro/package_meta.
 
 import {Github_Check_Runs_Item, type Github_Pull_Request} from '$lib/github.js';
 
+// TODO BLOCK because the source of truth is the `homepage_url`, maybe these are more like deployments? should we use the local package json instead as the source of truth?
 export type Repo = Fetched_Repo | Unfetched_Repo;
 
 // TODO ideally all of the repos stuff would be in a different repo,
@@ -15,7 +16,7 @@ export interface Fetched_Repo extends Package_Meta {
 }
 
 export interface Unfetched_Repo {
-	repo_url: Url;
+	homepage_url: Url;
 	package_json: null;
 	src_json: null;
 	check_runs: null;

@@ -605,11 +605,11 @@ export const repos: Repo[] = JSON.parse(
 					"path": "fuz_config.ts",\
 					"declarations": [\
 						{\
-							"name": "Fuz_Config",\
+							"name": "Gitops_Config",\
 							"kind": "type"\
 						},\
 						{\
-							"name": "Raw_Fuz_Config",\
+							"name": "Raw_Gitops_Config",\
 							"kind": "type"\
 						},\
 						{\
@@ -617,7 +617,7 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "type"\
 						},\
 						{\
-							"name": "Create_Fuz_Config",\
+							"name": "Create_Gitops_Config",\
 							"kind": "type"\
 						},\
 						{\
@@ -629,7 +629,7 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "function"\
 						},\
 						{\
-							"name": "Fuz_Config_Module",\
+							"name": "Gitops_Config_Module",\
 							"kind": "type"\
 						},\
 						{\
