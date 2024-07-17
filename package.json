@@ -35,7 +35,8 @@
     "@ryanatkn/gro": "^0.132",
     "@ryanatkn/moss": "^0.8",
     "@sveltejs/kit": "^2",
-    "svelte": "^5.0.0-next.0"
+    "svelte": "^5.0.0-next.0",
+    "zod": "^3"
   },
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.0",
