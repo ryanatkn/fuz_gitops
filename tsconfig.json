@@ -25,7 +25,7 @@
 	},
 	"include": [
 		"eslint.config.js",
-		"gitops.config.ts",
+		"itops.config.ts",
 		"gro.config.ts",
 		"svelte.config.js",
 		"vite.config.ts",

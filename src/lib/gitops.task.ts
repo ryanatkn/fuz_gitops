@@ -2,12 +2,13 @@ import {Task_Error, type Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {readFile, writeFile} from 'node:fs/promises';
 import {format_file} from '@ryanatkn/gro/format_file.js';
-import {basename, resolve} from 'node:path';
+import {basename, join, resolve} from 'node:path';
 import {paths, print_path} from '@ryanatkn/gro/paths.js';
 import {load_from_env} from '@ryanatkn/gro/env.js';
 import {embed_json} from '@ryanatkn/belt/json.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {existsSync} from 'node:fs';
+import {gray, red} from '@ryanatkn/belt/styletext.js';
 
 import {load_gitops_config} from '$lib/gitops_config.js';
 import {fetch_repos} from '$lib/fetch_repos.js';
@@ -39,7 +40,16 @@ export const task: Task<Args> = {
 
 		const outfile = resolve(outdir, 'repos.ts');
 
-		const gitops_config = await load_gitops_config(path, dir);
+		const config_path = join(dir, path);
+		const gitops_config = await load_gitops_config(config_path);
+		if (!gitops_config) {
+			throw new Task_Error(
+				red(`No gitops config found at:
+				${red('path:')} ${gray(path)}
+				${red('dir:')} ${gray(dir)}
+				${red('config path:')} ${print_path(config_path)}`),
+			);
+		}
 
 		const cache = await create_fs_fetch_value_cache('repos');
 

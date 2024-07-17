@@ -1,5 +1,4 @@
 import {Url} from '@ryanatkn/gro/package_json.js';
-import {join} from 'node:path';
 import {existsSync} from 'node:fs';
 import {strip_end} from '@ryanatkn/belt/string.js';
 
@@ -67,19 +66,17 @@ export interface Gitops_Config_Module {
 	readonly default: Raw_Gitops_Config | Create_Gitops_Config;
 }
 
-export const load_gitops_config = async (path: string, dir: string): Promise<Gitops_Config> => {
-	const default_config = create_empty_gitops_config();
-	const config_path = join(dir, path);
+export const load_gitops_config = async (config_path: string): Promise<Gitops_Config | null> => {
 	if (!existsSync(config_path)) {
-		// No user config file found, so return the default.
-		return default_config;
+		// No user config file found.
+		return null;
 	}
 	// Import the user's `gitops.config.ts`.
 	const config_module = await import(config_path);
 	validate_gitops_config_module(config_module, config_path);
 	return normalize_gitops_config(
 		typeof config_module.default === 'function'
-			? await config_module.default(default_config)
+			? await config_module.default(create_empty_gitops_config())
 			: config_module.default,
 	);
 };
