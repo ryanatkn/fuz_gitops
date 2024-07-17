@@ -1079,9 +1079,9 @@ export const repos: Repo[] = JSON.parse(
 			],\
 			"exports": {\
 				"./package.json": "./package.json",\
-				"./fetch_repos.js": {\
-					"types": "./dist/fetch_repos.d.ts",\
-					"default": "./dist/fetch_repos.js"\
+				"./fetch_repo_data.js": {\
+					"types": "./dist/fetch_repo_data.d.ts",\
+					"default": "./dist/fetch_repo_data.js"\
 				},\
 				"./fs_fetch_value_cache.js": {\
 					"types": "./dist/fs_fetch_value_cache.d.ts",\
@@ -1186,8 +1186,8 @@ export const repos: Repo[] = JSON.parse(
 					"path": "package.json",\
 					"declarations": []\
 				},\
-				"./fetch_repos.js": {\
-					"path": "fetch_repos.ts",\
+				"./fetch_repo_data.js": {\
+					"path": "fetch_repo_data.ts",\
 					"declarations": [\
 						{\
 							"name": "fetch_repos",\
@@ -1369,6 +1369,10 @@ export const repos: Repo[] = JSON.parse(
 						},\
 						{\
 							"name": "get_repos",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "parse_repos",\
 							"kind": "function"\
 						}\
 					]\

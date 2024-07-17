@@ -11,7 +11,7 @@ import {existsSync} from 'node:fs';
 import {gray, red} from '@ryanatkn/belt/styletext.js';
 
 import {load_gitops_config} from '$lib/gitops_config.js';
-import {fetch_repos} from '$lib/fetch_repos.js';
+import {fetch_repos as fetch_repo_data} from '$lib/fetch_repo_data.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
 import {resolve_gitops_config} from '$lib/resolve_gitops_config.js';
 
@@ -59,6 +59,7 @@ export const task: Task<Args> = {
 			log.warn('the env var GITHUB_TOKEN_SECRET was not found, so API calls with be unauthorized');
 		}
 
+		log.info('resolving gitops config on the filesystem');
 		const {resolved_local_repos, unresolved_local_repos} = await resolve_gitops_config(
 			gitops_config,
 			dir,
@@ -75,7 +76,8 @@ export const task: Task<Args> = {
 			throw new Task_Error('No repos are configured in `gitops_config.ts`');
 		}
 
-		const repos = await fetch_repos(resolved_local_repos, token, cache.data, log);
+		log.info('fetching remote repo data');
+		const repos = await fetch_repo_data(resolved_local_repos, token, cache.data, log);
 
 		// TODO should package_json be provided in the Gro task/gen contexts? check if it's always loaded
 		const package_json = load_package_json(dir);
@@ -83,6 +85,8 @@ export const task: Task<Args> = {
 			package_json.name === '@ryanatkn/fuz_gitops'
 				? '$lib/repo.js'
 				: '@ryanatkn/fuz_gitops/repo.js';
+
+		log.info('generating ' + outfile);
 
 		// JSON is faster to parse than JS so we optimize it by embedding the data as a string.
 		// TODO the `basename` is used here because we don't have an `origin_id` like with gen,

@@ -89,9 +89,9 @@
   ],
   "exports": {
     "./package.json": "./package.json",
-    "./fetch_repos.js": {
-      "types": "./dist/fetch_repos.d.ts",
-      "default": "./dist/fetch_repos.js"
+    "./fetch_repo_data.js": {
+      "types": "./dist/fetch_repo_data.d.ts",
+      "default": "./dist/fetch_repo_data.js"
     },
     "./fs_fetch_value_cache.js": {
       "types": "./dist/fs_fetch_value_cache.d.ts",
