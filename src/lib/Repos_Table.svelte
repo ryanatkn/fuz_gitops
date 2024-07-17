@@ -3,11 +3,11 @@
 	import {base} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
 
-	import type {Fetched_Repo} from '$lib/repo.js';
+	import type {Repo} from '$lib/repo.js';
 	import {to_pull_url} from '$lib/github_helpers.js';
 
 	interface Props {
-		repos: Fetched_Repo[];
+		repos: Repo[];
 		deps?: string[];
 	}
 
@@ -18,7 +18,7 @@
 	// TODO gray out the latest of each version for deps, but only if the max is knowable via a local dep, don't assume for externals
 
 	// TODO hacky, handle regular deps too
-	const lookup_dep_version = (repo: Fetched_Repo, dep: string): string | null => {
+	const lookup_dep_version = (repo: Repo, dep: string): string | null => {
 		for (const key in repo.package_json.dependencies) {
 			if (key === dep) {
 				return repo.package_json.dependencies[key];
@@ -45,8 +45,8 @@
 	const format_version = (version: string | null): string =>
 		version === null ? '' : version.replace(/^(\^|>=)\s*/, '');
 
-	const lookup_pull_requests = (repos: Fetched_Repo[] | null, repo: Fetched_Repo) => {
-		const found = repos?.find((p) => p.url === repo.url);
+	const lookup_pull_requests = (repos: Repo[] | null, repo: Repo) => {
+		const found = repos?.find((p) => p.repo_url === repo.repo_url);
 		if (!found?.package_json) return null;
 		const {pull_requests} = found;
 		return pull_requests;
@@ -111,7 +111,7 @@
 								>
 							{/if}
 						{:else}
-							<a href={repo.url}>{format_url(repo.url)}</a>
+							<a href={repo.repo_url}>{format_url(repo.repo_url)}</a>
 						{/if}
 					</div>
 				</td>

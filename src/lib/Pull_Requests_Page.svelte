@@ -1,9 +1,8 @@
 <script context="module" lang="ts">
 	// TODO is this the new required pattern?
 	export interface Props {
-		repo: Fetched_Repo;
-		repos: Fetched_Repo[];
-		unfetched_repos: Unfetched_Repo[];
+		repo: Repo;
+		repos: Repo[];
 		filter_pull_request?: Filter_Pull_Request | undefined;
 	}
 </script>
@@ -13,9 +12,9 @@
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Pull_Requests_Detail from '$lib/Pull_Requests_Detail.svelte';
 	import type {Filter_Pull_Request} from '$lib/github_helpers.js';
-	import type {Fetched_Repo, Unfetched_Repo} from '$lib/repo.js';
+	import type {Repo} from '$lib/repo.js';
 
-	const {repo, repos, unfetched_repos, filter_pull_request}: Props = $props();
+	const {repo, repos, filter_pull_request}: Props = $props();
 </script>
 
 <svelte:head>
@@ -27,7 +26,7 @@
 		<Page_Header pkg={repo} />
 	</div>
 	<section>
-		<Pull_Requests_Detail {repos} {unfetched_repos} {filter_pull_request} />
+		<Pull_Requests_Detail {repos} {filter_pull_request} />
 	</section>
 	<section class="box mb_xl7">
 		<Page_Footer />

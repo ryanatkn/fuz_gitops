@@ -5,15 +5,15 @@
 	import {format_url} from '@ryanatkn/belt/url.js';
 	import type {Snippet} from 'svelte';
 
-	import type {Fetched_Repo} from '$lib/repo.js';
+	import type {Repo} from '$lib/repo.js';
 	import Repos_Tree_Nav from '$lib/Repos_Tree_Nav.svelte';
 
 	interface Props {
-		repos: Fetched_Repo[];
+		repos: Repo[];
 		/**
 		 * The selected package, if any.
 		 */
-		selected_repo?: Fetched_Repo | undefined;
+		selected_repo?: Repo | undefined;
 		nav: Snippet;
 	}
 
@@ -44,7 +44,7 @@
 						<div class="width_sm">
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
-								<a href={repo.url}>{format_url(repo.url)}</a>
+								<a href={repo.repo_url}>{format_url(repo.repo_url)}</a>
 							</p>
 						</div>
 					{/if}

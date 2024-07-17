@@ -2,14 +2,14 @@
 	import {page} from '$app/stores';
 	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
 
-	import type {Fetched_Repo} from '$lib/repo.js';
+	import type {Repo} from '$lib/repo.js';
 
 	// TODO add highlighting of the items that are onscreen
 
 	// LibraryMenu floats alongside the docs, showing scrolled item as selected
 	interface Props {
 		repos_modules: Array<{
-			repo: Fetched_Repo;
+			repo: Repo;
 			modules: Src_Module[];
 		}>;
 	}

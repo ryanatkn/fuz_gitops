@@ -2,14 +2,14 @@
 	import {base} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
-	import type {Fetched_Repo} from '$lib/repo.js';
+	import type {Repo} from '$lib/repo.js';
 
 	interface Props {
-		repos: Fetched_Repo[];
+		repos: Repo[];
 		/**
 		 * The selected package, if any.
 		 */
-		selected_repo?: Fetched_Repo;
+		selected_repo?: Repo;
 		children: Snippet;
 	}
 
