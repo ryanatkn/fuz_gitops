@@ -1,17 +1,15 @@
 <script lang="ts">
 	import {base} from '$app/paths';
-	import {format_url} from '@ryanatkn/belt/url.js';
 
 	import {to_pull_requests, type Filter_Pull_Request} from '$lib/github_helpers.js';
-	import type {Repo, Unfetched_Repo} from '$lib/repo.js';
+	import type {Repo} from '$lib/repo.js';
 
 	interface Props {
 		repos: Repo[];
-		unfetched_repos: Unfetched_Repo[];
 		filter_pull_request?: Filter_Pull_Request | undefined;
 	}
 
-	const {repos, unfetched_repos, filter_pull_request}: Props = $props();
+	const {repos, filter_pull_request}: Props = $props();
 
 	const pull_requests = $derived(to_pull_requests(repos, filter_pull_request));
 </script>
@@ -42,16 +40,6 @@
 			</tbody>
 		</table>
 	</section>
-	{#if unfetched_repos.length}
-		<section class="panel p_sm">
-			<p>⚠️ Some repos could not be fetched:</p>
-			<ul class="unstyled">
-				{#each unfetched_repos as { repo_url }}
-					<li><a href={repo_url}>{format_url(repo_url)}</a></li>
-				{/each}
-			</ul>
-		</section>
-	{/if}
 </div>
 
 <style>

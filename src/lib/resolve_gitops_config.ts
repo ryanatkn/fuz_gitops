@@ -3,7 +3,6 @@ import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {parse_package_meta, type Package_Meta} from '@ryanatkn/gro/package_meta.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
-import {cyan} from '@ryanatkn/belt/styletext.js';
 import {create_src_json} from '@ryanatkn/gro/src_json.js';
 import {init_sveltekit_config} from '@ryanatkn/gro/sveltekit_config.js';
 
@@ -51,20 +50,15 @@ export const resolve_gitops_config = async (
 	return config;
 };
 
-// TODO BLOCK return value?
 const resolve_local_repo = async (
 	repo_config: Gitops_Repo_Config,
 	dir: string,
 ): Promise<Local_Repo> => {
 	const {repo_url} = repo_config;
-	console.log(cyan('[resolve_local_repo]'), `repo_config.repo_url`, repo_url);
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);
 	if (!repo_name) throw Error('Invalid `repo_config.repo_url` ' + repo_url);
 
-	console.log(cyan('[resolve_local_repo]'), `repo_name`, repo_name);
-
 	const repo_dir = repo_config.repo_dir ?? join(dir, '..', repo_name);
-	console.log(cyan('[resolve_local_repo]'), `dir`, repo_dir);
 	if (!existsSync(repo_dir)) {
 		return {type: 'unresolved_local_repo', repo_url, repo_config};
 	}
@@ -73,7 +67,6 @@ const resolve_local_repo = async (
 	const lib_path = join(repo_dir, parsed_sveltekit_config.lib_path);
 
 	const package_json = load_package_json(repo_dir);
-	console.log(cyan('[resolve_local_repo]'), `package_json.homepage`, package_json.homepage);
 	const src_json = create_src_json(package_json, lib_path);
 
 	return {

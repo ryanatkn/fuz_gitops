@@ -23,31 +23,35 @@ export const fetch_repos = async (
 	github_api_version?: string,
 ): Promise<Repo[]> => {
 	const repos: Repo[] = [];
-	for (const resolved_repo of resolved_repos) {
+	for (const {repo_url, repo_config, pkg} of resolved_repos) {
 		// CI status
 		await wait(delay);
 		const check_runs = await fetch_github_check_runs(
-			resolved_repo.pkg,
+			pkg,
 			cache,
 			log,
 			token,
 			github_api_version,
-			resolved_repo.repo_config.github_ref,
+			repo_config.github_ref,
 		);
-		if (!check_runs) log?.error('failed to fetch CI status: ' + resolved_repo.repo_url);
+		if (!check_runs) log?.error('failed to fetch CI status: ' + repo_url);
 
 		// pull requests
 		await wait(delay);
 		const pull_requests = await fetch_github_pull_requests(
-			resolved_repo.pkg,
+			pkg,
 			cache,
 			log,
 			token,
 			github_api_version,
 		);
-		if (!pull_requests) log?.error('failed to fetch issues: ' + resolved_repo.repo_url);
+		if (!pull_requests) log?.error('failed to fetch issues: ' + repo_url);
 
-		repos.push({...resolved_repo, check_runs, pull_requests});
+		repos.push({
+			...pkg,
+			check_runs,
+			pull_requests,
+		});
 	}
 	return repos;
 };
