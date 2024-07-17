@@ -105,13 +105,13 @@
       "types": "./dist/github.d.ts",
       "default": "./dist/github.js"
     },
+    "./gitops_config.js": {
+      "types": "./dist/gitops_config.d.ts",
+      "default": "./dist/gitops_config.js"
+    },
     "./gitops.task.js": {
       "types": "./dist/gitops.task.d.ts",
       "default": "./dist/gitops.task.js"
-    },
-    "./gitops.js": {
-      "types": "./dist/gitops.d.ts",
-      "default": "./dist/gitops.js"
     },
     "./Modules_Detail.svelte": {
       "types": "./dist/Modules_Detail.svelte.d.ts",
@@ -166,6 +166,10 @@
       "types": "./dist/Repos_Tree.svelte.d.ts",
       "svelte": "./dist/Repos_Tree.svelte",
       "default": "./dist/Repos_Tree.svelte"
+    },
+    "./resolve_gitops_config.js": {
+      "types": "./dist/resolve_gitops_config.d.ts",
+      "default": "./dist/resolve_gitops_config.js"
     },
     "./Table_Page.svelte": {
       "types": "./dist/Table_Page.svelte.d.ts",

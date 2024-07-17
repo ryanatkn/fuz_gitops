@@ -1,4 +1,4 @@
-import type {Create_Gitops_Config} from '$lib/gitops_config.js';
+import type {Create_Gitops_Config} from './src/lib/gitops_config.js';
 
 const config: Create_Gitops_Config = () => {
 	return {
