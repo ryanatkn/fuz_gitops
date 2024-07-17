@@ -28,8 +28,6 @@ export interface Unresolved_Local_Repo {
 	repo_config: Gitops_Repo_Config;
 }
 
-// TODO BLOCK infer the dirs only or also add to the `Gitops_Config`?
-
 /**
  * Resolves repo data locally on the filesystem.
  */

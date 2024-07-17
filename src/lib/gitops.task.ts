@@ -19,7 +19,7 @@ import {resolve_gitops_config} from '$lib/resolve_gitops_config.js';
 // TODO maybe support `--check` for CI
 export const Args = z
 	.object({
-		path: z.string({description: 'path to the fuz config file'}).default('fuz.config.ts'),
+		path: z.string({description: 'path to the fuz config file'}).default('gitops.config.ts'),
 		dir: z.string({description: 'path to the repos directory'}).default(paths.root),
 		outdir: z
 			.string({description: 'path to the directory for the generated files, defaults to $routes/'})

@@ -74,7 +74,7 @@ export const load_gitops_config = async (path: string, dir: string): Promise<Git
 		// No user config file found, so return the default.
 		return default_config;
 	}
-	// Import the user's `fuz.config.ts`.
+	// Import the user's `gitops.config.ts`.
 	const config_module = await import(config_path);
 	validate_gitops_config_module(config_module, config_path);
 	return normalize_gitops_config(
