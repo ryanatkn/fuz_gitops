@@ -12,6 +12,7 @@ import {existsSync} from 'node:fs';
 
 import {fetch_repos} from '$lib/fetch_repos.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
+import {create_gitops_config} from '$lib/gitops.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
@@ -57,8 +58,11 @@ export const task: Task<Args> = {
 		if (!token) {
 			log.warn('the env var GITHUB_TOKEN_SECRET was not found, so API calls with be unauthorized');
 		}
+
+		const gitops_config = create_gitops_config(fuz_config);
+
 		const fetched_repos = await fetch_repos(
-			fuz_config.repos.map((r) => r.url), // TODO change API?
+			gitops_config.repos.map((r) => r.homepage_url),
 			token,
 			cache.data,
 			dir,

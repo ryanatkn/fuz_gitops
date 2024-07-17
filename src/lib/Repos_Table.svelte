@@ -46,7 +46,7 @@
 		version === null ? '' : version.replace(/^(\^|>=)\s*/, '');
 
 	const lookup_pull_requests = (repos: Fetched_Repo[] | null, repo: Fetched_Repo) => {
-		const found = repos?.find((p) => p.url === repo.url);
+		const found = repos?.find((p) => p.repo_url === repo.repo_url);
 		if (!found?.package_json) return null;
 		const {pull_requests} = found;
 		return pull_requests;
@@ -111,7 +111,7 @@
 								>
 							{/if}
 						{:else}
-							<a href={repo.url}>{format_url(repo.url)}</a>
+							<a href={repo.repo_url}>{format_url(repo.repo_url)}</a>
 						{/if}
 					</div>
 				</td>

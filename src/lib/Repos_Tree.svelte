@@ -44,7 +44,7 @@
 						<div class="width_sm">
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
-								<a href={repo.url}>{format_url(repo.url)}</a>
+								<a href={repo.repo_url}>{format_url(repo.repo_url)}</a>
 							</p>
 						</div>
 					{/if}

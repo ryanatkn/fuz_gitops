@@ -15,7 +15,7 @@ export interface Fetched_Repo extends Package_Meta {
 }
 
 export interface Unfetched_Repo {
-	url: Url;
+	repo_url: Url;
 	package_json: null;
 	src_json: null;
 	check_runs: null;
@@ -39,16 +39,16 @@ export const parse_repos = (maybe_repos: Repo[], homepage_url: string): Repos =>
 	const repos: Fetched_Repo[] = [];
 	const unfetched_repos: Unfetched_Repo[] = [];
 
-	for (const {url, package_json, src_json, check_runs, pull_requests} of maybe_repos) {
+	for (const {repo_url, package_json, src_json, check_runs, pull_requests} of maybe_repos) {
 		if (package_json) {
 			repos.push({
-				...parse_package_meta(url, package_json, src_json),
+				...parse_package_meta(package_json, src_json),
 				check_runs,
 				pull_requests,
 			});
 		} else {
 			unfetched_repos.push({
-				url,
+				repo_url,
 				package_json: null,
 				src_json: null,
 				check_runs: null,

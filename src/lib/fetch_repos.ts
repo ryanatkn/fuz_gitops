@@ -69,7 +69,7 @@ export const fetch_repos = async (
 
 		if (package_json && src_json) {
 			try {
-				pkg = parse_package_meta(homepage_url, package_json, src_json);
+				pkg = parse_package_meta(package_json, src_json);
 			} catch (err) {
 				pkg = null;
 				log?.error('failed to parse package meta: ' + err);

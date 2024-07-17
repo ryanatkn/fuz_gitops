@@ -46,8 +46,8 @@
 		<section class="panel p_sm">
 			<p>⚠️ Some repos could not be fetched:</p>
 			<ul class="unstyled">
-				{#each unfetched_repos as { url }}
-					<li><a href={url}>{format_url(url)}</a></li>
+				{#each unfetched_repos as { repo_url }}
+					<li><a href={repo_url}>{format_url(repo_url)}</a></li>
 				{/each}
 			</ul>
 		</section>
