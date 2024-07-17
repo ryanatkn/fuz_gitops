@@ -6,7 +6,7 @@ export const repos: Repo[] = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.114.0",\
+			"version": "0.115.0",\
 			"description": "Svelte UI library",\
 			"motto": "friendly user zystem",\
 			"glyph": "🧶",\
@@ -41,7 +41,7 @@ export const repos: Repo[] = JSON.parse(
 			},\
 			"peerDependencies": {\
 				"@ryanatkn/belt": "^0.24.9",\
-				"@ryanatkn/gro": "^0.132.0",\
+				"@ryanatkn/gro": "^0.133.0",\
 				"@ryanatkn/moss": "^0.8.0",\
 				"@sveltejs/kit": "^2",\
 				"svelte": "^5.0.0-next.0"\
@@ -51,22 +51,22 @@ export const repos: Repo[] = JSON.parse(
 				"@ryanatkn/belt": "^0.24.9",\
 				"@ryanatkn/eslint-config": "^0.4.2",\
 				"@ryanatkn/fuz_code": "^0.16.0",\
-				"@ryanatkn/gro": "^0.132.0",\
+				"@ryanatkn/gro": "^0.133.0",\
 				"@ryanatkn/moss": "^0.8.0",\
 				"@sveltejs/adapter-static": "^3.0.2",\
 				"@sveltejs/kit": "^2.5.18",\
 				"@sveltejs/package": "^2.3.2",\
 				"@sveltejs/vite-plugin-svelte": "^3.1.1",\
-				"@types/node": "^20.14.10",\
+				"@types/node": "^20.14.11",\
 				"@types/prismjs": "^1.26.4",\
 				"eslint": "^9.7.0",\
 				"eslint-plugin-svelte": "^2.42.0",\
 				"esm-env": "^1.0.0",\
 				"prettier": "^3.3.3",\
-				"prettier-plugin-svelte": "^3.2.5",\
+				"prettier-plugin-svelte": "^3.2.6",\
 				"prism-svelte": "^0.5.0",\
 				"prismjs": "^1.29.0",\
-				"svelte": "^5.0.0-next.185",\
+				"svelte": "^5.0.0-next.189",\
 				"svelte-check": "^3.8.4",\
 				"tslib": "^2.6.3",\
 				"typescript": "^5.5.3",\
@@ -406,7 +406,7 @@ export const repos: Repo[] = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.114.0",\
+			"version": "0.115.0",\
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
@@ -1021,8 +1021,8 @@ export const repos: Repo[] = JSON.parse(
 			},\
 			"peerDependencies": {\
 				"@ryanatkn/belt": "^0.24",\
-				"@ryanatkn/fuz": "^0.114.0",\
-				"@ryanatkn/gro": "^0.132",\
+				"@ryanatkn/fuz": "^0.115.0",\
+				"@ryanatkn/gro": "^0.133.0",\
 				"@ryanatkn/moss": "^0.8",\
 				"@sveltejs/kit": "^2",\
 				"svelte": "^5.0.0-next.0",\
@@ -1032,8 +1032,8 @@ export const repos: Repo[] = JSON.parse(
 				"@changesets/changelog-git": "^0.2.0",\
 				"@ryanatkn/belt": "^0.24.9",\
 				"@ryanatkn/eslint-config": "^0.4.2",\
-				"@ryanatkn/fuz": "^0.114.0",\
-				"@ryanatkn/gro": "^0.132.0",\
+				"@ryanatkn/fuz": "^0.115.0",\
+				"@ryanatkn/gro": "^0.133.0",\
 				"@ryanatkn/moss": "^0.8.0",\
 				"@sveltejs/adapter-static": "^3.0.2",\
 				"@sveltejs/kit": "^2.5.18",\
@@ -1879,7 +1879,7 @@ export const repos: Repo[] = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.132.0",\
+			"version": "0.133.0",\
 			"description": "task runner and toolkit extending SvelteKit",\
 			"motto": "generate, run, optimize",\
 			"glyph": "🌰",\
@@ -1948,7 +1948,7 @@ export const repos: Repo[] = JSON.parse(
 				"@changesets/changelog-git": "^0.2.0",\
 				"@changesets/types": "^6.0.0",\
 				"@ryanatkn/eslint-config": "^0.4.2",\
-				"@ryanatkn/fuz": "^0.113.0",\
+				"@ryanatkn/fuz": "^0.115.0",\
 				"@ryanatkn/moss": "^0.8.0",\
 				"@sveltejs/adapter-static": "^3.0.2",\
 				"@sveltejs/kit": "^2.5.18",\
@@ -2333,7 +2333,7 @@ export const repos: Repo[] = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.132.0",\
+			"version": "0.133.0",\
 			"modules": {\
 				".": {\
 					"path": "index.ts",\
@@ -4248,16 +4248,7 @@ export const repos: Repo[] = JSON.parse(
 			"status": "completed",\
 			"conclusion": "success"\
 		},\
-		"pull_requests": [\
-			{\
-				"number": 489,\
-				"title": "package meta url",\
-				"user": {\
-					"login": "ryanatkn"\
-				},\
-				"draft": false\
-			}\
-		]\
+		"pull_requests": []\
 	}\
 ]',
 );
