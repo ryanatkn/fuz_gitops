@@ -1,9 +1,11 @@
 import {strip_end} from '@ryanatkn/belt/string.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
-import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
+import {parse_package_meta, type Package_Meta} from '@ryanatkn/gro/package_meta.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
 import {cyan} from '@ryanatkn/belt/styletext.js';
+import {create_src_json} from '@ryanatkn/gro/src_json.js';
+import {init_sveltekit_config} from '@ryanatkn/gro/sveltekit_config.js';
 
 import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
 
@@ -32,12 +34,11 @@ export interface Unresolved_Local_Repo {
 /**
  * Resolves repo data locally on the filesystem.
  */
-export const resolve_gitops_config = (gitops_config: Gitops_Config): Resolved_Gitops_Config => {
-	const local_repos: Local_Repo[] = [];
-
-	for (const repo_config of gitops_config.repos) {
-		local_repos.push(resolve_local_repo(repo_config));
-	}
+export const resolve_gitops_config = async (
+	gitops_config: Gitops_Config,
+	dir: string,
+): Promise<Resolved_Gitops_Config> => {
+	const local_repos = await Promise.all(gitops_config.repos.map((r) => resolve_local_repo(r, dir)));
 
 	const resolved_local_repos = local_repos.filter((r) => r.type === 'resolved_local_repo');
 	const unresolved_local_repos = local_repos.filter((r) => r.type === 'unresolved_local_repo');
@@ -51,52 +52,34 @@ export const resolve_gitops_config = (gitops_config: Gitops_Config): Resolved_Gi
 };
 
 // TODO BLOCK return value?
-const resolve_local_repo = (repo_config: Gitops_Repo_Config): Local_Repo => {
+const resolve_local_repo = async (
+	repo_config: Gitops_Repo_Config,
+	dir: string,
+): Promise<Local_Repo> => {
 	const {repo_url} = repo_config;
 	console.log(cyan('[resolve_local_repo]'), `repo_config.repo_url`, repo_url);
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);
-	if (!repo_name) throw new Error('invalid `repo_config.repo_url` ' + repo_url);
+	if (!repo_name) throw Error('Invalid `repo_config.repo_url` ' + repo_url);
 
 	console.log(cyan('[resolve_local_repo]'), `repo_name`, repo_name);
 
-	// TODO BLOCK use the dir?
-	const repo_dir = repo_config.repo_dir ?? join(process.cwd(), '..', repo_name);
+	const repo_dir = repo_config.repo_dir ?? join(dir, '..', repo_name);
 	console.log(cyan('[resolve_local_repo]'), `dir`, repo_dir);
 	if (!existsSync(repo_dir)) {
 		return {type: 'unresolved_local_repo', repo_url, repo_config};
 	}
 
+	const parsed_sveltekit_config = await init_sveltekit_config(repo_dir);
+	const lib_path = join(repo_dir, parsed_sveltekit_config.lib_path);
+
 	const package_json = load_package_json(repo_dir);
 	console.log(cyan('[resolve_local_repo]'), `package_json.homepage`, package_json.homepage);
-	return;
+	const src_json = create_src_json(package_json, lib_path);
 
-	// Handle the local package data, if available
-	// if (homepage_url === local_homepage_url) {
-	// 	log?.info('resolving data locally for', homepage_url);
-	// 	package_json = local_package_json;
-
-	// 	src_json = create_src_json(local_package_json, log, dir ? join(dir, 'src/lib') : undefined);
-	// } else {
-	// 	// Fetch the remote package data
-	// 	log?.info('fetching data for', homepage_url);
-
-	// 	await wait(delay);
-	// 	package_json = await fetch_package_json(homepage_url, cache, log);
-	// 	if (!package_json) log?.error('failed to load package_json: ' + homepage_url);
-
-	// 	await wait(delay);
-	// 	src_json = await fetch_src_json(homepage_url, cache, log);
-	// 	if (!src_json) log?.error('failed to load src_json: ' + homepage_url);
-	// }
-
-	// if (package_json && src_json) {
-	// 	try {
-	// 		pkg = parse_package_meta(package_json, src_json);
-	// 	} catch (err) {
-	// 		pkg = null;
-	// 		log?.error('failed to parse package meta: ' + err);
-	// 	}
-	// } else {
-	// 	pkg = null;
-	// }
+	return {
+		type: 'resolved_local_repo',
+		repo_url,
+		repo_config,
+		pkg: parse_package_meta(package_json, src_json),
+	};
 };

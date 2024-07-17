@@ -3,10 +3,10 @@
 	import {format_url} from '@ryanatkn/belt/url.js';
 
 	import {to_pull_requests, type Filter_Pull_Request} from '$lib/github_helpers.js';
-	import type {Fetched_Repo, Unfetched_Repo} from '$lib/repo.js';
+	import type {Repo, Unfetched_Repo} from '$lib/repo.js';
 
 	interface Props {
-		repos: Fetched_Repo[];
+		repos: Repo[];
 		unfetched_repos: Unfetched_Repo[];
 		filter_pull_request?: Filter_Pull_Request | undefined;
 	}

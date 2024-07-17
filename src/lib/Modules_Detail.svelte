@@ -5,10 +5,10 @@
 	import type {Snippet} from 'svelte';
 
 	import Modules_Nav from '$lib/Modules_Nav.svelte';
-	import type {Fetched_Repo} from '$lib/repo.js';
+	import type {Repo} from '$lib/repo.js';
 
 	interface Props {
-		repos: Fetched_Repo[]; // TODO normalized version with cached primitives?
+		repos: Repo[]; // TODO normalized version with cached primitives?
 		nav_footer?: Snippet;
 	}
 
@@ -20,10 +20,10 @@
 
 	// TODO hacky, needs helpers or rethinking
 	const repos_modules: Array<{
-		repo: Fetched_Repo;
+		repo: Repo;
 		modules: Src_Module[];
 	}> = $derived(
-		repos.reduce<Array<{repo: Fetched_Repo; modules: Src_Module[]}>>((v, repo) => {
+		repos.reduce<Array<{repo: Repo; modules: Src_Module[]}>>((v, repo) => {
 			const {package_json, src_json} = repo;
 			if (
 				!src_json.modules ||

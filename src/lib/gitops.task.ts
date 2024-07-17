@@ -59,7 +59,7 @@ export const task: Task<Args> = {
 			log.warn('the env var GITHUB_TOKEN_SECRET was not found, so API calls with be unauthorized');
 		}
 
-		const resolved_gitops_config = resolve_gitops_config(gitops_config);
+		const resolved_gitops_config = await resolve_gitops_config(gitops_config, dir);
 		console.log(red(`[resolved_gitops_config]`), resolved_gitops_config);
 		const {resolved_local_repos, unresolved_local_repos} = resolved_gitops_config;
 
@@ -74,7 +74,8 @@ export const task: Task<Args> = {
 			throw new Task_Error('No repos are configured in `gitops_config.ts`');
 		}
 
-		const fetched_repos = await fetch_repos(resolved_local_repos, token, cache.data, dir, log);
+		// TODO BLOCK name?
+		const fetched_repos = await fetch_repos(resolved_local_repos, token, cache.data, log);
 		console.log(`fetched_repos`, fetched_repos);
 		return;
 

@@ -1,17 +1,17 @@
 import {ensure_end} from '@ryanatkn/belt/string.js';
 
 import type {Github_Pull_Request} from '$lib/github.js';
-import type {Fetched_Repo, Repo} from '$lib/repo.js';
+import type {Repo, Repo} from '$lib/repo.js';
 
 export type Filter_Pull_Request = (pull_request: Github_Pull_Request, repo: Repo) => boolean;
 
 export interface Pull_Request_Meta {
-	repo: Fetched_Repo;
+	repo: Repo;
 	pull_request: Github_Pull_Request;
 }
 
 export const to_pull_requests = (
-	repos: Fetched_Repo[],
+	repos: Repo[],
 	filter_pull_request?: Filter_Pull_Request,
 ): Pull_Request_Meta[] =>
 	repos

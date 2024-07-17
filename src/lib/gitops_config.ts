@@ -20,6 +20,7 @@ export interface Gitops_Repo_Config {
 	 * @example 'https://github.com/ryanatkn/fuz'
 	 */
 	repo_url: Url;
+
 	/**
 	 * Relative or absolute path to the repo's local directory.
 	 * If `null`, the directory is inferred from the URL and cwd.
@@ -27,11 +28,17 @@ export interface Gitops_Repo_Config {
 	 * @example '/absolute/path/to/repo'
 	 */
 	repo_dir: string | null;
+
+	/**
+	 * The GitHub ref or branch name to use when fetching repo data. Defaults to `main`.
+	 */
+	github_ref: string;
 }
 
 export interface Raw_Gitops_Repo_Config {
 	repo_url: Url;
 	repo_dir?: string | null;
+	github_ref?: string;
 }
 
 export const create_empty_gitops_config = (): Gitops_Config => ({
@@ -54,11 +61,12 @@ export const normalize_gitops_config = (raw_config: Raw_Gitops_Config): Gitops_C
 
 const parse_fuz_repo_config = (r: Url | Raw_Gitops_Repo_Config): Gitops_Repo_Config => {
 	if (typeof r === 'string') {
-		return {repo_url: r, repo_dir: null};
+		return {repo_url: r, repo_dir: null, github_ref: 'main'};
 	}
 	return {
 		repo_url: strip_end(r.repo_url, '.git'),
 		repo_dir: r.repo_dir ?? null,
+		github_ref: r.github_ref ?? 'main',
 	};
 };
 

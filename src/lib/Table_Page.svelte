@@ -2,11 +2,11 @@
 	import Page_Footer from '$lib/Page_Footer.svelte';
 	import Page_Header from '$lib/Page_Header.svelte';
 	import Repos_Table from '$lib/Repos_Table.svelte';
-	import type {Fetched_Repo} from '$lib/repo.js';
+	import type {Repo} from '$lib/repo.js';
 
 	interface Props {
-		repo: Fetched_Repo;
-		repos: Fetched_Repo[];
+		repo: Repo;
+		repos: Repo[];
 	}
 
 	const {repo, repos}: Props = $props();
