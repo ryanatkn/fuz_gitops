@@ -45,8 +45,8 @@ export const resolve_gitops_config = (fuz_config: Gitops_Config): Resolved_Gitop
 
 	const config: Resolved_Gitops_Config = {
 		local_repos,
-		resolved_local_repos,
-		unresolved_local_repos,
+		resolved_local_repos: resolved_local_repos.length ? resolved_local_repos : null,
+		unresolved_local_repos: unresolved_local_repos.length ? unresolved_local_repos : null,
 	};
 	return config;
 };
