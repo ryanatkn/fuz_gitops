@@ -4,7 +4,7 @@ import {existsSync} from 'node:fs';
 import {strip_end} from '@ryanatkn/belt/string.js';
 
 export interface Gitops_Config {
-	repos: Fuz_Repo_Config[];
+	repos: Gitops_Repo_Config[];
 }
 
 export type Create_Gitops_Config = (
@@ -12,10 +12,10 @@ export type Create_Gitops_Config = (
 ) => Raw_Gitops_Config | Promise<Raw_Gitops_Config>;
 
 export interface Raw_Gitops_Config {
-	repos?: Array<Url | Raw_Fuz_Repo_Config>;
+	repos?: Array<Url | Raw_Gitops_Repo_Config>;
 }
 
-export interface Fuz_Repo_Config {
+export interface Gitops_Repo_Config {
 	/**
 	 * The HTTPS URL to the repo. Does not include a `.git` suffix.
 	 * @example 'https://github.com/ryanatkn/fuz'
@@ -30,12 +30,12 @@ export interface Fuz_Repo_Config {
 	repo_dir: string | null;
 }
 
-export interface Raw_Fuz_Repo_Config {
+export interface Raw_Gitops_Repo_Config {
 	repo_url: Url;
 	repo_dir?: string | null;
 }
 
-export const create_empty_fuz_config = (): Gitops_Config => ({
+export const create_empty_gitops_config = (): Gitops_Config => ({
 	repos: [],
 });
 
@@ -43,8 +43,8 @@ export const create_empty_fuz_config = (): Gitops_Config => ({
  * Transforms a `Raw_Gitops_Config` to the more strict `Gitops_Config`.
  * This allows users to provide a more relaxed config.
  */
-export const normalize_fuz_config = (raw_config: Raw_Gitops_Config): Gitops_Config => {
-	const empty_config = create_empty_fuz_config();
+export const normalize_gitops_config = (raw_config: Raw_Gitops_Config): Gitops_Config => {
+	const empty_config = create_empty_gitops_config();
 	// All of the raw config properties are optional,
 	// so fall back to the empty values when `undefined`.
 	const {repos} = raw_config;
@@ -53,7 +53,7 @@ export const normalize_fuz_config = (raw_config: Raw_Gitops_Config): Gitops_Conf
 	};
 };
 
-const parse_fuz_repo_config = (r: Url | Raw_Fuz_Repo_Config): Fuz_Repo_Config => {
+const parse_fuz_repo_config = (r: Url | Raw_Gitops_Repo_Config): Gitops_Repo_Config => {
 	if (typeof r === 'string') {
 		return {repo_url: r, repo_dir: null};
 	}
@@ -67,8 +67,8 @@ export interface Gitops_Config_Module {
 	readonly default: Raw_Gitops_Config | Create_Gitops_Config;
 }
 
-export const load_fuz_config = async (path: string, dir: string): Promise<Gitops_Config> => {
-	const default_config = create_empty_fuz_config();
+export const load_gitops_config = async (path: string, dir: string): Promise<Gitops_Config> => {
+	const default_config = create_empty_gitops_config();
 	const config_path = join(dir, path);
 	if (!existsSync(config_path)) {
 		// No user config file found, so return the default.
@@ -76,15 +76,15 @@ export const load_fuz_config = async (path: string, dir: string): Promise<Gitops
 	}
 	// Import the user's `fuz.config.ts`.
 	const config_module = await import(config_path);
-	validate_fuz_config_module(config_module, config_path);
-	return normalize_fuz_config(
+	validate_gitops_config_module(config_module, config_path);
+	return normalize_gitops_config(
 		typeof config_module.default === 'function'
 			? await config_module.default(default_config)
 			: config_module.default,
 	);
 };
 
-export const validate_fuz_config_module: (
+export const validate_gitops_config_module: (
 	config_module: any,
 	config_path: string,
 ) => asserts config_module is Gitops_Config_Module = (config_module, config_path) => {

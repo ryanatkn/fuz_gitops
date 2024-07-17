@@ -9,7 +9,7 @@ import {embed_json} from '@ryanatkn/belt/json.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {existsSync} from 'node:fs';
 
-import {load_fuz_config} from '$lib/gitops_config.js';
+import {load_gitops_config} from '$lib/gitops_config.js';
 import {fetch_repos} from '$lib/fetch_repos.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
 import {resolve_gitops_config} from '$lib/resolve_gitops_config.js';
@@ -39,7 +39,7 @@ export const task: Task<Args> = {
 
 		const outfile = resolve(outdir, 'repos.ts');
 
-		const fuz_config = await load_fuz_config(path, dir);
+		const gitops_config = await load_gitops_config(path, dir);
 
 		const cache = await create_fs_fetch_value_cache('repos');
 
@@ -49,7 +49,7 @@ export const task: Task<Args> = {
 			log.warn('the env var GITHUB_TOKEN_SECRET was not found, so API calls with be unauthorized');
 		}
 
-		const resolved_gitops_config = resolve_gitops_config(fuz_config);
+		const resolved_gitops_config = resolve_gitops_config(gitops_config);
 		console.log(`resolved_gitops_config`, resolved_gitops_config);
 		const {resolved_local_repos, unresolved_local_repos} = resolved_gitops_config;
 

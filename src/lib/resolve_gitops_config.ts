@@ -4,7 +4,7 @@ import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
 
-import type {Gitops_Config, Fuz_Repo_Config} from '$lib/gitops_config.js';
+import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
 
 export interface Resolved_Gitops_Config {
 	local_repos: Local_Repo[] | null;
@@ -17,7 +17,7 @@ export type Local_Repo = Resolved_Local_Repo | Unresolved_Local_Repo;
 export interface Resolved_Local_Repo {
 	type: 'resolved_local_repo';
 	repo_url: string;
-	repo_config: Fuz_Repo_Config;
+	repo_config: Gitops_Repo_Config;
 	pkg: Package_Meta;
 	// TODO what else? filesystem info?
 }
@@ -25,7 +25,7 @@ export interface Resolved_Local_Repo {
 export interface Unresolved_Local_Repo {
 	type: 'unresolved_local_repo';
 	repo_url: string;
-	repo_config: Fuz_Repo_Config;
+	repo_config: Gitops_Repo_Config;
 }
 
 // TODO BLOCK infer the dirs only or also add to the `Gitops_Config`?
@@ -33,10 +33,10 @@ export interface Unresolved_Local_Repo {
 /**
  * Resolves repo data locally on the filesystem.
  */
-export const resolve_gitops_config = (fuz_config: Gitops_Config): Resolved_Gitops_Config => {
+export const resolve_gitops_config = (gitops_config: Gitops_Config): Resolved_Gitops_Config => {
 	const local_repos: Local_Repo[] = [];
 
-	for (const repo_config of fuz_config.repos) {
+	for (const repo_config of gitops_config.repos) {
 		local_repos.push(resolve_local_repo(repo_config));
 	}
 
@@ -52,7 +52,7 @@ export const resolve_gitops_config = (fuz_config: Gitops_Config): Resolved_Gitop
 };
 
 // TODO BLOCK return value?
-const resolve_local_repo = (repo_config: Fuz_Repo_Config): Local_Repo => {
+const resolve_local_repo = (repo_config: Gitops_Repo_Config): Local_Repo => {
 	const {repo_url} = repo_config;
 	console.log(`repo_config.repo_url`, repo_url);
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);

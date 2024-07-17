@@ -186,9 +186,9 @@ export const repos: Repo[] = JSON.parse(
 					"svelte": "./dist/Earbetter_Logo.svelte",\
 					"default": "./dist/Earbetter_Logo.svelte"\
 				},\
-				"./fuz_config.js": {\
-					"types": "./dist/fuz_config.d.ts",\
-					"default": "./dist/fuz_config.js"\
+				"./gitops_config.js": {\
+					"types": "./dist/gitops_config.d.ts",\
+					"default": "./dist/gitops_config.js"\
 				},\
 				"./Fuz_Logo.svelte": {\
 					"types": "./dist/Fuz_Logo.svelte.d.ts",\
@@ -601,8 +601,8 @@ export const repos: Repo[] = JSON.parse(
 					"path": "Earbetter_Logo.svelte",\
 					"declarations": []\
 				},\
-				"./fuz_config.js": {\
-					"path": "fuz_config.ts",\
+				"./gitops_config.js": {\
+					"path": "gitops_config.ts",\
 					"declarations": [\
 						{\
 							"name": "Gitops_Config",\
@@ -621,11 +621,11 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "type"\
 						},\
 						{\
-							"name": "create_empty_fuz_config",\
+							"name": "create_empty_gitops_config",\
 							"kind": "function"\
 						},\
 						{\
-							"name": "normalize_fuz_config",\
+							"name": "normalize_gitops_config",\
 							"kind": "function"\
 						},\
 						{\
@@ -633,11 +633,11 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "type"\
 						},\
 						{\
-							"name": "load_fuz_config",\
+							"name": "load_gitops_config",\
 							"kind": "function"\
 						},\
 						{\
-							"name": "validate_fuz_config_module",\
+							"name": "validate_gitops_config_module",\
 							"kind": "function"\
 						}\
 					]\
