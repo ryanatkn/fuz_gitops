@@ -6,7 +6,7 @@
 	import Themed from '@ryanatkn/fuz/Themed.svelte';
 	import Dialog from '@ryanatkn/fuz/Dialog.svelte';
 	import Contextmenu_Root from '@ryanatkn/fuz/Contextmenu_Root.svelte';
-	import {Contextmenu_Store, contextmenu_action} from '@ryanatkn/fuz/contextmenu_helpers.svelte.js';
+	import {Contextmenu_State, contextmenu_action} from '@ryanatkn/fuz/contextmenu_state.svelte.js';
 	import type {Snippet} from 'svelte';
 
 	import Settings from '$routes/Settings.svelte';
@@ -19,7 +19,7 @@
 
 	const {children}: Props = $props();
 
-	const contextmenu = new Contextmenu_Store();
+	const contextmenu = new Contextmenu_State();
 
 	set_repos(parse_repos(repos, 'https://gitops.fuz.dev/'));
 
