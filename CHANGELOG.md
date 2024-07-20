@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.34.0
+
+### Minor Changes
+
+- loosen peer deps temporarily ([a7dc4c7](https://github.com/ryanatkn/fuz_gitops/commit/a7dc4c7))
+
 ## 0.33.0
 
 ### Minor Changes
