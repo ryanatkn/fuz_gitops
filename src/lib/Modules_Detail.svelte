@@ -128,7 +128,7 @@
 	}
 	.module {
 		margin-bottom: var(--space_lg);
-		--link_color: var(--text_2);
+		--link_color: var(--text_color_3);
 	}
 	.module_file {
 		margin-bottom: var(--space_xs);
