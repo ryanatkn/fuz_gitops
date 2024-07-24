@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.36.0
+
+### Minor Changes
+
+- upgrade `@ryanatkn/fuz@0.119` from `0.118.2` and `@ryanatkn/moss@0.12` from `0.11.1` ([df573dc](https://github.com/ryanatkn/fuz_gitops/commit/df573dc))
+
 ## 0.35.0
 
 ### Minor Changes
