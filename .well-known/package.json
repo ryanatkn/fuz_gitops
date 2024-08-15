@@ -1,0 +1,190 @@
+{
+  "name": "@ryanatkn/fuz_gitops",
+  "version": "0.36.0",
+  "description": "a tool for managing many repos",
+  "glyph": "🪄",
+  "logo": "logo.svg",
+  "logo_alt": "a friendly blue spider facing you",
+  "public": true,
+  "license": "MIT",
+  "homepage": "https://gitops.fuz.dev/",
+  "repository": "https://github.com/ryanatkn/fuz_gitops",
+  "author": {
+    "name": "Ryan Atkinson",
+    "email": "mail@ryanatkn.com",
+    "url": "https://www.ryanatkn.com/"
+  },
+  "bugs": "https://github.com/ryanatkn/fuz_gitops/issues",
+  "funding": "https://www.ryanatkn.com/funding",
+  "scripts": {
+    "start": "gro dev",
+    "dev": "gro dev",
+    "build": "gro build",
+    "check": "gro check",
+    "test": "gro test",
+    "preview": "vite preview",
+    "deploy": "gro deploy"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "peerDependencies": {
+    "@ryanatkn/belt": "*",
+    "@ryanatkn/fuz": "*",
+    "@ryanatkn/gro": "*",
+    "@ryanatkn/moss": "*",
+    "@sveltejs/kit": "^2",
+    "svelte": "^5.0.0-next.0",
+    "zod": "^3"
+  },
+  "devDependencies": {
+    "@changesets/changelog-git": "^0.2.0",
+    "@ryanatkn/belt": "^0.24.12",
+    "@ryanatkn/eslint-config": "^0.5.1",
+    "@ryanatkn/fuz": "^0.120.4",
+    "@ryanatkn/gro": "^0.133.7",
+    "@ryanatkn/moss": "^0.13.3",
+    "@sveltejs/adapter-static": "^3.0.4",
+    "@sveltejs/kit": "^2.5.22",
+    "@sveltejs/package": "^2.3.4",
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@types/node": "^22.3.0",
+    "eslint": "^9.9.0",
+    "eslint-plugin-svelte": "^2.43.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.2.6",
+    "svelte": "^5.0.0-next.221",
+    "svelte-check": "^3.8.5",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.1.0",
+    "uvu": "^0.5.6"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-svelte"
+    ],
+    "useTabs": true,
+    "printWidth": 100,
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "overrides": [
+      {
+        "files": "package.json",
+        "options": {
+          "useTabs": false
+        }
+      }
+    ]
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "src/lib/**/*.ts",
+    "!src/lib/**/*.test.*",
+    "!dist/**/*.test.*"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./fetch_repo_data.js": {
+      "types": "./dist/fetch_repo_data.d.ts",
+      "default": "./dist/fetch_repo_data.js"
+    },
+    "./fs_fetch_value_cache.js": {
+      "types": "./dist/fs_fetch_value_cache.d.ts",
+      "default": "./dist/fs_fetch_value_cache.js"
+    },
+    "./github_helpers.js": {
+      "types": "./dist/github_helpers.d.ts",
+      "default": "./dist/github_helpers.js"
+    },
+    "./github.js": {
+      "types": "./dist/github.d.ts",
+      "default": "./dist/github.js"
+    },
+    "./gitops_config.js": {
+      "types": "./dist/gitops_config.d.ts",
+      "default": "./dist/gitops_config.js"
+    },
+    "./gitops.task.js": {
+      "types": "./dist/gitops.task.d.ts",
+      "default": "./dist/gitops.task.js"
+    },
+    "./Modules_Detail.svelte": {
+      "types": "./dist/Modules_Detail.svelte.d.ts",
+      "svelte": "./dist/Modules_Detail.svelte",
+      "default": "./dist/Modules_Detail.svelte"
+    },
+    "./Modules_Nav.svelte": {
+      "types": "./dist/Modules_Nav.svelte.d.ts",
+      "svelte": "./dist/Modules_Nav.svelte",
+      "default": "./dist/Modules_Nav.svelte"
+    },
+    "./Modules_Page.svelte": {
+      "types": "./dist/Modules_Page.svelte.d.ts",
+      "svelte": "./dist/Modules_Page.svelte",
+      "default": "./dist/Modules_Page.svelte"
+    },
+    "./Page_Footer.svelte": {
+      "types": "./dist/Page_Footer.svelte.d.ts",
+      "svelte": "./dist/Page_Footer.svelte",
+      "default": "./dist/Page_Footer.svelte"
+    },
+    "./Page_Header.svelte": {
+      "types": "./dist/Page_Header.svelte.d.ts",
+      "svelte": "./dist/Page_Header.svelte",
+      "default": "./dist/Page_Header.svelte"
+    },
+    "./Pull_Requests_Detail.svelte": {
+      "types": "./dist/Pull_Requests_Detail.svelte.d.ts",
+      "svelte": "./dist/Pull_Requests_Detail.svelte",
+      "default": "./dist/Pull_Requests_Detail.svelte"
+    },
+    "./Pull_Requests_Page.svelte": {
+      "types": "./dist/Pull_Requests_Page.svelte.d.ts",
+      "svelte": "./dist/Pull_Requests_Page.svelte",
+      "default": "./dist/Pull_Requests_Page.svelte"
+    },
+    "./repo.js": {
+      "types": "./dist/repo.d.ts",
+      "default": "./dist/repo.js"
+    },
+    "./Repos_Table.svelte": {
+      "types": "./dist/Repos_Table.svelte.d.ts",
+      "svelte": "./dist/Repos_Table.svelte",
+      "default": "./dist/Repos_Table.svelte"
+    },
+    "./Repos_Tree_Nav.svelte": {
+      "types": "./dist/Repos_Tree_Nav.svelte.d.ts",
+      "svelte": "./dist/Repos_Tree_Nav.svelte",
+      "default": "./dist/Repos_Tree_Nav.svelte"
+    },
+    "./Repos_Tree.svelte": {
+      "types": "./dist/Repos_Tree.svelte.d.ts",
+      "svelte": "./dist/Repos_Tree.svelte",
+      "default": "./dist/Repos_Tree.svelte"
+    },
+    "./resolve_gitops_config.js": {
+      "types": "./dist/resolve_gitops_config.d.ts",
+      "default": "./dist/resolve_gitops_config.js"
+    },
+    "./Table_Page.svelte": {
+      "types": "./dist/Table_Page.svelte.d.ts",
+      "svelte": "./dist/Table_Page.svelte",
+      "default": "./dist/Table_Page.svelte"
+    },
+    "./Tree_Item_Page.svelte": {
+      "types": "./dist/Tree_Item_Page.svelte.d.ts",
+      "svelte": "./dist/Tree_Item_Page.svelte",
+      "default": "./dist/Tree_Item_Page.svelte"
+    },
+    "./Tree_Page.svelte": {
+      "types": "./dist/Tree_Page.svelte.d.ts",
+      "svelte": "./dist/Tree_Page.svelte",
+      "default": "./dist/Tree_Page.svelte"
+    }
+  }
+}
