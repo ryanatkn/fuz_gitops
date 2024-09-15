@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.37.0
+
+### Minor Changes
+
+- bump required node version to `20.17` ([e114227](https://github.com/ryanatkn/fuz_gitops/commit/e114227))
+
 ## 0.36.0
 
 ### Minor Changes
