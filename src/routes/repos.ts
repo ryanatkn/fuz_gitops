@@ -1517,7 +1517,7 @@ export const repos: Repo[] = JSON.parse(
 				"@changesets/changelog-git": "^0.2.0",\
 				"@ryanatkn/belt": "^0.25.0",\
 				"@ryanatkn/eslint-config": "^0.5.3",\
-				"@ryanatkn/fuz": "^0.121.0",\
+				"@ryanatkn/fuz": "^0.122.0",\
 				"@ryanatkn/gro": "^0.135.0",\
 				"@ryanatkn/moss": "^0.16.0",\
 				"@sveltejs/adapter-static": "^3.0.4",\
@@ -1993,8 +1993,8 @@ export const repos: Repo[] = JSON.parse(
 				"@changesets/changelog-git": "^0.2.0",\
 				"@changesets/types": "^6.0.0",\
 				"@ryanatkn/eslint-config": "^0.5.3",\
-				"@ryanatkn/fuz": "^0.121.0",\
-				"@ryanatkn/moss": "^0.15.0",\
+				"@ryanatkn/fuz": "^0.122.0",\
+				"@ryanatkn/moss": "^0.16.0",\
 				"@sveltejs/adapter-static": "^3.0.4",\
 				"@sveltejs/kit": "^2.5.27",\
 				"@sveltejs/package": "^2.3.5",\
