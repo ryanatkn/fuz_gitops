@@ -6,7 +6,7 @@ export const repos: Repo[] = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.124.4",\
+			"version": "0.127.0",\
 			"description": "Svelte UI library",\
 			"motto": "friendly user zystem",\
 			"glyph": "🧶",\
@@ -56,7 +56,7 @@ export const repos: Repo[] = JSON.parse(
 				"@ryanatkn/belt": "^0.25.0",\
 				"@ryanatkn/eslint-config": "^0.5.3",\
 				"@ryanatkn/fuz_code": "^0.19.0",\
-				"@ryanatkn/gro": "^0.135.0",\
+				"@ryanatkn/gro": "^0.135.1",\
 				"@ryanatkn/moss": "^0.16.1",\
 				"@sveltejs/adapter-static": "^3.0.5",\
 				"@sveltejs/kit": "^2.5.28",\
@@ -140,6 +140,10 @@ export const repos: Repo[] = JSON.parse(
 					"svelte": "./dist/Community_Links.svelte",\
 					"default": "./dist/Community_Links.svelte"\
 				},\
+				"./context_helpers.js": {\
+					"types": "./dist/context_helpers.d.ts",\
+					"default": "./dist/context_helpers.js"\
+				},\
 				"./Contextmenu_Entry.svelte": {\
 					"types": "./dist/Contextmenu_Entry.svelte.d.ts",\
 					"svelte": "./dist/Contextmenu_Entry.svelte",\
@@ -201,35 +205,6 @@ export const repos: Repo[] = JSON.parse(
 				"./dimensions.svelte.js": {\
 					"types": "./dist/dimensions.svelte.d.ts",\
 					"default": "./dist/dimensions.svelte.js"\
-				},\
-				"./Earbetter_Logo.svelte": {\
-					"types": "./dist/Earbetter_Logo.svelte.d.ts",\
-					"svelte": "./dist/Earbetter_Logo.svelte",\
-					"default": "./dist/Earbetter_Logo.svelte"\
-				},\
-				"./Fuz_Logo.svelte": {\
-					"types": "./dist/Fuz_Logo.svelte.d.ts",\
-					"svelte": "./dist/Fuz_Logo.svelte",\
-					"default": "./dist/Fuz_Logo.svelte"\
-				},\
-				"./fuz.js": {\
-					"types": "./dist/fuz.d.ts",\
-					"default": "./dist/fuz.js"\
-				},\
-				"./Fuzling.svelte": {\
-					"types": "./dist/Fuzling.svelte.d.ts",\
-					"svelte": "./dist/Fuzling.svelte",\
-					"default": "./dist/Fuzling.svelte"\
-				},\
-				"./Github_Logo.svelte": {\
-					"types": "./dist/Github_Logo.svelte.d.ts",\
-					"svelte": "./dist/Github_Logo.svelte",\
-					"default": "./dist/Github_Logo.svelte"\
-				},\
-				"./Gro_Logo.svelte": {\
-					"types": "./dist/Gro_Logo.svelte.d.ts",\
-					"svelte": "./dist/Gro_Logo.svelte",\
-					"default": "./dist/Gro_Logo.svelte"\
 				},\
 				"./Hashlink.svelte": {\
 					"types": "./dist/Hashlink.svelte.d.ts",\
@@ -294,20 +269,14 @@ export const repos: Repo[] = JSON.parse(
 					"svelte": "./dist/Library.svelte",\
 					"default": "./dist/Library.svelte"\
 				},\
+				"./logos.js": {\
+					"types": "./dist/logos.d.ts",\
+					"default": "./dist/logos.js"\
+				},\
 				"./Mdn_Link.svelte": {\
 					"types": "./dist/Mdn_Link.svelte.d.ts",\
 					"svelte": "./dist/Mdn_Link.svelte",\
 					"default": "./dist/Mdn_Link.svelte"\
-				},\
-				"./Mdn_Logo.svelte": {\
-					"types": "./dist/Mdn_Logo.svelte.d.ts",\
-					"svelte": "./dist/Mdn_Logo.svelte",\
-					"default": "./dist/Mdn_Logo.svelte"\
-				},\
-				"./Moss_Logo.svelte": {\
-					"types": "./dist/Moss_Logo.svelte.d.ts",\
-					"svelte": "./dist/Moss_Logo.svelte",\
-					"default": "./dist/Moss_Logo.svelte"\
 				},\
 				"./Package_Detail.svelte": {\
 					"types": "./dist/Package_Detail.svelte.d.ts",\
@@ -343,20 +312,15 @@ export const repos: Repo[] = JSON.parse(
 					"types": "./dist/rune_helpers.svelte.d.ts",\
 					"default": "./dist/rune_helpers.svelte.js"\
 				},\
-				"./Spider.svelte": {\
-					"types": "./dist/Spider.svelte.d.ts",\
-					"svelte": "./dist/Spider.svelte",\
-					"default": "./dist/Spider.svelte"\
-				},\
 				"./Spiders.svelte": {\
 					"types": "./dist/Spiders.svelte.d.ts",\
 					"svelte": "./dist/Spiders.svelte",\
 					"default": "./dist/Spiders.svelte"\
 				},\
-				"./Spiderspace_Logo.svelte": {\
-					"types": "./dist/Spiderspace_Logo.svelte.d.ts",\
-					"svelte": "./dist/Spiderspace_Logo.svelte",\
-					"default": "./dist/Spiderspace_Logo.svelte"\
+				"./Svg.svelte": {\
+					"types": "./dist/Svg.svelte.d.ts",\
+					"svelte": "./dist/Svg.svelte",\
+					"default": "./dist/Svg.svelte"\
 				},\
 				"./Teleport.svelte": {\
 					"types": "./dist/Teleport.svelte.d.ts",\
@@ -405,22 +369,12 @@ export const repos: Repo[] = JSON.parse(
 				"./tome.js": {\
 					"types": "./dist/tome.d.ts",\
 					"default": "./dist/tome.js"\
-				},\
-				"./Webdevladder_Logo.svelte": {\
-					"types": "./dist/Webdevladder_Logo.svelte.d.ts",\
-					"svelte": "./dist/Webdevladder_Logo.svelte",\
-					"default": "./dist/Webdevladder_Logo.svelte"\
-				},\
-				"./Zzz_Logo.svelte": {\
-					"types": "./dist/Zzz_Logo.svelte.d.ts",\
-					"svelte": "./dist/Zzz_Logo.svelte",\
-					"default": "./dist/Zzz_Logo.svelte"\
 				}\
 			}\
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.124.4",\
+			"version": "0.127.0",\
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
@@ -466,6 +420,15 @@ export const repos: Repo[] = JSON.parse(
 				"./Community_Links.svelte": {\
 					"path": "Community_Links.svelte",\
 					"declarations": []\
+				},\
+				"./context_helpers.js": {\
+					"path": "context_helpers.ts",\
+					"declarations": [\
+						{\
+							"name": "create_context",\
+							"kind": null\
+						}\
+					]\
 				},\
 				"./Contextmenu_Entry.svelte": {\
 					"path": "Contextmenu_Entry.svelte",\
@@ -523,28 +486,16 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "function"\
 						},\
 						{\
-							"name": "set_contextmenu",\
-							"kind": "function"\
+							"name": "contextmenu_context",\
+							"kind": "variable"\
 						},\
 						{\
-							"name": "get_contextmenu",\
-							"kind": "function"\
+							"name": "contextmenu_submenu_context",\
+							"kind": "variable"\
 						},\
 						{\
-							"name": "set_contextmenu_submenu",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "get_contextmenu_submenu",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "set_contextmenu_dimensions",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "get_contextmenu_dimensions",\
-							"kind": "function"\
+							"name": "contextmenu_dimensions_context",\
+							"kind": "variable"\
 						}\
 					]\
 				},\
@@ -605,43 +556,6 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "class"\
 						}\
 					]\
-				},\
-				"./Earbetter_Logo.svelte": {\
-					"path": "Earbetter_Logo.svelte",\
-					"declarations": []\
-				},\
-				"./Fuz_Logo.svelte": {\
-					"path": "Fuz_Logo.svelte",\
-					"declarations": []\
-				},\
-				"./fuz.js": {\
-					"path": "fuz.ts",\
-					"declarations": [\
-						{\
-							"name": "Fuz_Project_Name",\
-							"kind": "type"\
-						},\
-						{\
-							"name": "to_fuz_project_color",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "to_fuz_project_color_name",\
-							"kind": "function"\
-						}\
-					]\
-				},\
-				"./Fuzling.svelte": {\
-					"path": "Fuzling.svelte",\
-					"declarations": []\
-				},\
-				"./Github_Logo.svelte": {\
-					"path": "Github_Logo.svelte",\
-					"declarations": []\
-				},\
-				"./Gro_Logo.svelte": {\
-					"path": "Gro_Logo.svelte",\
-					"declarations": []\
 				},\
 				"./Hashlink.svelte": {\
 					"path": "Hashlink.svelte",\
@@ -708,12 +622,8 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "function"\
 						},\
 						{\
-							"name": "set_library_links",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "get_library_links",\
-							"kind": "function"\
+							"name": "library_links_context",\
+							"kind": "variable"\
 						},\
 						{\
 							"name": "Library_Link_Tag",\
@@ -753,16 +663,69 @@ export const repos: Repo[] = JSON.parse(
 					"path": "Library.svelte",\
 					"declarations": []\
 				},\
+				"./logos.js": {\
+					"path": "logos.ts",\
+					"declarations": [\
+						{\
+							"name": "zzz_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "gro_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "fuz_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "moss_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "fuz_code_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "fuz_blog_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "fuz_mastodon_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "fuz_gitops_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "fuz_template_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "webdevladder_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "earbetter_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "spiderspace_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "github_logo",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "mdn_logo",\
+							"kind": "variable"\
+						}\
+					]\
+				},\
 				"./Mdn_Link.svelte": {\
 					"path": "Mdn_Link.svelte",\
-					"declarations": []\
-				},\
-				"./Mdn_Logo.svelte": {\
-					"path": "Mdn_Logo.svelte",\
-					"declarations": []\
-				},\
-				"./Moss_Logo.svelte": {\
-					"path": "Moss_Logo.svelte",\
 					"declarations": []\
 				},\
 				"./Package_Detail.svelte": {\
@@ -798,16 +761,12 @@ export const repos: Repo[] = JSON.parse(
 						}\
 					]\
 				},\
-				"./Spider.svelte": {\
-					"path": "Spider.svelte",\
-					"declarations": []\
-				},\
 				"./Spiders.svelte": {\
 					"path": "Spiders.svelte",\
 					"declarations": []\
 				},\
-				"./Spiderspace_Logo.svelte": {\
-					"path": "Spiderspace_Logo.svelte",\
+				"./Svg.svelte": {\
+					"path": "Svg.svelte",\
 					"declarations": []\
 				},\
 				"./Teleport.svelte": {\
@@ -830,12 +789,8 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "type"\
 						},\
 						{\
-							"name": "get_themer",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "set_themer",\
-							"kind": "function"\
+							"name": "themer_context",\
+							"kind": "variable"\
 						},\
 						{\
 							"name": "sync_color_scheme",\
@@ -931,14 +886,6 @@ export const repos: Repo[] = JSON.parse(
 							"kind": "function"\
 						}\
 					]\
-				},\
-				"./Webdevladder_Logo.svelte": {\
-					"path": "Webdevladder_Logo.svelte",\
-					"declarations": []\
-				},\
-				"./Zzz_Logo.svelte": {\
-					"path": "Zzz_Logo.svelte",\
-					"declarations": []\
 				}\
 			}\
 		},\
@@ -956,24 +903,7 @@ export const repos: Repo[] = JSON.parse(
 			"status": "completed",\
 			"conclusion": "success"\
 		},\
-		"pull_requests": [\
-			{\
-				"number": 50,\
-				"title": "optimize icons",\
-				"user": {\
-					"login": "ryanatkn"\
-				},\
-				"draft": false\
-			},\
-			{\
-				"number": 49,\
-				"title": "improve `Teleport` and `Dialog` mounting patterns",\
-				"user": {\
-					"login": "ryanatkn"\
-				},\
-				"draft": false\
-			}\
-		]\
+		"pull_requests": []\
 	},\
 	{\
 		"package_json": {\
@@ -1002,8 +932,8 @@ export const repos: Repo[] = JSON.parse(
 			"devDependencies": {\
 				"@ryanatkn/belt": "^0.25.0",\
 				"@ryanatkn/eslint-config": "^0.5.3",\
-				"@ryanatkn/fuz": "^0.124.4",\
-				"@ryanatkn/gro": "^0.135.0",\
+				"@ryanatkn/fuz": "^0.127.0",\
+				"@ryanatkn/gro": "^0.135.1",\
 				"@ryanatkn/moss": "^0.16.1",\
 				"@sveltejs/adapter-static": "^3.0.5",\
 				"@sveltejs/kit": "^2.5.28",\
@@ -1108,8 +1038,8 @@ export const repos: Repo[] = JSON.parse(
 				"@changesets/changelog-git": "^0.2.0",\
 				"@ryanatkn/belt": "^0.25.0",\
 				"@ryanatkn/eslint-config": "^0.5.3",\
-				"@ryanatkn/fuz": "^0.124.4",\
-				"@ryanatkn/gro": "^0.135.0",\
+				"@ryanatkn/fuz": "^0.127.0",\
+				"@ryanatkn/gro": "^0.135.1",\
 				"@ryanatkn/moss": "^0.16.1",\
 				"@sveltejs/adapter-static": "^3.0.5",\
 				"@sveltejs/kit": "^2.5.28",\
@@ -1571,25 +1501,25 @@ export const repos: Repo[] = JSON.parse(
 				"@changesets/changelog-git": "^0.2.0",\
 				"@ryanatkn/belt": "^0.25.0",\
 				"@ryanatkn/eslint-config": "^0.5.3",\
-				"@ryanatkn/fuz": "^0.122.0",\
-				"@ryanatkn/gro": "^0.135.0",\
-				"@ryanatkn/moss": "^0.16.0",\
-				"@sveltejs/adapter-static": "^3.0.4",\
-				"@sveltejs/kit": "^2.5.27",\
+				"@ryanatkn/fuz": "^0.127.0",\
+				"@ryanatkn/gro": "^0.135.1",\
+				"@ryanatkn/moss": "^0.16.1",\
+				"@sveltejs/adapter-static": "^3.0.5",\
+				"@sveltejs/kit": "^2.5.28",\
 				"@sveltejs/package": "^2.3.5",\
 				"@sveltejs/vite-plugin-svelte": "^3.1.2",\
 				"@types/prismjs": "^1.26.4",\
-				"eslint": "^9.10.0",\
+				"eslint": "^9.11.0",\
 				"eslint-plugin-svelte": "^2.44.0",\
 				"prettier": "^3.3.3",\
 				"prettier-plugin-svelte": "^3.2.6",\
 				"prism-svelte": "^0.5.0",\
 				"prismjs": "^1.29.0",\
-				"svelte": "^5.0.0-next.246",\
+				"svelte": "^5.0.0-next.257",\
 				"svelte-check": "^4.0.2",\
 				"tslib": "^2.7.0",\
 				"typescript": "^5.6.2",\
-				"typescript-eslint": "^8.5.0",\
+				"typescript-eslint": "^8.6.0",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -1722,9 +1652,9 @@ export const repos: Repo[] = JSON.parse(
 				"@changesets/changelog-git": "^0.2.0",\
 				"@ryanatkn/belt": "^0.25.0",\
 				"@ryanatkn/eslint-config": "^0.5.3",\
-				"@ryanatkn/fuz": "^0.124.4",\
+				"@ryanatkn/fuz": "^0.127.0",\
 				"@ryanatkn/fuz_code": "^0.19.0",\
-				"@ryanatkn/gro": "^0.135.0",\
+				"@ryanatkn/gro": "^0.135.1",\
 				"@ryanatkn/moss": "^0.16.1",\
 				"@sveltejs/adapter-static": "^3.0.5",\
 				"@sveltejs/kit": "^2.5.28",\
@@ -1976,7 +1906,7 @@ export const repos: Repo[] = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.135.0",\
+			"version": "0.135.1",\
 			"description": "task runner and toolkit extending SvelteKit",\
 			"motto": "generate, run, optimize",\
 			"glyph": "🌰",\
@@ -2026,7 +1956,7 @@ export const repos: Repo[] = JSON.parse(
 			],\
 			"dependencies": {\
 				"@ryanatkn/belt": "^0.25.0",\
-				"chokidar": "^4.0.0",\
+				"chokidar": "^4.0.1",\
 				"dotenv": "^16.4.5",\
 				"es-module-lexer": "^1.5.4",\
 				"esm-env": "^1.0.0",\
@@ -2045,21 +1975,21 @@ export const repos: Repo[] = JSON.parse(
 				"@changesets/changelog-git": "^0.2.0",\
 				"@changesets/types": "^6.0.0",\
 				"@ryanatkn/eslint-config": "^0.5.3",\
-				"@ryanatkn/fuz": "^0.122.0",\
-				"@ryanatkn/moss": "^0.16.0",\
-				"@sveltejs/adapter-static": "^3.0.4",\
-				"@sveltejs/kit": "^2.5.27",\
+				"@ryanatkn/fuz": "^0.127.0",\
+				"@ryanatkn/moss": "^0.16.1",\
+				"@sveltejs/adapter-static": "^3.0.5",\
+				"@sveltejs/kit": "^2.5.28",\
 				"@sveltejs/package": "^2.3.5",\
 				"@sveltejs/vite-plugin-svelte": "^3.1.2",\
 				"@types/fs-extra": "^11.0.4",\
 				"@types/node": "^22.5.5",\
 				"esbuild": "^0.21.5",\
-				"eslint": "^9.10.0",\
+				"eslint": "^9.11.0",\
 				"eslint-plugin-svelte": "^2.44.0",\
-				"svelte": "^5.0.0-next.246",\
+				"svelte": "^5.0.0-next.257",\
 				"svelte-check": "^4.0.2",\
 				"typescript": "^5.6.2",\
-				"typescript-eslint": "^8.5.0",\
+				"typescript-eslint": "^8.6.0",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -2426,7 +2356,7 @@ export const repos: Repo[] = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.135.0",\
+			"version": "0.135.1",\
 			"modules": {\
 				".": {\
 					"path": "index.ts",\
@@ -4354,17 +4284,9 @@ export const repos: Repo[] = JSON.parse(
 		"published": true,\
 		"check_runs": {\
 			"status": "completed",\
-			"conclusion": "failure"\
+			"conclusion": "success"\
 		},\
 		"pull_requests": [\
-			{\
-				"number": 499,\
-				"title": "Bump vite from 5.3.1 to 5.4.6",\
-				"user": {\
-					"login": "dependabot[bot]"\
-				},\
-				"draft": false\
-			},\
 			{\
 				"number": 492,\
 				"title": "feat: watch gen in `gro dev`",\
