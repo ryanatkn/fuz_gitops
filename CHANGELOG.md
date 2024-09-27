@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.38.0
+
+### Minor Changes
+
+- upgrade to use `create_context` ([deab96d](https://github.com/ryanatkn/fuz_gitops/commit/deab96d))
+
 ## 0.37.0
 
 ### Minor Changes
