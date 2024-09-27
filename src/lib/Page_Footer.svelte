@@ -2,9 +2,9 @@
 	import Library_Footer from '@ryanatkn/fuz/Library_Footer.svelte';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import {get_repos} from '$lib/repo.js';
+	import {repos_context} from '$lib/repo.js';
 
-	const {repo} = get_repos();
+	const {repo} = repos_context.get();
 </script>
 
 <section class="box mb_xl7">

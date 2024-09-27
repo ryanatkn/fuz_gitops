@@ -11,7 +11,7 @@
 
 	import Settings from '$routes/Settings.svelte';
 	import {repos} from '$routes/repos.js';
-	import {parse_repos, set_repos} from '$lib/repo.js';
+	import {parse_repos, repos_context} from '$lib/repo.js';
 
 	interface Props {
 		children: Snippet;
@@ -21,7 +21,7 @@
 
 	const contextmenu = new Contextmenu_State();
 
-	set_repos(parse_repos(repos, 'https://gitops.fuz.dev/'));
+	repos_context.set(parse_repos(repos, 'https://gitops.fuz.dev/'));
 
 	let show_settings = $state(false);
 </script>
