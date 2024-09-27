@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.37.0",
+  "version": "0.38.0",
   "modules": {
     "./package.json": {
       "path": "package.json",
@@ -184,12 +184,8 @@
           "kind": "type"
         },
         {
-          "name": "set_repos",
-          "kind": "function"
-        },
-        {
-          "name": "get_repos",
-          "kind": "function"
+          "name": "repos_context",
+          "kind": "variable"
         },
         {
           "name": "parse_repos",
