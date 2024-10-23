@@ -1,4 +1,4 @@
-import {getContext, setContext} from 'svelte';
+import {create_context} from '@ryanatkn/fuz/context_helpers.js';
 import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
 
 import {Github_Check_Runs_Item, type Github_Pull_Request} from '$lib/github.js';
@@ -13,11 +13,7 @@ export interface Repos {
 	repos: Repo[];
 }
 
-const KEY = Symbol('Repos');
-
-export const set_repos = (repos: Repos): Repos => setContext(KEY, repos);
-
-export const get_repos = (): Repos => getContext(KEY);
+export const repos_context = create_context<Repos>();
 
 export const parse_repos = (repos: Repo[], homepage_url: string): Repos => {
 	// We expect to find this because it's sourced from the local package.json

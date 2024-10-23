@@ -47,7 +47,7 @@
 		<section>
 			<Modules_Nav {repos_modules} />
 		</section>
-		{#if nav_footer}{@render nav_footer()}{/if}
+		{@render nav_footer?.()}
 	</div>
 	<ul class="width_md box unstyled">
 		{#each repos_modules as repo_modules (repo_modules)}
@@ -128,7 +128,7 @@
 	}
 	.module {
 		margin-bottom: var(--space_lg);
-		--link_color: var(--text_2);
+		--link_color: var(--text_color_3);
 	}
 	.module_file {
 		margin-bottom: var(--space_xs);

@@ -16,7 +16,7 @@
 </script>
 
 <header {...attrs}>
-	{#if children}{@render children()}{/if}
+	{@render children?.()}
 	{#if nav}
 		{@render nav()}
 	{:else}

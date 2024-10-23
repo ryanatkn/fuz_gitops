@@ -8,7 +8,7 @@ import {load_from_env} from '@ryanatkn/gro/env.js';
 import {embed_json} from '@ryanatkn/belt/json.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {existsSync} from 'node:fs';
-import {gray, red} from '@ryanatkn/belt/styletext.js';
+import {styleText as st} from 'node:util';
 
 import {load_gitops_config} from '$lib/gitops_config.js';
 import {fetch_repos as fetch_repo_data} from '$lib/fetch_repo_data.js';
@@ -44,10 +44,13 @@ export const task: Task<Args> = {
 		const gitops_config = await load_gitops_config(config_path);
 		if (!gitops_config) {
 			throw new Task_Error(
-				red(`No gitops config found at:
-				${red('path:')} ${gray(path)}
-				${red('dir:')} ${gray(dir)}
-				${red('config path:')} ${print_path(config_path)}`),
+				st(
+					'red',
+					`No gitops config found at:
+				${st('red', 'path:')} ${st('gray', path)}
+				${st('red', 'dir:')} ${st('gray', dir)}
+				${st('red', 'config path:')} ${print_path(config_path)}`,
+				),
 			);
 		}
 

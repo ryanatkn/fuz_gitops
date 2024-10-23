@@ -1,5 +1,23 @@
 # @ryanatkn/fuz_gitops
 
+## 0.38.0
+
+### Minor Changes
+
+- upgrade to use `create_context` ([deab96d](https://github.com/ryanatkn/fuz_gitops/commit/deab96d))
+
+## 0.37.0
+
+### Minor Changes
+
+- bump required node version to `20.17` ([e114227](https://github.com/ryanatkn/fuz_gitops/commit/e114227))
+
+## 0.36.0
+
+### Minor Changes
+
+- upgrade `@ryanatkn/fuz@0.119` from `0.118.2` and `@ryanatkn/moss@0.12` from `0.11.1` ([df573dc](https://github.com/ryanatkn/fuz_gitops/commit/df573dc))
+
 ## 0.35.0
 
 ### Minor Changes

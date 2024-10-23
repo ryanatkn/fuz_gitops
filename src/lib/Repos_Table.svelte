@@ -172,8 +172,8 @@
 		background-color: var(--bg_5);
 	}
 	.latest {
-		/* TODO even lighter, add `--text_4` to Fuz probably, or change the scaling of `--text_2` and `--text_3` */
-		color: var(--text_3);
+		/* TODO even lighter, add `--text_color_7` to Fuz probably, or change the scaling of `--text_color_3` and `--text_color_5` */
+		color: var(--text_color_5);
 		/* TODO this is too subtle as `--fade_1`, change in Fuz to either lighter or `--fade_2` */
 		/* opacity: var(--disabled_opacity); */
 		opacity: var(--fade_2);

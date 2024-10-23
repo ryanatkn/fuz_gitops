@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
 	// TODO is this the new required pattern?
 	export interface Props {
 		repo: Repo;

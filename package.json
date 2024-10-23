@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.35.0",
+  "version": "0.38.0",
   "description": "a tool for managing many repos",
   "glyph": "🪄",
   "logo": "logo.svg",
@@ -27,7 +27,7 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=20.12"
+    "node": ">=20.17"
   },
   "peerDependencies": {
     "@ryanatkn/belt": "*",
