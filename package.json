@@ -36,7 +36,7 @@
     "@ryanatkn/moss": "*",
     "@sveltejs/kit": "^2",
     "svelte": "^5",
-    "zod": "^3.23.8"
+    "zod": "^3"
   },
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.0",
@@ -108,6 +108,10 @@
     "./gitops_config.js": {
       "types": "./dist/gitops_config.d.ts",
       "default": "./dist/gitops_config.js"
+    },
+    "./gitops_setup.task.js": {
+      "types": "./dist/gitops_setup.task.d.ts",
+      "default": "./dist/gitops_setup.task.js"
     },
     "./gitops.task.js": {
       "types": "./dist/gitops.task.d.ts",
