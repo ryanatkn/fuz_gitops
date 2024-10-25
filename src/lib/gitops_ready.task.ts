@@ -21,12 +21,10 @@ export const Args = z
 	.strict();
 export type Args = z.infer<typeof Args>;
 
-/**
- * Ensures the repos are downloaded to the
- */
 export const task: Task<Args> = {
 	Args,
-	summary: 'sets up gitops repos, downloading',
+	summary:
+		'sets up gitops repos, downloading as needed and switching to the main branch with a clean git workspace',
 	run: async ({args, log}) => {
 		const {path, dir} = args;
 

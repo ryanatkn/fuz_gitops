@@ -109,9 +109,13 @@
       "types": "./dist/gitops_config.d.ts",
       "default": "./dist/gitops_config.js"
     },
-    "./gitops_setup.task.js": {
-      "types": "./dist/gitops_setup.task.d.ts",
-      "default": "./dist/gitops_setup.task.js"
+    "./gitops_ready.task.js": {
+      "types": "./dist/gitops_ready.task.d.ts",
+      "default": "./dist/gitops_ready.task.js"
+    },
+    "./gitops_task_helpers.js": {
+      "types": "./dist/gitops_task_helpers.d.ts",
+      "default": "./dist/gitops_task_helpers.js"
     },
     "./gitops.task.js": {
       "types": "./dist/gitops.task.d.ts",
