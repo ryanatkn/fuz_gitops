@@ -1,7 +1,8 @@
-import type {Task} from '@ryanatkn/gro';
+import {Task_Error, type Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
+import {git_check_clean_workspace} from '@ryanatkn/gro/git.js';
 
 // TODO per-repo `main` branch config
 
@@ -28,8 +29,16 @@ export const task: Task<Args> = {
 	run: async ({args, log}) => {
 		const {path, dir} = args;
 
-		await get_gitops_ready(path, dir, log, true);
+		const {local_repos} = await get_gitops_ready(path, dir, log, true);
 
-		// TODO BLOCK ensure cwd is updated
+		await Promise.all(
+			local_repos.map(async ({repo_dir}) => {
+				const error_message = await git_check_clean_workspace({cwd: repo_dir});
+				console.log(`error_message, repo_dir`, error_message, repo_dir);
+				if (error_message) {
+					throw new Task_Error(`Git repo workspace ${repo_dir} is not clean: ${error_message}`);
+				}
+			}),
+		);
 	},
 };
