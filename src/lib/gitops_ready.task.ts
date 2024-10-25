@@ -34,7 +34,6 @@ export const task: Task<Args> = {
 		await Promise.all(
 			local_repos.map(async ({repo_dir}) => {
 				const error_message = await git_check_clean_workspace({cwd: repo_dir});
-				console.log(`error_message, repo_dir`, error_message, repo_dir);
 				if (error_message) {
 					throw new Task_Error(`Git repo workspace ${repo_dir} is not clean: ${error_message}`);
 				}
