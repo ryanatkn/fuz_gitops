@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.39.0
+
+### Minor Changes
+
+- add `gro gitops_ready` task ([#31](https://github.com/ryanatkn/fuz_gitops/pull/31))
+
 ## 0.38.0
 
 ### Minor Changes
