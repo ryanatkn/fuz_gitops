@@ -36,7 +36,7 @@
     "@ryanatkn/moss": "*",
     "@sveltejs/kit": "^2",
     "svelte": "^5",
-    "zod": "^3.23.8"
+    "zod": "^3"
   },
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.0",
@@ -109,9 +109,21 @@
       "types": "./dist/gitops_config.d.ts",
       "default": "./dist/gitops_config.js"
     },
+    "./gitops_ready.task.js": {
+      "types": "./dist/gitops_ready.task.d.ts",
+      "default": "./dist/gitops_ready.task.js"
+    },
+    "./gitops_task_helpers.js": {
+      "types": "./dist/gitops_task_helpers.d.ts",
+      "default": "./dist/gitops_task_helpers.js"
+    },
     "./gitops.task.js": {
       "types": "./dist/gitops.task.d.ts",
       "default": "./dist/gitops.task.js"
+    },
+    "./local_repo.js": {
+      "types": "./dist/local_repo.d.ts",
+      "default": "./dist/local_repo.js"
     },
     "./Modules_Detail.svelte": {
       "types": "./dist/Modules_Detail.svelte.d.ts",
@@ -167,9 +179,9 @@
       "svelte": "./dist/Repos_Tree.svelte",
       "default": "./dist/Repos_Tree.svelte"
     },
-    "./resolve_gitops_config.js": {
-      "types": "./dist/resolve_gitops_config.d.ts",
-      "default": "./dist/resolve_gitops_config.js"
+    "./resolved_gitops_config.js": {
+      "types": "./dist/resolved_gitops_config.d.ts",
+      "default": "./dist/resolved_gitops_config.js"
     },
     "./Table_Page.svelte": {
       "types": "./dist/Table_Page.svelte.d.ts",

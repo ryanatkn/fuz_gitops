@@ -7,7 +7,7 @@ import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
 import {fetch_github_check_runs, fetch_github_pull_requests} from '$lib/github.js';
 import type {Repo} from '$lib/repo.js';
-import type {Resolved_Local_Repo} from '$lib/resolve_gitops_config.js';
+import type {Resolved_Local_Repo} from '$lib/local_repo.js';
 
 /* eslint-disable no-await-in-loop */
 
@@ -32,7 +32,7 @@ export const fetch_repos = async (
 			log,
 			token,
 			github_api_version,
-			repo_config.github_ref,
+			repo_config.branch,
 		);
 		if (!check_runs) log?.error('failed to fetch CI status: ' + repo_url);
 
