@@ -1,12 +1,7 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 
-import {resolve_gitops_config} from '$lib/resolve_gitops_config.js';
-import {
-	get_gitops_ready,
-	import_gitops_config,
-	resolve_gitops_paths,
-} from '$lib/gitops_task_helpers.js';
+import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 
 // TODO per-repo `main` branch config
 
