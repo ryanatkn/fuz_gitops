@@ -995,7 +995,7 @@ export const repos: Repo[] = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/fuz_gitops",\
-			"version": "0.38.0",\
+			"version": "0.39.0",\
 			"description": "a tool for managing many repos",\
 			"glyph": "🪄",\
 			"logo": "logo.svg",\
@@ -1030,7 +1030,7 @@ export const repos: Repo[] = JSON.parse(
 				"@ryanatkn/gro": "*",\
 				"@ryanatkn/moss": "*",\
 				"@sveltejs/kit": "^2",\
-				"svelte": "^5.0.0-next.0",\
+				"svelte": "^5",\
 				"zod": "^3"\
 			},\
 			"devDependencies": {\
@@ -1038,22 +1038,22 @@ export const repos: Repo[] = JSON.parse(
 				"@ryanatkn/belt": "^0.25.3",\
 				"@ryanatkn/eslint-config": "^0.5.5",\
 				"@ryanatkn/fuz": "^0.129.5",\
-				"@ryanatkn/gro": "^0.140.0",\
-				"@ryanatkn/moss": "^0.16.1",\
+				"@ryanatkn/gro": "^0.141.1",\
+				"@ryanatkn/moss": "^0.18.2",\
 				"@sveltejs/adapter-static": "^3.0.5",\
-				"@sveltejs/kit": "^2.7.0",\
-				"@sveltejs/package": "^2.3.5",\
-				"@sveltejs/vite-plugin-svelte": "^3.1.2",\
-				"@types/node": "^22.7.5",\
-				"eslint": "^9.12.0",\
-				"eslint-plugin-svelte": "^2.44.1",\
+				"@sveltejs/kit": "^2.7.2",\
+				"@sveltejs/package": "^2.3.6",\
+				"@sveltejs/vite-plugin-svelte": "^4.0.0",\
+				"@types/node": "^22.7.9",\
+				"eslint": "^9.13.0",\
+				"eslint-plugin-svelte": "^2.46.0",\
 				"prettier": "^3.3.3",\
 				"prettier-plugin-svelte": "^3.2.7",\
-				"svelte": "^5.0.0-next.264",\
+				"svelte": "^5.0.5",\
 				"svelte-check": "^4.0.5",\
-				"tslib": "^2.7.0",\
+				"tslib": "^2.8.0",\
 				"typescript": "^5.6.3",\
-				"typescript-eslint": "^8.8.1",\
+				"typescript-eslint": "^8.11.0",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -1104,9 +1104,21 @@ export const repos: Repo[] = JSON.parse(
 					"types": "./dist/gitops_config.d.ts",\
 					"default": "./dist/gitops_config.js"\
 				},\
+				"./gitops_ready.task.js": {\
+					"types": "./dist/gitops_ready.task.d.ts",\
+					"default": "./dist/gitops_ready.task.js"\
+				},\
+				"./gitops_task_helpers.js": {\
+					"types": "./dist/gitops_task_helpers.d.ts",\
+					"default": "./dist/gitops_task_helpers.js"\
+				},\
 				"./gitops.task.js": {\
 					"types": "./dist/gitops.task.d.ts",\
 					"default": "./dist/gitops.task.js"\
+				},\
+				"./local_repo.js": {\
+					"types": "./dist/local_repo.d.ts",\
+					"default": "./dist/local_repo.js"\
 				},\
 				"./Modules_Detail.svelte": {\
 					"types": "./dist/Modules_Detail.svelte.d.ts",\
@@ -1162,9 +1174,9 @@ export const repos: Repo[] = JSON.parse(
 					"svelte": "./dist/Repos_Tree.svelte",\
 					"default": "./dist/Repos_Tree.svelte"\
 				},\
-				"./resolve_gitops_config.js": {\
-					"types": "./dist/resolve_gitops_config.d.ts",\
-					"default": "./dist/resolve_gitops_config.js"\
+				"./resolved_gitops_config.js": {\
+					"types": "./dist/resolved_gitops_config.d.ts",\
+					"default": "./dist/resolved_gitops_config.js"\
 				},\
 				"./Table_Page.svelte": {\
 					"types": "./dist/Table_Page.svelte.d.ts",\
@@ -1185,7 +1197,7 @@ export const repos: Repo[] = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/fuz_gitops",\
-			"version": "0.38.0",\
+			"version": "0.39.0",\
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
@@ -1316,6 +1328,36 @@ export const repos: Repo[] = JSON.parse(
 						}\
 					]\
 				},\
+				"./gitops_ready.task.js": {\
+					"path": "gitops_ready.task.ts",\
+					"declarations": [\
+						{\
+							"name": "Args",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "task",\
+							"kind": "variable"\
+						}\
+					]\
+				},\
+				"./gitops_task_helpers.js": {\
+					"path": "gitops_task_helpers.ts",\
+					"declarations": [\
+						{\
+							"name": "get_gitops_ready",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "resolve_gitops_paths",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "import_gitops_config",\
+							"kind": "function"\
+						}\
+					]\
+				},\
 				"./gitops.task.js": {\
 					"path": "gitops.task.ts",\
 					"declarations": [\
@@ -1326,6 +1368,27 @@ export const repos: Repo[] = JSON.parse(
 						{\
 							"name": "task",\
 							"kind": "variable"\
+						}\
+					]\
+				},\
+				"./local_repo.js": {\
+					"path": "local_repo.ts",\
+					"declarations": [\
+						{\
+							"name": "Local_Repo",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Resolved_Local_Repo",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Unresolved_Local_Repo",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "resolve_local_repo",\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -1390,23 +1453,11 @@ export const repos: Repo[] = JSON.parse(
 					"path": "Repos_Tree.svelte",\
 					"declarations": []\
 				},\
-				"./resolve_gitops_config.js": {\
-					"path": "resolve_gitops_config.ts",\
+				"./resolved_gitops_config.js": {\
+					"path": "resolved_gitops_config.ts",\
 					"declarations": [\
 						{\
 							"name": "Resolved_Gitops_Config",\
-							"kind": "type"\
-						},\
-						{\
-							"name": "Local_Repo",\
-							"kind": "type"\
-						},\
-						{\
-							"name": "Resolved_Local_Repo",\
-							"kind": "type"\
-						},\
-						{\
-							"name": "Unresolved_Local_Repo",\
 							"kind": "type"\
 						},\
 						{\
@@ -1443,16 +1494,7 @@ export const repos: Repo[] = JSON.parse(
 			"status": "completed",\
 			"conclusion": "success"\
 		},\
-		"pull_requests": [\
-			{\
-				"number": 31,\
-				"title": "add initial setup script",\
-				"user": {\
-					"login": "ryanatkn"\
-				},\
-				"draft": false\
-			}\
-		]\
+		"pull_requests": []\
 	},\
 	{\
 		"package_json": {\
@@ -1897,7 +1939,7 @@ export const repos: Repo[] = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.140.4",\
+			"version": "0.141.1",\
 			"description": "task runner and toolkit extending SvelteKit",\
 			"motto": "generate, run, optimize",\
 			"glyph": "🌰",\
@@ -2355,7 +2397,7 @@ export const repos: Repo[] = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.140.4",\
+			"version": "0.141.1",\
 			"modules": {\
 				".": {\
 					"path": "index.ts",\
@@ -3719,10 +3761,6 @@ export const repos: Repo[] = JSON.parse(
 						{\
 							"name": "GRO_DIST_DIR",\
 							"kind": "variable"\
-						},\
-						{\
-							"name": "default_file_filter",\
-							"kind": "function"\
 						}\
 					]\
 				},\
@@ -4368,6 +4406,14 @@ export const repos: Repo[] = JSON.parse(
 			"conclusion": "success"\
 		},\
 		"pull_requests": [\
+			{\
+				"number": 512,\
+				"title": "fix `Filer` to resolve node modules",\
+				"user": {\
+					"login": "ryanatkn"\
+				},\
+				"draft": false\
+			},\
 			{\
 				"number": 508,\
 				"title": "add dev ui",\
