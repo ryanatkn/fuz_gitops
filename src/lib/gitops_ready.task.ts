@@ -45,6 +45,7 @@ export const task: Task<Args> = {
 							`Repo ${repo_dir} is not on branch ${repo_config.branch} and the workspace is unclean, blocking switch: ${error_message}`,
 						);
 					}
+					console.log('CHECKING OUT', branch, repo_dir);
 					await git_checkout(branch, {cwd: repo_dir});
 				}
 			}),
