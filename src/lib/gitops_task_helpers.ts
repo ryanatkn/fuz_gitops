@@ -1,9 +1,44 @@
 import {Task_Error} from '@ryanatkn/gro';
 import {styleText as st} from 'node:util';
 import {resolve} from 'node:path';
+import {print_path} from '@ryanatkn/gro/paths.js';
+import type {Logger} from '@ryanatkn/belt/log.js';
 
 import {load_gitops_config, type Gitops_Config} from '$lib/gitops_config.js';
-import {print_path} from '@ryanatkn/gro/paths.js';
+import {resolve_gitops_config, type Resolved_Local_Repo} from '$lib/resolve_gitops_config.js';
+
+export const get_gitops_ready = async (
+	path: string,
+	dir: string | undefined,
+	log?: Logger,
+): Promise<{
+	config_path: string;
+	repos_dir: string;
+	gitops_config: Gitops_Config;
+	local_repos: Resolved_Local_Repo[];
+}> => {
+	const {config_path, repos_dir} = resolve_gitops_paths(path, dir);
+
+	const gitops_config = await import_gitops_config(config_path);
+
+	log?.info('resolving gitops config on the filesystem');
+	const resolved_config = await resolve_gitops_config(gitops_config, repos_dir);
+
+	const {resolved_local_repos, unresolved_local_repos} = resolved_config;
+
+	if (unresolved_local_repos) {
+		log?.error(
+			'Failed to resolve local configs - do you need to fetch them or configure the directory?',
+			unresolved_local_repos.map((r) => r.repo_url),
+		);
+		throw new Task_Error('Failed to resolve local configs');
+	}
+	if (!resolved_local_repos) {
+		throw new Task_Error('No repos are configured in `gitops_config.ts`');
+	}
+
+	return {config_path, repos_dir, gitops_config, local_repos: resolved_local_repos};
+};
 
 export const resolve_gitops_paths = (
 	path: string,

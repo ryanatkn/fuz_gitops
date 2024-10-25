@@ -1,4 +1,4 @@
-import {Task_Error, type Task} from '@ryanatkn/gro';
+import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {readFile, writeFile} from 'node:fs/promises';
 import {format_file} from '@ryanatkn/gro/format_file.js';
@@ -11,8 +11,7 @@ import {existsSync} from 'node:fs';
 
 import {fetch_repos as fetch_repo_data} from '$lib/fetch_repo_data.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
-import {resolve_gitops_config} from '$lib/resolve_gitops_config.js';
-import {import_gitops_config, resolve_gitops_paths} from '$lib/gitops_task_helpers.js';
+import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
@@ -37,15 +36,13 @@ export type Args = z.infer<typeof Args>;
  */
 export const task: Task<Args> = {
 	Args,
-	summary: 'run gitops scripts',
+	summary: 'gets gitops ready and runs scripts',
 	run: async ({args, log, sveltekit_config}) => {
 		const {path, dir, outdir = sveltekit_config.routes_path} = args;
 
-		const {config_path, repos_dir} = resolve_gitops_paths(path, dir);
+		const {local_repos} = await get_gitops_ready(path, dir, log);
 
 		const outfile = resolve(outdir, 'repos.ts');
-
-		const gitops_config = await import_gitops_config(config_path);
 
 		const cache = await create_fs_fetch_value_cache('repos');
 
@@ -55,25 +52,8 @@ export const task: Task<Args> = {
 			log.warn('the env var GITHUB_TOKEN_SECRET was not found, so API calls with be unauthorized');
 		}
 
-		log.info('resolving gitops config on the filesystem');
-		const {resolved_local_repos, unresolved_local_repos} = await resolve_gitops_config(
-			gitops_config,
-			repos_dir,
-		);
-
-		if (unresolved_local_repos) {
-			log.error(
-				'Failed to resolve local configs - do you need to fetch them or configure the directory?',
-				unresolved_local_repos.map((r) => r.repo_url),
-			);
-			throw new Task_Error('Failed to resolve local configs');
-		}
-		if (!resolved_local_repos) {
-			throw new Task_Error('No repos are configured in `gitops_config.ts`');
-		}
-
 		log.info('fetching remote repo data');
-		const repos = await fetch_repo_data(resolved_local_repos, token, cache.data, log);
+		const repos = await fetch_repo_data(local_repos, token, cache.data, log);
 
 		// TODO should package_json be provided in the Gro task/gen contexts? check if it's always loaded
 		const package_json = load_package_json();
