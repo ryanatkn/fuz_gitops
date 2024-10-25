@@ -13,6 +13,7 @@ export type Local_Repo = Resolved_Local_Repo | Unresolved_Local_Repo;
 export interface Resolved_Local_Repo {
 	type: 'resolved_local_repo';
 	repo_name: string;
+	repo_dir: string;
 	repo_url: string;
 	repo_config: Gitops_Repo_Config;
 	pkg: Package_Meta;
@@ -48,6 +49,7 @@ export const resolve_local_repo = async (
 	return {
 		type: 'resolved_local_repo',
 		repo_name,
+		repo_dir,
 		repo_url,
 		repo_config,
 		pkg: parse_package_meta(package_json, src_json),

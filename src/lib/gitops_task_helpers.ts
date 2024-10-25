@@ -10,8 +10,8 @@ import {
 	resolve_local_repo,
 	type Resolved_Local_Repo,
 	type Unresolved_Local_Repo,
-} from './local_repo.js';
-import {resolve_gitops_config} from './resolved_gitops_config.js';
+} from '$lib/local_repo.js';
+import {resolve_gitops_config} from '$lib/resolved_gitops_config.js';
 
 /**
  * Readies the workspace for all gitops repos.
@@ -102,6 +102,7 @@ const download_repos = async (
 		if (local_repo.type === 'unresolved_local_repo') {
 			throw new Task_Error(`Failed to clone repo ${repo_url} to ${repos_dir}`);
 		}
+		await spawn_cli('npm', ['install'], log, {cwd: local_repo.repo_dir}); // eslint-disable-line no-await-in-loop
 		resolved.push(local_repo);
 	}
 	return resolved;
