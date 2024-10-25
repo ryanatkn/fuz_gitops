@@ -18,6 +18,7 @@ export type Local_Repo = Resolved_Local_Repo | Unresolved_Local_Repo;
 
 export interface Resolved_Local_Repo {
 	type: 'resolved_local_repo';
+	repo_name: string;
 	repo_url: string;
 	repo_config: Gitops_Repo_Config;
 	pkg: Package_Meta;
@@ -26,6 +27,7 @@ export interface Resolved_Local_Repo {
 
 export interface Unresolved_Local_Repo {
 	type: 'unresolved_local_repo';
+	repo_name: string;
 	repo_url: string;
 	repo_config: Gitops_Repo_Config;
 }
@@ -54,15 +56,15 @@ export const resolve_gitops_config = async (
 
 const resolve_local_repo = async (
 	repo_config: Gitops_Repo_Config,
-	repos_dir: string,
+	dir: string,
 ): Promise<Local_Repo> => {
 	const {repo_url} = repo_config;
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);
 	if (!repo_name) throw Error('Invalid `repo_config.repo_url` ' + repo_url);
 
-	const repo_dir = repo_config.repo_dir ?? join(repos_dir, repo_name);
+	const repo_dir = repo_config.repo_dir ?? join(dir, repo_name);
 	if (!existsSync(repo_dir)) {
-		return {type: 'unresolved_local_repo', repo_url, repo_config};
+		return {type: 'unresolved_local_repo', repo_name, repo_url, repo_config};
 	}
 
 	const parsed_sveltekit_config = await init_sveltekit_config(repo_dir);
@@ -73,6 +75,7 @@ const resolve_local_repo = async (
 
 	return {
 		type: 'resolved_local_repo',
+		repo_name,
 		repo_url,
 		repo_config,
 		pkg: parse_package_meta(package_json, src_json),
