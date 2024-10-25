@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.40.0
+
+### Minor Changes
+
+- rename `SECRET_GITHUB_TOKEN` from `GITHUB_TOKEN_SECRET` ([fb306be](https://github.com/ryanatkn/fuz_gitops/commit/fb306be))
+
 ## 0.39.0
 
 ### Minor Changes
