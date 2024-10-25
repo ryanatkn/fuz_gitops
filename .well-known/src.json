@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "modules": {
     "./package.json": {
       "path": "package.json",
@@ -131,6 +131,36 @@
         }
       ]
     },
+    "./gitops_ready.task.js": {
+      "path": "gitops_ready.task.ts",
+      "declarations": [
+        {
+          "name": "Args",
+          "kind": "variable"
+        },
+        {
+          "name": "task",
+          "kind": "variable"
+        }
+      ]
+    },
+    "./gitops_task_helpers.js": {
+      "path": "gitops_task_helpers.ts",
+      "declarations": [
+        {
+          "name": "get_gitops_ready",
+          "kind": "function"
+        },
+        {
+          "name": "resolve_gitops_paths",
+          "kind": "function"
+        },
+        {
+          "name": "import_gitops_config",
+          "kind": "function"
+        }
+      ]
+    },
     "./gitops.task.js": {
       "path": "gitops.task.ts",
       "declarations": [
@@ -141,6 +171,27 @@
         {
           "name": "task",
           "kind": "variable"
+        }
+      ]
+    },
+    "./local_repo.js": {
+      "path": "local_repo.ts",
+      "declarations": [
+        {
+          "name": "Local_Repo",
+          "kind": "type"
+        },
+        {
+          "name": "Resolved_Local_Repo",
+          "kind": "type"
+        },
+        {
+          "name": "Unresolved_Local_Repo",
+          "kind": "type"
+        },
+        {
+          "name": "resolve_local_repo",
+          "kind": "function"
         }
       ]
     },
@@ -205,23 +256,11 @@
       "path": "Repos_Tree.svelte",
       "declarations": []
     },
-    "./resolve_gitops_config.js": {
-      "path": "resolve_gitops_config.ts",
+    "./resolved_gitops_config.js": {
+      "path": "resolved_gitops_config.ts",
       "declarations": [
         {
           "name": "Resolved_Gitops_Config",
-          "kind": "type"
-        },
-        {
-          "name": "Local_Repo",
-          "kind": "type"
-        },
-        {
-          "name": "Resolved_Local_Repo",
-          "kind": "type"
-        },
-        {
-          "name": "Unresolved_Local_Repo",
           "kind": "type"
         },
         {
