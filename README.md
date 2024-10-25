@@ -31,7 +31,7 @@ npm i -D @ryanatkn/fuz_gitops
 ```
 
 - configure [`gitops.config.ts`](/gitops.config.ts)
-- fuz_gitops calls the GitHub API using the environment variable `GITHUB_TOKEN_SECRET` for authorization,
+- fuz_gitops calls the GitHub API using the environment variable `SECRET_GITHUB_TOKEN` for authorization,
   which is a [classic GitHub token](https://github.com/settings/tokens)
   (with "public access" for public repos, no options selected)
   or a [fine-grainted GitHub token (beta)](https://github.com/settings/tokens?type=beta)

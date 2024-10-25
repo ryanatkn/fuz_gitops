@@ -35,7 +35,10 @@ export const get_gitops_ready = async (
 
 	const gitops_config = await import_gitops_config(config_path);
 
-	log?.info('resolving gitops config on the filesystem');
+	log?.info(
+		`resolving gitops configs on the filesystem in ${repos_dir}`,
+		gitops_config.repos.map((r) => r.repo_url),
+	);
 	const resolved_config = await resolve_gitops_config(gitops_config, repos_dir);
 
 	const {resolved_local_repos, unresolved_local_repos} = resolved_config;
