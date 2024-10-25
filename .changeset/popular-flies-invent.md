@@ -1,5 +1,5 @@
 ---
-'@ryanatkn/fuz_gitops': patch
+'@ryanatkn/fuz_gitops': minor
 ---
 
-add initial machine setup script
+add `gro gitops_ready` task

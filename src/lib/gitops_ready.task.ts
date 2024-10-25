@@ -29,5 +29,7 @@ export const task: Task<Args> = {
 		const {path, dir} = args;
 
 		await get_gitops_ready(path, dir, log, true);
+
+		// TODO BLOCK ensure cwd is updated
 	},
 };
