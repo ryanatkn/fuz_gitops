@@ -33,8 +33,10 @@ export const task: Task<Args> = {
 	run: async ({args, log}) => {
 		const {path, dir} = args;
 
+		// Download the repos and `npm install` as needed.
 		const {local_repos} = await get_gitops_ready(path, dir, log, true);
 
+		// Switch branches if needed, erroring if unable.
 		await Promise.all(
 			local_repos.map(async ({repo_dir, repo_config}) => {
 				const branch = await git_current_branch_name({cwd: repo_dir});
