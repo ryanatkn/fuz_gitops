@@ -40,6 +40,10 @@ export const task: Task<Args> = {
 	run: async ({args, log, sveltekit_config}) => {
 		const {path, dir, outdir = sveltekit_config.routes_path} = args;
 
+		// TODO BLOCK maybe this instead should NOT be throwing errors,
+		// and this task would throw, but `gitops_ready` would download,
+		// because it seems possibly problematic to download all repos,
+		// and gitops_ready should be able to be more lightweight to not load the details
 		const {local_repos} = await get_gitops_ready(path, dir, log);
 
 		const outfile = resolve(outdir, 'repos.ts');
