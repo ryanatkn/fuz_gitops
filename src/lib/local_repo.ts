@@ -15,6 +15,7 @@ export interface Resolved_Local_Repo {
 	repo_name: string;
 	repo_dir: string;
 	repo_url: string;
+	repo_git_ssh_url: string;
 	repo_config: Gitops_Repo_Config;
 	pkg: Package_Meta;
 	// TODO what else? filesystem info?
@@ -24,6 +25,7 @@ export interface Unresolved_Local_Repo {
 	type: 'unresolved_local_repo';
 	repo_name: string;
 	repo_url: string;
+	repo_git_ssh_url: string;
 	repo_config: Gitops_Repo_Config;
 }
 
@@ -35,9 +37,11 @@ export const resolve_local_repo = async (
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);
 	if (!repo_name) throw Error('Invalid `repo_config.repo_url` ' + repo_url);
 
+	const repo_git_ssh_url = to_repo_git_ssh_url(repo_url);
+
 	const repo_dir = repo_config.repo_dir ?? join(repos_dir, repo_name);
 	if (!existsSync(repo_dir)) {
-		return {type: 'unresolved_local_repo', repo_name, repo_url, repo_config};
+		return {type: 'unresolved_local_repo', repo_name, repo_url, repo_git_ssh_url, repo_config};
 	}
 
 	const parsed_sveltekit_config = await init_sveltekit_config(repo_dir);
@@ -51,7 +55,13 @@ export const resolve_local_repo = async (
 		repo_name,
 		repo_dir,
 		repo_url,
+		repo_git_ssh_url,
 		repo_config,
 		pkg: parse_package_meta(package_json, src_json),
 	};
+};
+
+const to_repo_git_ssh_url = (repo_url: string): string => {
+	const url = new URL(repo_url);
+	return `git@${url.hostname}:${url.pathname.substring(1)}`;
 };

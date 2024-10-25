@@ -98,12 +98,12 @@ const download_repos = async (
 	log: Logger | undefined,
 ): Promise<Resolved_Local_Repo[]> => {
 	const resolved: Resolved_Local_Repo[] = [];
-	for (const {repo_config, repo_url} of unresolved_local_repos) {
-		log?.info(`Cloning repo ${repo_url} to ${repos_dir}`);
-		await spawn_cli('git', ['clone', repo_url], log, {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
+	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
+		log?.info(`Cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
+		await spawn_cli('git', ['clone', repo_git_ssh_url], log, {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
 		const local_repo = await resolve_local_repo(repo_config, repos_dir); // eslint-disable-line no-await-in-loop
 		if (local_repo.type === 'unresolved_local_repo') {
-			throw new Task_Error(`Failed to clone repo ${repo_url} to ${repos_dir}`);
+			throw new Task_Error(`Failed to clone repo ${repo_git_ssh_url} to ${repos_dir}`);
 		}
 		await spawn_cli('npm', ['install'], log, {cwd: local_repo.repo_dir}); // eslint-disable-line no-await-in-loop
 		resolved.push(local_repo);
