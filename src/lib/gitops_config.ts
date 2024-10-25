@@ -30,15 +30,15 @@ export interface Gitops_Repo_Config {
 	repo_dir: string | null;
 
 	/**
-	 * The GitHub ref or branch name to use when fetching repo data. Defaults to `main`.
+	 * The branch name to use when fetching the repo. Defaults to `main`.
 	 */
-	github_ref: string;
+	branch: string;
 }
 
 export interface Raw_Gitops_Repo_Config {
 	repo_url: Url;
 	repo_dir?: string | null;
-	github_ref?: string;
+	branch?: string;
 }
 
 export const create_empty_gitops_config = (): Gitops_Config => ({
@@ -61,12 +61,12 @@ export const normalize_gitops_config = (raw_config: Raw_Gitops_Config): Gitops_C
 
 const parse_fuz_repo_config = (r: Url | Raw_Gitops_Repo_Config): Gitops_Repo_Config => {
 	if (typeof r === 'string') {
-		return {repo_url: r, repo_dir: null, github_ref: 'main'};
+		return {repo_url: r, repo_dir: null, branch: 'main'};
 	}
 	return {
 		repo_url: strip_end(r.repo_url, '.git'),
 		repo_dir: r.repo_dir ?? null,
-		github_ref: r.github_ref ?? 'main',
+		branch: r.branch ?? 'main',
 	};
 };
 

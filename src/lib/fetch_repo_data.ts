@@ -32,7 +32,7 @@ export const fetch_repos = async (
 			log,
 			token,
 			github_api_version,
-			repo_config.github_ref,
+			repo_config.branch,
 		);
 		if (!check_runs) log?.error('failed to fetch CI status: ' + repo_url);
 
