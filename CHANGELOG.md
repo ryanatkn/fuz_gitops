@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.40.1
+
+### Patch Changes
+
+- fix repo url to use ssh when cloning ([a7ceea8](https://github.com/ryanatkn/fuz_gitops/commit/a7ceea8))
+
 ## 0.40.0
 
 ### Minor Changes
