@@ -16,6 +16,7 @@ export const Args = z
 		outdir: z
 			.string({description: 'path to the directory for the generated files, defaults to $routes/'})
 			.optional(),
+		// TODO maybe add `download` that defaults to `true`?
 	})
 	.strict();
 export type Args = z.infer<typeof Args>;
@@ -27,6 +28,6 @@ export const task: Task<Args> = {
 	run: async ({args, log}) => {
 		const {path, dir} = args;
 
-		await get_gitops_ready(path, dir, log);
+		await get_gitops_ready(path, dir, log, true);
 	},
 };

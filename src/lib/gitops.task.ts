@@ -27,6 +27,7 @@ export const Args = z
 		outdir: z
 			.string({description: 'path to the directory for the generated files, defaults to $routes/'})
 			.optional(),
+		download: z.boolean({description: 'download all missing local repos'}).default(false),
 	})
 	.strict();
 export type Args = z.infer<typeof Args>;
@@ -38,13 +39,9 @@ export const task: Task<Args> = {
 	Args,
 	summary: 'gets gitops ready and runs scripts',
 	run: async ({args, log, sveltekit_config}) => {
-		const {path, dir, outdir = sveltekit_config.routes_path} = args;
+		const {path, dir, outdir = sveltekit_config.routes_path, download} = args;
 
-		// TODO BLOCK maybe this instead should NOT be throwing errors,
-		// and this task would throw, but `gitops_ready` would download,
-		// because it seems possibly problematic to download all repos,
-		// and gitops_ready should be able to be more lightweight to not load the details
-		const {local_repos} = await get_gitops_ready(path, dir, log);
+		const {local_repos} = await get_gitops_ready(path, dir, log, download);
 
 		const outfile = resolve(outdir, 'repos.ts');
 
