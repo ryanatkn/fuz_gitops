@@ -35,9 +35,11 @@ export interface Unresolved_Local_Repo {
  */
 export const resolve_gitops_config = async (
 	gitops_config: Gitops_Config,
-	dir: string,
+	repos_dir: string,
 ): Promise<Resolved_Gitops_Config> => {
-	const local_repos = await Promise.all(gitops_config.repos.map((r) => resolve_local_repo(r, dir)));
+	const local_repos = await Promise.all(
+		gitops_config.repos.map((r) => resolve_local_repo(r, repos_dir)),
+	);
 
 	const resolved_local_repos = local_repos.filter((r) => r.type === 'resolved_local_repo');
 	const unresolved_local_repos = local_repos.filter((r) => r.type === 'unresolved_local_repo');
@@ -52,13 +54,13 @@ export const resolve_gitops_config = async (
 
 const resolve_local_repo = async (
 	repo_config: Gitops_Repo_Config,
-	dir: string,
+	repos_dir: string,
 ): Promise<Local_Repo> => {
 	const {repo_url} = repo_config;
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);
 	if (!repo_name) throw Error('Invalid `repo_config.repo_url` ' + repo_url);
 
-	const repo_dir = repo_config.repo_dir ?? join(dir, '..', repo_name);
+	const repo_dir = repo_config.repo_dir ?? join(repos_dir, repo_name);
 	if (!existsSync(repo_dir)) {
 		return {type: 'unresolved_local_repo', repo_url, repo_config};
 	}
