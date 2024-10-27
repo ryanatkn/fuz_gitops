@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.40.1",
+  "version": "0.41.0",
   "description": "a tool for managing many repos",
   "glyph": "🪄",
   "logo": "logo.svg",
@@ -42,8 +42,8 @@
     "@changesets/changelog-git": "^0.2.0",
     "@ryanatkn/belt": "^0.25.3",
     "@ryanatkn/eslint-config": "^0.5.5",
-    "@ryanatkn/fuz": "^0.129.5",
-    "@ryanatkn/gro": "^0.143.0",
+    "@ryanatkn/fuz": "^0.130.1",
+    "@ryanatkn/gro": "^0.143.2",
     "@ryanatkn/moss": "^0.18.2",
     "@sveltejs/adapter-static": "^3.0.6",
     "@sveltejs/kit": "^2.7.3",
