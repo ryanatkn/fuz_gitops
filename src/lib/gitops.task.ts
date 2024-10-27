@@ -38,7 +38,7 @@ export type Args = z.infer<typeof Args>;
 export const task: Task<Args> = {
 	Args,
 	summary: 'gets gitops ready and runs scripts',
-	run: async ({args, log, sveltekit_config}) => {
+	run: async ({args, log, sveltekit_config, invoke_task}) => {
 		const {path, dir, outdir = sveltekit_config.routes_path, download} = args;
 
 		const {local_repos} = await get_gitops_ready(path, dir, log, download);
@@ -86,6 +86,7 @@ export const task: Task<Args> = {
 		} else {
 			log.info(`writing changes to ${print_path(outfile)}`);
 			await writeFile(outfile, formatted);
+			await invoke_task('gen');
 		}
 
 		const changed = await cache.save();
