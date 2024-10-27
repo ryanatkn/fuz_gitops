@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.41.0
+
+### Minor Changes
+
+- rename to `SECRET_GITHUB_API_TOKEN` from `GITHUB_TOKEN_SECRET` ([bea3232](https://github.com/ryanatkn/fuz_gitops/commit/bea3232))
+
 ## 0.40.1
 
 ### Patch Changes
