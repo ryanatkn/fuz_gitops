@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.41.1
+
+### Patch Changes
+
+- run `gro gen` after `gro gitops` if there are changes ([eb3ca42](https://github.com/ryanatkn/fuz_gitops/commit/eb3ca42))
+
 ## 0.41.0
 
 ### Minor Changes
