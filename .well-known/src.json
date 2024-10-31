@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.42.0",
+  "version": "0.43.0",
   "modules": {
     "./package.json": {
       "path": "package.json",
@@ -10,7 +10,7 @@
       "path": "fetch_repo_data.ts",
       "declarations": [
         {
-          "name": "fetch_repos",
+          "name": "fetch_repo_data",
           "kind": "function"
         },
         {
@@ -182,12 +182,24 @@
           "kind": "type"
         },
         {
+          "name": "Maybe_Local_Repo",
+          "kind": "type"
+        },
+        {
           "name": "Resolved_Local_Repo",
           "kind": "type"
         },
         {
           "name": "Unresolved_Local_Repo",
           "kind": "type"
+        },
+        {
+          "name": "load_local_repo",
+          "kind": "function"
+        },
+        {
+          "name": "load_local_repos",
+          "kind": "function"
         },
         {
           "name": "resolve_local_repo",
