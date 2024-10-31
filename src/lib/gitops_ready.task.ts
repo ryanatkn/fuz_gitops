@@ -1,12 +1,7 @@
-import {Task_Error, type Task} from '@ryanatkn/gro';
+import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
-import {
-	git_check_clean_workspace,
-	git_checkout,
-	git_current_branch_name,
-} from '@ryanatkn/gro/git.js';
 
 // TODO per-repo `main` branch config
 
@@ -34,22 +29,6 @@ export const task: Task<Args> = {
 		const {path, dir} = args;
 
 		// Download the repos and `npm install` as needed.
-		const {local_repos} = await get_gitops_ready(path, dir, log, true);
-
-		// Switch branches if needed, erroring if unable.
-		await Promise.all(
-			local_repos.map(async ({repo_dir, repo_config}) => {
-				const branch = await git_current_branch_name({cwd: repo_dir});
-				if (branch !== repo_config.branch) {
-					const error_message = await git_check_clean_workspace({cwd: repo_dir});
-					if (error_message) {
-						throw new Task_Error(
-							`Repo ${repo_dir} is not on branch ${repo_config.branch} and the workspace is unclean, blocking switch: ${error_message}`,
-						);
-					}
-					await git_checkout(repo_config.branch, {cwd: repo_dir});
-				}
-			}),
-		);
+		await get_gitops_ready(path, dir, log, true);
 	},
 };

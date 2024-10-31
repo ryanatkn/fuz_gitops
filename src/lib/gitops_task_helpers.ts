@@ -4,6 +4,11 @@ import {resolve} from 'node:path';
 import {print_path} from '@ryanatkn/gro/paths.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn_cli} from '@ryanatkn/gro/cli.js';
+import {
+	git_check_clean_workspace,
+	git_checkout,
+	git_current_branch_name,
+} from '@ryanatkn/gro/git.js';
 
 import {load_gitops_config, type Gitops_Config} from '$lib/gitops_config.js';
 import {
@@ -70,6 +75,22 @@ export const get_gitops_ready = async (
 		throw new Task_Error('No repos are configured in `gitops_config.ts`');
 	}
 
+	// Switch branches if needed, erroring if unable.
+	await Promise.all(
+		local_repos.map(async ({repo_dir, repo_config}) => {
+			const branch = await git_current_branch_name({cwd: repo_dir});
+			if (branch !== repo_config.branch) {
+				const error_message = await git_check_clean_workspace({cwd: repo_dir});
+				if (error_message) {
+					throw new Task_Error(
+						`Repo ${repo_dir} is not on branch "${repo_config.branch}" and the workspace is unclean, blocking switch: ${error_message}`,
+					);
+				}
+				await git_checkout(repo_config.branch, {cwd: repo_dir});
+			}
+		}),
+	);
+
 	return {config_path, repos_dir, gitops_config, local_repos};
 };
 
@@ -99,7 +120,7 @@ const download_repos = async (
 ): Promise<Resolved_Local_Repo[]> => {
 	const resolved: Resolved_Local_Repo[] = [];
 	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
-		log?.info(`Cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
+		log?.info(`cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
 		await spawn_cli('git', ['clone', repo_git_ssh_url], log, {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
 		const local_repo = await resolve_local_repo(repo_config, repos_dir); // eslint-disable-line no-await-in-loop
 		if (local_repo.type === 'unresolved_local_repo') {
