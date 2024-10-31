@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.42.0
+
+### Minor Changes
+
+- check current repo in `get_gitops_ready` instead of the task ([0d8cce5](https://github.com/ryanatkn/fuz_gitops/commit/0d8cce5))
+
 ## 0.41.1
 
 ### Patch Changes
