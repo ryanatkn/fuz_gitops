@@ -7,15 +7,15 @@ import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
 import {fetch_github_check_runs, fetch_github_pull_requests} from '$lib/github.js';
 import type {Repo} from '$lib/repo.js';
-import type {Resolved_Local_Repo} from '$lib/local_repo.js';
+import type {Local_Repo} from '$lib/local_repo.js';
 
 /* eslint-disable no-await-in-loop */
 
 /**
  * Fetches repo data from the web.
  */
-export const fetch_repos = async (
-	resolved_repos: Resolved_Local_Repo[],
+export const fetch_repo_data = async (
+	resolved_repos: Local_Repo[],
 	token?: string,
 	cache?: Fetch_Value_Cache,
 	log?: Logger,

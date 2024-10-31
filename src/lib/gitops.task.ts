@@ -9,7 +9,7 @@ import {embed_json} from '@ryanatkn/belt/json.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {existsSync} from 'node:fs';
 
-import {fetch_repos as fetch_repo_data} from '$lib/fetch_repo_data.js';
+import {fetch_repo_data} from '$lib/fetch_repo_data.js';
 import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 
