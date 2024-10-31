@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.43.0
+
+### Minor Changes
+
+- rework local resolution and separate repo loading ([2476be1](https://github.com/ryanatkn/fuz_gitops/commit/2476be1))
+
 ## 0.42.0
 
 ### Minor Changes
