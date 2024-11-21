@@ -28,6 +28,8 @@ export const Args = z
 			.string({description: 'path to the directory for the generated files, defaults to $routes/'})
 			.optional(),
 		download: z.boolean({description: 'download all missing local repos'}).default(false),
+		sync: z.boolean({description: 'dual of no-sync'}).default(true),
+		'no-sync': z.boolean({description: 'opt out of gro sync'}).default(false),
 	})
 	.strict();
 export type Args = z.infer<typeof Args>;
@@ -39,7 +41,11 @@ export const task: Task<Args> = {
 	Args,
 	summary: 'gets gitops ready and runs scripts',
 	run: async ({args, log, sveltekit_config, invoke_task}) => {
-		const {path, dir, outdir = sveltekit_config.routes_path, download} = args;
+		const {path, dir, outdir = sveltekit_config.routes_path, download, sync} = args;
+
+		if (sync) {
+			await invoke_task('sync');
+		}
 
 		const {local_repos} = await get_gitops_ready(path, dir, log, download);
 
