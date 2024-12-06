@@ -10,7 +10,7 @@
 	interface Props {
 		repos_modules: Array<{
 			repo: Repo;
-			modules: Src_Module[];
+			modules: Array<Src_Module>;
 		}>;
 	}
 

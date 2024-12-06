@@ -31,7 +31,7 @@ export const get_gitops_ready = async (
 	config_path: string;
 	repos_dir: string;
 	gitops_config: Gitops_Config;
-	local_repos: Local_Repo[];
+	local_repos: Array<Local_Repo>;
 }> => {
 	const {config_path, repos_dir} = resolve_gitops_paths(path, dir);
 
@@ -43,7 +43,7 @@ export const get_gitops_ready = async (
 	);
 	const resolved_config = resolve_gitops_config(gitops_config, repos_dir);
 
-	let resolved_local_repos: Resolved_Local_Repo[] | null = null;
+	let resolved_local_repos: Array<Resolved_Local_Repo> | null = null;
 
 	if (resolved_config.unresolved_local_repos) {
 		if (download) {
@@ -100,10 +100,10 @@ export const import_gitops_config = async (config_path: string): Promise<Gitops_
 
 const download_repos = async (
 	repos_dir: string,
-	unresolved_local_repos: Unresolved_Local_Repo[],
+	unresolved_local_repos: Array<Unresolved_Local_Repo>,
 	log: Logger | undefined,
-): Promise<Resolved_Local_Repo[]> => {
-	const resolved: Resolved_Local_Repo[] = [];
+): Promise<Array<Resolved_Local_Repo>> => {
+	const resolved: Array<Resolved_Local_Repo> = [];
 	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
 		log?.info(`cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
 		await spawn_cli('git', ['clone', repo_git_ssh_url], log, {cwd: repos_dir}); // eslint-disable-line no-await-in-loop

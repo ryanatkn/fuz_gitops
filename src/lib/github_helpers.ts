@@ -11,9 +11,9 @@ export interface Pull_Request_Meta {
 }
 
 export const to_pull_requests = (
-	repos: Repo[],
+	repos: Array<Repo>,
 	filter_pull_request?: Filter_Pull_Request,
-): Pull_Request_Meta[] =>
+): Array<Pull_Request_Meta> =>
 	repos
 		.flatMap((repo) => {
 			if (!repo.pull_requests) return null;

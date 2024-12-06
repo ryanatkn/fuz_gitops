@@ -9,7 +9,7 @@
 
 	interface Props {
 		repo: Repo;
-		repos: Repo[];
+		repos: Array<Repo>;
 		slug: string;
 	}
 

@@ -78,10 +78,10 @@ export const load_local_repo = async (
 };
 
 export const load_local_repos = async (
-	resolved_local_repos: Resolved_Local_Repo[],
+	resolved_local_repos: Array<Resolved_Local_Repo>,
 	log?: Logger,
-): Promise<Local_Repo[]> => {
-	const loaded: Local_Repo[] = [];
+): Promise<Array<Local_Repo>> => {
+	const loaded: Array<Local_Repo> = [];
 	for (const resolved_local_repo of resolved_local_repos) {
 		loaded.push(await load_local_repo(resolved_local_repo, log)); // eslint-disable-line no-await-in-loop
 	}

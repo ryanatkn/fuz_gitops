@@ -8,7 +8,7 @@
 	import type {Repo} from '$lib/repo.js';
 
 	interface Props {
-		repos: Repo[]; // TODO normalized version with cached primitives?
+		repos: Array<Repo>; // TODO normalized version with cached primitives?
 		nav_footer?: Snippet;
 	}
 
@@ -21,9 +21,9 @@
 	// TODO hacky, needs helpers or rethinking
 	const repos_modules: Array<{
 		repo: Repo;
-		modules: Src_Module[];
+		modules: Array<Src_Module>;
 	}> = $derived(
-		repos.reduce<Array<{repo: Repo; modules: Src_Module[]}>>((v, repo) => {
+		repos.reduce<Array<{repo: Repo; modules: Array<Src_Module>}>>((v, repo) => {
 			const {package_json, src_json} = repo;
 			if (
 				!src_json.modules ||

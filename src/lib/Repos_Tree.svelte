@@ -9,7 +9,7 @@
 	import Repos_Tree_Nav from '$lib/Repos_Tree_Nav.svelte';
 
 	interface Props {
-		repos: Repo[];
+		repos: Array<Repo>;
 		/**
 		 * The selected package, if any.
 		 */

@@ -5,7 +5,7 @@
 	import type {Repo} from '$lib/repo.js';
 
 	interface Props {
-		repos: Repo[];
+		repos: Array<Repo>;
 		filter_pull_request?: Filter_Pull_Request | undefined;
 	}
 

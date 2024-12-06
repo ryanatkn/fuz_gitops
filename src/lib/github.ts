@@ -97,7 +97,9 @@ export const fetch_github_check_runs = async (
 	return fetched.value;
 };
 
-const reduce_check_runs = (check_runs: Github_Check_Runs_Item[]): Github_Check_Runs_Item | null => {
+const reduce_check_runs = (
+	check_runs: Array<Github_Check_Runs_Item>,
+): Github_Check_Runs_Item | null => {
 	if (!check_runs.length) return null;
 	// TODO fix these types and remove the eslint disable, `Github_Check_Runs_Item` should maybe have nullable properties?
 	let status!: Github_Check_Runs_Item['status'];

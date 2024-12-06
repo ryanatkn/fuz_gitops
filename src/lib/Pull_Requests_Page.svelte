@@ -2,7 +2,7 @@
 	// TODO is this the new required pattern?
 	export interface Props {
 		repo: Repo;
-		repos: Repo[];
+		repos: Array<Repo>;
 		filter_pull_request?: Filter_Pull_Request | undefined;
 	}
 </script>

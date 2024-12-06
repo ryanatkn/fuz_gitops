@@ -4,7 +4,7 @@ import {strip_end} from '@ryanatkn/belt/string.js';
 import type {Git_Branch} from '@ryanatkn/gro/git.js';
 
 export interface Gitops_Config {
-	repos: Gitops_Repo_Config[];
+	repos: Array<Gitops_Repo_Config>;
 }
 
 export type Create_Gitops_Config = (

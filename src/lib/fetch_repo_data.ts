@@ -15,14 +15,14 @@ import type {Local_Repo} from '$lib/local_repo.js';
  * Fetches repo data from the web.
  */
 export const fetch_repo_data = async (
-	resolved_repos: Local_Repo[],
+	resolved_repos: Array<Local_Repo>,
 	token?: string,
 	cache?: Fetch_Value_Cache,
 	log?: Logger,
 	delay = 33,
 	github_api_version?: string,
-): Promise<Repo[]> => {
-	const repos: Repo[] = [];
+): Promise<Array<Repo>> => {
+	const repos: Array<Repo> = [];
 	for (const {repo_url, repo_config, pkg} of resolved_repos) {
 		// CI status
 		await wait(delay);

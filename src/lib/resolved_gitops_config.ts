@@ -7,9 +7,9 @@ import {
 } from '$lib/local_repo.js';
 
 export interface Resolved_Gitops_Config {
-	local_repos: Maybe_Local_Repo[] | null;
-	resolved_local_repos: Resolved_Local_Repo[] | null;
-	unresolved_local_repos: Unresolved_Local_Repo[] | null;
+	local_repos: Array<Maybe_Local_Repo> | null;
+	resolved_local_repos: Array<Resolved_Local_Repo> | null;
+	unresolved_local_repos: Array<Unresolved_Local_Repo> | null;
 }
 
 /**

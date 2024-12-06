@@ -6,7 +6,7 @@
 
 	interface Props {
 		repo: Repo;
-		repos: Repo[];
+		repos: Array<Repo>;
 	}
 
 	const {repo, repos}: Props = $props();

@@ -7,8 +7,8 @@
 	import {to_pull_url} from '$lib/github_helpers.js';
 
 	interface Props {
-		repos: Repo[];
-		deps?: string[];
+		repos: Array<Repo>;
+		deps?: Array<string>;
 	}
 
 	const {repos, deps = ['@ryanatkn/fuz', '@ryanatkn/gro']}: Props = $props();
@@ -45,7 +45,7 @@
 	const format_version = (version: string | null): string =>
 		version === null ? '' : version.replace(/^(\^|>=)\s*/, '');
 
-	const lookup_pull_requests = (repos: Repo[] | null, repo: Repo) => {
+	const lookup_pull_requests = (repos: Array<Repo> | null, repo: Repo) => {
 		const found = repos?.find((p) => p.repo_url === repo.repo_url);
 		if (!found?.package_json) return null;
 		const {pull_requests} = found;
