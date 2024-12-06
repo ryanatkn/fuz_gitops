@@ -59,10 +59,11 @@ export const load_local_repo = async (
 			);
 		}
 		await git_checkout(repo_config.branch, {cwd: repo_dir});
-	}
 
-	// Sync the repo so deps are installed and generated files are up-to-date.
-	await spawn_cli('gro', ['sync'], log, {cwd: resolved_local_repo.repo_dir});
+		// TODO probably allow opt-in syncing, problem is it's very slow to do in the normal case
+		// Sync the repo so deps are installed and generated files are up-to-date.
+		await spawn_cli('gro', ['sync'], log, {cwd: resolved_local_repo.repo_dir});
+	}
 
 	const parsed_sveltekit_config = await init_sveltekit_config(repo_dir);
 	const lib_path = join(repo_dir, parsed_sveltekit_config.lib_path);
