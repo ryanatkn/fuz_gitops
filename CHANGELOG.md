@@ -1,5 +1,15 @@
 # @ryanatkn/fuz_gitops
 
+## 0.44.0
+
+### Minor Changes
+
+- run `gro sync` only if the branch changes ([1180456](https://github.com/ryanatkn/fuz_gitops/commit/1180456))
+
+### Patch Changes
+
+- sync at start of `gro gitops` with optional `--no-sync` arg ([3cf5142](https://github.com/ryanatkn/fuz_gitops/commit/3cf5142))
+
 ## 0.43.0
 
 ### Minor Changes
