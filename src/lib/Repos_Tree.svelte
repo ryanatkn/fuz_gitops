@@ -32,7 +32,7 @@
 		</section>
 	{:else}
 		<menu class="summaries">
-			{#each repos as repo}
+			{#each repos as repo (repo.name)}
 				<li class="panel p_md box">
 					{#if repo.package_json}
 						<Package_Summary pkg={repo}>

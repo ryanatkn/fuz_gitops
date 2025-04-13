@@ -68,7 +68,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each repos as repo}
+		{#each repos as repo (repo.name)}
 			{@const {package_json, homepage_url} = repo}
 			<tr>
 				<td>

@@ -18,7 +18,7 @@
 
 <nav>
 	<menu class="names panel p_md">
-		{#each repos as repo}
+		{#each repos as repo (repo.name)}
 			{@const selected = repo === selected_repo}
 			<li style:display="contents">
 				{#if repo.package_json}<a
@@ -26,7 +26,7 @@
 						class:selected
 						href="{base}/tree/{repo.repo_name}"
 						><div class="ellipsis">
-							{repo.repo_name}{#if repo.package_json.glyph}{' '}{repo.package_json.glyph}{/if}
+							{repo.repo_name}{#if repo.package_json.glyph}&nbsp;{repo.package_json.glyph}{/if}
 						</div></a
 					>{/if}
 			</li>

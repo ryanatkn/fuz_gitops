@@ -19,12 +19,12 @@
 		<table>
 			<thead><tr><th>repo</th><th>number</th><th>title</th></tr></thead>
 			<tbody>
-				{#each pull_requests as pull_request}
+				{#each pull_requests as pull_request (pull_request.pull_request.number)}
 					<tr>
 						<td
 							><a href="{base}/tree/{pull_request.repo.repo_name}"
 								>{pull_request.repo
-									.repo_name}{#if pull_request.repo.package_json.glyph}{' '}{pull_request.repo
+									.repo_name}{#if pull_request.repo.package_json.glyph}&nbsp;{pull_request.repo
 										.package_json.glyph}{/if}</a
 							></td
 						>
