@@ -77,7 +77,7 @@
 								{/if}
 							</div>
 							<ul class="declarations unstyled">
-								{#each declarations as { name, kind }}
+								{#each declarations as { name, kind } (name)}
 									<li class="declaration chip {kind}_declaration">
 										{name}
 									</li>
