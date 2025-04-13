@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.45.0
+
+### Minor Changes
+
+- bump node@22.11 ([#32](https://github.com/ryanatkn/fuz_gitops/pull/32))
+
 ## 0.44.0
 
 ### Minor Changes
