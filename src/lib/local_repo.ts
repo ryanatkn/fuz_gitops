@@ -60,6 +60,8 @@ export const load_local_repo = async (
 		}
 		await git_checkout(repo_config.branch, {cwd: repo_dir});
 
+		// TODO BLOCK need to sync git with remote before `gro sync`
+
 		// TODO probably allow opt-in syncing, problem is it's very slow to do in the normal case
 		// Sync the repo so deps are installed and generated files are up-to-date.
 		await spawn_cli('gro', ['sync'], log, {cwd: resolved_local_repo.repo_dir});
