@@ -233,6 +233,9 @@ a.chip {
 .mb_xl7 {
 	margin-bottom: var(--space_xl7);
 }
+.ml_sm {
+	margin-left: var(--space_sm);
+}
 .mx_auto {
 	margin-left: auto;
 	margin-right: auto;
