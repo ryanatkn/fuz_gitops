@@ -6,7 +6,6 @@
 
 	// TODO add highlighting of the items that are onscreen
 
-	// LibraryMenu floats alongside the docs, showing scrolled item as selected
 	interface Props {
 		repos_modules: Array<{
 			repo: Repo;

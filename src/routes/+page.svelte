@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Library_Footer from '@ryanatkn/fuz/Library_Footer.svelte';
+	import Docs_Footer from '@ryanatkn/fuz/Docs_Footer.svelte';
 	import Card from '@ryanatkn/fuz/Card.svelte';
 	import {base} from '$app/paths';
 
@@ -34,10 +34,10 @@
 		</menu>
 	</section>
 	<section class="mb_xl7">
-		<Library_Footer pkg={repo}>
+		<Docs_Footer pkg={repo}>
 			{#snippet logo_header()}<a href="{base}/about" class="mb_xs">about</a>{/snippet}
 			{#snippet logo_footer()}<a href="https://www.fuz.dev/" class="mt_xs">fuz.dev</a>{/snippet}
-		</Library_Footer>
+		</Docs_Footer>
 	</section>
 </main>
 
