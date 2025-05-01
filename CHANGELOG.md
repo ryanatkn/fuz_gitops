@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.45.1
+
+### Patch Changes
+
+- migrate to $app/state from $app/stores ([2f880dd](https://github.com/ryanatkn/fuz_gitops/commit/2f880dd))
+
 ## 0.45.0
 
 ### Minor Changes
