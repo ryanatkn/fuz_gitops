@@ -6,7 +6,7 @@ export const repos: Array<Repo> = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.136.1",\
+			"version": "0.139.2",\
 			"description": "Svelte UI library",\
 			"motto": "friendly user zystem",\
 			"glyph": "🧶",\
@@ -56,26 +56,26 @@ export const repos: Array<Repo> = JSON.parse(
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
 				"@ryanatkn/fuz_code": "^0.22.0",\
-				"@ryanatkn/gro": "^0.150.1",\
-				"@ryanatkn/moss": "^0.24.3",\
+				"@ryanatkn/gro": "^0.152.0",\
+				"@ryanatkn/moss": "^0.26.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
-				"@sveltejs/kit": "^2.20.5",\
-				"@sveltejs/package": "^2.3.10",\
+				"@sveltejs/kit": "^2.20.8",\
+				"@sveltejs/package": "^2.3.11",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
-				"@types/node": "^22.14.1",\
+				"@types/node": "^22.15.3",\
 				"@types/prismjs": "^1.26.5",\
-				"eslint": "^9.24.0",\
+				"eslint": "^9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
 				"esm-env": "^1.2.2",\
 				"prettier": "^3.5.3",\
 				"prettier-plugin-svelte": "^3.3.3",\
 				"prism-svelte": "^0.5.0",\
 				"prismjs": "^1.30.0",\
-				"svelte": "^5.26.2",\
+				"svelte": "^5.28.2",\
 				"svelte-check": "^4.1.6",\
 				"tslib": "^2.8.1",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.29.1",\
+				"typescript-eslint": "^8.31.1",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -140,6 +140,10 @@ export const repos: Array<Repo> = JSON.parse(
 					"svelte": "./dist/Community_Links.svelte",\
 					"default": "./dist/Community_Links.svelte"\
 				},\
+				"./constants.js": {\
+					"types": "./dist/constants.d.ts",\
+					"default": "./dist/constants.js"\
+				},\
 				"./context_helpers.js": {\
 					"types": "./dist/context_helpers.d.ts",\
 					"default": "./dist/context_helpers.js"\
@@ -183,6 +187,14 @@ export const repos: Array<Repo> = JSON.parse(
 					"svelte": "./dist/Copy_To_Clipboard.svelte",\
 					"default": "./dist/Copy_To_Clipboard.svelte"\
 				},\
+				"./csp_of_ryanatkn.js": {\
+					"types": "./dist/csp_of_ryanatkn.d.ts",\
+					"default": "./dist/csp_of_ryanatkn.js"\
+				},\
+				"./csp.js": {\
+					"types": "./dist/csp.d.ts",\
+					"default": "./dist/csp.js"\
+				},\
 				"./Details.svelte": {\
 					"types": "./dist/Details.svelte.d.ts",\
 					"svelte": "./dist/Details.svelte",\
@@ -206,25 +218,6 @@ export const repos: Array<Repo> = JSON.parse(
 					"types": "./dist/dimensions.svelte.d.ts",\
 					"default": "./dist/dimensions.svelte.js"\
 				},\
-				"./Hashlink.svelte": {\
-					"types": "./dist/Hashlink.svelte.d.ts",\
-					"svelte": "./dist/Hashlink.svelte",\
-					"default": "./dist/Hashlink.svelte"\
-				},\
-				"./Hidden_Personal_Links.svelte": {\
-					"types": "./dist/Hidden_Personal_Links.svelte.d.ts",\
-					"svelte": "./dist/Hidden_Personal_Links.svelte",\
-					"default": "./dist/Hidden_Personal_Links.svelte"\
-				},\
-				"./Hue_Input.svelte": {\
-					"types": "./dist/Hue_Input.svelte.d.ts",\
-					"svelte": "./dist/Hue_Input.svelte",\
-					"default": "./dist/Hue_Input.svelte"\
-				},\
-				"./intersect.js": {\
-					"types": "./dist/intersect.d.ts",\
-					"default": "./dist/intersect.js"\
-				},\
 				"./Docs_Content.svelte": {\
 					"types": "./dist/Docs_Content.svelte.d.ts",\
 					"svelte": "./dist/Docs_Content.svelte",\
@@ -238,6 +231,11 @@ export const repos: Array<Repo> = JSON.parse(
 				"./docs_helpers.svelte.js": {\
 					"types": "./dist/docs_helpers.svelte.d.ts",\
 					"default": "./dist/docs_helpers.svelte.js"\
+				},\
+				"./Docs_Menu_Header.svelte": {\
+					"types": "./dist/Docs_Menu_Header.svelte.d.ts",\
+					"svelte": "./dist/Docs_Menu_Header.svelte",\
+					"default": "./dist/Docs_Menu_Header.svelte"\
 				},\
 				"./Docs_Menu.svelte": {\
 					"types": "./dist/Docs_Menu.svelte.d.ts",\
@@ -264,10 +262,38 @@ export const repos: Array<Repo> = JSON.parse(
 					"svelte": "./dist/Docs_Tertiary_Nav.svelte",\
 					"default": "./dist/Docs_Tertiary_Nav.svelte"\
 				},\
-				"./Library.svelte": {\
-					"types": "./dist/Library.svelte.d.ts",\
-					"svelte": "./dist/Library.svelte",\
-					"default": "./dist/Library.svelte"\
+				"./Docs.svelte": {\
+					"types": "./dist/Docs.svelte.d.ts",\
+					"svelte": "./dist/Docs.svelte",\
+					"default": "./dist/Docs.svelte"\
+				},\
+				"./Hashlink.svelte": {\
+					"types": "./dist/Hashlink.svelte.d.ts",\
+					"svelte": "./dist/Hashlink.svelte",\
+					"default": "./dist/Hashlink.svelte"\
+				},\
+				"./helpers.js": {\
+					"types": "./dist/helpers.d.ts",\
+					"default": "./dist/helpers.js"\
+				},\
+				"./Hidden_Personal_Links.svelte": {\
+					"types": "./dist/Hidden_Personal_Links.svelte.d.ts",\
+					"svelte": "./dist/Hidden_Personal_Links.svelte",\
+					"default": "./dist/Hidden_Personal_Links.svelte"\
+				},\
+				"./Hue_Input.svelte": {\
+					"types": "./dist/Hue_Input.svelte.d.ts",\
+					"svelte": "./dist/Hue_Input.svelte",\
+					"default": "./dist/Hue_Input.svelte"\
+				},\
+				"./Img_Or_Svg.svelte": {\
+					"types": "./dist/Img_Or_Svg.svelte.d.ts",\
+					"svelte": "./dist/Img_Or_Svg.svelte",\
+					"default": "./dist/Img_Or_Svg.svelte"\
+				},\
+				"./intersect.js": {\
+					"types": "./dist/intersect.d.ts",\
+					"default": "./dist/intersect.js"\
 				},\
 				"./logos.js": {\
 					"types": "./dist/logos.d.ts",\
@@ -322,6 +348,10 @@ export const repos: Array<Repo> = JSON.parse(
 					"svelte": "./dist/Spiders.svelte",\
 					"default": "./dist/Spiders.svelte"\
 				},\
+				"./storage.js": {\
+					"types": "./dist/storage.d.ts",\
+					"default": "./dist/storage.js"\
+				},\
 				"./Svg.svelte": {\
 					"types": "./dist/Svg.svelte.d.ts",\
 					"svelte": "./dist/Svg.svelte",\
@@ -337,14 +367,14 @@ export const repos: Array<Repo> = JSON.parse(
 					"svelte": "./dist/Theme_Input.svelte",\
 					"default": "./dist/Theme_Input.svelte"\
 				},\
-				"./theme.svelte.js": {\
-					"types": "./dist/theme.svelte.d.ts",\
-					"default": "./dist/theme.svelte.js"\
-				},\
 				"./Themed.svelte": {\
 					"types": "./dist/Themed.svelte.d.ts",\
 					"svelte": "./dist/Themed.svelte",\
 					"default": "./dist/Themed.svelte"\
+				},\
+				"./themer.svelte.js": {\
+					"types": "./dist/themer.svelte.d.ts",\
+					"default": "./dist/themer.svelte.js"\
 				},\
 				"./Tome_Content.svelte": {\
 					"types": "./dist/Tome_Content.svelte.d.ts",\
@@ -379,7 +409,7 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.136.1",\
+			"version": "0.139.2",\
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
@@ -425,6 +455,15 @@ export const repos: Array<Repo> = JSON.parse(
 				"./Community_Links.svelte": {\
 					"path": "Community_Links.svelte",\
 					"declarations": []\
+				},\
+				"./constants.js": {\
+					"path": "constants.ts",\
+					"declarations": [\
+						{\
+							"name": "MAIN_HEADER_MARGIN_TOP",\
+							"kind": "variable"\
+						}\
+					]\
 				},\
 				"./context_helpers.js": {\
 					"path": "context_helpers.ts",\
@@ -520,6 +559,136 @@ export const repos: Array<Repo> = JSON.parse(
 					"path": "Copy_To_Clipboard.svelte",\
 					"declarations": []\
 				},\
+				"./csp_of_ryanatkn.js": {\
+					"path": "csp_of_ryanatkn.ts",\
+					"declarations": [\
+						{\
+							"name": "csp_trusted_sources_of_ryanatkn",\
+							"kind": "variable"\
+						}\
+					]\
+				},\
+				"./csp.js": {\
+					"path": "csp.ts",\
+					"declarations": [\
+						{\
+							"name": "create_csp_directives",\
+							"kind": null\
+						},\
+						{\
+							"name": "Create_Csp_Directives_Options",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Directive",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "parse_csp_directive",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "Csp_Directive_Value",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "csp_trust_levels",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "csp_trust_level_value",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "Csp_Trust_Level",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "parse_csp_trust_level",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "Csp_Source_Spec",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Directive_Spec",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "is_csp_trusted",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "COLOR_SCHEME_SCRIPT_HASH",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "csp_directive_value_defaults",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "csp_directive_required_trust_defaults",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "csp_directive_specs",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "csp_directive_spec_by_name",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "Csp_Action_Source",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Base_Source",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Crypto_Source",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Frame_Source",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Host_Name_Scheme",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Host_Source",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Host_Protocol_Schemes",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Port_Scheme",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Scheme_Source",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Source",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Sources",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Csp_Directives",\
+							"kind": "type"\
+						}\
+					]\
+				},\
 				"./Details.svelte": {\
 					"path": "Details.svelte",\
 					"declarations": []\
@@ -562,9 +731,83 @@ export const repos: Array<Repo> = JSON.parse(
 						}\
 					]\
 				},\
+				"./Docs_Content.svelte": {\
+					"path": "Docs_Content.svelte",\
+					"declarations": []\
+				},\
+				"./Docs_Footer.svelte": {\
+					"path": "Docs_Footer.svelte",\
+					"declarations": []\
+				},\
+				"./docs_helpers.svelte.js": {\
+					"path": "docs_helpers.svelte.ts",\
+					"declarations": [\
+						{\
+							"name": "DEFAULT_LIBRARY_PATH",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "to_docs_path_info",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "docs_links_context",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "Docs_Link_Tag",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Docs_Link",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Docs_Links",\
+							"kind": "class"\
+						}\
+					]\
+				},\
+				"./Docs_Menu_Header.svelte": {\
+					"path": "Docs_Menu_Header.svelte",\
+					"declarations": []\
+				},\
+				"./Docs_Menu.svelte": {\
+					"path": "Docs_Menu.svelte",\
+					"declarations": []\
+				},\
+				"./Docs_Page_Links.svelte": {\
+					"path": "Docs_Page_Links.svelte",\
+					"declarations": []\
+				},\
+				"./Docs_Primary_Nav.svelte": {\
+					"path": "Docs_Primary_Nav.svelte",\
+					"declarations": []\
+				},\
+				"./Docs_Secondary_Nav.svelte": {\
+					"path": "Docs_Secondary_Nav.svelte",\
+					"declarations": []\
+				},\
+				"./Docs_Tertiary_Nav.svelte": {\
+					"path": "Docs_Tertiary_Nav.svelte",\
+					"declarations": []\
+				},\
+				"./Docs.svelte": {\
+					"path": "Docs.svelte",\
+					"declarations": []\
+				},\
 				"./Hashlink.svelte": {\
 					"path": "Hashlink.svelte",\
 					"declarations": []\
+				},\
+				"./helpers.js": {\
+					"path": "helpers.ts",\
+					"declarations": [\
+						{\
+							"name": "deep_freeze",\
+							"kind": "function"\
+						}\
+					]\
 				},\
 				"./Hidden_Personal_Links.svelte": {\
 					"path": "Hidden_Personal_Links.svelte",\
@@ -572,6 +815,10 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Hue_Input.svelte": {\
 					"path": "Hue_Input.svelte",\
+					"declarations": []\
+				},\
+				"./Img_Or_Svg.svelte": {\
+					"path": "Img_Or_Svg.svelte",\
 					"declarations": []\
 				},\
 				"./intersect.js": {\
@@ -606,67 +853,6 @@ export const repos: Array<Repo> = JSON.parse(
 							"kind": "type"\
 						}\
 					]\
-				},\
-				"./Docs_Content.svelte": {\
-					"path": "Docs_Content.svelte",\
-					"declarations": []\
-				},\
-				"./Docs_Footer.svelte": {\
-					"path": "Docs_Footer.svelte",\
-					"declarations": []\
-				},\
-				"./docs_helpers.svelte.js": {\
-					"path": "library_helpers.svelte.ts",\
-					"declarations": [\
-						{\
-							"name": "DEFAULT_LIBRARY_PATH",\
-							"kind": "variable"\
-						},\
-						{\
-							"name": "to_library_path_info",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "library_links_context",\
-							"kind": "variable"\
-						},\
-						{\
-							"name": "Docs_Link_Tag",\
-							"kind": "type"\
-						},\
-						{\
-							"name": "Docs_Link",\
-							"kind": "type"\
-						},\
-						{\
-							"name": "Docs_Links",\
-							"kind": "class"\
-						}\
-					]\
-				},\
-				"./Docs_Menu.svelte": {\
-					"path": "Docs_Menu.svelte",\
-					"declarations": []\
-				},\
-				"./Docs_Page_Links.svelte": {\
-					"path": "Docs_Page_Links.svelte",\
-					"declarations": []\
-				},\
-				"./Docs_Primary_Nav.svelte": {\
-					"path": "Docs_Primary_Nav.svelte",\
-					"declarations": []\
-				},\
-				"./Docs_Secondary_Nav.svelte": {\
-					"path": "Docs_Secondary_Nav.svelte",\
-					"declarations": []\
-				},\
-				"./Docs_Tertiary_Nav.svelte": {\
-					"path": "Docs_Tertiary_Nav.svelte",\
-					"declarations": []\
-				},\
-				"./Library.svelte": {\
-					"path": "Library.svelte",\
-					"declarations": []\
 				},\
 				"./logos.js": {\
 					"path": "logos.ts",\
@@ -794,6 +980,19 @@ export const repos: Array<Repo> = JSON.parse(
 					"path": "Spiders.svelte",\
 					"declarations": []\
 				},\
+				"./storage.js": {\
+					"path": "storage.ts",\
+					"declarations": [\
+						{\
+							"name": "save_to_storage",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "load_from_storage",\
+							"kind": "function"\
+						}\
+					]\
+				},\
 				"./Svg.svelte": {\
 					"path": "Svg.svelte",\
 					"declarations": []\
@@ -806,8 +1005,12 @@ export const repos: Array<Repo> = JSON.parse(
 					"path": "Theme_Input.svelte",\
 					"declarations": []\
 				},\
-				"./theme.svelte.js": {\
-					"path": "theme.svelte.ts",\
+				"./Themed.svelte": {\
+					"path": "Themed.svelte",\
+					"declarations": []\
+				},\
+				"./themer.svelte.js": {\
+					"path": "themer.svelte.ts",\
 					"declarations": [\
 						{\
 							"name": "Themer",\
@@ -830,6 +1033,10 @@ export const repos: Array<Repo> = JSON.parse(
 							"kind": "variable"\
 						},\
 						{\
+							"name": "THEME_STORAGE_KEY",\
+							"kind": "variable"\
+						},\
+						{\
 							"name": "save_color_scheme",\
 							"kind": "function"\
 						},\
@@ -838,30 +1045,14 @@ export const repos: Array<Repo> = JSON.parse(
 							"kind": "function"\
 						},\
 						{\
-							"name": "THEME_STORAGE_KEY",\
-							"kind": "variable"\
-						},\
-						{\
 							"name": "save_theme",\
 							"kind": "function"\
 						},\
 						{\
 							"name": "load_theme",\
 							"kind": "function"\
-						},\
-						{\
-							"name": "create_theme_setup_script",\
-							"kind": "function"\
-						},\
-						{\
-							"name": "create_theme_style_html",\
-							"kind": "function"\
 						}\
 					]\
-				},\
-				"./Themed.svelte": {\
-					"path": "Themed.svelte",\
-					"declarations": []\
 				},\
 				"./Tome_Content.svelte": {\
 					"path": "Tome_Content.svelte",\
@@ -926,12 +1117,12 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"pull_requests": [\
 			{\
-				"number": 59,\
-				"title": "fix inline theme script with CSP",\
+				"number": 71,\
+				"title": "use the `dialog` element in `Dialog`",\
 				"user": {\
 					"login": "ryanatkn"\
 				},\
-				"draft": false\
+				"draft": true\
 			}\
 		]\
 	},\
@@ -939,7 +1130,7 @@ export const repos: Array<Repo> = JSON.parse(
 		"package_json": {\
 			"name": "@ryanatkn/fuz_template",\
 			"version": "0.0.1",\
-			"description": "a static web app and Node library template with TypeScript, Svelte, SvelteKit, Vite, esbuild, Fuz, and Gro",\
+			"description": "a static web app and Node library template with TypeScript, Svelte, SvelteKit, Vite, esbuild, Gro, and Fuz",\
 			"glyph": "❄",\
 			"logo": "logo.svg",\
 			"logo_alt": "a friendly pixelated spider facing you",\
@@ -962,21 +1153,21 @@ export const repos: Array<Repo> = JSON.parse(
 			"devDependencies": {\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.136.1",\
-				"@ryanatkn/gro": "^0.150.1",\
-				"@ryanatkn/moss": "^0.24.3",\
+				"@ryanatkn/fuz": "^0.139.2",\
+				"@ryanatkn/gro": "^0.152.0",\
+				"@ryanatkn/moss": "^0.26.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
-				"@sveltejs/kit": "^2.20.5",\
+				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
-				"eslint": "^9.24.0",\
+				"eslint": "^9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
 				"prettier": "^3.5.3",\
 				"prettier-plugin-svelte": "^3.3.3",\
-				"svelte": "^5.26.2",\
+				"svelte": "^5.28.2",\
 				"svelte-check": "^4.1.6",\
 				"tslib": "^2.8.1",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.29.1",\
+				"typescript-eslint": "^8.31.1",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -1026,7 +1217,7 @@ export const repos: Array<Repo> = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/fuz_gitops",\
-			"version": "0.45.0",\
+			"version": "0.45.1",\
 			"description": "a tool for managing many repos",\
 			"glyph": "🪄",\
 			"logo": "logo.svg",\
@@ -1062,29 +1253,29 @@ export const repos: Array<Repo> = JSON.parse(
 				"@ryanatkn/moss": "*",\
 				"@sveltejs/kit": "^2",\
 				"svelte": "^5",\
-				"zod": "^3.24.2"\
+				"zod": "^3.24.3"\
 			},\
 			"devDependencies": {\
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.136.1",\
-				"@ryanatkn/gro": "^0.150.1",\
-				"@ryanatkn/moss": "^0.24.3",\
+				"@ryanatkn/fuz": "^0.139.2",\
+				"@ryanatkn/gro": "^0.152.0",\
+				"@ryanatkn/moss": "^0.26.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
-				"@sveltejs/kit": "^2.20.5",\
-				"@sveltejs/package": "^2.3.10",\
+				"@sveltejs/kit": "^2.20.8",\
+				"@sveltejs/package": "^2.3.11",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
-				"@types/node": "^22.14.1",\
-				"eslint": "^9.24.0",\
+				"@types/node": "^22.15.3",\
+				"eslint": "^9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
 				"prettier": "^3.5.3",\
 				"prettier-plugin-svelte": "^3.3.3",\
-				"svelte": "^5.26.2",\
+				"svelte": "^5.28.2",\
 				"svelte-check": "^4.1.6",\
 				"tslib": "^2.8.1",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.29.1",\
+				"typescript-eslint": "^8.31.1",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -1228,7 +1419,7 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/fuz_gitops",\
-			"version": "0.45.0",\
+			"version": "0.45.1",\
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
@@ -1537,7 +1728,16 @@ export const repos: Array<Repo> = JSON.parse(
 			"status": "completed",\
 			"conclusion": "success"\
 		},\
-		"pull_requests": []\
+		"pull_requests": [\
+			{\
+				"number": 33,\
+				"title": "improve local sync",\
+				"user": {\
+					"login": "ryanatkn"\
+				},\
+				"draft": false\
+			}\
+		]\
 	},\
 	{\
 		"package_json": {\
@@ -1587,23 +1787,23 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.136.1",\
-				"@ryanatkn/gro": "^0.150.1",\
-				"@ryanatkn/moss": "^0.24.3",\
+				"@ryanatkn/fuz": "^0.139.2",\
+				"@ryanatkn/gro": "^0.152.0",\
+				"@ryanatkn/moss": "^0.26.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
-				"@sveltejs/kit": "^2.20.5",\
-				"@sveltejs/package": "^2.3.10",\
+				"@sveltejs/kit": "^2.20.8",\
+				"@sveltejs/package": "^2.3.11",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
-				"@types/node": "^22.14.1",\
-				"eslint": "^9.24.0",\
+				"@types/node": "^22.15.3",\
+				"eslint": "^9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
 				"prettier": "^3.5.3",\
 				"prettier-plugin-svelte": "^3.3.3",\
-				"svelte": "^5.26.2",\
+				"svelte": "^5.28.2",\
 				"svelte-check": "^4.1.6",\
 				"tslib": "^2.8.1",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.29.1",\
+				"typescript-eslint": "^8.31.1",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -1973,27 +2173,27 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.136.1",\
+				"@ryanatkn/fuz": "^0.139.2",\
 				"@ryanatkn/fuz_code": "^0.22.0",\
-				"@ryanatkn/gro": "^0.150.1",\
-				"@ryanatkn/moss": "^0.24.3",\
+				"@ryanatkn/gro": "^0.152.0",\
+				"@ryanatkn/moss": "^0.26.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
-				"@sveltejs/kit": "^2.20.5",\
-				"@sveltejs/package": "^2.3.10",\
+				"@sveltejs/kit": "^2.20.8",\
+				"@sveltejs/package": "^2.3.11",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
 				"date-fns": "^4.1.0",\
-				"eslint": "^9.24.0",\
+				"eslint": "^9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
 				"esm-env": "^1.2.2",\
 				"prettier": "^3.5.3",\
 				"prettier-plugin-svelte": "^3.3.3",\
 				"prism-svelte": "^0.5.0",\
 				"prismjs": "^1.30.0",\
-				"svelte": "^5.26.2",\
+				"svelte": "^5.28.2",\
 				"svelte-check": "^4.1.6",\
 				"tslib": "^2.8.1",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.29.1",\
+				"typescript-eslint": "^8.31.1",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -2223,7 +2423,7 @@ export const repos: Array<Repo> = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.150.1",\
+			"version": "0.152.0",\
 			"description": "task runner and toolkit extending SvelteKit",\
 			"motto": "generate, run, optimize",\
 			"glyph": "🌰",\
@@ -2277,12 +2477,12 @@ export const repos: Array<Repo> = JSON.parse(
 				"dotenv": "^16.5.0",\
 				"esm-env": "^1.2.2",\
 				"mri": "^1.2.0",\
-				"oxc-parser": "^0.63.0",\
+				"oxc-parser": "^0.67.0",\
 				"prettier": "^3.5.3",\
 				"prettier-plugin-svelte": "^3.3.3",\
 				"ts-morph": "^25.0.1",\
 				"tslib": "^2.8.1",\
-				"zod": "^3.24.2"\
+				"zod": "^3.24.3"\
 			},\
 			"peerDependencies": {\
 				"esbuild": "^0.25",\
@@ -2292,21 +2492,24 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@changesets/types": "^6.1.0",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.136.1",\
-				"@ryanatkn/moss": "^0.24.3",\
+				"@ryanatkn/fuz": "^0.139.1",\
+				"@ryanatkn/moss": "^0.26.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
-				"@sveltejs/kit": "^2.20.5",\
-				"@sveltejs/package": "^2.3.10",\
+				"@sveltejs/kit": "^2.20.8",\
+				"@sveltejs/package": "^2.3.11",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
-				"@types/node": "^22.14.1",\
-				"esbuild": "^0.25.2",\
-				"eslint": "^9.24.0",\
+				"@types/node": "^22.15.3",\
+				"esbuild": "^0.25.3",\
+				"eslint": "^9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
-				"svelte": "^5.26.2",\
+				"svelte": "^5.28.2",\
 				"svelte-check": "^4.1.6",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.29.1",\
+				"typescript-eslint": "^8.31.1",\
 				"uvu": "^0.5.6"\
+			},\
+			"optionalDependencies": {\
+				"@ryanatkn/moss": "^0.26.0"\
 			},\
 			"prettier": {\
 				"plugins": [\
@@ -2476,10 +2679,6 @@ export const repos: Array<Repo> = JSON.parse(
 					"types": "./dist/gro_plugin_gen.d.ts",\
 					"default": "./dist/gro_plugin_gen.js"\
 				},\
-				"./gro_plugin_moss.js": {\
-					"types": "./dist/gro_plugin_moss.d.ts",\
-					"default": "./dist/gro_plugin_moss.js"\
-				},\
 				"./gro_plugin_server.js": {\
 					"types": "./dist/gro_plugin_server.d.ts",\
 					"default": "./dist/gro_plugin_server.js"\
@@ -2636,9 +2835,9 @@ export const repos: Array<Repo> = JSON.parse(
 					"types": "./dist/sveltekit_shim_app_paths.d.ts",\
 					"default": "./dist/sveltekit_shim_app_paths.js"\
 				},\
-				"./sveltekit_shim_app_stores.js": {\
-					"types": "./dist/sveltekit_shim_app_stores.d.ts",\
-					"default": "./dist/sveltekit_shim_app_stores.js"\
+				"./sveltekit_shim_app_state.js": {\
+					"types": "./dist/sveltekit_shim_app_state.d.ts",\
+					"default": "./dist/sveltekit_shim_app_state.js"\
 				},\
 				"./sveltekit_shim_app.js": {\
 					"types": "./dist/sveltekit_shim_app.d.ts",\
@@ -2680,7 +2879,7 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.150.1",\
+			"version": "0.152.0",\
 			"modules": {\
 				".": {\
 					"path": "index.ts",\
@@ -3219,6 +3418,10 @@ export const repos: Array<Repo> = JSON.parse(
 						{\
 							"name": "Filer",\
 							"kind": "class"\
+						},\
+						{\
+							"name": "filter_dependents",\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -3574,27 +3777,6 @@ export const repos: Array<Repo> = JSON.parse(
 						{\
 							"name": "gro_plugin_gen",\
 							"kind": "function"\
-						},\
-						{\
-							"name": "filter_dependents",\
-							"kind": "function"\
-						}\
-					]\
-				},\
-				"./gro_plugin_moss.js": {\
-					"path": "gro_plugin_moss.ts",\
-					"declarations": [\
-						{\
-							"name": "Task_Args",\
-							"kind": "type"\
-						},\
-						{\
-							"name": "Gro_Plugin_Moss_Options",\
-							"kind": "type"\
-						},\
-						{\
-							"name": "gro_plugin_moss",\
-							"kind": "function"\
 						}\
 					]\
 				},\
@@ -3652,7 +3834,7 @@ export const repos: Array<Repo> = JSON.parse(
 					"path": "gro_plugin_sveltekit_library.ts",\
 					"declarations": [\
 						{\
-							"name": "Gro_Plugin_Sveltekit_Docs_Options",\
+							"name": "Gro_Plugin_Sveltekit_Library_Options",\
 							"kind": "type"\
 						},\
 						{\
@@ -3902,6 +4084,10 @@ export const repos: Array<Repo> = JSON.parse(
 						},\
 						{\
 							"name": "parse_repo_url",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "is_dep",\
 							"kind": "function"\
 						},\
 						{\
@@ -4458,13 +4644,9 @@ export const repos: Array<Repo> = JSON.parse(
 						}\
 					]\
 				},\
-				"./sveltekit_shim_app_stores.js": {\
-					"path": "sveltekit_shim_app_stores.ts",\
+				"./sveltekit_shim_app_state.js": {\
+					"path": "sveltekit_shim_app_state.ts",\
 					"declarations": [\
-						{\
-							"name": "getStores",\
-							"kind": "function"\
-						},\
 						{\
 							"name": "navigating",\
 							"kind": "variable"\
@@ -4717,6 +4899,14 @@ export const repos: Array<Repo> = JSON.parse(
 			"conclusion": "success"\
 		},\
 		"pull_requests": [\
+			{\
+				"number": 542,\
+				"title": "use `import.meta.resolve` instead of `resolve_specifier`",\
+				"user": {\
+					"login": "ryanatkn"\
+				},\
+				"draft": false\
+			},\
 			{\
 				"number": 530,\
 				"title": "upgrade zod@4",\
