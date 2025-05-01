@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {page} from '$app/stores';
+	import {page} from '$app/state';
 	import {base} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
 
@@ -81,7 +81,7 @@
 				<td>
 					<div class="row">
 						{#if homepage_url}
-							<a class:selected={homepage_url === $page.url.href} href={homepage_url} class="row">
+							<a class:selected={homepage_url === page.url.href} href={homepage_url} class="row">
 								<img
 									src={repo.logo_url}
 									alt={repo.logo_alt}
