@@ -4,7 +4,7 @@ import {parse_package_meta, type Package_Meta} from '@ryanatkn/gro/package_meta.
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
 import {create_src_json} from '@ryanatkn/gro/src_json.js';
-import {init_sveltekit_config} from '@ryanatkn/gro/sveltekit_config.js';
+import {parse_svelte_config} from '@ryanatkn/gro/svelte_config.js';
 import {Task_Error} from '@ryanatkn/gro';
 import {
 	git_check_clean_workspace,
@@ -65,8 +65,8 @@ export const load_local_repo = async (
 		await spawn_cli('gro', ['sync'], log, {cwd: resolved_local_repo.repo_dir});
 	}
 
-	const parsed_sveltekit_config = await init_sveltekit_config(repo_dir);
-	const lib_path = join(repo_dir, parsed_sveltekit_config.lib_path);
+	const parsed_svelte_config = await parse_svelte_config({dir_or_config: repo_dir});
+	const lib_path = join(repo_dir, parsed_svelte_config.lib_path);
 
 	const package_json = load_package_json(repo_dir);
 	const src_json = create_src_json(package_json, lib_path);
