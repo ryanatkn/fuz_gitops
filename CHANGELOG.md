@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.45.2
+
+### Patch Changes
+
+- bump gro in https://github.com/ryanatkn/fuz_gitops/commit/36cc42838b3102b9967e7871ef717db80fe6d98b ([4554517](https://github.com/ryanatkn/fuz_gitops/commit/4554517))
+
 ## 0.45.1
 
 ### Patch Changes
