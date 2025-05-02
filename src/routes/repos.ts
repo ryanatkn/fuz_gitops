@@ -6,7 +6,7 @@ export const repos: Array<Repo> = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.139.2",\
+			"version": "0.140.0",\
 			"description": "Svelte UI library",\
 			"motto": "friendly user zystem",\
 			"glyph": "🧶",\
@@ -56,8 +56,8 @@ export const repos: Array<Repo> = JSON.parse(
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
 				"@ryanatkn/fuz_code": "^0.22.0",\
-				"@ryanatkn/gro": "^0.152.0",\
-				"@ryanatkn/moss": "^0.26.0",\
+				"@ryanatkn/gro": "^0.153.1",\
+				"@ryanatkn/moss": "^0.27.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
@@ -409,7 +409,7 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.139.2",\
+			"version": "0.140.0",\
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
@@ -1153,9 +1153,9 @@ export const repos: Array<Repo> = JSON.parse(
 			"devDependencies": {\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.139.2",\
-				"@ryanatkn/gro": "^0.152.0",\
-				"@ryanatkn/moss": "^0.26.0",\
+				"@ryanatkn/fuz": "^0.140.0",\
+				"@ryanatkn/gro": "^0.153.1",\
+				"@ryanatkn/moss": "^0.27.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
@@ -1259,9 +1259,9 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.139.2",\
-				"@ryanatkn/gro": "^0.152.0",\
-				"@ryanatkn/moss": "^0.26.0",\
+				"@ryanatkn/fuz": "^0.140.0",\
+				"@ryanatkn/gro": "^0.153.2",\
+				"@ryanatkn/moss": "^0.27.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
@@ -1787,9 +1787,9 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.139.2",\
-				"@ryanatkn/gro": "^0.152.0",\
-				"@ryanatkn/moss": "^0.26.0",\
+				"@ryanatkn/fuz": "^0.140.0",\
+				"@ryanatkn/gro": "^0.153.1",\
+				"@ryanatkn/moss": "^0.27.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
@@ -2173,10 +2173,10 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.139.2",\
+				"@ryanatkn/fuz": "^0.140.0",\
 				"@ryanatkn/fuz_code": "^0.22.0",\
-				"@ryanatkn/gro": "^0.152.0",\
-				"@ryanatkn/moss": "^0.26.0",\
+				"@ryanatkn/gro": "^0.153.1",\
+				"@ryanatkn/moss": "^0.27.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
@@ -2423,7 +2423,7 @@ export const repos: Array<Repo> = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.152.0",\
+			"version": "0.153.2",\
 			"description": "task runner and toolkit extending SvelteKit",\
 			"motto": "generate, run, optimize",\
 			"glyph": "🌰",\
@@ -2492,8 +2492,8 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@changesets/types": "^6.1.0",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.139.1",\
-				"@ryanatkn/moss": "^0.26.0",\
+				"@ryanatkn/fuz": "^0.140.0",\
+				"@ryanatkn/moss": "^0.27.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
@@ -2509,7 +2509,7 @@ export const repos: Array<Repo> = JSON.parse(
 				"uvu": "^0.5.6"\
 			},\
 			"optionalDependencies": {\
-				"@ryanatkn/moss": "^0.26.0"\
+				"@ryanatkn/moss": "^0.27.0"\
 			},\
 			"prettier": {\
 				"plugins": [\
@@ -2807,13 +2807,13 @@ export const repos: Array<Repo> = JSON.parse(
 					"types": "./dist/src_json.d.ts",\
 					"default": "./dist/src_json.js"\
 				},\
-				"./svelte_helpers.js": {\
-					"types": "./dist/svelte_helpers.d.ts",\
-					"default": "./dist/svelte_helpers.js"\
-				},\
 				"./svelte_config.js": {\
 					"types": "./dist/svelte_config.d.ts",\
 					"default": "./dist/svelte_config.js"\
+				},\
+				"./svelte_helpers.js": {\
+					"types": "./dist/svelte_helpers.d.ts",\
+					"default": "./dist/svelte_helpers.js"\
 				},\
 				"./sveltekit_helpers.js": {\
 					"types": "./dist/sveltekit_helpers.d.ts",\
@@ -2879,7 +2879,7 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.152.0",\
+			"version": "0.153.2",\
 			"modules": {\
 				".": {\
 					"path": "index.ts",\
@@ -3173,7 +3173,7 @@ export const repos: Array<Repo> = JSON.parse(
 							"kind": "variable"\
 						},\
 						{\
-							"name": "SVELTEKIT_CONFIG_FILENAME",\
+							"name": "SVELTE_CONFIG_FILENAME",\
 							"kind": "variable"\
 						},\
 						{\
@@ -4087,10 +4087,6 @@ export const repos: Array<Repo> = JSON.parse(
 							"kind": "function"\
 						},\
 						{\
-							"name": "is_dep",\
-							"kind": "function"\
-						},\
-						{\
 							"name": "has_dep",\
 							"kind": "function"\
 						},\
@@ -4409,6 +4405,10 @@ export const repos: Array<Repo> = JSON.parse(
 						{\
 							"name": "search_fs",\
 							"kind": "function"\
+						},\
+						{\
+							"name": "find_first_existing_file",\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -4449,19 +4449,6 @@ export const repos: Array<Repo> = JSON.parse(
 						}\
 					]\
 				},\
-				"./svelte_helpers.js": {\
-					"path": "svelte_helpers.ts",\
-					"declarations": [\
-						{\
-							"name": "SVELTE_MATCHER",\
-							"kind": "variable"\
-						},\
-						{\
-							"name": "SVELTE_RUNES_MATCHER",\
-							"kind": "variable"\
-						}\
-					]\
-				},\
 				"./svelte_config.js": {\
 					"path": "svelte_config.ts",\
 					"declarations": [\
@@ -4470,7 +4457,7 @@ export const repos: Array<Repo> = JSON.parse(
 							"kind": "function"\
 						},\
 						{\
-							"name": "Parsed_Sveltekit_Config",\
+							"name": "Parsed_Svelte_Config",\
 							"kind": "type"\
 						},\
 						{\
@@ -4483,6 +4470,19 @@ export const repos: Array<Repo> = JSON.parse(
 						},\
 						{\
 							"name": "default_svelte_config",\
+							"kind": "variable"\
+						}\
+					]\
+				},\
+				"./svelte_helpers.js": {\
+					"path": "svelte_helpers.ts",\
+					"declarations": [\
+						{\
+							"name": "SVELTE_MATCHER",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "SVELTE_RUNES_MATCHER",\
 							"kind": "variable"\
 						}\
 					]\
@@ -4905,7 +4905,7 @@ export const repos: Array<Repo> = JSON.parse(
 				"user": {\
 					"login": "ryanatkn"\
 				},\
-				"draft": false\
+				"draft": true\
 			},\
 			{\
 				"number": 530,\
