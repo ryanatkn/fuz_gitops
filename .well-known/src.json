@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.45.2",
+  "version": "0.46.0",
   "modules": {
     "./package.json": {
       "path": "package.json",
