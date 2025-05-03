@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.46.0
+
+### Minor Changes
+
+- upgrade deps ([bc730f7](https://github.com/ryanatkn/fuz_gitops/commit/bc730f7))
+
 ## 0.45.2
 
 ### Patch Changes
