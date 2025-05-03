@@ -26,7 +26,7 @@
 
 <style>
 	header {
-		--font_size: var(--size_xl);
+		--font_size: var(--font_size_xl);
 	}
 	nav {
 		display: flex;

@@ -118,7 +118,7 @@
 	.repo_module > header {
 		display: flex;
 		padding: var(--space_xs) var(--space_md);
-		font-size: var(--size_lg);
+		font-size: var(--font_size_lg);
 		position: sticky;
 		top: 0;
 		background-color: var(--bg);
@@ -156,8 +156,8 @@
 		padding-left: var(--space_xs);
 	}
 	.declaration {
-		font-family: var(--font_mono);
-		font-size: var(--size_sm);
+		font-family: var(--font_family_mono);
+		font-size: var(--font_size_sm);
 	}
 	.variable_declaration {
 		color: var(--color_d_5);

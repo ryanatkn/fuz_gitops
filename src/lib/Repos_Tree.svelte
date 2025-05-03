@@ -74,7 +74,7 @@
 		margin-bottom: var(--space_xl);
 	}
 	.repo_name {
-		font-size: var(--size_xl2);
+		font-size: var(--font_size_xl2);
 		font-weight: 500;
 		text-align: center;
 		margin-bottom: var(--space_xl);
