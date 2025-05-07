@@ -1,5 +1,12 @@
 # @ryanatkn/fuz_gitops
 
+## 0.47.0
+
+### Minor Changes
+
+- upgrade gro ([f7aadf0](https://github.com/ryanatkn/fuz_gitops/commit/f7aadf0))
+- bump node@22.15 from 22.11 ([b7bc4af](https://github.com/ryanatkn/fuz_gitops/commit/b7bc4af))
+
 ## 0.46.0
 
 ### Minor Changes
