@@ -1,10 +1,15 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.46.0",
+  "version": "0.47.0",
   "modules": {
     "./package.json": {
       "path": "package.json",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "json"
+        }
+      ]
     },
     "./fetch_repo_data.js": {
       "path": "fetch_repo_data.ts",
@@ -209,31 +214,66 @@
     },
     "./Modules_Detail.svelte": {
       "path": "Modules_Detail.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Modules_Nav.svelte": {
       "path": "Modules_Nav.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Modules_Page.svelte": {
       "path": "Modules_Page.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Page_Footer.svelte": {
       "path": "Page_Footer.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Page_Header.svelte": {
       "path": "Page_Header.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Pull_Requests_Detail.svelte": {
       "path": "Pull_Requests_Detail.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Pull_Requests_Page.svelte": {
       "path": "Pull_Requests_Page.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./repo.js": {
       "path": "repo.ts",
@@ -258,15 +298,30 @@
     },
     "./Repos_Table.svelte": {
       "path": "Repos_Table.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Repos_Tree_Nav.svelte": {
       "path": "Repos_Tree_Nav.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Repos_Tree.svelte": {
       "path": "Repos_Tree.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./resolved_gitops_config.js": {
       "path": "resolved_gitops_config.ts",
@@ -283,15 +338,30 @@
     },
     "./Table_Page.svelte": {
       "path": "Table_Page.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Tree_Item_Page.svelte": {
       "path": "Tree_Item_Page.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     },
     "./Tree_Page.svelte": {
       "path": "Tree_Page.svelte",
-      "declarations": []
+      "declarations": [
+        {
+          "name": "default",
+          "kind": "component"
+        }
+      ]
     }
   }
 }
