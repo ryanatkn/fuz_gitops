@@ -76,13 +76,15 @@
 									<span class="chip">{path}</span>
 								{/if}
 							</div>
-							<ul class="declarations unstyled">
-								{#each declarations as { name, kind } (name)}
-									<li class="declaration chip {kind}_declaration">
-										{name}
-									</li>
-								{/each}
-							</ul>
+							{#if declarations?.length}
+								<ul class="declarations unstyled">
+									{#each declarations as { name, kind } (name)}
+										<li class="declaration chip {kind}_declaration">
+											{name}
+										</li>
+									{/each}
+								</ul>
+							{/if}
 						</li>
 					{/each}
 				</ul>
