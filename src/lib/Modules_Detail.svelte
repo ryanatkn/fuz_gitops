@@ -53,7 +53,7 @@
 		{#each repos_modules as repo_modules (repo_modules)}
 			{@const {repo, modules} = repo_modules}
 			<li class="repo_module">
-				<header class="w_100 relative">
+				<header class="w_100 position_relative">
 					<a href="#{repo.name}" id={repo.name} class="subtitle">🔗</a>
 					<a href="{base}/tree/{repo.repo_name}">{repo.name}</a>
 				</header>
