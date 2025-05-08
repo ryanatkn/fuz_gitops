@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.48.0
+
+### Minor Changes
+
+- upgrade moss ([42e6ece](https://github.com/ryanatkn/fuz_gitops/commit/42e6ece))
+
 ## 0.47.0
 
 ### Minor Changes
