@@ -6,7 +6,7 @@ export const repos: Array<Repo> = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.141.1",\
+			"version": "0.144.0",\
 			"description": "Svelte UI library",\
 			"motto": "friendly user zystem",\
 			"glyph": "🧶",\
@@ -37,7 +37,7 @@ export const repos: Array<Repo> = JSON.parse(
 			},\
 			"type": "module",\
 			"engines": {\
-				"node": ">=22.11"\
+				"node": ">=22.15"\
 			},\
 			"peerDependencies": {\
 				"@ryanatkn/belt": "*",\
@@ -56,15 +56,15 @@ export const repos: Array<Repo> = JSON.parse(
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
 				"@ryanatkn/fuz_code": "^0.23.0",\
-				"@ryanatkn/gro": "^0.154.0",\
-				"@ryanatkn/moss": "^0.28.0",\
+				"@ryanatkn/gro": "^0.159.0",\
+				"@ryanatkn/moss": "^0.31.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
 				"@types/node": "^22.15.3",\
 				"@types/prismjs": "^1.26.5",\
-				"eslint": "^9.26.0",\
+				"eslint": "9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
 				"esm-env": "^1.2.2",\
 				"prettier": "^3.5.3",\
@@ -75,7 +75,7 @@ export const repos: Array<Repo> = JSON.parse(
 				"svelte-check": "^4.1.7",\
 				"tslib": "^2.8.1",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.31.1",\
+				"typescript-eslint": "^8.32.0",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -418,15 +418,25 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/fuz",\
-			"version": "0.141.1",\
+			"version": "0.144.0",\
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "json"\
+						}\
+					]\
 				},\
 				"./Alert.svelte": {\
 					"path": "Alert.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./alert.js": {\
 					"path": "alert.ts",\
@@ -447,23 +457,48 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Breadcrumb.svelte": {\
 					"path": "Breadcrumb.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Card.svelte": {\
 					"path": "Card.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Color_Scheme_Input.svelte": {\
 					"path": "Color_Scheme_Input.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Community_Links_Panel.svelte": {\
 					"path": "Community_Links_Panel.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Community_Links.svelte": {\
 					"path": "Community_Links.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./constants.js": {\
 					"path": "constants.ts",\
@@ -479,21 +514,36 @@ export const repos: Array<Repo> = JSON.parse(
 					"declarations": [\
 						{\
 							"name": "create_context",\
-							"kind": null\
+							"kind": "function"\
 						}\
 					]\
 				},\
 				"./Contextmenu_Entry.svelte": {\
 					"path": "Contextmenu_Entry.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Contextmenu_Link_Entry.svelte": {\
 					"path": "Contextmenu_Link_Entry.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Contextmenu_Root.svelte": {\
 					"path": "Contextmenu_Root.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./contextmenu_state.svelte.js": {\
 					"path": "contextmenu_state.svelte.ts",\
@@ -554,19 +604,39 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Contextmenu_Submenu.svelte": {\
 					"path": "Contextmenu_Submenu.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Contextmenu_Text_Entry.svelte": {\
 					"path": "Contextmenu_Text_Entry.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Contextmenu.svelte": {\
 					"path": "Contextmenu.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Copy_To_Clipboard.svelte": {\
 					"path": "Copy_To_Clipboard.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./csp_of_ryanatkn.js": {\
 					"path": "csp_of_ryanatkn.ts",\
@@ -582,7 +652,7 @@ export const repos: Array<Repo> = JSON.parse(
 					"declarations": [\
 						{\
 							"name": "create_csp_directives",\
-							"kind": null\
+							"kind": "function"\
 						},\
 						{\
 							"name": "Create_Csp_Directives_Options",\
@@ -700,11 +770,21 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Details.svelte": {\
 					"path": "Details.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Dialog.svelte": {\
 					"path": "Dialog.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./dialog.js": {\
 					"path": "dialog.ts",\
@@ -729,7 +809,12 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Dialogs.svelte": {\
 					"path": "Dialogs.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./dimensions.svelte.js": {\
 					"path": "dimensions.svelte.ts",\
@@ -742,11 +827,21 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Docs_Content.svelte": {\
 					"path": "Docs_Content.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Docs_Footer.svelte": {\
 					"path": "Docs_Footer.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./docs_helpers.svelte.js": {\
 					"path": "docs_helpers.svelte.ts",\
@@ -779,35 +874,75 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Docs_Menu_Header.svelte": {\
 					"path": "Docs_Menu_Header.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Docs_Menu.svelte": {\
 					"path": "Docs_Menu.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Docs_Page_Links.svelte": {\
 					"path": "Docs_Page_Links.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Docs_Primary_Nav.svelte": {\
 					"path": "Docs_Primary_Nav.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Docs_Secondary_Nav.svelte": {\
 					"path": "Docs_Secondary_Nav.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Docs_Tertiary_Nav.svelte": {\
 					"path": "Docs_Tertiary_Nav.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Docs.svelte": {\
 					"path": "Docs.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Hashlink.svelte": {\
 					"path": "Hashlink.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./helpers.js": {\
 					"path": "helpers.ts",\
@@ -824,19 +959,39 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Hidden_Personal_Links.svelte": {\
 					"path": "Hidden_Personal_Links.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Hue_Input.svelte": {\
 					"path": "Hue_Input.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Identifier.svelte": {\
 					"path": "Identifier.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Img_Or_Svg.svelte": {\
 					"path": "Img_Or_Svg.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./intersect.js": {\
 					"path": "intersect.ts",\
@@ -954,27 +1109,57 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Mdn_Link.svelte": {\
 					"path": "Mdn_Link.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Package_Detail.svelte": {\
 					"path": "Package_Detail.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Package_Summary.svelte": {\
 					"path": "Package_Summary.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Paste_From_Clipboard.svelte": {\
 					"path": "Paste_From_Clipboard.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Pending_Animation.svelte": {\
 					"path": "Pending_Animation.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Pending_Button.svelte": {\
 					"path": "Pending_Button.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./pkg.js": {\
 					"path": "pkg.ts",\
@@ -987,11 +1172,21 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Project_Links.svelte": {\
 					"path": "Project_Links.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Redirect.svelte": {\
 					"path": "Redirect.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./rune_helpers.svelte.js": {\
 					"path": "rune_helpers.svelte.ts",\
@@ -1004,7 +1199,12 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Spiders.svelte": {\
 					"path": "Spiders.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./storage.js": {\
 					"path": "storage.ts",\
@@ -1021,19 +1221,39 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Svg.svelte": {\
 					"path": "Svg.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Teleport.svelte": {\
 					"path": "Teleport.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Theme_Input.svelte": {\
 					"path": "Theme_Input.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Themed.svelte": {\
 					"path": "Themed.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./themer.svelte.js": {\
 					"path": "themer.svelte.ts",\
@@ -1082,23 +1302,48 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Tome_Content.svelte": {\
 					"path": "Tome_Content.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Tome_Header.svelte": {\
 					"path": "Tome_Header.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Tome_Link.svelte": {\
 					"path": "Tome_Link.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Tome_Section_Header.svelte": {\
 					"path": "Tome_Section_Header.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Tome_Section.svelte": {\
 					"path": "Tome_Section.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./tome.js": {\
 					"path": "tome.ts",\
@@ -1143,6 +1388,14 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"pull_requests": [\
 			{\
+				"number": 77,\
+				"title": "fix module links for non-lib paths",\
+				"user": {\
+					"login": "ryanatkn"\
+				},\
+				"draft": false\
+			},\
+			{\
 				"number": 71,\
 				"title": "use the `dialog` element in `Dialog`",\
 				"user": {\
@@ -1174,14 +1427,14 @@ export const repos: Array<Repo> = JSON.parse(
 			},\
 			"type": "module",\
 			"engines": {\
-				"node": ">=22.11"\
+				"node": ">=22.15"\
 			},\
 			"devDependencies": {\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.141.1",\
-				"@ryanatkn/gro": "^0.154.0",\
-				"@ryanatkn/moss": "^0.28.0",\
+				"@ryanatkn/fuz": "^0.143.0",\
+				"@ryanatkn/gro": "^0.158.0",\
+				"@ryanatkn/moss": "^0.29.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
@@ -1193,7 +1446,7 @@ export const repos: Array<Repo> = JSON.parse(
 				"svelte-check": "^4.1.7",\
 				"tslib": "^2.8.1",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.31.1",\
+				"typescript-eslint": "^8.32.0",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -1243,7 +1496,7 @@ export const repos: Array<Repo> = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/fuz_gitops",\
-			"version": "0.46.0",\
+			"version": "0.48.0",\
 			"description": "a tool for managing many repos",\
 			"glyph": "🪄",\
 			"logo": "logo.svg",\
@@ -1270,7 +1523,7 @@ export const repos: Array<Repo> = JSON.parse(
 			},\
 			"type": "module",\
 			"engines": {\
-				"node": ">=22.11"\
+				"node": ">=22.15"\
 			},\
 			"peerDependencies": {\
 				"@ryanatkn/belt": "*",\
@@ -1285,9 +1538,9 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.141.1",\
-				"@ryanatkn/gro": "^0.154.0",\
-				"@ryanatkn/moss": "^0.28.0",\
+				"@ryanatkn/fuz": "^0.144.0",\
+				"@ryanatkn/gro": "^0.159.0",\
+				"@ryanatkn/moss": "^0.31.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
@@ -1445,11 +1698,16 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/fuz_gitops",\
-			"version": "0.46.0",\
+			"version": "0.48.0",\
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "json"\
+						}\
+					]\
 				},\
 				"./fetch_repo_data.js": {\
 					"path": "fetch_repo_data.ts",\
@@ -1654,31 +1912,66 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Modules_Detail.svelte": {\
 					"path": "Modules_Detail.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Modules_Nav.svelte": {\
 					"path": "Modules_Nav.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Modules_Page.svelte": {\
 					"path": "Modules_Page.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Page_Footer.svelte": {\
 					"path": "Page_Footer.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Page_Header.svelte": {\
 					"path": "Page_Header.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Pull_Requests_Detail.svelte": {\
 					"path": "Pull_Requests_Detail.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Pull_Requests_Page.svelte": {\
 					"path": "Pull_Requests_Page.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./repo.js": {\
 					"path": "repo.ts",\
@@ -1703,15 +1996,30 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Repos_Table.svelte": {\
 					"path": "Repos_Table.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Repos_Tree_Nav.svelte": {\
 					"path": "Repos_Tree_Nav.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Repos_Tree.svelte": {\
 					"path": "Repos_Tree.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./resolved_gitops_config.js": {\
 					"path": "resolved_gitops_config.ts",\
@@ -1728,15 +2036,30 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Table_Page.svelte": {\
 					"path": "Table_Page.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Tree_Item_Page.svelte": {\
 					"path": "Tree_Item_Page.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Tree_Page.svelte": {\
 					"path": "Tree_Page.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				}\
 			}\
 		},\
@@ -1795,7 +2118,7 @@ export const repos: Array<Repo> = JSON.parse(
 			},\
 			"type": "module",\
 			"engines": {\
-				"node": ">=22.11"\
+				"node": ">=22.15"\
 			},\
 			"peerDependencies": {\
 				"@ryanatkn/moss": "*",\
@@ -1813,23 +2136,23 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.141.1",\
-				"@ryanatkn/gro": "^0.154.0",\
-				"@ryanatkn/moss": "^0.28.0",\
+				"@ryanatkn/fuz": "^0.144.0",\
+				"@ryanatkn/gro": "^0.159.0",\
+				"@ryanatkn/moss": "^0.31.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
-				"@types/node": "^22.15.3",\
+				"@types/node": "^22.15.16",\
 				"eslint": "^9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
 				"prettier": "^3.5.3",\
 				"prettier-plugin-svelte": "^3.3.3",\
 				"svelte": "^5.28.2",\
-				"svelte-check": "^4.1.6",\
+				"svelte-check": "^4.1.7",\
 				"tslib": "^2.8.1",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.31.1",\
+				"typescript-eslint": "^8.32.0",\
 				"uvu": "^0.5.6"\
 			},\
 			"prettier": {\
@@ -1932,7 +2255,12 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./package.json": {\
 					"path": "package.json",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "json"\
+						}\
+					]\
 				},\
 				"./code_sample_inputs.js": {\
 					"path": "code_sample_inputs.ts",\
@@ -1990,14 +2318,19 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Code.svelte": {\
 					"path": "Code.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./grammar_clike.js": {\
 					"path": "grammar_clike.ts",\
 					"declarations": [\
 						{\
 							"name": "add_grammar_clike",\
-							"kind": "variable"\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -2006,7 +2339,7 @@ export const repos: Array<Repo> = JSON.parse(
 					"declarations": [\
 						{\
 							"name": "add_grammar_css",\
-							"kind": "variable"\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -2015,7 +2348,7 @@ export const repos: Array<Repo> = JSON.parse(
 					"declarations": [\
 						{\
 							"name": "add_grammar_js",\
-							"kind": "variable"\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -2024,7 +2357,7 @@ export const repos: Array<Repo> = JSON.parse(
 					"declarations": [\
 						{\
 							"name": "add_grammar_json",\
-							"kind": "variable"\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -2033,7 +2366,7 @@ export const repos: Array<Repo> = JSON.parse(
 					"declarations": [\
 						{\
 							"name": "add_grammar_markup",\
-							"kind": "variable"\
+							"kind": "function"\
 						},\
 						{\
 							"name": "grammar_markup_add_inlined",\
@@ -2050,7 +2383,7 @@ export const repos: Array<Repo> = JSON.parse(
 					"declarations": [\
 						{\
 							"name": "add_grammar_svelte",\
-							"kind": "variable"\
+							"kind": "function"\
 						},\
 						{\
 							"name": "grammar_svelte_add_inlined",\
@@ -2063,7 +2396,7 @@ export const repos: Array<Repo> = JSON.parse(
 					"declarations": [\
 						{\
 							"name": "add_grammar_ts",\
-							"kind": "variable"\
+							"kind": "function"\
 						}\
 					]\
 				},\
@@ -2130,11 +2463,21 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./theme_standalone.css": {\
 					"path": "theme_standalone.css",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "css"\
+						}\
+					]\
 				},\
 				"./theme.css": {\
 					"path": "theme.css",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "css"\
+						}\
+					]\
 				}\
 			}\
 		},\
@@ -2184,7 +2527,7 @@ export const repos: Array<Repo> = JSON.parse(
 			},\
 			"type": "module",\
 			"engines": {\
-				"node": ">=22.11"\
+				"node": ">=22.15"\
 			},\
 			"peerDependencies": {\
 				"@ryanatkn/belt": "*",\
@@ -2199,10 +2542,10 @@ export const repos: Array<Repo> = JSON.parse(
 				"@changesets/changelog-git": "^0.2.1",\
 				"@ryanatkn/belt": "^0.30.2",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.141.1",\
+				"@ryanatkn/fuz": "^0.143.0",\
 				"@ryanatkn/fuz_code": "^0.23.0",\
-				"@ryanatkn/gro": "^0.154.0",\
-				"@ryanatkn/moss": "^0.28.0",\
+				"@ryanatkn/gro": "^0.158.0",\
+				"@ryanatkn/moss": "^0.29.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
@@ -2295,7 +2638,12 @@ export const repos: Array<Repo> = JSON.parse(
 			"modules": {\
 				"./package.json": {\
 					"path": "package.json",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "json"\
+						}\
+					]\
 				},\
 				"./mastodon_cache.svelte.js": {\
 					"path": "mastodon_cache.svelte.ts",\
@@ -2312,11 +2660,21 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Mastodon_Status_Item.svelte": {\
 					"path": "Mastodon_Status_Item.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Mastodon_Status_Tree.svelte": {\
 					"path": "Mastodon_Status_Tree.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./mastodon.js": {\
 					"path": "mastodon.ts",\
@@ -2418,15 +2776,30 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./Toot_Input.svelte": {\
 					"path": "Toot_Input.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Toot_Loader.svelte": {\
 					"path": "Toot_Loader.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				},\
 				"./Toot.svelte": {\
 					"path": "Toot.svelte",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "component"\
+						}\
+					]\
 				}\
 			}\
 		},\
@@ -2449,7 +2822,7 @@ export const repos: Array<Repo> = JSON.parse(
 	{\
 		"package_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.154.0",\
+			"version": "0.159.0",\
 			"description": "task runner and toolkit extending SvelteKit",\
 			"motto": "generate, run, optimize",\
 			"glyph": "🌰",\
@@ -2481,7 +2854,7 @@ export const repos: Array<Repo> = JSON.parse(
 			},\
 			"type": "module",\
 			"engines": {\
-				"node": ">=22.11"\
+				"node": ">=22.15"\
 			},\
 			"bin": {\
 				"gro": "dist/gro.js"\
@@ -2503,39 +2876,40 @@ export const repos: Array<Repo> = JSON.parse(
 				"dotenv": "^16.5.0",\
 				"esm-env": "^1.2.2",\
 				"mri": "^1.2.0",\
-				"oxc-parser": "^0.67.0",\
+				"oxc-parser": "^0.68.1",\
 				"prettier": "^3.5.3",\
 				"prettier-plugin-svelte": "^3.3.3",\
-				"ts-morph": "^25.0.1",\
+				"ts-blank-space": "^0.6.1",\
 				"tslib": "^2.8.1",\
-				"zod": "^3.24.3"\
+				"zod": "^3.24.4"\
 			},\
 			"peerDependencies": {\
 				"esbuild": "^0.25",\
-				"svelte": "^5"\
+				"svelte": "^5",\
+				"typescript": "^5"\
 			},\
 			"devDependencies": {\
 				"@changesets/changelog-git": "^0.2.1",\
 				"@changesets/types": "^6.1.0",\
 				"@ryanatkn/eslint-config": "^0.8.0",\
-				"@ryanatkn/fuz": "^0.141.1",\
-				"@ryanatkn/moss": "^0.28.0",\
+				"@ryanatkn/fuz": "^0.144.0",\
+				"@ryanatkn/moss": "^0.31.0",\
 				"@sveltejs/adapter-static": "^3.0.8",\
 				"@sveltejs/kit": "^2.20.8",\
 				"@sveltejs/package": "^2.3.11",\
 				"@sveltejs/vite-plugin-svelte": "^5.0.3",\
 				"@types/node": "^22.15.3",\
 				"esbuild": "^0.25.3",\
-				"eslint": "^9.25.1",\
+				"eslint": "9.25.1",\
 				"eslint-plugin-svelte": "^3.5.1",\
 				"svelte": "^5.28.2",\
-				"svelte-check": "^4.1.6",\
+				"svelte-check": "^4.1.7",\
 				"typescript": "^5.8.3",\
-				"typescript-eslint": "^8.31.1",\
+				"typescript-eslint": "^8.32.0",\
 				"uvu": "^0.5.6"\
 			},\
 			"optionalDependencies": {\
-				"@ryanatkn/moss": "^0.28.0"\
+				"@ryanatkn/moss": ">=0.27.0"\
 			},\
 			"prettier": {\
 				"plugins": [\
@@ -2773,6 +3147,14 @@ export const repos: Array<Repo> = JSON.parse(
 					"types": "./dist/package.d.ts",\
 					"default": "./dist/package.js"\
 				},\
+				"./parse_exports_context.js": {\
+					"types": "./dist/parse_exports_context.d.ts",\
+					"default": "./dist/parse_exports_context.js"\
+				},\
+				"./parse_exports.js": {\
+					"types": "./dist/parse_exports.d.ts",\
+					"default": "./dist/parse_exports.js"\
+				},\
 				"./parse_imports.js": {\
 					"types": "./dist/parse_imports.d.ts",\
 					"default": "./dist/parse_imports.js"\
@@ -2837,10 +3219,6 @@ export const repos: Array<Repo> = JSON.parse(
 					"types": "./dist/svelte_config.d.ts",\
 					"default": "./dist/svelte_config.js"\
 				},\
-				"./svelte_helpers.js": {\
-					"types": "./dist/svelte_helpers.d.ts",\
-					"default": "./dist/svelte_helpers.js"\
-				},\
 				"./sveltekit_helpers.js": {\
 					"types": "./dist/sveltekit_helpers.d.ts",\
 					"default": "./dist/sveltekit_helpers.js"\
@@ -2885,6 +3263,10 @@ export const repos: Array<Repo> = JSON.parse(
 					"types": "./dist/task.d.ts",\
 					"default": "./dist/task.js"\
 				},\
+				"./test_helpers.js": {\
+					"types": "./dist/test_helpers.d.ts",\
+					"default": "./dist/test_helpers.js"\
+				},\
 				"./test.task.js": {\
 					"types": "./dist/test.task.d.ts",\
 					"default": "./dist/test.task.js"\
@@ -2905,7 +3287,7 @@ export const repos: Array<Repo> = JSON.parse(
 		},\
 		"src_json": {\
 			"name": "@ryanatkn/gro",\
-			"version": "0.154.0",\
+			"version": "0.159.0",\
 			"modules": {\
 				".": {\
 					"path": "index.ts",\
@@ -2954,7 +3336,12 @@ export const repos: Array<Repo> = JSON.parse(
 				},\
 				"./package.json": {\
 					"path": "package.json",\
-					"declarations": []\
+					"declarations": [\
+						{\
+							"name": "default",\
+							"kind": "json"\
+						}\
+					]\
 				},\
 				"./args.js": {\
 					"path": "args.ts",\
@@ -3252,6 +3639,14 @@ export const repos: Array<Repo> = JSON.parse(
 						},\
 						{\
 							"name": "JSON_MATCHER",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "SVELTE_MATCHER",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "SVELTE_RUNES_MATCHER",\
 							"kind": "variable"\
 						},\
 						{\
@@ -3879,8 +4274,7 @@ export const repos: Array<Repo> = JSON.parse(
 					]\
 				},\
 				"./gro.js": {\
-					"path": "gro.ts",\
-					"declarations": []\
+					"path": "gro.ts"\
 				},\
 				"./hash.js": {\
 					"path": "hash.ts",\
@@ -3954,8 +4348,7 @@ export const repos: Array<Repo> = JSON.parse(
 					]\
 				},\
 				"./invoke.js": {\
-					"path": "invoke.ts",\
-					"declarations": []\
+					"path": "invoke.ts"\
 				},\
 				"./lint.task.js": {\
 					"path": "lint.task.ts",\
@@ -4169,6 +4562,44 @@ export const repos: Array<Repo> = JSON.parse(
 						}\
 					]\
 				},\
+				"./parse_exports_context.js": {\
+					"path": "parse_exports_context.ts",\
+					"declarations": [\
+						{\
+							"name": "Parse_Exports_Context",\
+							"kind": "class"\
+						}\
+					]\
+				},\
+				"./parse_exports.js": {\
+					"path": "parse_exports.ts",\
+					"declarations": [\
+						{\
+							"name": "Declaration_Kind",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Declaration",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "Export_Declaration",\
+							"kind": "type"\
+						},\
+						{\
+							"name": "parse_exports",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "infer_declarations_from_file_type",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "process_ts_exports",\
+							"kind": "function"\
+						}\
+					]\
+				},\
 				"./parse_imports.js": {\
 					"path": "parse_imports.ts",\
 					"declarations": [\
@@ -4327,8 +4758,7 @@ export const repos: Array<Repo> = JSON.parse(
 					]\
 				},\
 				"./register.js": {\
-					"path": "register.ts",\
-					"declarations": []\
+					"path": "register.ts"\
 				},\
 				"./reinstall.task.js": {\
 					"path": "reinstall.task.ts",\
@@ -4442,6 +4872,10 @@ export const repos: Array<Repo> = JSON.parse(
 					"path": "src_json.ts",\
 					"declarations": [\
 						{\
+							"name": "Src_Module_Declaration_Kind",\
+							"kind": "variable"\
+						},\
+						{\
 							"name": "Src_Module_Declaration",\
 							"kind": "variable"\
 						},\
@@ -4496,19 +4930,6 @@ export const repos: Array<Repo> = JSON.parse(
 						},\
 						{\
 							"name": "default_svelte_config",\
-							"kind": "variable"\
-						}\
-					]\
-				},\
-				"./svelte_helpers.js": {\
-					"path": "svelte_helpers.ts",\
-					"declarations": [\
-						{\
-							"name": "SVELTE_MATCHER",\
-							"kind": "variable"\
-						},\
-						{\
-							"name": "SVELTE_RUNES_MATCHER",\
 							"kind": "variable"\
 						}\
 					]\
@@ -4836,6 +5257,27 @@ export const repos: Array<Repo> = JSON.parse(
 						},\
 						{\
 							"name": "validate_task_module",\
+							"kind": "function"\
+						}\
+					]\
+				},\
+				"./test_helpers.js": {\
+					"path": "test_helpers.ts",\
+					"declarations": [\
+						{\
+							"name": "SOME_PUBLIC_ENV_VAR_NAME",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "SOME_PUBLIC_ENV_VAR_VALUE",\
+							"kind": "variable"\
+						},\
+						{\
+							"name": "init_test_env",\
+							"kind": "function"\
+						},\
+						{\
+							"name": "create_ts_test_env",\
 							"kind": "function"\
 						}\
 					]\
