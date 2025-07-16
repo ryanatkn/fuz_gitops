@@ -14,7 +14,7 @@ fuz_gitops is alternative to the monorepo pattern that more loosely couples repo
 With fuz_gitops you can:
 
 - fetch metadata about collections of repos and import it as typesafe JSON (using
-  [Gro's public package patterns](https://github.com/grogarden/gro/blob/main/src/lib/docs/gro_plugin_sveltekit_frontend.md#well_known_package_json))
+  [Gro's public package patterns](https://github.com/ryanatkn/gro/blob/main/src/docs/gro_plugin_sveltekit_app.md#well_known_package_json))
 - publish a generated docs website for your collections of repos
 - import its components to view and interact with repo collection metadata
 - publish metadata about your collections of repos to the web for other users and tools
