@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {page} from '$app/state';
-	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
+	import type {Src_Module} from '@ryanatkn/belt/src_json.js';
 
 	import type {Repo} from '$lib/repo.js';
 

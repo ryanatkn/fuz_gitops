@@ -1,6 +1,6 @@
 import {strip_end} from '@ryanatkn/belt/string.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
-import {parse_package_meta, type Package_Meta} from '@ryanatkn/gro/package_meta.js';
+import {parse_pkg, type Pkg} from '@ryanatkn/belt/pkg.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
 import {create_src_json} from '@ryanatkn/gro/src_json.js';
@@ -17,7 +17,7 @@ import {spawn_cli} from '@ryanatkn/gro/cli.js';
 import type {Gitops_Repo_Config} from '$lib/gitops_config.js';
 
 export interface Local_Repo extends Resolved_Local_Repo {
-	pkg: Package_Meta;
+	pkg: Pkg;
 	// TODO what else? filesystem info?
 }
 
@@ -73,7 +73,7 @@ export const load_local_repo = async (
 
 	return {
 		...resolved_local_repo,
-		pkg: parse_package_meta(package_json, src_json),
+		pkg: parse_pkg(package_json, src_json),
 	};
 };
 

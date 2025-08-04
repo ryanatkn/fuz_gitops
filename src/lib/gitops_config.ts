@@ -1,4 +1,4 @@
-import {Url} from '@ryanatkn/gro/package_json.js';
+import type {Url} from '@ryanatkn/belt/url.js';
 import {existsSync} from 'node:fs';
 import {strip_end} from '@ryanatkn/belt/string.js';
 import type {Git_Branch} from '@ryanatkn/gro/git.js';
