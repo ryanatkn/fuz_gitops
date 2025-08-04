@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
+	import type {Pkg} from '@ryanatkn/belt/pkg.js';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 	import type {Snippet} from 'svelte';
 	import type {SvelteHTMLElements} from 'svelte/elements';
 
 	interface Props {
-		pkg: Package_Meta | {url: string; package_json: null};
+		pkg: Pkg | {url: string; package_json: null};
 		nav_attrs?: SvelteHTMLElements['nav'];
 		attrs?: SvelteHTMLElements['header'];
 		nav?: Snippet;

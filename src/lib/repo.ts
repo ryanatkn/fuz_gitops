@@ -1,9 +1,9 @@
 import {create_context} from '@ryanatkn/fuz/context_helpers.js';
-import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
+import type {Pkg} from '@ryanatkn/belt/pkg.js';
 
 import {Github_Check_Runs_Item, type Github_Pull_Request} from '$lib/github.js';
 
-export interface Repo extends Package_Meta {
+export interface Repo extends Pkg {
 	check_runs: Github_Check_Runs_Item | null;
 	pull_requests: Array<Github_Pull_Request> | null;
 }
