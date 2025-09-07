@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {page} from '$app/state';
-	import {base} from '$app/paths';
+	import {resolve} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
 
 	import type {Repo} from '$lib/repo.js';
@@ -74,13 +74,14 @@
 				<td>
 					<div class="row">
 						{#if package_json}
-							<a href="{base}/tree/{repo.repo_name}">{package_json.glyph ?? '🌳'}</a>
+							<a href={resolve(`/tree/{repo.repo_name}`)}>{package_json.glyph ?? '🌳'}</a>
 						{/if}
 					</div>
 				</td>
 				<td>
 					<div class="row">
 						{#if homepage_url}
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 							<a class:selected={homepage_url === page.url.href} href={homepage_url} class="row">
 								<img
 									src={repo.logo_url}
@@ -97,12 +98,13 @@
 				<td>
 					<div class="row">
 						{#if package_json}
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 							<a href={repo.repo_url}>{repo.repo_name}</a>
 							{@const check_runs = repo.check_runs}
 							{@const check_runs_completed = check_runs?.status === 'completed'}
 							{@const check_runs_success = check_runs?.conclusion === 'success'}
 							{#if check_runs && (!check_runs_completed || !check_runs_success)}
-								<a
+								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
 									href="{repo.repo_url}/commits/main"
 									title={!check_runs_completed
 										? `status: ${check_runs.status}`
@@ -111,20 +113,26 @@
 								>
 							{/if}
 						{:else}
-							<a href={repo.repo_url}>{format_url(repo.repo_url)}</a>
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
+								href={repo.repo_url}>{format_url(repo.repo_url)}</a
+							>
 						{/if}
 					</div>
 				</td>
 				<td>
 					{#if repo.npm_url}
 						<div class="row">
-							<a href={repo.npm_url}><code>{repo.name}</code></a>
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
+								href={repo.npm_url}><code>{repo.name}</code></a
+							>
 						</div>
 					{/if}
 				</td>
 				<td>
 					{#if package_json.version !== '0.0.1'}
-						<a href={repo.changelog_url}>{format_version(package_json.version)}</a>
+						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
+							href={repo.changelog_url}>{format_version(package_json.version)}</a
+						>
 					{/if}
 				</td>
 				{#each deps as dep (dep)}
@@ -146,8 +154,10 @@
 						<div class="row">
 							{#if pull_requests}
 								{#each pull_requests as pull (pull)}
-									<a href={to_pull_url(repo.repo_url, pull)} class="chip" title={pull.title}
-										>#{pull.number}</a
+									<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
+										href={to_pull_url(repo.repo_url, pull)}
+										class="chip"
+										title={pull.title}>#{pull.number}</a
 									>
 								{/each}
 							{/if}

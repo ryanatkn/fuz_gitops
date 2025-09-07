@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type {Src_Module} from '@ryanatkn/belt/src_json.js';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
-	import {base} from '$app/paths';
+	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
 	import Modules_Nav from '$lib/Modules_Nav.svelte';
@@ -55,7 +55,7 @@
 			<li class="repo_module">
 				<header class="w_100 position_relative">
 					<a href="#{repo.name}" id={repo.name} class="subtitle">🔗</a>
-					<a href="{base}/tree/{repo.repo_name}">{repo.name}</a>
+					<a href={resolve(`/tree/${repo.repo_name}`)}>{repo.name}</a>
 				</header>
 				<ul class="modules panel unstyled">
 					{#each modules as repo_module (repo_module)}
@@ -70,6 +70,7 @@
 							<div class="module_file">
 								{#if repo.repo_url}
 									<div class="chip row">
+										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 										<a href="{ensure_end(repo.repo_url, '/')}blob/main/src/lib/{path}">{path}</a>
 									</div>
 								{:else}

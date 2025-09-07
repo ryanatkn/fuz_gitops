@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {base} from '$app/paths';
+	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
 	import type {Repo} from '$lib/repo.js';
@@ -24,7 +24,7 @@
 				{#if repo.package_json}<a
 						class="menu_item"
 						class:selected
-						href="{base}/tree/{repo.repo_name}"
+						href={resolve(`/tree/{repo.repo_name}`)}
 						><div class="ellipsis">
 							{repo.repo_name}{#if repo.package_json.glyph}&nbsp;{repo.package_json.glyph}{/if}
 						</div></a
