@@ -1,8 +1,8 @@
-import {Package_Json} from '@ryanatkn/gro/package_json.js';
+import {Package_Json} from '@ryanatkn/belt/package_json.js';
 import {ensure_end} from '@ryanatkn/belt/string.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {wait} from '@ryanatkn/belt/async.js';
-import {Src_Json} from '@ryanatkn/gro/src_json.js';
+import {Src_Json} from '@ryanatkn/belt/src_json.js';
 import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
 import {fetch_github_check_runs, fetch_github_pull_requests} from '$lib/github.js';

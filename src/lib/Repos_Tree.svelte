@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Package_Summary from '@ryanatkn/fuz/Package_Summary.svelte';
 	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
-	import {base} from '$app/paths';
+	import {resolve} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
 	import type {Snippet} from 'svelte';
 
@@ -37,14 +37,16 @@
 					{#if repo.package_json}
 						<Package_Summary pkg={repo}>
 							{#snippet repo_name(repo_name)}
-								<a href="{base}/tree/{repo_name}" class="repo_name">{repo_name}</a>
+								<a href={resolve(`/tree/${repo_name}`)} class="repo_name">{repo_name}</a>
 							{/snippet}
 						</Package_Summary>
 					{:else}
 						<div class="width_sm">
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
-								<a href={repo.repo_url}>{format_url(repo.repo_url)}</a>
+								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
+									href={repo.repo_url}>{format_url(repo.repo_url)}</a
+								>
 							</p>
 						</div>
 					{/if}

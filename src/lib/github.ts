@@ -1,5 +1,5 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import type {Package_Meta} from '@ryanatkn/gro/package_meta.js';
+import type {Pkg} from '@ryanatkn/belt/pkg.js';
 import {z} from 'zod';
 import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
@@ -22,7 +22,7 @@ export type Github_Pull_Requests = z.infer<typeof Github_Pull_Requests>;
  * @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
  */
 export const fetch_github_pull_requests = async (
-	pkg: Package_Meta,
+	pkg: Pkg,
 	cache?: Fetch_Value_Cache,
 	log?: Logger,
 	token?: string,
@@ -70,7 +70,7 @@ export type Github_Check_Runs = z.infer<typeof Github_Check_Runs>;
  * @see https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference
  */
 export const fetch_github_check_runs = async (
-	pkg: Package_Meta,
+	pkg: Pkg,
 	cache?: Fetch_Value_Cache,
 	log?: Logger,
 	token?: string,
