@@ -19,17 +19,20 @@ import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 export const Args = z
 	.object({
 		path: z
-			.string({description: 'path to the gitops config file, absolute or relative to the cwd'})
+			.string()
+			.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
 			.default('gitops.config.ts'),
 		dir: z
-			.string({description: 'path containing the repos, defaults to the parent of the `path` dir'})
+			.string()
+			.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
 			.optional(),
 		outdir: z
-			.string({description: 'path to the directory for the generated files, defaults to $routes/'})
+			.string()
+			.meta({description: 'path to the directory for the generated files, defaults to $routes/'})
 			.optional(),
-		download: z.boolean({description: 'download all missing local repos'}).default(false),
-		sync: z.boolean({description: 'dual of no-sync'}).default(true),
-		'no-sync': z.boolean({description: 'opt out of gro sync'}).default(false),
+		download: z.boolean().meta({description: 'download all missing local repos'}).default(false),
+		sync: z.boolean().meta({description: 'dual of no-sync'}).default(true),
+		'no-sync': z.boolean().meta({description: 'opt out of gro sync'}).default(false),
 	})
 	.strict();
 export type Args = z.infer<typeof Args>;
