@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.49.0
+
+### Minor Changes
+
+- upgrade zod@4 ([#34](https://github.com/ryanatkn/fuz_gitops/pull/34))
+
 ## 0.48.0
 
 ### Minor Changes
