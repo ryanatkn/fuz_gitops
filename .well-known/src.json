@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.50.0",
+  "version": "0.50.1",
   "modules": {
     "./fetch_repo_data.js": {
       "path": "fetch_repo_data.ts",
