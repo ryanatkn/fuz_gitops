@@ -14,15 +14,55 @@ export interface Published_Version {
 }
 
 export class Version_Manager {
+	private external_version_cache = new Map<string, string>();
+
 	/**
 	 * Resolves a wildcard dependency to a specific version.
+	 * For internal packages, uses the repo version.
+	 * For external packages, queries npm for latest version.
 	 */
-	resolve_wildcard(pkg: string, repos: Array<Local_Repo>): string {
+	async resolve_wildcard(pkg: string, repos: Array<Local_Repo>): Promise<string> {
+		// Check if it's an internal package
 		const repo = repos.find((r) => r.pkg.name === pkg);
-		if (!repo) {
-			throw new Error(`Cannot resolve wildcard for unknown package: ${pkg}`);
+		if (repo) {
+			return repo.pkg.package_json.version || '0.0.0';
 		}
-		return repo.pkg.package_json.version || '0.0.0';
+
+		// Check cache for external packages
+		if (this.external_version_cache.has(pkg)) {
+			return this.external_version_cache.get(pkg)!;
+		}
+
+		// Query npm for external package
+		try {
+			const result = await this.get_latest_npm_version(pkg);
+			if (result) {
+				this.external_version_cache.set(pkg, result);
+				return result;
+			}
+		} catch {
+			// Fall back to wildcard if npm query fails
+		}
+
+		// Return wildcard as fallback
+		return '*';
+	}
+
+	/**
+	 * Queries npm registry for the latest version of a package.
+	 */
+	private async get_latest_npm_version(pkg: string): Promise<string | null> {
+		try {
+			const {spawn_cli} = await import('@ryanatkn/gro/cli.js');
+			const result = await spawn_cli('npm', ['view', pkg, 'version', '--json']);
+			if (result?.ok && 'stdout' in result) {
+				const version = JSON.parse(result.stdout as string);
+				return version;
+			}
+		} catch {
+			// npm query failed
+		}
+		return null;
 	}
 
 	/**

@@ -61,6 +61,18 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - Package metadata from .well-known endpoints
 - Caches responses to minimize API calls
 
+### Multi-repo publishing
+
+- `gro gitops_publish` - publishes repos in dependency order
+- Handles circular dev dependencies by excluding from topological sort
+- Waits for NPM propagation with exponential backoff
+- Updates cross-repo dependencies automatically
+
+Key modules:
+- `npm_registry.ts` - NPM availability checks with retry
+- `dependency_updater.ts` - Package.json updates
+- `multi_repo_publisher.ts` - Simple orchestration
+
 ## Data types
 
 ```ts

@@ -18,6 +18,7 @@ With fuz_gitops you can:
 - publish a generated docs website for your collections of repos
 - import its components to view and interact with repo collection metadata
 - publish metadata about your collections of repos to the web for other users and tools
+- publish multiple interdependent packages in dependency order with automatic dependency updates
 
 planned additions:
 
@@ -42,6 +43,18 @@ npm i -D @ryanatkn/fuz_gitops
 - re-export the `gro gitops` task by creating `$lib/gitops.task.ts` with
   the contents `export * from '@ryanatkn/fuz_gitops/gitops.task.js';`
 - run `gro gitops` to update the local data
+
+### Publishing multiple repos
+
+```bash
+gro gitops_publish         # publish all repos with changesets
+gro gitops_publish --dry   # preview what would be published
+```
+
+Publishes repos in dependency order, handling:
+- Circular dev dependencies
+- NPM registry propagation delays
+- Automatic dependency updates across repos
 
 Getting started as a dev? Start with [Gro](https://github.com/grogarden/gro)
 and the [Fuz template](https://github.com/fuz-dev/fuz_template).
