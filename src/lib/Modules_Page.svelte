@@ -18,7 +18,7 @@
 	<title>modules {repo.package_json.glyph} {repo.package_json.name}</title>
 </svelte:head>
 
-<main class="box w_100">
+<main class="box width_100">
 	<div class="p_lg">
 		<Page_Header pkg={repo} />
 	</div>

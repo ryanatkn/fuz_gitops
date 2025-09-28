@@ -41,7 +41,7 @@
 							{/snippet}
 						</Package_Summary>
 					{:else}
-						<div class="width_sm">
+						<div class="width_upto_sm">
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
