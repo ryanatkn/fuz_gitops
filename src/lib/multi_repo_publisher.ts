@@ -18,7 +18,7 @@ export interface Publishing_Options {
 	continue_on_error: boolean;
 	update_deps: boolean;
 	version_strategy?: Version_Strategy;
-	skip_dev?: boolean;
+	deploy?: boolean;
 	max_wait?: number;
 	log?: Logger;
 }
@@ -46,7 +46,7 @@ export async function publish_repos(
 	options: Publishing_Options,
 ): Promise<Publishing_Result> {
 	const start_time = Date.now();
-	const {dry, continue_on_error, update_deps, skip_dev, log} = options;
+	const {dry, continue_on_error, update_deps, log} = options;
 
 	// Build dependency graph
 	log?.info('📊 Analyzing dependencies...');
@@ -75,8 +75,10 @@ export async function publish_repos(
 
 	const published = new Map<string, Published_Version>();
 	const failed = new Map<string, Error>();
+	const registry = new Npm_Registry(log);
+	const updater = new Dependency_Updater(log);
 
-	// Phase 1: Publish packages
+	// Phase 1: Publish each package and immediately update dependents
 	log?.info(st('cyan', `\n🚀 Publishing ${order.length} packages...\n`));
 
 	for (const pkg_name of order) {
@@ -84,10 +86,49 @@ export async function publish_repos(
 		if (!repo) continue;
 
 		try {
+			// 1. Publish this package
 			log?.info(`Publishing ${pkg_name}...`);
 			const version = await publish_single_repo(repo, options);
 			published.set(pkg_name, version);
 			log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
+
+			if (!dry) {
+				// 2. Wait for this package to be available on NPM
+				log?.info(`  ⏳ Waiting for ${pkg_name}@${version.new_version} on NPM...`);
+				await registry.wait_for_package(pkg_name, version.new_version, {
+					max_attempts: 30,
+					initial_delay: 1000,
+					max_delay: 60000,
+					timeout: options.max_wait || 300000,
+				});
+
+				// 3. Update all repos that have prod/peer deps on this package
+				if (update_deps) {
+					for (const dependent_repo of repos) {
+						const updates = new Map<string, string>();
+
+						// Check prod dependencies
+						if (dependent_repo.dependencies?.has(pkg_name)) {
+							updates.set(pkg_name, version.new_version);
+						}
+
+						// Check peer dependencies
+						if (dependent_repo.peer_dependencies?.has(pkg_name)) {
+							updates.set(pkg_name, version.new_version);
+						}
+
+						// Apply updates if any
+						if (updates.size > 0) {
+							log?.info(`    Updating ${dependent_repo.pkg.name}'s dependency on ${pkg_name}`);
+							await updater.update_package_json(
+								dependent_repo,
+								updates,
+								options.version_strategy || 'caret',
+							);
+						}
+					}
+				}
+			}
 		} catch (error) {
 			const err = error instanceof Error ? error : new Error(String(error));
 			failed.set(pkg_name, err);
@@ -96,60 +137,51 @@ export async function publish_repos(
 		}
 	}
 
-	// Phase 2: Wait for NPM availability
-	if (published.size > 0 && !dry) {
-		log?.info(st('cyan', '\n⏳ Waiting for NPM availability...\n'));
-		const registry = new Npm_Registry(log);
+	// Phase 2: Update all dev dependencies (can have cycles)
+	if (update_deps && published.size > 0 && !dry) {
+		log?.info(st('cyan', '\n🔄 Updating dev dependencies...\n'));
 
-		const packages = Array.from(published.values()).map((v) => ({
-			name: v.name,
-			version: v.new_version,
-		}));
+		for (const repo of repos) {
+			const dev_updates = new Map<string, string>();
 
-		await registry.wait_for_packages(packages, {
-			max_attempts: 30,
-			initial_delay: 1000,
-			max_delay: 60000,
-			timeout: options.max_wait || 300000,
-		});
+			// Check dev dependencies only
+			if (repo.dev_dependencies) {
+				for (const [dep_name] of repo.dev_dependencies) {
+					const published_version = published.get(dep_name);
+					if (published_version) {
+						dev_updates.set(dep_name, published_version.new_version);
+					}
+				}
+			}
+
+			if (dev_updates.size > 0) {
+				log?.info(`  Updating ${dev_updates.size} dev dependencies in ${repo.pkg.name}`);
+				await updater.update_package_json(
+					repo,
+					dev_updates,
+					options.version_strategy || 'caret',
+				);
+			}
+		}
 	}
 
-	// Phase 3: Update dependencies
-	if (update_deps && published.size > 0 && !dry) {
-		log?.info(st('cyan', '\n🔄 Updating dependencies...\n'));
-		const updater = new Dependency_Updater(log);
+	// Phase 3: Deploy all repos (optional)
+	if (options.deploy && !dry) {
+		log?.info(st('cyan', '\n🚢 Deploying all repos...\n'));
 
-		// Create version map
-		const published_versions = new Map<string, string>();
-		for (const [name, info] of published) {
-			published_versions.set(name, info.new_version);
-		}
+		for (const repo of repos) {
+			try {
+				log?.info(`  Deploying ${repo.pkg.name}...`);
+				const deploy_result = await spawn_cli('gro', ['deploy'], log, {cwd: repo.repo_dir});
 
-		// Filter repos based on skip_dev option
-		const repos_to_update = skip_dev
-			? repos.filter((r) => {
-					// Only update repos that have non-dev dependencies on published packages
-					const has_prod_or_peer_deps =
-						(r.dependencies && Array.from(r.dependencies.keys()).some((d) => published_versions.has(d))) ||
-						(r.peer_dependencies && Array.from(r.peer_dependencies.keys()).some((d) => published_versions.has(d)));
-					return has_prod_or_peer_deps;
-			  })
-			: repos;
-
-		const result = await updater.update_all_repos(
-			repos_to_update,
-			published_versions,
-			options.version_strategy || 'caret',
-		);
-
-		if (result.updated > 0) {
-			log?.info(st('green', `  ✅ Updated dependencies in ${result.updated} repositories`));
-		} else {
-			log?.info('  No dependencies needed updating');
-		}
-
-		if (result.failed.length > 0) {
-			log?.error(st('red', `  ❌ Failed to update ${result.failed.length} repositories`));
+				if (deploy_result?.ok) {
+					log?.info(st('green', `  ✅ Deployed ${repo.pkg.name}`));
+				} else {
+					log?.warn(st('yellow', `  ⚠️  Failed to deploy ${repo.pkg.name}`));
+				}
+			} catch (error) {
+				log?.error(st('red', `  ❌ Error deploying ${repo.pkg.name}: ${error}`));
+			}
 		}
 	}
 

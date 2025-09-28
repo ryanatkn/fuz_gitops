@@ -31,6 +31,10 @@ export const Args = z.strictObject({
 		.enum(['stdout', 'json', 'markdown'])
 		.describe('output format')
 		.default('stdout'),
+	deploy: z
+		.boolean()
+		.describe('deploy all repos after publishing')
+		.default(false),
 });
 export type Args = z.infer<typeof Args>;
 
@@ -45,6 +49,7 @@ export const task: Task<Args> = {
 			peer_strategy,
 			dry,
 			format,
+			deploy,
 		} = args;
 
 		// Load repos
@@ -63,7 +68,7 @@ export const task: Task<Args> = {
 			continue_on_error,
 			update_deps: update_peers,
 			version_strategy: peer_strategy,
-			skip_dev: false,
+			deploy,
 			max_wait: 300000, // 5 minutes
 			log,
 		};
