@@ -201,6 +201,9 @@ a.chip {
 .width_100 {
 	width: 100%;
 }
+.height_100 {
+	height: 100%;
+}
 .p_sm {
 	padding: var(--space_sm);
 }
