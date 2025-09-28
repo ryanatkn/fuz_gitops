@@ -31,16 +31,6 @@
 	text-overflow: ellipsis;
 }
 
-.width_sm {
-	width: 100%;
-	max-width: var(--distance_sm);
-}
-
-.width_md {
-	width: 100%;
-	max-width: var(--distance_md);
-}
-
 .selectable {
 	--button_fill: color-mix(in hsl, var(--fill) 8%, transparent);
 	--button_fill_hover: color-mix(in hsl, var(--fill) 16%, transparent);
