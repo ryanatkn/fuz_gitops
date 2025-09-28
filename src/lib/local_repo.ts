@@ -63,7 +63,6 @@ export const load_local_repo = async (
 
 		await git_pull();
 
-		// TODO probably allow opt-in syncing, problem is it's very slow to do in the normal case
 		// Sync the repo so deps are installed and generated files are up-to-date.
 		await spawn_cli('gro', ['sync'], log, {cwd: resolved_local_repo.repo_dir});
 	}
