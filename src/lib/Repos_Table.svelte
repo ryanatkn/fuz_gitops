@@ -74,7 +74,7 @@
 				<td>
 					<div class="row">
 						{#if package_json}
-							<a href={resolve(`/tree/{repo.repo_name}`)}>{package_json.glyph ?? '🌳'}</a>
+							<a href={resolve(`/tree/${repo.repo_name}`)}>{package_json.glyph ?? '🌳'}</a>
 						{/if}
 					</div>
 				</td>
