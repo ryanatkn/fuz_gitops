@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type {Src_Module} from '@ryanatkn/gro/src_json.js';
+	import type {Src_Module} from '@ryanatkn/belt/src_json.js';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
-	import {base} from '$app/paths';
+	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
 	import Modules_Nav from '$lib/Modules_Nav.svelte';
@@ -23,7 +23,7 @@
 		repo: Repo;
 		modules: Array<Src_Module>;
 	}> = $derived(
-		repos.reduce<Array<{repo: Repo; modules: Array<Src_Module>}>>((v, repo) => {
+		repos.reduce<Array<{repo: Repo; modules: Array<Src_Module>}>>((acc, repo) => {
 			const {package_json, src_json} = repo;
 			if (
 				!src_json.modules ||
@@ -32,10 +32,10 @@
 					!!package_json.dependencies?.['@sveltejs/package']
 				)
 			) {
-				return v;
+				return acc;
 			}
-			v.push({repo, modules: Object.values(src_json.modules)});
-			return v;
+			acc.push({repo, modules: Object.values(src_json.modules)});
+			return acc;
 		}, []),
 	);
 
@@ -49,13 +49,13 @@
 		</section>
 		{@render nav_footer?.()}
 	</div>
-	<ul class="width_md box unstyled">
+	<ul class="width_upto_md box unstyled">
 		{#each repos_modules as repo_modules (repo_modules)}
 			{@const {repo, modules} = repo_modules}
 			<li class="repo_module">
-				<header class="w_100 relative">
+				<header class="width_100 position_relative">
 					<a href="#{repo.name}" id={repo.name} class="subtitle">🔗</a>
-					<a href="{base}/tree/{repo.repo_name}">{repo.name}</a>
+					<a href={resolve(`/tree/${repo.repo_name}`)}>{repo.name}</a>
 				</header>
 				<ul class="modules panel unstyled">
 					{#each modules as repo_module (repo_module)}
@@ -70,19 +70,28 @@
 							<div class="module_file">
 								{#if repo.repo_url}
 									<div class="chip row">
-										<a href="{ensure_end(repo.repo_url, '/')}blob/main/src/lib/{path}">{path}</a>
+										<!-- TODO this is a hack that could be fixed by adding an optional `base: './'` that defaults to './src/lib/'  -->
+										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
+											href="{ensure_end(repo.repo_url, '/')}blob/main/{path === 'package.json'
+												? ''
+												: 'src/lib/'}{path}">{path}</a
+										>
 									</div>
 								{:else}
 									<span class="chip">{path}</span>
 								{/if}
 							</div>
-							<ul class="declarations unstyled">
-								{#each declarations as { name, kind } (name)}
-									<li class="declaration chip {kind}_declaration">
-										{name}
-									</li>
-								{/each}
-							</ul>
+							{#if declarations?.length}
+								<ul class="declarations unstyled">
+									{#each declarations as { name, kind } (name)}
+										{#if name !== 'default'}
+											<li class="declaration chip {kind}_declaration">
+												{name}
+											</li>
+										{/if}
+									{/each}
+								</ul>
+							{/if}
 						</li>
 					{/each}
 				</ul>
@@ -118,7 +127,7 @@
 	.repo_module > header {
 		display: flex;
 		padding: var(--space_xs) var(--space_md);
-		font-size: var(--size_lg);
+		font-size: var(--font_size_lg);
 		position: sticky;
 		top: 0;
 		background-color: var(--bg);
@@ -156,8 +165,8 @@
 		padding-left: var(--space_xs);
 	}
 	.declaration {
-		font-family: var(--font_mono);
-		font-size: var(--size_sm);
+		font-family: var(--font_family_mono);
+		font-size: var(--font_size_sm);
 	}
 	.variable_declaration {
 		color: var(--color_d_5);

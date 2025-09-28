@@ -1,5 +1,54 @@
 # @ryanatkn/fuz_gitops
 
+## 0.50.1
+
+### Patch Changes
+
+- fix two links in repos components ([62e09f6](https://github.com/ryanatkn/fuz_gitops/commit/62e09f6))
+
+## 0.50.0
+
+### Minor Changes
+
+- upgrade deps ([#35](https://github.com/ryanatkn/fuz_gitops/pull/35))
+
+## 0.49.0
+
+### Minor Changes
+
+- upgrade zod@4 ([#34](https://github.com/ryanatkn/fuz_gitops/pull/34))
+
+## 0.48.0
+
+### Minor Changes
+
+- upgrade moss ([42e6ece](https://github.com/ryanatkn/fuz_gitops/commit/42e6ece))
+
+## 0.47.0
+
+### Minor Changes
+
+- upgrade gro ([f7aadf0](https://github.com/ryanatkn/fuz_gitops/commit/f7aadf0))
+- bump node@22.15 from 22.11 ([b7bc4af](https://github.com/ryanatkn/fuz_gitops/commit/b7bc4af))
+
+## 0.46.0
+
+### Minor Changes
+
+- upgrade deps ([bc730f7](https://github.com/ryanatkn/fuz_gitops/commit/bc730f7))
+
+## 0.45.2
+
+### Patch Changes
+
+- bump gro in https://github.com/ryanatkn/fuz_gitops/commit/36cc42838b3102b9967e7871ef717db80fe6d98b ([4554517](https://github.com/ryanatkn/fuz_gitops/commit/4554517))
+
+## 0.45.1
+
+### Patch Changes
+
+- migrate to $app/state from $app/stores ([2f880dd](https://github.com/ryanatkn/fuz_gitops/commit/2f880dd))
+
 ## 0.45.0
 
 ### Minor Changes
