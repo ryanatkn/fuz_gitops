@@ -1,16 +1,7 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.49.0",
+  "version": "0.50.0",
   "modules": {
-    "./package.json": {
-      "path": "package.json",
-      "declarations": [
-        {
-          "name": "default",
-          "kind": "json"
-        }
-      ]
-    },
     "./fetch_repo_data.js": {
       "path": "fetch_repo_data.ts",
       "declarations": [
@@ -212,6 +203,40 @@
         }
       ]
     },
+    "./repo.js": {
+      "path": "repo.ts",
+      "declarations": [
+        {
+          "name": "Repo",
+          "kind": "type"
+        },
+        {
+          "name": "Repos",
+          "kind": "type"
+        },
+        {
+          "name": "repos_context",
+          "kind": "variable"
+        },
+        {
+          "name": "parse_repos",
+          "kind": "function"
+        }
+      ]
+    },
+    "./resolved_gitops_config.js": {
+      "path": "resolved_gitops_config.ts",
+      "declarations": [
+        {
+          "name": "Resolved_Gitops_Config",
+          "kind": "type"
+        },
+        {
+          "name": "resolve_gitops_config",
+          "kind": "function"
+        }
+      ]
+    },
     "./Modules_Detail.svelte": {
       "path": "Modules_Detail.svelte",
       "declarations": [
@@ -275,27 +300,6 @@
         }
       ]
     },
-    "./repo.js": {
-      "path": "repo.ts",
-      "declarations": [
-        {
-          "name": "Repo",
-          "kind": "type"
-        },
-        {
-          "name": "Repos",
-          "kind": "type"
-        },
-        {
-          "name": "repos_context",
-          "kind": "variable"
-        },
-        {
-          "name": "parse_repos",
-          "kind": "function"
-        }
-      ]
-    },
     "./Repos_Table.svelte": {
       "path": "Repos_Table.svelte",
       "declarations": [
@@ -320,19 +324,6 @@
         {
           "name": "default",
           "kind": "component"
-        }
-      ]
-    },
-    "./resolved_gitops_config.js": {
-      "path": "resolved_gitops_config.ts",
-      "declarations": [
-        {
-          "name": "Resolved_Gitops_Config",
-          "kind": "type"
-        },
-        {
-          "name": "resolve_gitops_config",
-          "kind": "function"
         }
       ]
     },
