@@ -15,7 +15,8 @@ import {
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn_cli} from '@ryanatkn/gro/cli.js';
 
-import type {Gitops_Repo_Config} from '$lib/gitops_config.js';
+import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
+import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';
 
 export interface Local_Repo extends Resolved_Local_Repo {
 	pkg: Pkg;
@@ -46,6 +47,7 @@ export interface Unresolved_Local_Repo {
  */
 export const load_local_repo = async (
 	resolved_local_repo: Resolved_Local_Repo,
+	install: boolean,
 	log?: Logger,
 ): Promise<Local_Repo> => {
 	const {repo_config, repo_dir} = resolved_local_repo;
@@ -65,7 +67,9 @@ export const load_local_repo = async (
 
 		// TODO BLOCK doesnt install now, think through what should be done.
 		// Sync the repo so deps are installed and generated files are up-to-date.
-		await spawn_cli('gro', ['sync'], log, {cwd: resolved_local_repo.repo_dir});
+		const sync_args: Array<string> = [];
+		if (install) sync_args.push('--install');
+		await spawn_cli('gro', ['sync', ...sync_args], log, {cwd: resolved_local_repo.repo_dir});
 	}
 
 	const parsed_svelte_config = await parse_svelte_config({dir_or_config: repo_dir});
@@ -81,25 +85,24 @@ export const load_local_repo = async (
 };
 
 export const resolve_local_repos = async (
-	resolve_config: {
-		resolved_local_repos: Array<Resolved_Local_Repo> | null;
-		unresolved_local_repos: Array<Unresolved_Local_Repo> | null;
-	},
+	resolved_config: Resolved_Gitops_Config,
 	repos_dir: string,
-	gitops_config: {repos: Array<{repo_url: string}>},
-	download: boolean = false,
+	gitops_config: Gitops_Config,
+	download: boolean,
 	log?: Logger,
 ): Promise<Array<Resolved_Local_Repo>> => {
 	let resolved_local_repos: Array<Resolved_Local_Repo> | null = null;
 
-	if (resolve_config.unresolved_local_repos) {
+	if (!resolved_config.unresolved_local_repos) {
+		resolved_local_repos = resolved_config.resolved_local_repos;
+	} else {
 		if (download) {
 			const downloaded = await download_repos(
 				repos_dir,
-				resolve_config.unresolved_local_repos,
+				resolved_config.unresolved_local_repos,
 				log,
 			);
-			resolved_local_repos = (resolve_config.resolved_local_repos ?? [])
+			resolved_local_repos = (resolved_config.resolved_local_repos ?? [])
 				.concat(downloaded)
 				.sort(
 					(a, b) =>
@@ -109,12 +112,10 @@ export const resolve_local_repos = async (
 		} else {
 			log?.error(
 				`Failed to resolve local repos in ${repos_dir} - do you need to pass \`--download\` or configure the directory?`, // TODO leaking task impl details
-				resolve_config.unresolved_local_repos.map((r) => r.repo_url),
+				resolved_config.unresolved_local_repos.map((r) => r.repo_url),
 			);
 			throw new Task_Error('Failed to resolve local configs');
 		}
-	} else {
-		resolved_local_repos = resolve_config.resolved_local_repos;
 	}
 
 	if (!resolved_local_repos) {
@@ -126,11 +127,12 @@ export const resolve_local_repos = async (
 
 export const load_local_repos = async (
 	resolved_local_repos: Array<Resolved_Local_Repo>,
+	install: boolean,
 	log?: Logger,
 ): Promise<Array<Local_Repo>> => {
 	const loaded: Array<Local_Repo> = [];
 	for (const resolved_local_repo of resolved_local_repos) {
-		loaded.push(await load_local_repo(resolved_local_repo, log)); // eslint-disable-line no-await-in-loop
+		loaded.push(await load_local_repo(resolved_local_repo, install, log)); // eslint-disable-line no-await-in-loop
 	}
 	return loaded;
 };

@@ -18,7 +18,8 @@ import {resolve_gitops_config} from '$lib/resolved_gitops_config.js';
 export const get_gitops_ready = async (
 	path: string,
 	dir: string | undefined,
-	download: boolean = false,
+	download: boolean,
+	install: boolean,
 	log?: Logger,
 ): Promise<{
 	config_path: string;
@@ -44,7 +45,7 @@ export const get_gitops_ready = async (
 		log,
 	);
 
-	const local_repos = await load_local_repos(resolved_local_repos, log);
+	const local_repos = await load_local_repos(resolved_local_repos, install, log);
 
 	return {config_path, repos_dir, gitops_config, local_repos};
 };

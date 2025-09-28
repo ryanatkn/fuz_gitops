@@ -15,11 +15,10 @@ export const Args = z
 			.string()
 			.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
 			.optional(),
-		outdir: z
-			.string()
-			.meta({description: 'path to the directory for the generated files, defaults to $routes/'})
-			.optional(),
-		// TODO maybe add `download` that defaults to `true`?
+		download: z.boolean().meta({description: 'dual of no-download'}).default(true),
+		'no-download': z.boolean().meta({description: 'opt out of gro download'}).default(false),
+		install: z.boolean().meta({description: 'dual of no-install'}).default(true),
+		'no-install': z.boolean().meta({description: 'opt out of installing packages'}).default(false),
 	})
 	.strict();
 export type Args = z.infer<typeof Args>;
@@ -29,9 +28,8 @@ export const task: Task<Args> = {
 	summary:
 		'sets up gitops repos, downloading as needed and switching to the main branch with a clean git workspace',
 	run: async ({args, log}) => {
-		const {path, dir} = args;
+		const {path, dir, download, install} = args;
 
-		// Download the repos and `npm install` as needed.
-		await get_gitops_ready(path, dir, log, true);
+		await get_gitops_ready(path, dir, download, install, log);
 	},
 };
