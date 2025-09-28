@@ -70,8 +70,13 @@
 							<div class="module_file">
 								{#if repo.repo_url}
 									<div class="chip row">
+										<!-- TODO this is a hack that could be fixed by adding an optional `base: './'` that defaults to './src/lib/'  -->
 										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-										<a href="{ensure_end(repo.repo_url, '/')}blob/main/src/lib/{path}">{path}</a>
+										<a
+											href="{ensure_end(repo.repo_url, '/')}blob/main/{path === 'package.json'
+												? ''
+												: 'src/lib/'}{path}">{path}</a
+										>
 									</div>
 								{:else}
 									<span class="chip">{path}</span>
