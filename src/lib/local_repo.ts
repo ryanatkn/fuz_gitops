@@ -55,7 +55,7 @@ export const load_local_repo = async (
 	// Switch branches if needed, erroring if unable.
 	const branch = await git_current_branch_name({cwd: repo_dir});
 	if (branch !== repo_config.branch) {
-		const error_message = await git_check_clean_workspace({cwd: repo_dir});
+		let error_message = await git_check_clean_workspace({cwd: repo_dir});
 		if (error_message) {
 			throw new Task_Error(
 				`Repo ${repo_dir} is not on branch "${repo_config.branch}" and the workspace is unclean, blocking switch: ${error_message}`,
@@ -63,10 +63,16 @@ export const load_local_repo = async (
 		}
 		await git_checkout(repo_config.branch, {cwd: repo_dir});
 
-		await git_pull(); // TODO do we need to check clean workspace after this, or other things?
+		await git_pull();
 
-		// TODO BLOCK doesnt install now, think through what should be done.
-		// Sync the repo so deps are installed and generated files are up-to-date.
+		// TODO do we need to check clean workspace after this, or other things?
+		error_message = await git_check_clean_workspace({cwd: repo_dir});
+		if (error_message) {
+			throw new Task_Error(
+				`Switching to branch "${repo_config.branch}" made the workspace unclean: ${error_message}`,
+			);
+		}
+
 		const sync_args: Array<string> = [];
 		if (install) sync_args.push('--install');
 		await spawn_cli('gro', ['sync', ...sync_args], log, {cwd: resolved_local_repo.repo_dir});
