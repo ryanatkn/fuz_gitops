@@ -80,15 +80,6 @@ export const load_local_repo = async (
 	};
 };
 
-/**
- * Resolves local repos, optionally downloading missing ones.
- * @param resolved_config - The resolved gitops configuration
- * @param repos_dir - The directory where repos should be stored
- * @param gitops_config - The gitops configuration
- * @param log - Optional logger
- * @param download - Whether to download missing repos
- * @returns Array of resolved local repos
- */
 export const resolve_local_repos = async (
 	resolve_config: {
 		resolved_local_repos: Array<Resolved_Local_Repo> | null;
