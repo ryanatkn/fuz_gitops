@@ -53,7 +53,7 @@ export const load_local_repo = async (
 	// Switch branches if needed, erroring if unable.
 	const branch = await git_current_branch_name({cwd: repo_dir});
 	if (branch !== repo_config.branch) {
-		let error_message = await git_check_clean_workspace({cwd: repo_dir});
+		const error_message = await git_check_clean_workspace({cwd: repo_dir});
 		if (error_message) {
 			throw new Task_Error(
 				`Repo ${repo_dir} is not on branch "${repo_config.branch}" and the workspace is unclean, blocking switch: ${error_message}`,
