@@ -48,11 +48,12 @@ export const task: Task<Args> = {
 		let publishing_order: Array<string> | null = null;
 		if (order) {
 			try {
-				publishing_order = graph.topological_sort();
+				// Exclude dev dependencies to break cycles
+				publishing_order = graph.topological_sort(true);
 			} catch (error) {
-				// Cycles prevent topological sort
+				// Cycles prevent topological sort (should only happen with prod/peer cycles)
 				if (analysis.cycles.length > 0) {
-					log.error('Cannot determine publishing order due to circular dependencies');
+					log.error('Cannot determine publishing order due to circular dependencies in prod/peer deps');
 				}
 			}
 		}
@@ -195,9 +196,18 @@ const output_stdout = (
 	// Cycle detection
 	if (options.cycles) {
 		if (analysis.cycles.length > 0) {
-			log.error(st('red', `\n❌ Found ${analysis.cycles.length} circular dependencies:`));
-			for (const cycle of analysis.cycles) {
-				console.log(`  ${cycle.join(' → ')}`);
+			// If we successfully computed publishing order, cycles are only in dev deps
+			if (publishing_order) {
+				log.warn(st('yellow', `\n⚠️  Found ${analysis.cycles.length} circular dependencies (all via dev deps):`));
+				for (const cycle of analysis.cycles) {
+					console.log(`  ${st('dim', cycle.join(' → '))}`);
+				}
+				log.info(st('green', '✓ Publishing order computed successfully (dev deps excluded)'));
+			} else {
+				log.error(st('red', `\n❌ Found ${analysis.cycles.length} circular dependencies preventing publishing:`));
+				for (const cycle of analysis.cycles) {
+					console.log(`  ${cycle.join(' → ')}`);
+				}
 			}
 		} else {
 			log.info(st('green', '✅ No circular dependencies detected'));

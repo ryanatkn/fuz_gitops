@@ -97,8 +97,9 @@ export class Dependency_Graph {
 	/**
 	 * Performs topological sort to determine publishing order.
 	 * Returns array of package names in the order they should be published.
+	 * @param exclude_dev - If true, excludes dev dependencies from the sort
 	 */
-	topological_sort(): Array<string> {
+	topological_sort(exclude_dev = false): Array<string> {
 		const visited = new Set<string>();
 		const result: Array<string> = [];
 
@@ -108,7 +109,10 @@ export class Dependency_Graph {
 			in_degree.set(name, 0);
 		}
 		for (const node of this.nodes.values()) {
-			for (const [dep_name] of node.dependencies) {
+			for (const [dep_name, spec] of node.dependencies) {
+				// Skip dev dependencies if requested
+				if (exclude_dev && spec.type === 'dev') continue;
+
 				if (this.nodes.has(dep_name)) {
 					in_degree.set(node.name, in_degree.get(node.name)! + 1);
 				}
@@ -130,12 +134,22 @@ export class Dependency_Graph {
 			visited.add(name);
 
 			// Reduce in-degree for dependents
-			const dependents = this.get_dependents(name);
-			for (const dependent of dependents) {
-				const new_degree = in_degree.get(dependent)! - 1;
-				in_degree.set(dependent, new_degree);
-				if (new_degree === 0) {
-					queue.push(dependent);
+			const node = this.nodes.get(name);
+			if (node) {
+				// Find packages that depend on this one
+				for (const other_node of this.nodes.values()) {
+					for (const [dep_name, spec] of other_node.dependencies) {
+						// Skip dev dependencies if requested
+						if (exclude_dev && spec.type === 'dev') continue;
+
+						if (dep_name === name) {
+							const new_degree = in_degree.get(other_node.name)! - 1;
+							in_degree.set(other_node.name, new_degree);
+							if (new_degree === 0) {
+								queue.push(other_node.name);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -220,9 +234,10 @@ export class Dependency_Graph_Builder {
 
 	/**
 	 * Returns the topologically sorted order for publishing.
+	 * Excludes dev dependencies to avoid cycles.
 	 */
 	compute_publishing_order(graph: Dependency_Graph): Array<string> {
-		return graph.topological_sort();
+		return graph.topological_sort(true); // Exclude dev dependencies
 	}
 
 	/**

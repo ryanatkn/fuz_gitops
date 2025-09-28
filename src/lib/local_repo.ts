@@ -65,13 +65,13 @@ export const load_local_repo = async (
 		}
 		await git_checkout(repo_config.branch, {cwd: repo_dir});
 
-		await git_pull();
+		await git_pull(undefined, undefined, {cwd: repo_dir});
 
-		// TODO do we need to check clean workspace after this, or other things?
+		// Check clean workspace after pull to ensure we're in a good state
 		error_message = await git_check_clean_workspace({cwd: repo_dir});
 		if (error_message) {
 			throw new Task_Error(
-				`Switching to branch "${repo_config.branch}" made the workspace unclean: ${error_message}`,
+				`Workspace is unclean after switching to branch "${repo_config.branch}" and pulling: ${error_message}`,
 			);
 		}
 

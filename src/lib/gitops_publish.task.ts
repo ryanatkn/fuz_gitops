@@ -96,10 +96,10 @@ export const task: Task<Args> = {
 			console.log('');
 		}
 
-		// Compute publishing order
+		// Compute publishing order (excluding dev dependencies to break cycles)
 		let order: Array<string>;
 		try {
-			order = graph.topological_sort();
+			order = graph.topological_sort(true);
 		} catch (error) {
 			log.error('Failed to determine publishing order:', error);
 			throw error;

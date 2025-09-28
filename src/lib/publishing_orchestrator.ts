@@ -1,6 +1,6 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn_cli} from '@ryanatkn/gro/cli.js';
-import {git_check_clean_workspace} from '@ryanatkn/gro/git.js';
+import {git_check_clean_workspace, git_current_commit_hash} from '@ryanatkn/gro/git.js';
 import {Task_Error} from '@ryanatkn/gro';
 import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
@@ -168,8 +168,16 @@ export class Publishing_Orchestrator {
 		const old_version = repo.pkg.package_json.version || '0.0.0';
 
 		// Determine version bump
-		const bump_type: Bump_Type =
-			bump === 'auto' ? this.version_manager.determine_bump_type(repo) : bump;
+		let bump_type: Bump_Type;
+		if (bump === 'auto') {
+			const detected_bump = await this.version_manager.determine_bump_type(repo);
+			if (!detected_bump) {
+				throw new Error(`No changesets found for ${repo.pkg.name}. Create a changeset or specify --bump explicitly.`);
+			}
+			bump_type = detected_bump;
+		} else {
+			bump_type = bump;
+		}
 		const new_version = this.version_manager.bump_version(old_version, bump_type);
 
 		if (dry) {
@@ -200,8 +208,8 @@ export class Publishing_Orchestrator {
 			throw new Error(`Failed to publish ${repo.pkg.name}`);
 		}
 
-		// Get commit hash (simplified - in reality would parse from git)
-		const commit = 'HEAD'; // TODO: Get actual commit hash
+		// Get actual commit hash
+		const commit = (await git_current_commit_hash(undefined, {cwd: repo.repo_dir})) || 'HEAD';
 
 		return {
 			name: repo.pkg.name,
