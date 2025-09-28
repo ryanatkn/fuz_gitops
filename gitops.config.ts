@@ -5,7 +5,7 @@ const config: Create_Gitops_Config = () => {
 		repos: [
 			'https://github.com/ryanatkn/fuz',
 			'https://github.com/ryanatkn/fuz_template',
-			'https://github.com/ryanatkn/fuz_gitops',
+			{repo_url: 'https://github.com/ryanatkn/fuz_gitops', branch: 'publishing'},
 			'https://github.com/ryanatkn/fuz_code',
 			'https://github.com/ryanatkn/fuz_mastodon',
 			'https://github.com/ryanatkn/gro',

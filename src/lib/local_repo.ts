@@ -20,7 +20,9 @@ import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';
 
 export interface Local_Repo extends Resolved_Local_Repo {
 	pkg: Pkg;
-	// TODO what else? filesystem info?
+	dependencies?: Map<string, string>;
+	dev_dependencies?: Map<string, string>;
+	peer_dependencies?: Map<string, string>;
 }
 
 export type Maybe_Local_Repo = Resolved_Local_Repo | Unresolved_Local_Repo;
@@ -84,10 +86,23 @@ export const load_local_repo = async (
 	const package_json = load_package_json(repo_dir);
 	const src_json = create_src_json(package_json, lib_path);
 
-	return {
+	const local_repo: Local_Repo = {
 		...resolved_local_repo,
 		pkg: parse_pkg(package_json, src_json),
 	};
+
+	// Extract dependencies
+	if (package_json.dependencies) {
+		local_repo.dependencies = new Map(Object.entries(package_json.dependencies));
+	}
+	if (package_json.devDependencies) {
+		local_repo.dev_dependencies = new Map(Object.entries(package_json.devDependencies));
+	}
+	if (package_json.peerDependencies) {
+		local_repo.peer_dependencies = new Map(Object.entries(package_json.peerDependencies));
+	}
+
+	return local_repo;
 };
 
 export const resolve_local_repos = async (
@@ -189,4 +204,21 @@ const download_repos = async (
 		resolved.push(local_repo);
 	}
 	return resolved;
+};
+
+/**
+ * Extracts all dependencies from a local repo.
+ */
+export const extract_dependencies = (
+	repo: Local_Repo,
+): {
+	dependencies: Map<string, string>;
+	dev_dependencies: Map<string, string>;
+	peer_dependencies: Map<string, string>;
+} => {
+	return {
+		dependencies: repo.dependencies || new Map(),
+		dev_dependencies: repo.dev_dependencies || new Map(),
+		peer_dependencies: repo.peer_dependencies || new Map(),
+	};
 };
