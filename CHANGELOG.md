@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.50.1
+
+### Patch Changes
+
+- fix two links in repos components ([62e09f6](https://github.com/ryanatkn/fuz_gitops/commit/62e09f6))
+
 ## 0.50.0
 
 ### Minor Changes
