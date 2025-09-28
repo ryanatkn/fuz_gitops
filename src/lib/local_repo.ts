@@ -10,6 +10,7 @@ import {
 	git_check_clean_workspace,
 	git_checkout,
 	git_current_branch_name,
+	git_pull,
 } from '@ryanatkn/gro/git.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn_cli} from '@ryanatkn/gro/cli.js';
@@ -52,7 +53,7 @@ export const load_local_repo = async (
 	// Switch branches if needed, erroring if unable.
 	const branch = await git_current_branch_name({cwd: repo_dir});
 	if (branch !== repo_config.branch) {
-		const error_message = await git_check_clean_workspace({cwd: repo_dir});
+		let error_message = await git_check_clean_workspace({cwd: repo_dir});
 		if (error_message) {
 			throw new Task_Error(
 				`Repo ${repo_dir} is not on branch "${repo_config.branch}" and the workspace is unclean, blocking switch: ${error_message}`,
@@ -60,7 +61,7 @@ export const load_local_repo = async (
 		}
 		await git_checkout(repo_config.branch, {cwd: repo_dir});
 
-		// TODO BLOCK need to sync git with remote before `gro sync`
+		await git_pull();
 
 		// TODO probably allow opt-in syncing, problem is it's very slow to do in the normal case
 		// Sync the repo so deps are installed and generated files are up-to-date.
