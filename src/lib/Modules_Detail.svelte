@@ -23,7 +23,7 @@
 		repo: Repo;
 		modules: Array<Src_Module>;
 	}> = $derived(
-		repos.reduce<Array<{repo: Repo; modules: Array<Src_Module>}>>((v, repo) => {
+		repos.reduce<Array<{repo: Repo; modules: Array<Src_Module>}>>((acc, repo) => {
 			const {package_json, src_json} = repo;
 			if (
 				!src_json.modules ||
@@ -32,10 +32,10 @@
 					!!package_json.dependencies?.['@sveltejs/package']
 				)
 			) {
-				return v;
+				return acc;
 			}
-			v.push({repo, modules: Object.values(src_json.modules)});
-			return v;
+			acc.push({repo, modules: Object.values(src_json.modules)});
+			return acc;
 		}, []),
 	);
 
@@ -49,11 +49,11 @@
 		</section>
 		{@render nav_footer?.()}
 	</div>
-	<ul class="width_md box unstyled">
+	<ul class="width_upto_md box unstyled">
 		{#each repos_modules as repo_modules (repo_modules)}
 			{@const {repo, modules} = repo_modules}
 			<li class="repo_module">
-				<header class="w_100 position_relative">
+				<header class="width_100 position_relative">
 					<a href="#{repo.name}" id={repo.name} class="subtitle">🔗</a>
 					<a href={resolve(`/tree/${repo.repo_name}`)}>{repo.name}</a>
 				</header>
@@ -70,8 +70,12 @@
 							<div class="module_file">
 								{#if repo.repo_url}
 									<div class="chip row">
-										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-										<a href="{ensure_end(repo.repo_url, '/')}blob/main/src/lib/{path}">{path}</a>
+										<!-- TODO this is a hack that could be fixed by adding an optional `base: './'` that defaults to './src/lib/'  -->
+										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
+											href="{ensure_end(repo.repo_url, '/')}blob/main/{path === 'package.json'
+												? ''
+												: 'src/lib/'}{path}">{path}</a
+										>
 									</div>
 								{:else}
 									<span class="chip">{path}</span>
@@ -80,9 +84,11 @@
 							{#if declarations?.length}
 								<ul class="declarations unstyled">
 									{#each declarations as { name, kind } (name)}
-										<li class="declaration chip {kind}_declaration">
-											{name}
-										</li>
+										{#if name !== 'default'}
+											<li class="declaration chip {kind}_declaration">
+												{name}
+											</li>
+										{/if}
 									{/each}
 								</ul>
 							{/if}
