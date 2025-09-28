@@ -61,8 +61,9 @@ export const load_local_repo = async (
 		}
 		await git_checkout(repo_config.branch, {cwd: repo_dir});
 
-		await git_pull();
+		await git_pull(); // TODO do we need to check clean workspace after this, or other things?
 
+		// TODO BLOCK doesnt install now, think through what should be done.
 		// Sync the repo so deps are installed and generated files are up-to-date.
 		await spawn_cli('gro', ['sync'], log, {cwd: resolved_local_repo.repo_dir});
 	}
@@ -77,6 +78,59 @@ export const load_local_repo = async (
 		...resolved_local_repo,
 		pkg: parse_pkg(package_json, src_json),
 	};
+};
+
+/**
+ * Resolves local repos, optionally downloading missing ones.
+ * @param resolved_config - The resolved gitops configuration
+ * @param repos_dir - The directory where repos should be stored
+ * @param gitops_config - The gitops configuration
+ * @param log - Optional logger
+ * @param download - Whether to download missing repos
+ * @returns Array of resolved local repos
+ */
+export const resolve_local_repos = async (
+	resolve_config: {
+		resolved_local_repos: Array<Resolved_Local_Repo> | null;
+		unresolved_local_repos: Array<Unresolved_Local_Repo> | null;
+	},
+	repos_dir: string,
+	gitops_config: {repos: Array<{repo_url: string}>},
+	download: boolean = false,
+	log?: Logger,
+): Promise<Array<Resolved_Local_Repo>> => {
+	let resolved_local_repos: Array<Resolved_Local_Repo> | null = null;
+
+	if (resolve_config.unresolved_local_repos) {
+		if (download) {
+			const downloaded = await download_repos(
+				repos_dir,
+				resolve_config.unresolved_local_repos,
+				log,
+			);
+			resolved_local_repos = (resolve_config.resolved_local_repos ?? [])
+				.concat(downloaded)
+				.sort(
+					(a, b) =>
+						gitops_config.repos.findIndex((r) => r.repo_url === a.repo_url) -
+						gitops_config.repos.findIndex((r) => r.repo_url === b.repo_url),
+				);
+		} else {
+			log?.error(
+				`Failed to resolve local repos in ${repos_dir} - do you need to pass \`--download\` or configure the directory?`, // TODO leaking task impl details
+				resolve_config.unresolved_local_repos.map((r) => r.repo_url),
+			);
+			throw new Task_Error('Failed to resolve local configs');
+		}
+	} else {
+		resolved_local_repos = resolve_config.resolved_local_repos;
+	}
+
+	if (!resolved_local_repos) {
+		throw new Task_Error('No repos are configured in `gitops_config.ts`');
+	}
+
+	return resolved_local_repos;
 };
 
 export const load_local_repos = async (
@@ -118,4 +172,22 @@ export const resolve_local_repo = (
 const to_repo_git_ssh_url = (repo_url: string): string => {
 	const url = new URL(repo_url);
 	return `git@${url.hostname}:${url.pathname.substring(1)}`;
+};
+
+const download_repos = async (
+	repos_dir: string,
+	unresolved_local_repos: Array<Unresolved_Local_Repo>,
+	log: Logger | undefined,
+): Promise<Array<Resolved_Local_Repo>> => {
+	const resolved: Array<Resolved_Local_Repo> = [];
+	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
+		log?.info(`cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
+		await spawn_cli('git', ['clone', repo_git_ssh_url], log, {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
+		const local_repo = resolve_local_repo(repo_config, repos_dir);
+		if (local_repo.type === 'unresolved_local_repo') {
+			throw new Task_Error(`Failed to clone repo ${repo_git_ssh_url} to ${repos_dir}`);
+		}
+		resolved.push(local_repo);
+	}
+	return resolved;
 };

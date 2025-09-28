@@ -50,7 +50,7 @@ export const task: Task<Args> = {
 			await invoke_task('sync');
 		}
 
-		const {local_repos} = await get_gitops_ready(path, dir, log, download);
+		const {local_repos} = await get_gitops_ready(path, dir, download, log);
 
 		const outfile = resolve(outdir, 'repos.ts');
 
