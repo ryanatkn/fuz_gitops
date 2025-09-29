@@ -15,7 +15,10 @@ const config: Create_Gitops_Config = () => {
 			'https://github.com/ryanatkn/fuz_blog',
 			'https://github.com/ryanatkn/fuz_mastodon',
 			'https://github.com/ryanatkn/fuz_code',
-			'https://github.com/ryanatkn/fuz_gitops',
+			{
+				repo_url: 'https://github.com/ryanatkn/fuz_gitops',
+				branch: 'publishing',
+			},
 			'https://github.com/ryanatkn/webdevladder.net',
 			'https://github.com/ryanatkn/ryanatkn.com',
 		],
