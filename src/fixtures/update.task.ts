@@ -5,6 +5,7 @@ import {existsSync, mkdirSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 
 import {run_gitops_command} from './helpers.js';
+import {format_file} from '@ryanatkn/gro/format_file.js';
 
 const Args = z
 	.object({
@@ -64,12 +65,14 @@ export const task: Task<Args> = {
 				const output_filename = `${command}_output.md`;
 				const output_path = join('src/fixtures', output_filename);
 
-				writeFileSync(output_path, output.stdout, 'utf-8');
+				const formatted_contents = await format_file(output.stdout, {filepath: output_filename});
+
+				writeFileSync(output_path, formatted_contents, 'utf-8');
 				log.info(st('green', `   ✓ Saved output to: ${output_filename}`));
 
 				if (verbose) {
-					log.info(`   Output length: ${output.stdout.length} characters`);
-					log.info(`   First few lines:\n${output.stdout.split('\n').slice(0, 3).join('\n')}`);
+					log.info(`   Output length: ${formatted_contents.length} characters`);
+					log.info(`   First few lines:\n${formatted_contents.split('\n').slice(0, 3).join('\n')}`);
 				}
 
 				results.push({command, success: true, output_file: output_filename});
