@@ -3,8 +3,8 @@ import {
 	generate_changeset_content,
 	create_dependency_updates,
 	type Dependency_Update,
-} from './changeset_generator.js';
-import type {Published_Version} from './multi_repo_publisher.js';
+} from '$lib/changeset_generator.js';
+import type {Published_Version} from '$lib/multi_repo_publisher.js';
 
 describe('changeset_generator', () => {
 	describe('generate_changeset_content', () => {
@@ -133,31 +133,37 @@ describe('changeset_generator', () => {
 			]);
 
 			const published_versions = new Map<string, Published_Version>([
-				['lib-a', {
-					name: 'lib-a',
-					old_version: '1.0.0',
-					new_version: '1.1.0',
-					bump_type: 'minor',
-					breaking: false,
-					commit: 'abc123',
-					tag: 'v1.1.0',
-				}],
-				['lib-b', {
-					name: 'lib-b',
-					old_version: '2.0.0',
-					new_version: '2.0.1',
-					bump_type: 'patch',
-					breaking: false,
-					commit: 'def456',
-					tag: 'v2.0.1',
-				}],
+				[
+					'lib-a',
+					{
+						name: 'lib-a',
+						old_version: '1.0.0',
+						new_version: '1.1.0',
+						bump_type: 'minor',
+						breaking: false,
+						commit: 'abc123',
+						tag: 'v1.1.0',
+					},
+				],
+				[
+					'lib-b',
+					{
+						name: 'lib-b',
+						old_version: '2.0.0',
+						new_version: '2.0.1',
+						bump_type: 'patch',
+						breaking: false,
+						commit: 'def456',
+						tag: 'v2.0.1',
+					},
+				],
 			]);
 
 			const updates = create_dependency_updates(dependencies, published_versions);
 
 			expect(updates).toHaveLength(2);
 
-			const lib_a_update = updates.find(u => u.package_name === 'lib-a')!;
+			const lib_a_update = updates.find((u) => u.package_name === 'lib-a')!;
 			expect(lib_a_update).toEqual({
 				package_name: 'lib-a',
 				from_version: '1.0.0', // stripped prefix
@@ -166,7 +172,7 @@ describe('changeset_generator', () => {
 				breaking: false,
 			});
 
-			const lib_b_update = updates.find(u => u.package_name === 'lib-b')!;
+			const lib_b_update = updates.find((u) => u.package_name === 'lib-b')!;
 			expect(lib_b_update).toEqual({
 				package_name: 'lib-b',
 				from_version: '2.0.0', // stripped prefix
@@ -176,22 +182,25 @@ describe('changeset_generator', () => {
 			});
 
 			// Should not include external-lib (not published)
-			expect(updates.find(u => u.package_name === 'external-lib')).toBeUndefined();
+			expect(updates.find((u) => u.package_name === 'external-lib')).toBeUndefined();
 		});
 
 		it('handles breaking changes', () => {
 			const dependencies = new Map([['breaking-lib', '^0.5.0']]);
 
 			const published_versions = new Map<string, Published_Version>([
-				['breaking-lib', {
-					name: 'breaking-lib',
-					old_version: '0.5.0',
-					new_version: '0.6.0',
-					bump_type: 'minor',
-					breaking: true, // Pre-1.0 minor is breaking
-					commit: 'abc123',
-					tag: 'v0.6.0',
-				}],
+				[
+					'breaking-lib',
+					{
+						name: 'breaking-lib',
+						old_version: '0.5.0',
+						new_version: '0.6.0',
+						bump_type: 'minor',
+						breaking: true, // Pre-1.0 minor is breaking
+						commit: 'abc123',
+						tag: 'v0.6.0',
+					},
+				],
 			]);
 
 			const updates = create_dependency_updates(dependencies, published_versions);
@@ -209,51 +218,63 @@ describe('changeset_generator', () => {
 			]);
 
 			const published_versions = new Map<string, Published_Version>([
-				['caret-lib', {
-					name: 'caret-lib',
-					old_version: '1.0.0',
-					new_version: '1.1.0',
-					bump_type: 'minor',
-					breaking: false,
-					commit: 'abc123',
-					tag: 'v1.1.0',
-				}],
-				['tilde-lib', {
-					name: 'tilde-lib',
-					old_version: '1.0.0',
-					new_version: '1.0.1',
-					bump_type: 'patch',
-					breaking: false,
-					commit: 'def456',
-					tag: 'v1.0.1',
-				}],
-				['exact-lib', {
-					name: 'exact-lib',
-					old_version: '1.0.0',
-					new_version: '1.0.1',
-					bump_type: 'patch',
-					breaking: false,
-					commit: 'ghi789',
-					tag: 'v1.0.1',
-				}],
-				['gte-lib', {
-					name: 'gte-lib',
-					old_version: '1.0.0',
-					new_version: '1.0.1',
-					bump_type: 'patch',
-					breaking: false,
-					commit: 'jkl012',
-					tag: 'v1.0.1',
-				}],
+				[
+					'caret-lib',
+					{
+						name: 'caret-lib',
+						old_version: '1.0.0',
+						new_version: '1.1.0',
+						bump_type: 'minor',
+						breaking: false,
+						commit: 'abc123',
+						tag: 'v1.1.0',
+					},
+				],
+				[
+					'tilde-lib',
+					{
+						name: 'tilde-lib',
+						old_version: '1.0.0',
+						new_version: '1.0.1',
+						bump_type: 'patch',
+						breaking: false,
+						commit: 'def456',
+						tag: 'v1.0.1',
+					},
+				],
+				[
+					'exact-lib',
+					{
+						name: 'exact-lib',
+						old_version: '1.0.0',
+						new_version: '1.0.1',
+						bump_type: 'patch',
+						breaking: false,
+						commit: 'ghi789',
+						tag: 'v1.0.1',
+					},
+				],
+				[
+					'gte-lib',
+					{
+						name: 'gte-lib',
+						old_version: '1.0.0',
+						new_version: '1.0.1',
+						bump_type: 'patch',
+						breaking: false,
+						commit: 'jkl012',
+						tag: 'v1.0.1',
+					},
+				],
 			]);
 
 			const updates = create_dependency_updates(dependencies, published_versions);
 
 			// All should have stripped version prefixes
-			expect(updates.find(u => u.package_name === 'caret-lib')?.from_version).toBe('1.0.0');
-			expect(updates.find(u => u.package_name === 'tilde-lib')?.from_version).toBe('1.0.0');
-			expect(updates.find(u => u.package_name === 'exact-lib')?.from_version).toBe('1.0.0');
-			expect(updates.find(u => u.package_name === 'gte-lib')?.from_version).toBe('=1.0.0'); // >= strips only first char
+			expect(updates.find((u) => u.package_name === 'caret-lib')?.from_version).toBe('1.0.0');
+			expect(updates.find((u) => u.package_name === 'tilde-lib')?.from_version).toBe('1.0.0');
+			expect(updates.find((u) => u.package_name === 'exact-lib')?.from_version).toBe('1.0.0');
+			expect(updates.find((u) => u.package_name === 'gte-lib')?.from_version).toBe('=1.0.0'); // >= strips only first char
 		});
 
 		it('handles empty inputs', () => {

@@ -4,16 +4,11 @@ import {styleText as st} from 'node:util';
 import {existsSync, mkdirSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 
-import {
-	run_gitops_command,
-} from './helpers.js';
+import {run_gitops_command} from './helpers.js';
 
 const Args = z
 	.object({
-		verbose: z
-			.boolean()
-			.describe('Show detailed command output')
-			.default(false),
+		verbose: z.boolean().describe('Show detailed command output').default(false),
 	})
 	.strict();
 
@@ -41,7 +36,10 @@ export const task: Task<Args> = {
 			log.info(`Created directory: ${output_dir}`);
 		}
 
-		const commands: Array<'gitops_analyze' | 'gitops_preview'> = ['gitops_analyze', 'gitops_preview'];
+		const commands: Array<'gitops_analyze' | 'gitops_preview'> = [
+			'gitops_analyze',
+			'gitops_preview',
+		];
 		const results: Array<{
 			command: string;
 			success: boolean;
@@ -83,8 +81,8 @@ export const task: Task<Args> = {
 
 		// Summary
 		log.info(st('cyan', '\n📊 Summary:'));
-		const successful = results.filter(r => r.success);
-		const failed = results.filter(r => !r.success);
+		const successful = results.filter((r) => r.success);
+		const failed = results.filter((r) => !r.success);
 
 		log.info(`   Commands processed: ${results.length}`);
 		log.info(`   Successful: ${successful.length}`);

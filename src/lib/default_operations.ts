@@ -5,9 +5,9 @@
 import {spawn} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
 
-import {has_changesets, read_changesets, predict_next_version} from './changeset_reader.js';
-import {wait_for_package, check_package_available} from './npm_registry.js';
-import {run_pre_flight_checks} from './pre_flight_checks.js';
+import {has_changesets, read_changesets, predict_next_version} from '$lib/changeset_reader.js';
+import {wait_for_package, check_package_available} from '$lib/npm_registry.js';
+import {run_pre_flight_checks} from '$lib/pre_flight_checks.js';
 import {
 	git_add,
 	git_commit,
@@ -26,7 +26,7 @@ import {
 	git_pull_wrapper,
 	type Git_Branch,
 	type Git_Origin,
-} from './git_operations.js';
+} from '$lib/git_operations.js';
 import type {
 	Changeset_Operations,
 	Git_Operations,
@@ -35,7 +35,7 @@ import type {
 	Preflight_Operations,
 	Fs_Operations,
 	Publishing_Operations,
-} from './operations.js';
+} from '$lib/operations.js';
 
 /**
  * Default changeset operations using actual file system
@@ -67,16 +67,12 @@ export const default_git_operations: Git_Operations = {
 		git_switch_branch(branch as Git_Branch, pull, cwd ? {cwd} : undefined),
 
 	// Staging and committing
-	add: async (files: string | string[], cwd?: string) =>
-		git_add(files, cwd ? {cwd} : undefined),
-	commit: async (message: string, cwd?: string) =>
-		git_commit(message, cwd ? {cwd} : undefined),
+	add: async (files: string | string[], cwd?: string) => git_add(files, cwd ? {cwd} : undefined),
+	commit: async (message: string, cwd?: string) => git_commit(message, cwd ? {cwd} : undefined),
 	add_and_commit: async (files: string | string[], message: string, cwd?: string) =>
 		git_add_and_commit(files, message, cwd ? {cwd} : undefined),
-	has_changes: async (cwd?: string) =>
-		git_has_changes(cwd ? {cwd} : undefined),
-	get_changed_files: async (cwd?: string) =>
-		git_get_changed_files(cwd ? {cwd} : undefined),
+	has_changes: async (cwd?: string) => git_has_changes(cwd ? {cwd} : undefined),
+	get_changed_files: async (cwd?: string) => git_get_changed_files(cwd ? {cwd} : undefined),
 
 	// Tagging
 	tag: async (tag_name: string, message?: string, cwd?: string) =>
@@ -85,10 +81,8 @@ export const default_git_operations: Git_Operations = {
 		git_push_tag(tag_name, origin as Git_Origin, cwd ? {cwd} : undefined),
 
 	// Stashing
-	stash: async (message?: string, cwd?: string) =>
-		git_stash(message, cwd ? {cwd} : undefined),
-	stash_pop: async (cwd?: string) =>
-		git_stash_pop(cwd ? {cwd} : undefined),
+	stash: async (message?: string, cwd?: string) => git_stash(message, cwd ? {cwd} : undefined),
+	stash_pop: async (cwd?: string) => git_stash_pop(cwd ? {cwd} : undefined),
 };
 
 /**

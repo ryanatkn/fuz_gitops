@@ -3,7 +3,7 @@ import {existsSync} from 'node:fs';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
-import {PUBLISHING_STATE_PATH} from './paths.js';
+import {PUBLISHING_STATE_PATH} from '$lib/paths.js';
 
 export interface Publishing_State {
 	started_at: string;

@@ -28,13 +28,8 @@ export const format_markdown_table = (
 /**
  * Formats a list with optional bullets.
  */
-export const format_markdown_list = (
-	items: Array<string>,
-	ordered = false,
-): Array<string> => {
-	return items.map((item, i) =>
-		ordered ? `${i + 1}. ${item}` : `- ${item}`
-	);
+export const format_markdown_list = (items: Array<string>, ordered = false): Array<string> => {
+	return items.map((item, i) => (ordered ? `${i + 1}. ${item}` : `- ${item}`));
 };
 
 /**
@@ -52,9 +47,7 @@ export const format_markdown_section = (
 /**
  * Formats key-value pairs as a definition list.
  */
-export const format_markdown_definitions = (
-	pairs: Array<[string, string]>,
-): Array<string> => {
+export const format_markdown_definitions = (pairs: Array<[string, string]>): Array<string> => {
 	const lines: Array<string> = [];
 	for (const [key, value] of pairs) {
 		lines.push(`- **${key}**: ${value}`);

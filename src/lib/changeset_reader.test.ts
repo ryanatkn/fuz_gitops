@@ -2,11 +2,10 @@ import {describe, it, expect} from 'vitest';
 import {
 	parse_changeset_content,
 	determine_bump_from_changesets,
-	compare_bump_types,
-	calculate_next_version,
 	type Changeset_Info,
-} from './changeset_reader.js';
-import type {Bump_Type} from './semver.js';
+} from '$lib/changeset_reader.js';
+import type {Bump_Type} from '$lib/semver.js';
+import {calculate_next_version, compare_bump_types} from '$lib/version_utils.js';
 
 describe('changeset_reader', () => {
 	describe('parse_changeset_content', () => {
@@ -245,9 +244,7 @@ Second summary should be ignored.`;
 
 			const result = parse_changeset_content(content);
 
-			expect(result?.packages).toEqual([
-				{name: 'first-package', bump_type: 'patch'},
-			]);
+			expect(result?.packages).toEqual([{name: 'first-package', bump_type: 'patch'}]);
 			expect(result?.summary).toContain('First summary');
 		});
 
@@ -273,7 +270,9 @@ Duplicate package entries.`;
 	});
 
 	describe('determine_bump_from_changesets', () => {
-		const create_changeset = (packages: Array<{name: string; bump_type: Bump_Type}>): Changeset_Info => ({
+		const create_changeset = (
+			packages: Array<{name: string; bump_type: Bump_Type}>,
+		): Changeset_Info => ({
 			filename: 'test.md',
 			packages,
 			summary: 'Test changeset',
@@ -310,9 +309,7 @@ Duplicate package entries.`;
 		});
 
 		it('returns null for non-existent package', () => {
-			const changesets = [
-				create_changeset([{name: 'package-a', bump_type: 'patch'}]),
-			];
+			const changesets = [create_changeset([{name: 'package-a', bump_type: 'patch'}])];
 
 			expect(determine_bump_from_changesets(changesets, 'non-existent')).toBeNull();
 		});

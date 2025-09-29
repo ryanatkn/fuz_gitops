@@ -2,18 +2,15 @@ import type {Logger} from '@ryanatkn/belt/log.js';
 import {writeFile, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 
-import type {Local_Repo} from './local_repo.js';
-import type {Published_Version} from './multi_repo_publisher.js';
+import type {Local_Repo} from '$lib/local_repo.js';
+import type {Published_Version} from '$lib/multi_repo_publisher.js';
 import {
 	create_changeset_for_dependency_updates,
 	create_dependency_updates,
-} from './changeset_generator.js';
-import {
-	needs_update,
-	get_update_prefix,
-} from './version_utils.js';
-import type {Git_Operations} from './operations.js';
-import {default_git_operations} from './default_operations.js';
+} from '$lib/changeset_generator.js';
+import {needs_update, get_update_prefix} from '$lib/version_utils.js';
+import type {Git_Operations} from '$lib/operations.js';
+import {default_git_operations} from '$lib/default_operations.js';
 
 export type Version_Strategy = 'exact' | 'caret' | 'tilde';
 
@@ -195,8 +192,14 @@ export const update_all_repos = async (
 export const find_updates_needed = (
 	repo: Local_Repo,
 	published: Map<string, string>,
-): Map<string, {current: string; new: string; type: 'dependencies' | 'devDependencies' | 'peerDependencies'}> => {
-	const updates = new Map<string, {current: string; new: string; type: 'dependencies' | 'devDependencies' | 'peerDependencies'}>();
+): Map<
+	string,
+	{current: string; new: string; type: 'dependencies' | 'devDependencies' | 'peerDependencies'}
+> => {
+	const updates = new Map<
+		string,
+		{current: string; new: string; type: 'dependencies' | 'devDependencies' | 'peerDependencies'}
+	>();
 
 	// Check dependencies
 	if (repo.dependencies) {

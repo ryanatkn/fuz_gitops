@@ -1,8 +1,8 @@
 import {test, expect} from 'vitest';
 
-import type {Local_Repo} from './local_repo.js';
-import {publish_repos} from './multi_repo_publisher.js';
-import {create_mock_repo, create_mock_publishing_ops, create_mock_fs} from './test_helpers.js';
+import type {Local_Repo} from '$lib/local_repo.js';
+import {publish_repos} from '$lib/multi_repo_publisher.js';
+import {create_mock_repo, create_mock_publishing_ops, create_mock_fs} from '$lib/test_helpers.js';
 
 test('dry run predicts versions without publishing', async () => {
 	const repos: Array<Local_Repo> = [
@@ -164,9 +164,9 @@ test('handles breaking change cascades in dry run', async () => {
 	expect(result.published.length).toBe(3);
 
 	// Check versions
-	const core = result.published.find(p => p.name === 'pkg-core');
-	const mid = result.published.find(p => p.name === 'pkg-mid');
-	const app = result.published.find(p => p.name === 'pkg-app');
+	const core = result.published.find((p) => p.name === 'pkg-core');
+	const mid = result.published.find((p) => p.name === 'pkg-mid');
+	const app = result.published.find((p) => p.name === 'pkg-app');
 
 	expect(core?.new_version).toBe('0.6.0');
 	expect(core?.breaking).toBe(true);

@@ -2,57 +2,31 @@ import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
-import {publish_repos, type Publishing_Options, type Publishing_Result} from '$lib/multi_repo_publisher.js';
+import {
+	publish_repos,
+	type Publishing_Options,
+	type Publishing_Result,
+} from '$lib/multi_repo_publisher.js';
 import type {Bump_Type} from '$lib/semver.js';
 import {preview_publishing_plan, log_publishing_preview} from '$lib/publishing_preview.js';
 import {styleText as st} from 'node:util';
 
 export const Args = z.strictObject({
-	path: z
-		.string()
-		.describe('path to the gitops config file')
-		.default('gitops.config.ts'),
-	dir: z
-		.string()
-		.describe('path containing the repos')
-		.optional(),
+	path: z.string().describe('path to the gitops config file').default('gitops.config.ts'),
+	dir: z.string().describe('path containing the repos').optional(),
 	branch: z.string().describe('git branch to publish from').default('main'),
-	bump: z
-		.enum(['major', 'minor', 'patch', 'auto'])
-		.describe('version bump type')
-		.default('auto'),
-	continue_on_error: z
-		.boolean()
-		.describe('continue publishing if a package fails')
-		.default(false),
-	update_peers: z
-		.boolean()
-		.describe('update peer dependencies after publishing')
-		.default(true),
+	bump: z.enum(['major', 'minor', 'patch', 'auto']).describe('version bump type').default('auto'),
+	continue_on_error: z.boolean().describe('continue publishing if a package fails').default(false),
+	update_peers: z.boolean().describe('update peer dependencies after publishing').default(true),
 	peer_strategy: z
 		.enum(['exact', 'caret', 'tilde'])
 		.describe('version strategy for peer dependencies')
 		.default('caret' as const),
-	dry: z
-		.boolean()
-		.describe('perform a dry run without actually publishing')
-		.default(false),
-	resume: z
-		.boolean()
-		.describe('resume from previous failed publishing state')
-		.default(false),
-	format: z
-		.enum(['stdout', 'json', 'markdown'])
-		.describe('output format')
-		.default('stdout'),
-	deploy: z
-		.boolean()
-		.describe('deploy all repos after publishing')
-		.default(false),
-	preview: z
-		.boolean()
-		.describe('show preview before publishing')
-		.default(true),
+	dry: z.boolean().describe('perform a dry run without actually publishing').default(false),
+	resume: z.boolean().describe('resume from previous failed publishing state').default(false),
+	format: z.enum(['stdout', 'json', 'markdown']).describe('output format').default('stdout'),
+	deploy: z.boolean().describe('deploy all repos after publishing').default(false),
+	preview: z.boolean().describe('show preview before publishing').default(true),
 });
 export type Args = z.infer<typeof Args>;
 
@@ -96,7 +70,7 @@ export const task: Task<Args> = {
 			// Ask for confirmation
 			log.info(st('yellow', '\n⚠️  This will publish the packages shown above.'));
 			log.info('Press Ctrl+C to cancel, or wait 5 seconds to continue...\n');
-			await new Promise(resolve => setTimeout(resolve, 5000));
+			await new Promise((resolve) => setTimeout(resolve, 5000));
 		}
 
 		// Publishing options

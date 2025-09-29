@@ -3,21 +3,19 @@ import {z} from 'zod';
 import {styleText as st} from 'node:util';
 import {writeFile} from 'node:fs/promises';
 
-import {get_gitops_ready} from './gitops_task_helpers.js';
-import {preview_publishing_plan, log_publishing_preview, type Publishing_Preview} from './publishing_preview.js';
+import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
+import {
+	preview_publishing_plan,
+	log_publishing_preview,
+	type Publishing_Preview,
+} from '$lib/publishing_preview.js';
 
 const Args = z
 	.object({
 		dir: z.string().describe('root directory for repos').optional(),
 		path: z.string().describe('path to gitops config file').default('gitops.config.ts'),
-		format: z
-			.enum(['stdout', 'json', 'markdown'])
-			.describe('output format')
-			.default('stdout'),
-		outfile: z
-			.string()
-			.describe('write output to file instead of logging')
-			.optional(),
+		format: z.enum(['stdout', 'json', 'markdown']).describe('output format').default('stdout'),
+		outfile: z.string().describe('write output to file instead of logging').optional(),
 	})
 	.strict();
 
@@ -134,15 +132,17 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 	if (publishing_order.length > 0) {
 		lines.push('## Publishing Order');
 		lines.push('');
-		lines.push(publishing_order.map(p => `\`${p}\``).join(' → '));
+		lines.push(publishing_order.map((p) => `\`${p}\``).join(' → '));
 		lines.push('');
 	}
 
 	// Version changes
 	if (version_changes.length > 0) {
-		const with_changesets = version_changes.filter(vc => vc.has_changesets && !vc.needs_bump_escalation);
-		const with_escalation = version_changes.filter(vc => vc.needs_bump_escalation);
-		const with_auto_changesets = version_changes.filter(vc => vc.will_generate_changeset);
+		const with_changesets = version_changes.filter(
+			(vc) => vc.has_changesets && !vc.needs_bump_escalation,
+		);
+		const with_escalation = version_changes.filter((vc) => vc.needs_bump_escalation);
+		const with_auto_changesets = version_changes.filter((vc) => vc.will_generate_changeset);
 
 		if (with_changesets.length > 0) {
 			lines.push('## Version Changes (from changesets)');
@@ -170,7 +170,9 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 				);
 			}
 			lines.push('');
-			lines.push('> ⬆️ These packages have changesets, but dependencies require a larger version bump.');
+			lines.push(
+				'> ⬆️ These packages have changesets, but dependencies require a larger version bump.',
+			);
 			lines.push('');
 		}
 
@@ -199,7 +201,7 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 		lines.push('## Breaking Change Cascades');
 		lines.push('');
 		for (const [pkg, affected] of breaking_cascades) {
-			lines.push(`- \`${pkg}\` affects: ${affected.map(a => `\`${a}\``).join(', ')}`);
+			lines.push(`- \`${pkg}\` affects: ${affected.map((a) => `\`${a}\``).join(', ')}`);
 		}
 		lines.push('');
 	}

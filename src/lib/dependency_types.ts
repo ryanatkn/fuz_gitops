@@ -8,7 +8,7 @@ export const DEPENDENCY_TYPE = {
 	DEV: 'dev',
 } as const;
 
-export type Dependency_Type = typeof DEPENDENCY_TYPE[keyof typeof DEPENDENCY_TYPE];
+export type Dependency_Type = (typeof DEPENDENCY_TYPE)[keyof typeof DEPENDENCY_TYPE];
 
 export interface Dependency_Spec {
 	type: Dependency_Type;

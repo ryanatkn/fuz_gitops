@@ -3,15 +3,15 @@ import {Task_Error} from '@ryanatkn/gro';
 import {join} from 'node:path';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from './local_repo.js';
-import {Dependency_Graph_Builder} from './dependency_graph.js';
-import {update_package_json, type Version_Strategy} from './dependency_updater.js';
-import type {Bump_Type} from './semver.js';
-import {type Pre_Flight_Options} from './pre_flight_checks.js';
-import {init_publishing_state, type Publishing_State_Manager} from './publishing_state.js';
-import {needs_update, is_breaking_change, detect_bump_type} from './version_utils.js';
-import type {Publishing_Operations} from './operations.js';
-import {default_publishing_operations} from './default_operations.js';
+import type {Local_Repo} from '$lib/local_repo.js';
+import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
+import {update_package_json, type Version_Strategy} from '$lib/dependency_updater.js';
+import type {Bump_Type} from '$lib/semver.js';
+import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
+import {init_publishing_state, type Publishing_State_Manager} from '$lib/publishing_state.js';
+import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
+import type {Publishing_Operations} from '$lib/operations.js';
+import {default_publishing_operations} from '$lib/default_operations.js';
 
 export interface Publishing_Options {
 	dry: boolean;

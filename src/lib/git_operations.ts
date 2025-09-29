@@ -13,10 +13,7 @@ import {
 /**
  * Adds files to git staging area and throws if anything goes wrong.
  */
-export const git_add = async (
-	files: string | string[],
-	options?: SpawnOptions,
-): Promise<void> => {
+export const git_add = async (files: string | string[], options?: SpawnOptions): Promise<void> => {
 	const file_list = Array.isArray(files) ? files : [files];
 	const result = await spawn('git', ['add', ...file_list], options);
 	if (!result.ok) {
@@ -27,10 +24,7 @@ export const git_add = async (
 /**
  * Commits staged changes with a message and throws if anything goes wrong.
  */
-export const git_commit = async (
-	message: string,
-	options?: SpawnOptions,
-): Promise<void> => {
+export const git_commit = async (message: string, options?: SpawnOptions): Promise<void> => {
 	const result = await spawn('git', ['commit', '-m', message], options);
 	if (!result.ok) {
 		throw Error(`git_commit failed with code ${result.code}`);
@@ -57,9 +51,7 @@ export const git_tag = async (
 	message?: string,
 	options?: SpawnOptions,
 ): Promise<void> => {
-	const args = message
-		? ['tag', '-a', tag_name, '-m', message]
-		: ['tag', tag_name];
+	const args = message ? ['tag', '-a', tag_name, '-m', message] : ['tag', tag_name];
 
 	const result = await spawn('git', args, options);
 	if (!result.ok) {
@@ -84,9 +76,7 @@ export const git_push_tag = async (
 /**
  * Returns true if there are any uncommitted changes.
  */
-export const git_has_changes = async (
-	options?: SpawnOptions,
-): Promise<boolean> => {
+export const git_has_changes = async (options?: SpawnOptions): Promise<boolean> => {
 	const {stdout} = await spawn_out('git', ['status', '--porcelain'], options);
 	return stdout ? stdout.trim().length > 0 : false;
 };
@@ -94,9 +84,7 @@ export const git_has_changes = async (
 /**
  * Returns list of changed files compared to HEAD.
  */
-export const git_get_changed_files = async (
-	options?: SpawnOptions,
-): Promise<string[]> => {
+export const git_get_changed_files = async (options?: SpawnOptions): Promise<string[]> => {
 	const {stdout} = await spawn_out('git', ['diff', '--name-only', 'HEAD'], options);
 	if (!stdout) return [];
 
@@ -109,13 +97,8 @@ export const git_get_changed_files = async (
 /**
  * Stashes current changes and throws if anything goes wrong.
  */
-export const git_stash = async (
-	message?: string,
-	options?: SpawnOptions,
-): Promise<void> => {
-	const args = message
-		? ['stash', 'push', '-m', message]
-		: ['stash', 'push'];
+export const git_stash = async (message?: string, options?: SpawnOptions): Promise<void> => {
+	const args = message ? ['stash', 'push', '-m', message] : ['stash', 'push'];
 
 	const result = await spawn('git', args, options);
 	if (!result.ok) {
@@ -126,9 +109,7 @@ export const git_stash = async (
 /**
  * Applies stashed changes and throws if anything goes wrong.
  */
-export const git_stash_pop = async (
-	options?: SpawnOptions,
-): Promise<void> => {
+export const git_stash_pop = async (options?: SpawnOptions): Promise<void> => {
 	const result = await spawn('git', ['stash', 'pop'], options);
 	if (!result.ok) {
 		throw Error(`git_stash_pop failed with code ${result.code}`);
@@ -167,9 +148,7 @@ export const git_switch_branch = async (
 /**
  * Wrapper for gro's git_current_branch_name that throws if null.
  */
-export const git_current_branch_name_required = async (
-	options?: SpawnOptions,
-): Promise<string> => {
+export const git_current_branch_name_required = async (options?: SpawnOptions): Promise<string> => {
 	const branch = await gro_git_current_branch_name(options);
 	if (!branch) {
 		throw new Error('Failed to get current branch name');

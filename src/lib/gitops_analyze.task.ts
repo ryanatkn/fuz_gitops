@@ -21,10 +21,7 @@ export const Args = z
 			.enum(['stdout', 'json', 'markdown'])
 			.meta({description: 'output format'})
 			.default('stdout'),
-		outfile: z
-			.string()
-			.meta({description: 'write output to file instead of logging'})
-			.optional(),
+		outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
 	})
 	.strict();
 
@@ -54,7 +51,9 @@ export const task: Task<Args> = {
 		} catch (error) {
 			// Cycles prevent topological sort (should only happen with prod/peer cycles)
 			if (analysis.production_cycles.length > 0) {
-				log.error('Cannot determine publishing order due to circular dependencies in prod/peer deps');
+				log.error(
+					'Cannot determine publishing order due to circular dependencies in prod/peer deps',
+				);
 			}
 		}
 
@@ -164,7 +163,7 @@ const format_markdown = (
 		lines.push('> **These block publishing and must be resolved!**');
 		lines.push('');
 		for (const cycle of analysis.production_cycles) {
-			lines.push(`- ${cycle.map(n => `\`${n}\``).join(' → ')}`);
+			lines.push(`- ${cycle.map((n) => `\`${n}\``).join(' → ')}`);
 		}
 	}
 
@@ -173,7 +172,7 @@ const format_markdown = (
 		lines.push('> These are normal and do not block publishing.');
 		lines.push('');
 		for (const cycle of analysis.dev_cycles) {
-			lines.push(`- ${cycle.map(n => `\`${n}\``).join(' → ')}`);
+			lines.push(`- ${cycle.map((n) => `\`${n}\``).join(' → ')}`);
 		}
 	}
 
@@ -258,14 +257,24 @@ const format_stdout = (
 	const has_dev_cycles = analysis.dev_cycles.length > 0;
 
 	if (has_prod_cycles) {
-		lines.push(st('red', `\n❌ Found ${analysis.production_cycles.length} production/peer circular dependencies (blocks publishing):`));
+		lines.push(
+			st(
+				'red',
+				`\n❌ Found ${analysis.production_cycles.length} production/peer circular dependencies (blocks publishing):`,
+			),
+		);
 		for (const cycle of analysis.production_cycles) {
 			lines.push(`  ${st('red', cycle.join(' → '))}`);
 		}
 	}
 
 	if (has_dev_cycles) {
-		lines.push(st('yellow', `\n⚠️  Found ${analysis.dev_cycles.length} dev circular dependencies (normal, non-blocking):`));
+		lines.push(
+			st(
+				'yellow',
+				`\n⚠️  Found ${analysis.dev_cycles.length} dev circular dependencies (normal, non-blocking):`,
+			),
+		);
 		for (const cycle of analysis.dev_cycles) {
 			lines.push(`  ${st('dim', cycle.join(' → '))}`);
 		}

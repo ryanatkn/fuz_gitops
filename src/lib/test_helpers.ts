@@ -1,11 +1,8 @@
-/**
- * Test helpers for creating mock operations and test data
- */
-
 import type {Src_Json} from '@ryanatkn/belt/src_json.js';
-import type {Local_Repo} from './local_repo.js';
-import type {Publishing_Operations, Changeset_Operations} from './operations.js';
-import type {Bump_Type} from './semver.js';
+
+import type {Local_Repo} from '$lib/local_repo.js';
+import type {Publishing_Operations, Changeset_Operations} from '$lib/operations.js';
+import type {Bump_Type} from '$lib/semver.js';
 
 export interface Mock_Repo_Options {
 	name: string;
@@ -18,51 +15,16 @@ export interface Mock_Repo_Options {
 
 /**
  * Creates a mock Local_Repo for testing
- * Supports both object and legacy positional arguments for backwards compatibility
  */
-export function create_mock_repo(options: Mock_Repo_Options): Local_Repo;
-export function create_mock_repo(
-	name: string,
-	version?: string,
-	deps?: Record<string, string>,
-	devDeps?: Record<string, string>,
-	peerDeps?: Record<string, string>,
-	isPrivate?: boolean,
-): Local_Repo;
-export function create_mock_repo(
-	nameOrOptions: string | Mock_Repo_Options,
-	version = '1.0.0',
-	deps: Record<string, string> = {},
-	devDeps: Record<string, string> = {},
-	peerDeps: Record<string, string> = {},
-	isPrivate = false,
-): Local_Repo {
-	// Handle object parameter
-	if (typeof nameOrOptions === 'object') {
-		const options = nameOrOptions;
-		return create_mock_repo_impl(
-			options.name,
-			options.version ?? '1.0.0',
-			options.deps ?? {},
-			options.devDeps ?? {},
-			options.peerDeps ?? {},
-			options.isPrivate ?? false,
-		);
-	}
-
-	// Handle legacy positional parameters
-	return create_mock_repo_impl(nameOrOptions, version, deps, devDeps, peerDeps, isPrivate);
-}
-
-const create_mock_repo_impl = (
-	name: string,
-	version: string,
-	deps: Record<string, string>,
-	devDeps: Record<string, string>,
-	peerDeps: Record<string, string>,
-	isPrivate: boolean,
-): Local_Repo => {
-
+export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
+	const {
+		name,
+		version = '1.0.0',
+		deps = {},
+		devDeps = {},
+		peerDeps = {},
+		isPrivate = false,
+	} = options;
 	return {
 		type: 'resolved_local_repo' as const,
 		repo_name: name,
@@ -185,7 +147,8 @@ export const create_mock_fs = (
 	const fs = new Map<string, string>();
 
 	for (const repo of repos) {
-		const version = updatedVersions.get(repo.pkg.name) ||
+		const version =
+			updatedVersions.get(repo.pkg.name) ||
 			incrementPatch(repo.pkg.package_json.version || '0.0.0');
 
 		const packageJson = {
@@ -193,10 +156,7 @@ export const create_mock_fs = (
 			version,
 		};
 
-		fs.set(
-			`${repo.repo_dir}/package.json`,
-			JSON.stringify(packageJson, null, 2),
-		);
+		fs.set(`${repo.repo_dir}/package.json`, JSON.stringify(packageJson, null, 2));
 	}
 
 	return fs;

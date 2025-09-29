@@ -5,10 +5,10 @@
 
 import type {Logger} from '@ryanatkn/belt/log.js';
 import type {SpawnOptions} from 'node:child_process';
-import type {Local_Repo} from './local_repo.js';
-import type {Changeset_Info} from './changeset_reader.js';
-import type {Bump_Type} from './semver.js';
-import type {Pre_Flight_Options, Pre_Flight_Result} from './pre_flight_checks.js';
+import type {Local_Repo} from '$lib/local_repo.js';
+import type {Changeset_Info} from '$lib/changeset_reader.js';
+import type {Bump_Type} from '$lib/semver.js';
+import type {Pre_Flight_Options, Pre_Flight_Result} from '$lib/pre_flight_checks.js';
 
 /**
  * Operations for working with changesets

@@ -3,9 +3,9 @@ import {existsSync} from 'node:fs';
 import {readdir, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 
-import type {Local_Repo} from './local_repo.js';
-import type {Bump_Type} from './semver.js';
-import {compare_bump_types, calculate_next_version} from './version_utils.js';
+import type {Local_Repo} from '$lib/local_repo.js';
+import type {Bump_Type} from '$lib/semver.js';
+import {compare_bump_types, calculate_next_version} from '$lib/version_utils.js';
 
 export interface Changeset_Info {
 	filename: string;
@@ -98,7 +98,7 @@ export const read_changesets = async (
 
 	try {
 		const files = await readdir(changesets_dir);
-		const changeset_files = files.filter(f => f.endsWith('.md') && f !== 'README.md');
+		const changeset_files = files.filter((f) => f.endsWith('.md') && f !== 'README.md');
 
 		const changesets: Array<Changeset_Info> = [];
 
@@ -139,10 +139,6 @@ export const determine_bump_from_changesets = (
 
 	return highest_bump;
 };
-
-// Bump comparison and version calculation moved to version_utils.ts
-// Re-export for backwards compatibility
-export {compare_bump_types, calculate_next_version} from './version_utils.js';
 
 /**
  * Detects if a repo has changesets.
@@ -191,4 +187,3 @@ export const predict_next_version = async (
 		bump_type,
 	};
 };
-

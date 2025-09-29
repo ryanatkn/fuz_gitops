@@ -2,10 +2,10 @@ import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn_out} from '@ryanatkn/belt/process.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from './local_repo.js';
-import {has_changesets} from './changeset_reader.js';
-import type {Git_Operations} from './operations.js';
-import {default_git_operations} from './default_operations.js';
+import type {Local_Repo} from '$lib/local_repo.js';
+import {has_changesets} from '$lib/changeset_reader.js';
+import type {Git_Operations} from '$lib/operations.js';
+import {default_git_operations} from '$lib/default_operations.js';
 
 export interface Pre_Flight_Options {
 	skip_changesets?: boolean;

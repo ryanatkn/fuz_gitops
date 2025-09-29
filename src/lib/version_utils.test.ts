@@ -1,4 +1,5 @@
 import {describe, it, expect} from 'vitest';
+
 import {
 	is_wildcard,
 	strip_version_prefix,
@@ -8,7 +9,7 @@ import {
 	get_update_prefix,
 	is_breaking_change,
 	detect_bump_type,
-} from './version_utils.js';
+} from '$lib/version_utils.js';
 
 describe('version_utils', () => {
 	describe('is_wildcard', () => {

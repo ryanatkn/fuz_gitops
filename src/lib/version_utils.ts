@@ -1,8 +1,8 @@
+import type {Bump_Type} from '$lib/semver.js';
+
 /**
  * Version utility functions for handling semver strings and comparisons.
  */
-
-import type {Bump_Type} from './semver.js';
 
 /**
  * Checks if a version string is a wildcard.
@@ -62,7 +62,7 @@ export const needs_update = (current: string, new_version: string): boolean => {
  */
 export const get_update_prefix = (
 	current_version: string,
-	default_strategy: '^' | '~' | '' = '^'
+	default_strategy: '^' | '~' | '' = '^',
 ): string => {
 	// Use caret for wildcard replacements
 	if (is_wildcard(current_version)) {
@@ -130,10 +130,7 @@ export const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
 /**
  * Calculates the next version based on current version and bump type.
  */
-export const calculate_next_version = (
-	current_version: string,
-	bump_type: Bump_Type,
-): string => {
+export const calculate_next_version = (current_version: string, bump_type: Bump_Type): string => {
 	const parts = current_version.split('.').map(Number);
 	if (parts.length !== 3 || parts.some((p) => Number.isNaN(p))) {
 		throw new Error(`Invalid version format: ${current_version}`);
@@ -152,4 +149,3 @@ export const calculate_next_version = (
 			throw new Error(`Invalid bump type: ${bump_type}`);
 	}
 };
-

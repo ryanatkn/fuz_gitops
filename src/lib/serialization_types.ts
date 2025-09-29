@@ -1,8 +1,4 @@
-/**
- * JSON-safe type definitions for serialization
- */
-
-import type {Dependency_Graph} from './dependency_graph.js';
+import type {Dependency_Graph} from '$lib/dependency_graph.js';
 
 export interface Serialized_Node {
 	name: string;

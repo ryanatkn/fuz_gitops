@@ -1,9 +1,9 @@
 import {test, expect} from 'vitest';
 
-import type {Local_Repo} from './local_repo.js';
-import {preview_publishing_plan} from './publishing_preview.js';
-import type {Changeset_Operations} from './operations.js';
-import {create_mock_repo} from './test_helpers.js';
+import type {Local_Repo} from '$lib/local_repo.js';
+import {preview_publishing_plan} from '$lib/publishing_preview.js';
+import type {Changeset_Operations} from '$lib/operations.js';
+import {create_mock_repo} from '$lib/test_helpers.js';
 
 test('detects breaking change cascades', async () => {
 	const repos: Array<Local_Repo> = [
@@ -28,7 +28,7 @@ test('detects breaking change cascades', async () => {
 	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
 
 	// pkg-a should have a breaking change (0.x.x minor bump)
-	expect(preview.version_changes.find(vc => vc.package_name === 'pkg-a')?.breaking).toBe(true);
+	expect(preview.version_changes.find((vc) => vc.package_name === 'pkg-a')?.breaking).toBe(true);
 
 	// pkg-b should cascade the breaking change
 	expect(preview.breaking_cascades.has('pkg-a')).toBe(true);
@@ -59,7 +59,7 @@ test('handles bump escalation', async () => {
 	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
 
 	// pkg-b should have bump escalation due to breaking dep
-	const pkg_b_change = preview.version_changes.find(vc => vc.package_name === 'pkg-b');
+	const pkg_b_change = preview.version_changes.find((vc) => vc.package_name === 'pkg-b');
 	expect(pkg_b_change?.needs_bump_escalation).toBe(true);
 	expect(pkg_b_change?.required_bump).toBe('minor');
 });
@@ -86,12 +86,12 @@ test('generates auto-changesets for dependency updates', async () => {
 	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
 
 	// pkg-b should get auto-changeset for dependency update
-	const pkg_b_change = preview.version_changes.find(vc => vc.package_name === 'pkg-b');
+	const pkg_b_change = preview.version_changes.find((vc) => vc.package_name === 'pkg-b');
 	expect(pkg_b_change?.will_generate_changeset).toBe(true);
 	expect(pkg_b_change?.has_changesets).toBe(false);
 
 	// pkg-c should not get auto-changeset (dev dependency only)
-	const pkg_c_change = preview.version_changes.find(vc => vc.package_name === 'pkg-c');
+	const pkg_c_change = preview.version_changes.find((vc) => vc.package_name === 'pkg-c');
 	expect(pkg_c_change).toBeUndefined();
 });
 

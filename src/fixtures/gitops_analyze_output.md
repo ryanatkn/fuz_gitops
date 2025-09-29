@@ -38,28 +38,28 @@
 
 ## ⚠️ Wildcard Dependencies
 
-| Package | Dependency | Version |
-|---------|------------|---------|
-| `@ryanatkn/fuz` | `@ryanatkn/belt` | `*` |
-| `@ryanatkn/fuz` | `@ryanatkn/moss` | `*` |
-| `@ryanatkn/fuz_blog` | `@ryanatkn/belt` | `*` |
-| `@ryanatkn/fuz_blog` | `@ryanatkn/fuz` | `*` |
-| `@ryanatkn/fuz_blog` | `@ryanatkn/fuz_mastodon` | `*` |
-| `@ryanatkn/fuz_blog` | `@ryanatkn/gro` | `*` |
-| `@ryanatkn/fuz_blog` | `@ryanatkn/moss` | `*` |
-| `@ryanatkn/fuz_mastodon` | `@ryanatkn/belt` | `*` |
-| `@ryanatkn/fuz_mastodon` | `@ryanatkn/fuz` | `*` |
-| `@ryanatkn/fuz_mastodon` | `@ryanatkn/moss` | `*` |
-| `@ryanatkn/fuz_code` | `@ryanatkn/moss` | `*` |
-| `@ryanatkn/fuz_gitops` | `@ryanatkn/belt` | `*` |
-| `@ryanatkn/fuz_gitops` | `@ryanatkn/fuz` | `*` |
-| `@ryanatkn/fuz_gitops` | `@ryanatkn/gro` | `*` |
-| `@ryanatkn/fuz_gitops` | `@ryanatkn/moss` | `*` |
+| Package                  | Dependency               | Version |
+| ------------------------ | ------------------------ | ------- |
+| `@ryanatkn/fuz`          | `@ryanatkn/belt`         | `*`     |
+| `@ryanatkn/fuz`          | `@ryanatkn/moss`         | `*`     |
+| `@ryanatkn/fuz_blog`     | `@ryanatkn/belt`         | `*`     |
+| `@ryanatkn/fuz_blog`     | `@ryanatkn/fuz`          | `*`     |
+| `@ryanatkn/fuz_blog`     | `@ryanatkn/fuz_mastodon` | `*`     |
+| `@ryanatkn/fuz_blog`     | `@ryanatkn/gro`          | `*`     |
+| `@ryanatkn/fuz_blog`     | `@ryanatkn/moss`         | `*`     |
+| `@ryanatkn/fuz_mastodon` | `@ryanatkn/belt`         | `*`     |
+| `@ryanatkn/fuz_mastodon` | `@ryanatkn/fuz`          | `*`     |
+| `@ryanatkn/fuz_mastodon` | `@ryanatkn/moss`         | `*`     |
+| `@ryanatkn/fuz_code`     | `@ryanatkn/moss`         | `*`     |
+| `@ryanatkn/fuz_gitops`   | `@ryanatkn/belt`         | `*`     |
+| `@ryanatkn/fuz_gitops`   | `@ryanatkn/fuz`          | `*`     |
+| `@ryanatkn/fuz_gitops`   | `@ryanatkn/gro`          | `*`     |
+| `@ryanatkn/fuz_gitops`   | `@ryanatkn/moss`         | `*`     |
 
 ## Internal Dependencies
 
 - **@ryanatkn/zzz**
-  - @ryanatkn/belt 
+  - @ryanatkn/belt
   - @ryanatkn/fuz (dev)
   - @ryanatkn/gro (dev)
   - @ryanatkn/moss (dev)
@@ -74,7 +74,7 @@
   - @ryanatkn/gro (peer)
   - @ryanatkn/moss (peer)
 - **@ryanatkn/gro**
-  - @ryanatkn/belt 
+  - @ryanatkn/belt
   - @ryanatkn/fuz (dev)
   - @ryanatkn/moss (dev)
 - **@ryanatkn/belt**

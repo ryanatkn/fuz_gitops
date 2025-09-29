@@ -1,5 +1,9 @@
 import type {Local_Repo} from '$lib/local_repo.js';
-import {DEPENDENCY_TYPE, type Dependency_Spec, type Dependency_Graph_Json} from './dependency_types.js';
+import {
+	DEPENDENCY_TYPE,
+	type Dependency_Spec,
+	type Dependency_Graph_Json,
+} from '$lib/dependency_types.js';
 
 export interface Dependency_Node {
 	name: string;
@@ -227,9 +231,7 @@ export class Dependency_Graph {
 							const cycle = path.slice(cycle_start).concat(dep_name);
 							// Check if this cycle is unique
 							const cycle_key = [...cycle].sort().join(',');
-							const exists = production_cycles.some(
-								(c) => [...c].sort().join(',') === cycle_key,
-							);
+							const exists = production_cycles.some((c) => [...c].sort().join(',') === cycle_key);
 							if (!exists) {
 								production_cycles.push(cycle);
 							}
@@ -262,9 +264,7 @@ export class Dependency_Graph {
 							const cycle = path.slice(cycle_start).concat(dep_name);
 							// Check if this cycle is unique
 							const cycle_key = [...cycle].sort().join(',');
-							const exists = dev_cycles.some(
-								(c) => [...c].sort().join(',') === cycle_key,
-							);
+							const exists = dev_cycles.some((c) => [...c].sort().join(',') === cycle_key);
 							if (!exists) {
 								dev_cycles.push(cycle);
 							}

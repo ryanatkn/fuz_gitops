@@ -1,15 +1,11 @@
 import {describe, it, expect} from 'vitest';
-import {Dependency_Graph, Dependency_Graph_Builder} from './dependency_graph.js';
-import {create_mock_repo} from './test_helpers.js';
-
+import {Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
+import {create_mock_repo} from '$lib/test_helpers.js';
 
 describe('Dependency_Graph', () => {
 	describe('basic functionality', () => {
 		it('creates nodes for all repos', () => {
-			const repos = [
-				create_mock_repo('package-a'),
-				create_mock_repo('package-b'),
-			];
+			const repos = [create_mock_repo({name: 'package-a'}), create_mock_repo({name: 'package-b'})];
 
 			const graph = new Dependency_Graph();
 			graph.init_from_repos(repos);
@@ -21,8 +17,8 @@ describe('Dependency_Graph', () => {
 
 		it('sets publishable flag based on private field', () => {
 			const repos = [
-				create_mock_repo('public-pkg', '1.0.0'),
-				create_mock_repo('private-pkg', '1.0.0', undefined, undefined, undefined, true),
+				create_mock_repo({name: 'public-pkg', version: '1.0.0'}),
+				create_mock_repo({name: 'private-pkg', version: '1.0.0', isPrivate: true}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -63,8 +59,8 @@ describe('Dependency_Graph', () => {
 	describe('dependency relationships', () => {
 		it('builds internal dependency relationships', () => {
 			const repos = [
-				create_mock_repo('lib', '1.0.0'),
-				create_mock_repo('app', '1.0.0', {lib: '^1.0.0'}),
+				create_mock_repo({name: 'lib', version: '1.0.0'}),
+				create_mock_repo({name: 'app', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -81,12 +77,16 @@ describe('Dependency_Graph', () => {
 		});
 
 		it('ignores external dependencies for relationships', () => {
-			const repo = create_mock_repo('pkg', '1.0.0', {
-				'internal-dep': '^1.0.0',
-				'external-dep': '^1.0.0',
+			const repo = create_mock_repo({
+				name: 'pkg',
+				version: '1.0.0',
+				deps: {
+					'internal-dep': '^1.0.0',
+					'external-dep': '^1.0.0',
+				},
 			});
 
-			const internal_dep_repo = create_mock_repo('internal-dep', '1.0.0');
+			const internal_dep_repo = create_mock_repo({name: 'internal-dep', version: '1.0.0'});
 
 			const graph = new Dependency_Graph();
 			graph.init_from_repos([repo, internal_dep_repo]);
@@ -106,9 +106,9 @@ describe('Dependency_Graph', () => {
 	describe('topological_sort', () => {
 		it('sorts simple dependency chain', () => {
 			const repos = [
-				create_mock_repo('lib', '1.0.0'),
-				create_mock_repo('middleware', '1.0.0', {lib: '^1.0.0'}),
-				create_mock_repo('app', '1.0.0', {middleware: '^1.0.0'}),
+				create_mock_repo({name: 'lib', version: '1.0.0'}),
+				create_mock_repo({name: 'middleware', version: '1.0.0', deps: {lib: '^1.0.0'}}),
+				create_mock_repo({name: 'app', version: '1.0.0', deps: {middleware: '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -120,11 +120,15 @@ describe('Dependency_Graph', () => {
 
 		it('handles multiple independent packages', () => {
 			const repos = [
-				create_mock_repo('independent-a', '1.0.0'),
-				create_mock_repo('independent-b', '1.0.0'),
-				create_mock_repo('uses-both', '1.0.0', {
-					'independent-a': '^1.0.0',
-					'independent-b': '^1.0.0',
+				create_mock_repo({name: 'independent-a', version: '1.0.0'}),
+				create_mock_repo({name: 'independent-b', version: '1.0.0'}),
+				create_mock_repo({
+					name: 'uses-both',
+					version: '1.0.0',
+					deps: {
+						'independent-a': '^1.0.0',
+						'independent-b': '^1.0.0',
+					},
 				}),
 			];
 
@@ -139,8 +143,8 @@ describe('Dependency_Graph', () => {
 
 		it('excludes dev dependencies when requested', () => {
 			const repos = [
-				create_mock_repo('lib', '1.0.0'),
-				create_mock_repo('app', '1.0.0', undefined, {lib: '^1.0.0'}), // dev dependency
+				create_mock_repo({name: 'lib', version: '1.0.0'}),
+				create_mock_repo({name: 'app', version: '1.0.0', devDeps: {lib: '^1.0.0'}}), // dev dependency
 			];
 
 			const graph = new Dependency_Graph();
@@ -158,8 +162,8 @@ describe('Dependency_Graph', () => {
 
 		it('throws on circular dependencies', () => {
 			const repos = [
-				create_mock_repo('pkg-a', '1.0.0', {'pkg-b': '^1.0.0'}),
-				create_mock_repo('pkg-b', '1.0.0', {'pkg-a': '^1.0.0'}),
+				create_mock_repo({name: 'pkg-a', version: '1.0.0', deps: {'pkg-b': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -171,10 +175,14 @@ describe('Dependency_Graph', () => {
 		it('handles complex dependency chains', () => {
 			// Create a diamond dependency pattern: app -> [lib-a, lib-b] -> shared
 			const repos = [
-				create_mock_repo('shared', '1.0.0'),
-				create_mock_repo('lib-a', '1.0.0', {shared: '^1.0.0'}),
-				create_mock_repo('lib-b', '1.0.0', {shared: '^1.0.0'}),
-				create_mock_repo('app', '1.0.0', {'lib-a': '^1.0.0', 'lib-b': '^1.0.0'}),
+				create_mock_repo({name: 'shared', version: '1.0.0'}),
+				create_mock_repo({name: 'lib-a', version: '1.0.0', deps: {shared: '^1.0.0'}}),
+				create_mock_repo({name: 'lib-b', version: '1.0.0', deps: {shared: '^1.0.0'}}),
+				create_mock_repo({
+					name: 'app',
+					version: '1.0.0',
+					deps: {'lib-a': '^1.0.0', 'lib-b': '^1.0.0'},
+				}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -190,7 +198,7 @@ describe('Dependency_Graph', () => {
 		});
 
 		it('handles single package with no dependencies', () => {
-			const repos = [create_mock_repo('standalone', '1.0.0')];
+			const repos = [create_mock_repo({name: 'standalone', version: '1.0.0'})];
 
 			const graph = new Dependency_Graph();
 			graph.init_from_repos(repos);
@@ -201,8 +209,12 @@ describe('Dependency_Graph', () => {
 
 		it('handles packages with only external dependencies', () => {
 			const repos = [
-				create_mock_repo('pkg-a', '1.0.0', {lodash: '^4.0.0', react: '^18.0.0'}),
-				create_mock_repo('pkg-b', '1.0.0', {express: '^4.0.0'}),
+				create_mock_repo({
+					name: 'pkg-a',
+					version: '1.0.0',
+					deps: {lodash: '^4.0.0', react: '^18.0.0'},
+				}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {express: '^4.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -219,8 +231,8 @@ describe('Dependency_Graph', () => {
 	describe('detect_cycles', () => {
 		it('detects simple cycle', () => {
 			const repos = [
-				create_mock_repo('pkg-a', '1.0.0', {'pkg-b': '^1.0.0'}),
-				create_mock_repo('pkg-b', '1.0.0', {'pkg-a': '^1.0.0'}),
+				create_mock_repo({name: 'pkg-a', version: '1.0.0', deps: {'pkg-b': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -234,8 +246,8 @@ describe('Dependency_Graph', () => {
 
 		it('detects no cycles in acyclic graph', () => {
 			const repos = [
-				create_mock_repo('lib', '1.0.0'),
-				create_mock_repo('app', '1.0.0', {lib: '^1.0.0'}),
+				create_mock_repo({name: 'lib', version: '1.0.0'}),
+				create_mock_repo({name: 'app', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -248,11 +260,11 @@ describe('Dependency_Graph', () => {
 		it('detects multiple cycles', () => {
 			const repos = [
 				// Cycle 1: a ↔ b
-				create_mock_repo('pkg-a', '1.0.0', {'pkg-b': '^1.0.0'}),
-				create_mock_repo('pkg-b', '1.0.0', {'pkg-a': '^1.0.0'}),
+				create_mock_repo({name: 'pkg-a', version: '1.0.0', deps: {'pkg-b': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 				// Cycle 2: c ↔ d
-				create_mock_repo('pkg-c', '1.0.0', {'pkg-d': '^1.0.0'}),
-				create_mock_repo('pkg-d', '1.0.0', {'pkg-c': '^1.0.0'}),
+				create_mock_repo({name: 'pkg-c', version: '1.0.0', deps: {'pkg-d': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-d', version: '1.0.0', deps: {'pkg-c': '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -264,9 +276,9 @@ describe('Dependency_Graph', () => {
 
 		it('detects longer cycles (3+ packages)', () => {
 			const repos = [
-				create_mock_repo('pkg-a', '1.0.0', {'pkg-b': '^1.0.0'}),
-				create_mock_repo('pkg-b', '1.0.0', {'pkg-c': '^1.0.0'}),
-				create_mock_repo('pkg-c', '1.0.0', {'pkg-a': '^1.0.0'}), // completes cycle
+				create_mock_repo({name: 'pkg-a', version: '1.0.0', deps: {'pkg-b': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {'pkg-c': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-c', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}), // completes cycle
 			];
 
 			const graph = new Dependency_Graph();
@@ -279,7 +291,7 @@ describe('Dependency_Graph', () => {
 
 		it('handles self-dependency (pathological case)', () => {
 			const repos = [
-				create_mock_repo('self-dep', '1.0.0', {'self-dep': '^1.0.0'}),
+				create_mock_repo({name: 'self-dep', version: '1.0.0', deps: {'self-dep': '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -295,11 +307,11 @@ describe('Dependency_Graph', () => {
 		it('separates production and dev cycles', () => {
 			const repos = [
 				// Production cycle
-				create_mock_repo('prod-a', '1.0.0', {'prod-b': '^1.0.0'}),
-				create_mock_repo('prod-b', '1.0.0', {'prod-a': '^1.0.0'}),
+				create_mock_repo({name: 'prod-a', version: '1.0.0', deps: {'prod-b': '^1.0.0'}}),
+				create_mock_repo({name: 'prod-b', version: '1.0.0', deps: {'prod-a': '^1.0.0'}}),
 				// Dev cycle
-				create_mock_repo('dev-a', '1.0.0', undefined, {'dev-b': '^1.0.0'}),
-				create_mock_repo('dev-b', '1.0.0', undefined, {'dev-a': '^1.0.0'}),
+				create_mock_repo({name: 'dev-a', version: '1.0.0', devDeps: {'dev-b': '^1.0.0'}}),
+				create_mock_repo({name: 'dev-b', version: '1.0.0', devDeps: {'dev-a': '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -317,8 +329,8 @@ describe('Dependency_Graph', () => {
 
 		it('treats peer dependencies as production', () => {
 			const repos = [
-				create_mock_repo('peer-a', '1.0.0', undefined, undefined, {'peer-b': '^1.0.0'}),
-				create_mock_repo('peer-b', '1.0.0', undefined, undefined, {'peer-a': '^1.0.0'}),
+				create_mock_repo({name: 'peer-a', version: '1.0.0', peerDeps: {'peer-b': '^1.0.0'}}),
+				create_mock_repo({name: 'peer-b', version: '1.0.0', peerDeps: {'peer-a': '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -332,8 +344,8 @@ describe('Dependency_Graph', () => {
 		it('handles mixed dependency types (no cycles)', () => {
 			// a -> b (prod), b -> a (dev) - this is NOT a cycle in either analysis
 			const repos = [
-				create_mock_repo('mixed-a', '1.0.0', {'mixed-b': '^1.0.0'}), // prod dep
-				create_mock_repo('mixed-b', '1.0.0', undefined, {'mixed-a': '^1.0.0'}), // dev dep back
+				create_mock_repo({name: 'mixed-a', version: '1.0.0', deps: {'mixed-b': '^1.0.0'}}), // prod dep
+				create_mock_repo({name: 'mixed-b', version: '1.0.0', devDeps: {'mixed-a': '^1.0.0'}}), // dev dep back
 			];
 
 			const graph = new Dependency_Graph();
@@ -348,9 +360,14 @@ describe('Dependency_Graph', () => {
 		it('handles complex mixed scenarios (no cycles)', () => {
 			// a -> b (prod), b -> c (peer), a -> c (dev) - no cycles in either analysis
 			const repos = [
-				create_mock_repo('complex-a', '1.0.0', {'complex-b': '^1.0.0'}, {'complex-c': '^1.0.0'}),
-				create_mock_repo('complex-b', '1.0.0', undefined, undefined, {'complex-c': '^1.0.0'}),
-				create_mock_repo('complex-c', '1.0.0'),
+				create_mock_repo({
+					name: 'complex-a',
+					version: '1.0.0',
+					deps: {'complex-b': '^1.0.0'},
+					devDeps: {'complex-c': '^1.0.0'},
+				}),
+				create_mock_repo({name: 'complex-b', version: '1.0.0', peerDeps: {'complex-c': '^1.0.0'}}),
+				create_mock_repo({name: 'complex-c', version: '1.0.0'}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -365,8 +382,16 @@ describe('Dependency_Graph', () => {
 		it('detects actual dev cycles', () => {
 			// Real dev cycle: a -> b (dev), b -> a (dev)
 			const repos = [
-				create_mock_repo('dev-cycle-a', '1.0.0', undefined, {'dev-cycle-b': '^1.0.0'}),
-				create_mock_repo('dev-cycle-b', '1.0.0', undefined, {'dev-cycle-a': '^1.0.0'}),
+				create_mock_repo({
+					name: 'dev-cycle-a',
+					version: '1.0.0',
+					devDeps: {'dev-cycle-b': '^1.0.0'},
+				}),
+				create_mock_repo({
+					name: 'dev-cycle-b',
+					version: '1.0.0',
+					devDeps: {'dev-cycle-a': '^1.0.0'},
+				}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -383,9 +408,9 @@ describe('Dependency_Graph', () => {
 	describe('helper methods', () => {
 		it('get_dependents returns correct set', () => {
 			const repos = [
-				create_mock_repo('lib', '1.0.0'),
-				create_mock_repo('app-1', '1.0.0', {lib: '^1.0.0'}),
-				create_mock_repo('app-2', '1.0.0', {lib: '^1.0.0'}),
+				create_mock_repo({name: 'lib', version: '1.0.0'}),
+				create_mock_repo({name: 'app-1', version: '1.0.0', deps: {lib: '^1.0.0'}}),
+				create_mock_repo({name: 'app-2', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -396,7 +421,12 @@ describe('Dependency_Graph', () => {
 		});
 
 		it('get_dependencies returns correct map', () => {
-			const repo = create_mock_repo('pkg', '1.0.0', {dep1: '^1.0.0'}, {dep2: '^2.0.0'});
+			const repo = create_mock_repo({
+				name: 'pkg',
+				version: '1.0.0',
+				deps: {dep1: '^1.0.0'},
+				devDeps: {dep2: '^2.0.0'},
+			});
 			const graph = new Dependency_Graph();
 			graph.init_from_repos([repo]);
 			const dependencies = graph.get_dependencies('pkg');
@@ -411,7 +441,7 @@ describe('Dependency_Graph', () => {
 describe('Dependency_Graph_Builder', () => {
 	it('builds graph from repos', () => {
 		const builder = new Dependency_Graph_Builder();
-		const repos = [create_mock_repo('test', '1.0.0')];
+		const repos = [create_mock_repo({name: 'test', version: '1.0.0'})];
 
 		const graph = builder.build_from_repos(repos);
 
@@ -421,8 +451,8 @@ describe('Dependency_Graph_Builder', () => {
 	it('computes publishing order excluding dev deps', () => {
 		const builder = new Dependency_Graph_Builder();
 		const repos = [
-			create_mock_repo('lib', '1.0.0'),
-			create_mock_repo('app', '1.0.0', {lib: '^1.0.0'}),
+			create_mock_repo({name: 'lib', version: '1.0.0'}),
+			create_mock_repo({name: 'app', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 		];
 
 		const graph = builder.build_from_repos(repos);
@@ -434,41 +464,39 @@ describe('Dependency_Graph_Builder', () => {
 	describe('analyze', () => {
 		it('finds wildcard dependencies', () => {
 			const builder = new Dependency_Graph_Builder();
-			const repos = [
-				create_mock_repo('pkg', '1.0.0', {dep: '*'}),
-			];
+			const repos = [create_mock_repo({name: 'pkg', version: '1.0.0', deps: {dep: '*'}})];
 
 			const graph = builder.build_from_repos(repos);
 			const analysis = builder.analyze(graph);
 
-			expect(analysis.wildcard_deps).toEqual([
-				{pkg: 'pkg', dep: 'dep', version: '*'},
-			]);
+			expect(analysis.wildcard_deps).toEqual([{pkg: 'pkg', dep: 'dep', version: '*'}]);
 		});
 
 		it('finds missing peer dependencies', () => {
 			const builder = new Dependency_Graph_Builder();
 			const repos = [
-				create_mock_repo('pkg', '1.0.0', undefined, undefined, {
-					'external-peer': '^1.0.0',
+				create_mock_repo({
+					name: 'pkg',
+					version: '1.0.0',
+					peerDeps: {
+						'external-peer': '^1.0.0',
+					},
 				}),
 			];
 
 			const graph = builder.build_from_repos(repos);
 			const analysis = builder.analyze(graph);
 
-			expect(analysis.missing_peers).toEqual([
-				{pkg: 'pkg', dep: 'external-peer'},
-			]);
+			expect(analysis.missing_peers).toEqual([{pkg: 'pkg', dep: 'external-peer'}]);
 		});
 
 		it('separates cycles by type in analysis', () => {
 			const builder = new Dependency_Graph_Builder();
 			const repos = [
-				create_mock_repo('prod-a', '1.0.0', {'prod-b': '^1.0.0'}),
-				create_mock_repo('prod-b', '1.0.0', {'prod-a': '^1.0.0'}),
-				create_mock_repo('dev-a', '1.0.0', undefined, {'dev-b': '^1.0.0'}),
-				create_mock_repo('dev-b', '1.0.0', undefined, {'dev-a': '^1.0.0'}),
+				create_mock_repo({name: 'prod-a', version: '1.0.0', deps: {'prod-b': '^1.0.0'}}),
+				create_mock_repo({name: 'prod-b', version: '1.0.0', deps: {'prod-a': '^1.0.0'}}),
+				create_mock_repo({name: 'dev-a', version: '1.0.0', devDeps: {'dev-b': '^1.0.0'}}),
+				create_mock_repo({name: 'dev-b', version: '1.0.0', devDeps: {'dev-a': '^1.0.0'}}),
 			];
 
 			const graph = builder.build_from_repos(repos);

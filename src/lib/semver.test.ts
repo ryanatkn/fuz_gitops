@@ -20,7 +20,13 @@ import {
 } from './semver.js';
 
 // Test helpers
-const version = (major: number, minor: number, patch: number, prerelease?: string, build?: string): Semver => ({
+const version = (
+	major: number,
+	minor: number,
+	patch: number,
+	prerelease?: string,
+	build?: string,
+): Semver => ({
 	major,
 	minor,
 	patch,
@@ -95,7 +101,9 @@ describe('semver_parse', () => {
 
 	test('parses build metadata', () => {
 		expect(semver_parse('1.0.0+20130313144700')).toEqual(versions['1.0.0+20130313144700']);
-		expect(semver_parse('1.0.0-beta+exp.sha.5114f85')).toEqual(versions['1.0.0-beta+exp.sha.5114f85']);
+		expect(semver_parse('1.0.0-beta+exp.sha.5114f85')).toEqual(
+			versions['1.0.0-beta+exp.sha.5114f85'],
+		);
 	});
 
 	test('throws on invalid versions', () => {
@@ -118,7 +126,9 @@ describe('semver_to_string', () => {
 
 	test('converts build metadata', () => {
 		expect(semver_to_string(versions['1.0.0+20130313144700'])).toBe('1.0.0+20130313144700');
-		expect(semver_to_string(versions['1.0.0-beta+exp.sha.5114f85'])).toBe('1.0.0-beta+exp.sha.5114f85');
+		expect(semver_to_string(versions['1.0.0-beta+exp.sha.5114f85'])).toBe(
+			'1.0.0-beta+exp.sha.5114f85',
+		);
 	});
 });
 

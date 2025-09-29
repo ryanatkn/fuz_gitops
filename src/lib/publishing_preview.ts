@@ -1,13 +1,17 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from './local_repo.js';
-import type {Bump_Type} from './semver.js';
-import {calculate_next_version, compare_bump_types} from './changeset_reader.js';
-import {Dependency_Graph_Builder} from './dependency_graph.js';
-import {needs_update, is_breaking_change} from './version_utils.js';
-import type {Changeset_Operations} from './operations.js';
-import {default_changeset_operations} from './default_operations.js';
+import type {Local_Repo} from '$lib/local_repo.js';
+import type {Bump_Type} from '$lib/semver.js';
+import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
+import {
+	needs_update,
+	is_breaking_change,
+	compare_bump_types,
+	calculate_next_version,
+} from '$lib/version_utils.js';
+import type {Changeset_Operations} from '$lib/operations.js';
+import {default_changeset_operations} from '$lib/default_operations.js';
 
 export interface Version_Change {
 	package_name: string;
@@ -50,8 +54,9 @@ const get_required_bump_for_dependencies = (
 ): Bump_Type | null => {
 	// Check if this repo has any prod/peer dependency updates
 	const relevant_updates = dependency_updates.filter(
-		update => update.dependent_package === repo.pkg.name &&
-		(update.type === 'dependencies' || update.type === 'peerDependencies')
+		(update) =>
+			update.dependent_package === repo.pkg.name &&
+			(update.type === 'dependencies' || update.type === 'peerDependencies'),
 	);
 
 	if (relevant_updates.length === 0) {
@@ -59,8 +64,8 @@ const get_required_bump_for_dependencies = (
 	}
 
 	// Check if any of these dependencies have breaking changes
-	const has_breaking_deps = relevant_updates.some(
-		update => breaking_packages.has(update.updated_dependency)
+	const has_breaking_deps = relevant_updates.some((update) =>
+		breaking_packages.has(update.updated_dependency),
 	);
 
 	const current_version = repo.pkg.package_json.version || '0.0.0';
@@ -247,10 +252,14 @@ export const preview_publishing_plan = async (
 		const pkg_name = repo.pkg.name;
 
 		// Get required bump from dependencies
-		const required_bump = get_required_bump_for_dependencies(repo, dependency_updates, breaking_packages);
+		const required_bump = get_required_bump_for_dependencies(
+			repo,
+			dependency_updates,
+			breaking_packages,
+		);
 
 		// Check if already in version_changes (has changesets)
-		const existing_entry = version_changes.find(vc => vc.package_name === pkg_name);
+		const existing_entry = version_changes.find((vc) => vc.package_name === pkg_name);
 
 		if (existing_entry) {
 			// Package has changesets - check if it needs bump escalation
@@ -297,7 +306,9 @@ export const preview_publishing_plan = async (
 			// No changesets and no dependency updates
 			const has = await ops.has_changesets(repo);
 			if (!has) {
-				warnings.push(`${repo.pkg.name} has no changesets and no dependency updates - won't be published`);
+				warnings.push(
+					`${repo.pkg.name} has no changesets and no dependency updates - won't be published`,
+				);
 			}
 		}
 	}
@@ -315,10 +326,7 @@ export const preview_publishing_plan = async (
 /**
  * Formats and logs the publishing preview for user review.
  */
-export const log_publishing_preview = (
-	preview: Publishing_Preview,
-	log: Logger,
-): void => {
+export const log_publishing_preview = (preview: Publishing_Preview, log: Logger): void => {
 	const {
 		publishing_order,
 		version_changes,
@@ -345,9 +353,11 @@ export const log_publishing_preview = (
 	// Version changes
 	if (version_changes.length > 0) {
 		// Separate packages by how they will be published
-		const with_changesets = version_changes.filter(vc => vc.has_changesets && !vc.needs_bump_escalation);
-		const with_escalation = version_changes.filter(vc => vc.needs_bump_escalation);
-		const with_auto_changesets = version_changes.filter(vc => vc.will_generate_changeset);
+		const with_changesets = version_changes.filter(
+			(vc) => vc.has_changesets && !vc.needs_bump_escalation,
+		);
+		const with_escalation = version_changes.filter((vc) => vc.needs_bump_escalation);
+		const with_auto_changesets = version_changes.filter((vc) => vc.will_generate_changeset);
 
 		if (with_changesets.length > 0) {
 			log.info(st('cyan', '\n🔢 Version Changes (from changesets):\n'));
@@ -355,7 +365,7 @@ export const log_publishing_preview = (
 				const breaking_indicator = change.breaking ? ' 💥' : '';
 				log.info(
 					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
-					`(${change.bump_type})${breaking_indicator}`,
+						`(${change.bump_type})${breaking_indicator}`,
 				);
 			}
 		}
@@ -366,10 +376,13 @@ export const log_publishing_preview = (
 				const breaking_indicator = change.breaking ? ' 💥' : '';
 				log.info(
 					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
-					`(${change.existing_bump} → ${change.required_bump})${breaking_indicator}`,
+						`(${change.existing_bump} → ${change.required_bump})${breaking_indicator}`,
 				);
 				log.info(
-					st('dim', `    Changesets specify ${change.existing_bump}, but dependencies require ${change.required_bump}`),
+					st(
+						'dim',
+						`    Changesets specify ${change.existing_bump}, but dependencies require ${change.required_bump}`,
+					),
 				);
 			}
 		}
@@ -380,7 +393,7 @@ export const log_publishing_preview = (
 				const breaking_indicator = change.breaking ? ' 💥' : '';
 				log.info(
 					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
-					`(${change.bump_type}) [auto-changeset]${breaking_indicator}`,
+						`(${change.bump_type}) [auto-changeset]${breaking_indicator}`,
 				);
 			}
 		}
@@ -411,12 +424,13 @@ export const log_publishing_preview = (
 			log.info(`  ${pkg}:`);
 			for (const update of updates) {
 				const type_indicator =
-					update.type === 'dependencies' ? '📦' :
-					update.type === 'peerDependencies' ? '👥' : '🛠️';
+					update.type === 'dependencies' ? '📦' : update.type === 'peerDependencies' ? '👥' : '🛠️';
 				// Only show "triggers auto-changeset" for packages that will get auto-generated changesets
-				const existing_change = version_changes.find(vc => vc.package_name === update.dependent_package);
-				const needs_auto_changeset = update.causes_republish &&
-					existing_change?.will_generate_changeset === true;
+				const existing_change = version_changes.find(
+					(vc) => vc.package_name === update.dependent_package,
+				);
+				const needs_auto_changeset =
+					update.causes_republish && existing_change?.will_generate_changeset === true;
 				const republish = needs_auto_changeset ? ' (triggers auto-changeset)' : '';
 				log.info(
 					`    ${type_indicator} ${update.updated_dependency} → ${update.new_version}${republish}`,

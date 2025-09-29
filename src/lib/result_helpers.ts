@@ -13,7 +13,10 @@ export const ok = <T>(value: T): Result<{value: T}, never> => ({...OK, value});
 /**
  * Creates a failed result with an error.
  */
-export const err = <E extends {message?: string}>(error: E): Result<never, E> => ({...NOT_OK, ...error});
+export const err = <E extends {message?: string}>(error: E): Result<never, E> => ({
+	...NOT_OK,
+	...error,
+});
 
 /**
  * Maps a successful result value.
@@ -78,9 +81,7 @@ export const try_async = async <T>(
 /**
  * Converts a synchronous function to a Result type.
  */
-export const try_sync = <T>(
-	fn: () => T,
-): Result<{value: T}, {message: string}> => {
+export const try_sync = <T>(fn: () => T): Result<{value: T}, {message: string}> => {
 	try {
 		const value = fn();
 		return ok(value);

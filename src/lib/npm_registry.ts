@@ -94,10 +94,7 @@ export const wait_for_package = async (
 /**
  * Gets basic package information from NPM.
  */
-export const get_package_info = async (
-	pkg: string,
-	log?: Logger,
-): Promise<Package_Info | null> => {
+export const get_package_info = async (pkg: string, log?: Logger): Promise<Package_Info | null> => {
 	try {
 		const result = await spawn_out('npm', ['view', pkg, '--json']);
 
@@ -119,10 +116,7 @@ export const get_package_info = async (
 /**
  * Checks if a package exists on NPM.
  */
-export const package_exists = async (
-	pkg: string,
-	log?: Logger,
-): Promise<boolean> => {
+export const package_exists = async (pkg: string, log?: Logger): Promise<boolean> => {
 	const info = await get_package_info(pkg, log);
 	return info !== null;
 };
