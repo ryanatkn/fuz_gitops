@@ -69,6 +69,7 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - Updates cross-repo dependencies automatically
 
 Key modules:
+
 - `npm_registry.ts` - NPM availability checks with retry
 - `dependency_updater.ts` - Package.json updates
 - `multi_repo_publisher.ts` - Simple orchestration
