@@ -4,52 +4,102 @@
 
 import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 import type {Local_Repo} from './local_repo.js';
-import type {Publishing_Operations} from './operations.js';
+import type {Publishing_Operations, Changeset_Operations} from './operations.js';
+import type {Bump_Type} from './semver.js';
+
+export interface Mock_Repo_Options {
+	name: string;
+	version?: string;
+	deps?: Record<string, string>;
+	devDeps?: Record<string, string>;
+	peerDeps?: Record<string, string>;
+	isPrivate?: boolean;
+}
 
 /**
  * Creates a mock Local_Repo for testing
+ * Supports both object and legacy positional arguments for backwards compatibility
  */
-export const create_mock_repo = (
+export function create_mock_repo(options: Mock_Repo_Options): Local_Repo;
+export function create_mock_repo(
 	name: string,
-	version: string,
+	version?: string,
+	deps?: Record<string, string>,
+	devDeps?: Record<string, string>,
+	peerDeps?: Record<string, string>,
+	isPrivate?: boolean,
+): Local_Repo;
+export function create_mock_repo(
+	nameOrOptions: string | Mock_Repo_Options,
+	version = '1.0.0',
 	deps: Record<string, string> = {},
 	devDeps: Record<string, string> = {},
 	peerDeps: Record<string, string> = {},
-): Local_Repo => ({
-	type: 'resolved_local_repo' as const,
-	repo_name: name,
-	repo_dir: `/test/${name}`,
-	repo_url: `https://github.com/test/${name}`,
-	repo_git_ssh_url: `git@github.com:test/${name}.git`,
-	repo_config: {
-		repo_url: `https://github.com/test/${name}`,
-		repo_dir: null,
-		branch: 'main',
-	},
-	pkg: {
-		name,
+	isPrivate = false,
+): Local_Repo {
+	// Handle object parameter
+	if (typeof nameOrOptions === 'object') {
+		const options = nameOrOptions;
+		return create_mock_repo_impl(
+			options.name,
+			options.version ?? '1.0.0',
+			options.deps ?? {},
+			options.devDeps ?? {},
+			options.peerDeps ?? {},
+			options.isPrivate ?? false,
+		);
+	}
+
+	// Handle legacy positional parameters
+	return create_mock_repo_impl(nameOrOptions, version, deps, devDeps, peerDeps, isPrivate);
+}
+
+const create_mock_repo_impl = (
+	name: string,
+	version: string,
+	deps: Record<string, string>,
+	devDeps: Record<string, string>,
+	peerDeps: Record<string, string>,
+	isPrivate: boolean,
+): Local_Repo => {
+
+	return {
+		type: 'resolved_local_repo' as const,
 		repo_name: name,
+		repo_dir: `/test/${name}`,
 		repo_url: `https://github.com/test/${name}`,
-		homepage_url: `https://test.com/${name}`,
-		owner_name: 'test',
-		logo_url: null,
-		logo_alt: `logo for ${name}`,
-		npm_url: null,
-		changelog_url: null,
-		published: false,
-		src_json: {} as Src_Json,
-		package_json: {
-			name,
-			version,
-			dependencies: deps,
-			devDependencies: devDeps,
-			peerDependencies: peerDeps,
+		repo_git_ssh_url: `git@github.com:test/${name}.git`,
+		repo_config: {
+			repo_url: `https://github.com/test/${name}`,
+			repo_dir: null,
+			branch: 'main',
 		},
-	},
-	dependencies: new Map(Object.entries(deps)),
-	dev_dependencies: new Map(Object.entries(devDeps)),
-	peer_dependencies: new Map(Object.entries(peerDeps)),
-});
+		pkg: {
+			name,
+			repo_name: name,
+			repo_url: `https://github.com/test/${name}`,
+			homepage_url: `https://test.com/${name}`,
+			owner_name: 'test',
+			logo_url: null,
+			logo_alt: `logo for ${name}`,
+			npm_url: null,
+			changelog_url: null,
+			published: false,
+			src_json: {} as Src_Json,
+			package_json: {
+				name,
+				version,
+				dependencies: deps,
+				devDependencies: devDeps,
+				peerDependencies: peerDeps,
+				private: isPrivate,
+			},
+		},
+		dependencies: new Map(Object.entries(deps)),
+		dev_dependencies: new Map(Object.entries(devDeps)),
+		peer_dependencies: new Map(Object.entries(peerDeps)),
+	};
+};
 
 /**
  * Creates mock Publishing_Operations with sensible defaults
@@ -151,3 +201,17 @@ export const create_mock_fs = (
 
 	return fs;
 };
+
+/**
+ * Creates mock Changeset_Operations with custom version predictions
+ */
+export const create_mock_changeset_ops = (
+	versionPredictions: Map<string, {version: string; bump_type: Bump_Type}>,
+	reposWithChangesets: Set<string> = new Set(),
+): Changeset_Operations => ({
+	has_changesets: async (repo) => reposWithChangesets.has(repo.pkg.name),
+	read_changesets: async () => [],
+	predict_next_version: async (repo) => {
+		return versionPredictions.get(repo.pkg.name) || null;
+	},
+});

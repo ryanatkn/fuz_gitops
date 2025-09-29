@@ -1,53 +1,13 @@
 import {test, expect} from 'vitest';
-import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 
 import type {Local_Repo} from './local_repo.js';
 import {publish_repos} from './multi_repo_publisher.js';
-import {create_mock_publishing_ops, create_mock_fs} from './test_helpers.js';
-
-// Keep local create_mock_repo for now, can migrate to test_helpers later
-const create_mock_repo = (
-	name: string,
-	version: string,
-	deps: Record<string, string> = {},
-): Local_Repo => ({
-	type: 'resolved_local_repo' as const,
-	repo_name: name,
-	repo_dir: `/test/${name}`,
-	repo_url: `https://github.com/test/${name}`,
-	repo_git_ssh_url: `git@github.com:test/${name}.git`,
-	repo_config: {
-		repo_url: `https://github.com/test/${name}`,
-		repo_dir: null,
-		branch: 'main',
-	},
-	pkg: {
-		name,
-		repo_name: name,
-		repo_url: `https://github.com/test/${name}`,
-		homepage_url: `https://test.com/${name}`,
-		owner_name: 'test',
-		logo_url: null,
-		logo_alt: `logo for ${name}`,
-		npm_url: null,
-		changelog_url: null,
-		published: false,
-		src_json: {} as Src_Json,
-		package_json: {
-			name,
-			version,
-			dependencies: deps,
-		},
-	},
-	dependencies: new Map(Object.entries(deps)),
-	dev_dependencies: new Map(),
-	peer_dependencies: new Map(),
-});
+import {create_mock_repo, create_mock_publishing_ops, create_mock_fs} from './test_helpers.js';
 
 test('dry run predicts versions without publishing', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo('pkg-a', '0.1.0'),
-		create_mock_repo('pkg-b', '0.2.0', {'pkg-a': '0.1.0'}),
+		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
 	];
 
 	// Create mock operations
@@ -95,9 +55,9 @@ test('dry run predicts versions without publishing', async () => {
 
 test('handles publish failures with continue_on_error', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo('pkg-a', '0.1.0'),
-		create_mock_repo('pkg-b', '0.2.0'),
-		create_mock_repo('pkg-c', '0.3.0'),
+		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0'}),
+		create_mock_repo({name: 'pkg-c', version: '0.3.0'}),
 	];
 
 	// Create mock file system
@@ -154,11 +114,71 @@ test('handles publish failures with continue_on_error', async () => {
 	expect(result.published.length).toBe(2); // pkg-b and pkg-c should succeed
 });
 
+test('handles breaking change cascades in dry run', async () => {
+	const repos: Array<Local_Repo> = [
+		create_mock_repo({name: 'pkg-core', version: '0.5.0'}),
+		create_mock_repo({name: 'pkg-mid', version: '0.3.0', deps: {'pkg-core': '^0.5.0'}}),
+		create_mock_repo({name: 'pkg-app', version: '0.2.0', deps: {'pkg-mid': '^0.3.0'}}),
+	];
+
+	const mock_ops = create_mock_publishing_ops({
+		changeset: {
+			predict_next_version: async (repo) => {
+				// pkg-core has a breaking change (0.x minor bump)
+				if (repo.pkg.name === 'pkg-core') {
+					return {version: '0.6.0', bump_type: 'minor'};
+				}
+				// Others have patch bumps
+				if (repo.pkg.name === 'pkg-mid') {
+					return {version: '0.3.1', bump_type: 'patch'};
+				}
+				if (repo.pkg.name === 'pkg-app') {
+					return {version: '0.2.1', bump_type: 'patch'};
+				}
+				return null;
+			},
+		},
+		preflight: {
+			run_pre_flight_checks: async () => ({
+				ok: true,
+				warnings: [],
+				errors: [],
+				repos_with_changesets: new Set(['pkg-core', 'pkg-mid', 'pkg-app']),
+				repos_without_changesets: new Set(),
+			}),
+		},
+	});
+
+	const result = await publish_repos(
+		repos,
+		{
+			dry: true,
+			bump: 'auto',
+			continue_on_error: false,
+			update_deps: false,
+		},
+		mock_ops,
+	);
+
+	expect(result.ok).toBe(true);
+	expect(result.published.length).toBe(3);
+
+	// Check versions
+	const core = result.published.find(p => p.name === 'pkg-core');
+	const mid = result.published.find(p => p.name === 'pkg-mid');
+	const app = result.published.find(p => p.name === 'pkg-app');
+
+	expect(core?.new_version).toBe('0.6.0');
+	expect(core?.breaking).toBe(true);
+	expect(mid?.new_version).toBe('0.3.1');
+	expect(app?.new_version).toBe('0.2.1');
+});
+
 test('skips repos without changesets', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo('pkg-a', '0.1.0'),
-		create_mock_repo('pkg-b', '0.2.0'),
-		create_mock_repo('pkg-c', '0.3.0'),
+		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0'}),
+		create_mock_repo({name: 'pkg-c', version: '0.3.0'}),
 	];
 
 	// Create mock file system

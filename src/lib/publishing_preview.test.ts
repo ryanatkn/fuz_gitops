@@ -1,57 +1,15 @@
 import {test, expect} from 'vitest';
-import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 
 import type {Local_Repo} from './local_repo.js';
 import {preview_publishing_plan} from './publishing_preview.js';
 import type {Changeset_Operations} from './operations.js';
-
-const create_mock_repo = (
-	name: string,
-	version: string,
-	deps: Record<string, string> = {},
-	devDeps: Record<string, string> = {},
-	peerDeps: Record<string, string> = {},
-): Local_Repo => ({
-	type: 'resolved_local_repo' as const,
-	repo_name: name,
-	repo_dir: `/test/${name}`,
-	repo_url: `https://github.com/test/${name}`,
-	repo_git_ssh_url: `git@github.com:test/${name}.git`,
-	repo_config: {
-		repo_url: `https://github.com/test/${name}`,
-		repo_dir: null,
-		branch: 'main',
-	},
-	pkg: {
-		name,
-		repo_name: name,
-		repo_url: `https://github.com/test/${name}`,
-		homepage_url: `https://test.com/${name}`,
-		owner_name: 'test',
-		logo_url: null,
-		logo_alt: `logo for ${name}`,
-		npm_url: null,
-		changelog_url: null,
-		published: false,
-		src_json: {} as Src_Json,
-		package_json: {
-			name,
-			version,
-			dependencies: deps,
-			devDependencies: devDeps,
-			peerDependencies: peerDeps,
-		},
-	},
-	dependencies: new Map(Object.entries(deps)),
-	dev_dependencies: new Map(Object.entries(devDeps)),
-	peer_dependencies: new Map(Object.entries(peerDeps)),
-});
+import {create_mock_repo} from './test_helpers.js';
 
 test('detects breaking change cascades', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo('pkg-a', '0.1.0'),
-		create_mock_repo('pkg-b', '0.2.0', {'pkg-a': '0.1.0'}),
-		create_mock_repo('pkg-c', '0.3.0', {'pkg-b': '0.2.0'}),
+		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
+		create_mock_repo({name: 'pkg-c', version: '0.3.0', deps: {'pkg-b': '0.2.0'}}),
 	];
 
 	// Mock changeset operations to simulate breaking changes
@@ -79,8 +37,8 @@ test('detects breaking change cascades', async () => {
 
 test('handles bump escalation', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo('pkg-a', '0.1.0'),
-		create_mock_repo('pkg-b', '0.2.0', {'pkg-a': '0.1.0'}),
+		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
 	];
 
 	// Mock operations where pkg-a has breaking change and pkg-b has patch
@@ -108,9 +66,9 @@ test('handles bump escalation', async () => {
 
 test('generates auto-changesets for dependency updates', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo('pkg-a', '0.1.0'),
-		create_mock_repo('pkg-b', '0.2.0', {'pkg-a': '0.1.0'}),
-		create_mock_repo('pkg-c', '0.3.0', {}, {'pkg-a': '0.1.0'}), // devDep only
+		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
+		create_mock_repo({name: 'pkg-c', version: '0.3.0', devDeps: {'pkg-a': '0.1.0'}}), // devDep only
 	];
 
 	// Mock operations where only pkg-a has changesets
@@ -139,8 +97,8 @@ test('generates auto-changesets for dependency updates', async () => {
 
 test('handles circular dev dependencies', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo('pkg-a', '0.1.0', {}, {'pkg-b': '0.2.0'}),
-		create_mock_repo('pkg-b', '0.2.0', {}, {'pkg-a': '0.1.0'}),
+		create_mock_repo({name: 'pkg-a', version: '0.1.0', devDeps: {'pkg-b': '0.2.0'}}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0', devDeps: {'pkg-a': '0.1.0'}}),
 	];
 
 	// Mock operations with no changesets
@@ -164,8 +122,8 @@ test('handles circular dev dependencies', async () => {
 
 test('detects production circular dependencies', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo('pkg-a', '0.1.0', {'pkg-b': '0.2.0'}),
-		create_mock_repo('pkg-b', '0.2.0', {'pkg-a': '0.1.0'}),
+		create_mock_repo({name: 'pkg-a', version: '0.1.0', deps: {'pkg-b': '0.2.0'}}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
 	];
 
 	// Mock operations with no changesets

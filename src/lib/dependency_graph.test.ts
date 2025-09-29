@@ -1,35 +1,7 @@
 import {describe, it, expect} from 'vitest';
 import {Dependency_Graph, Dependency_Graph_Builder} from './dependency_graph.js';
-import type {Local_Repo} from './local_repo.js';
+import {create_mock_repo} from './test_helpers.js';
 
-// Helper to create mock repos with dependencies
-const create_mock_repo = (
-	name: string,
-	version = '1.0.0',
-	dependencies?: Record<string, string>,
-	devDependencies?: Record<string, string>,
-	peerDependencies?: Record<string, string>,
-	isPrivate?: boolean,
-): Local_Repo => ({
-	type: 'resolved_local_repo',
-	repo_name: name,
-	repo_dir: `/mock/${name}`,
-	repo_url: `https://github.com/test/${name}`,
-	repo_git_ssh_url: `git@github.com:test/${name}.git`,
-	repo_config: {repo_url: `https://github.com/test/${name}`} as any,
-	pkg: {
-		name,
-		package_json: {
-			name,
-			version,
-			type: 'module' as const,
-			dependencies,
-			devDependencies,
-			peerDependencies,
-			private: isPrivate,
-		},
-	} as any, // Use any to avoid complex belt/pkg type requirements
-});
 
 describe('Dependency_Graph', () => {
 	describe('basic functionality', () => {
@@ -61,13 +33,13 @@ describe('Dependency_Graph', () => {
 		});
 
 		it('extracts dependencies by type', () => {
-			const repo = create_mock_repo(
-				'main-pkg',
-				'1.0.0',
-				{dep1: '^1.0.0'},
-				{devDep1: '^2.0.0'},
-				{peerDep1: '^3.0.0'},
-			);
+			const repo = create_mock_repo({
+				name: 'main-pkg',
+				version: '1.0.0',
+				deps: {dep1: '^1.0.0'},
+				devDeps: {devDep1: '^2.0.0'},
+				peerDeps: {peerDep1: '^3.0.0'},
+			});
 
 			const graph = new Dependency_Graph();
 			graph.init_from_repos([repo]);
