@@ -10,11 +10,13 @@ import {
 	git_check_clean_workspace,
 	git_checkout,
 	git_current_branch_name,
+	git_pull,
 } from '@ryanatkn/gro/git.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn_cli} from '@ryanatkn/gro/cli.js';
 
-import type {Gitops_Repo_Config} from '$lib/gitops_config.js';
+import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
+import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';
 
 export interface Local_Repo extends Resolved_Local_Repo {
 	pkg: Pkg;
@@ -45,6 +47,7 @@ export interface Unresolved_Local_Repo {
  */
 export const load_local_repo = async (
 	resolved_local_repo: Resolved_Local_Repo,
+	install: boolean,
 	log?: Logger,
 ): Promise<Local_Repo> => {
 	const {repo_config, repo_dir} = resolved_local_repo;
@@ -52,7 +55,7 @@ export const load_local_repo = async (
 	// Switch branches if needed, erroring if unable.
 	const branch = await git_current_branch_name({cwd: repo_dir});
 	if (branch !== repo_config.branch) {
-		const error_message = await git_check_clean_workspace({cwd: repo_dir});
+		let error_message = await git_check_clean_workspace({cwd: repo_dir});
 		if (error_message) {
 			throw new Task_Error(
 				`Repo ${repo_dir} is not on branch "${repo_config.branch}" and the workspace is unclean, blocking switch: ${error_message}`,
@@ -60,9 +63,19 @@ export const load_local_repo = async (
 		}
 		await git_checkout(repo_config.branch, {cwd: repo_dir});
 
-		// TODO probably allow opt-in syncing, problem is it's very slow to do in the normal case
-		// Sync the repo so deps are installed and generated files are up-to-date.
-		await spawn_cli('gro', ['sync'], log, {cwd: resolved_local_repo.repo_dir});
+		await git_pull();
+
+		// TODO do we need to check clean workspace after this, or other things?
+		error_message = await git_check_clean_workspace({cwd: repo_dir});
+		if (error_message) {
+			throw new Task_Error(
+				`Switching to branch "${repo_config.branch}" made the workspace unclean: ${error_message}`,
+			);
+		}
+
+		const sync_args: Array<string> = [];
+		if (install) sync_args.push('--install');
+		await spawn_cli('gro', ['sync', ...sync_args], log, {cwd: resolved_local_repo.repo_dir});
 	}
 
 	const parsed_svelte_config = await parse_svelte_config({dir_or_config: repo_dir});
@@ -77,13 +90,55 @@ export const load_local_repo = async (
 	};
 };
 
+export const resolve_local_repos = async (
+	resolved_config: Resolved_Gitops_Config,
+	repos_dir: string,
+	gitops_config: Gitops_Config,
+	download: boolean,
+	log?: Logger,
+): Promise<Array<Resolved_Local_Repo>> => {
+	let resolved_local_repos: Array<Resolved_Local_Repo> | null = null;
+
+	if (!resolved_config.unresolved_local_repos) {
+		resolved_local_repos = resolved_config.resolved_local_repos;
+	} else {
+		if (download) {
+			const downloaded = await download_repos(
+				repos_dir,
+				resolved_config.unresolved_local_repos,
+				log,
+			);
+			resolved_local_repos = (resolved_config.resolved_local_repos ?? [])
+				.concat(downloaded)
+				.sort(
+					(a, b) =>
+						gitops_config.repos.findIndex((r) => r.repo_url === a.repo_url) -
+						gitops_config.repos.findIndex((r) => r.repo_url === b.repo_url),
+				);
+		} else {
+			log?.error(
+				`Failed to resolve local repos in ${repos_dir} - do you need to pass \`--download\` or configure the directory?`, // TODO leaking task impl details
+				resolved_config.unresolved_local_repos.map((r) => r.repo_url),
+			);
+			throw new Task_Error('Failed to resolve local configs');
+		}
+	}
+
+	if (!resolved_local_repos) {
+		throw new Task_Error('No repos are configured in `gitops_config.ts`');
+	}
+
+	return resolved_local_repos;
+};
+
 export const load_local_repos = async (
 	resolved_local_repos: Array<Resolved_Local_Repo>,
+	install: boolean,
 	log?: Logger,
 ): Promise<Array<Local_Repo>> => {
 	const loaded: Array<Local_Repo> = [];
 	for (const resolved_local_repo of resolved_local_repos) {
-		loaded.push(await load_local_repo(resolved_local_repo, log)); // eslint-disable-line no-await-in-loop
+		loaded.push(await load_local_repo(resolved_local_repo, install, log)); // eslint-disable-line no-await-in-loop
 	}
 	return loaded;
 };
@@ -116,4 +171,22 @@ export const resolve_local_repo = (
 const to_repo_git_ssh_url = (repo_url: string): string => {
 	const url = new URL(repo_url);
 	return `git@${url.hostname}:${url.pathname.substring(1)}`;
+};
+
+const download_repos = async (
+	repos_dir: string,
+	unresolved_local_repos: Array<Unresolved_Local_Repo>,
+	log: Logger | undefined,
+): Promise<Array<Resolved_Local_Repo>> => {
+	const resolved: Array<Resolved_Local_Repo> = [];
+	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
+		log?.info(`cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
+		await spawn_cli('git', ['clone', repo_git_ssh_url], log, {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
+		const local_repo = resolve_local_repo(repo_config, repos_dir);
+		if (local_repo.type === 'unresolved_local_repo') {
+			throw new Task_Error(`Failed to clone repo ${repo_git_ssh_url} to ${repos_dir}`);
+		}
+		resolved.push(local_repo);
+	}
+	return resolved;
 };
