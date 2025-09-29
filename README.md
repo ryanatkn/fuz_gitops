@@ -20,11 +20,6 @@ With fuz_gitops you can:
 - publish metadata about your collections of repos to the web for other users and tools
 - publish multiple interdependent packages in dependency order with automatic dependency updates
 
-planned additions:
-
-- run updating operations and other workflows from the frontend in dev mode
-  (ultimately, an `update all` button)
-
 ## Usage
 
 ```bash
@@ -52,6 +47,7 @@ gro gitops_publish --dry   # preview what would be published
 ```
 
 Publishes repos in dependency order, handling:
+
 - Circular dev dependencies
 - NPM registry propagation delays
 - Automatic dependency updates across repos
@@ -63,9 +59,8 @@ TODO
 
 - figure out better automation than manually running `gro gitops`
 - show the rate limit info
-- think about how fuz_gitops could better leverage both GitHub Actions and
+- think about how fuz_gitops could use both GitHub Actions and
   [Forgejo Actions](https://forgejo.org/docs/v1.20/user/actions/)
-  without unwieldy compat
 
 ## License [🐦](https://wikipedia.org/wiki/Free_and_open-source_software)
 
