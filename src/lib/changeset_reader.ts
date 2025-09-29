@@ -125,7 +125,7 @@ export const determine_bump_from_changesets = (
 /**
  * Compares bump types. Returns positive if a > b, negative if a < b, 0 if equal.
  */
-const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
+export const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
 	const order: Record<Bump_Type, number> = {
 		major: 3,
 		minor: 2,

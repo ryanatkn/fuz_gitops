@@ -121,7 +121,8 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 
 	// Version changes
 	if (version_changes.length > 0) {
-		const with_changesets = version_changes.filter(vc => vc.has_changesets);
+		const with_changesets = version_changes.filter(vc => vc.has_changesets && !vc.needs_bump_escalation);
+		const with_escalation = version_changes.filter(vc => vc.needs_bump_escalation);
 		const with_auto_changesets = version_changes.filter(vc => vc.will_generate_changeset);
 
 		if (with_changesets.length > 0) {
@@ -138,14 +139,31 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 			lines.push('');
 		}
 
+		if (with_escalation.length > 0) {
+			lines.push('## Version Changes (bump escalation required)');
+			lines.push('');
+			lines.push('| Package | From | To | Changesets Bump | Required Bump | Breaking |');
+			lines.push('|---------|------|-----|-----------------|---------------|----------|');
+			for (const change of with_escalation) {
+				const breaking = change.breaking ? '💥 Yes' : 'No';
+				lines.push(
+					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.existing_bump} | ${change.required_bump} | ${breaking} |`,
+				);
+			}
+			lines.push('');
+			lines.push('> ⬆️ These packages have changesets, but dependencies require a larger version bump.');
+			lines.push('');
+		}
+
 		if (with_auto_changesets.length > 0) {
 			lines.push('## Version Changes (auto-generated for dependency updates)');
 			lines.push('');
-			lines.push('| Package | From | To | Bump | Reason |');
-			lines.push('|---------|------|-------|------|--------|');
+			lines.push('| Package | From | To | Bump | Breaking |');
+			lines.push('|---------|------|-----|------|----------|');
 			for (const change of with_auto_changesets) {
+				const breaking = change.breaking ? '💥 Yes' : 'No';
 				lines.push(
-					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.bump_type} | Dependency updates |`,
+					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.bump_type} | ${breaking} |`,
 				);
 			}
 			lines.push('');

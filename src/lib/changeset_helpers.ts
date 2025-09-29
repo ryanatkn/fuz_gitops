@@ -3,6 +3,7 @@ import {readdir, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import type {Bump_Type} from './semver.js';
 import type {Local_Repo} from './local_repo.js';
+import {compare_bump_types} from './changeset_reader.js';
 
 export interface Changeset {
 	id: string;
@@ -154,18 +155,6 @@ export const analyze_changesets = async (repo: Local_Repo): Promise<Changeset_An
 	};
 };
 
-/**
- * Compares bump types.
- * Returns 1 if a > b, -1 if a < b, 0 if equal.
- */
-const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
-	const order: Record<Bump_Type, number> = {
-		major: 2,
-		minor: 1,
-		patch: 0,
-	};
-	return order[a] - order[b];
-};
 
 /**
  * Determines the bump type for a repo based on changesets.
