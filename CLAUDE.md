@@ -135,6 +135,7 @@ gro gitops_publish --dry # dry run (same as preview)
 gro dev                  # start dev server
 gro build               # build static site
 gro deploy              # deploy to GitHub Pages
+gro src/fixtures/update # same as `npm run update-generated-fixtures`
 ```
 
 ## Dependencies
@@ -166,6 +167,7 @@ gro test version_utils   # run specific test file
 ```
 
 Core modules tested:
+
 - `version_utils.test.ts` - Version comparison and semver logic
 - `changeset_reader.test.ts` - Changeset parsing and version prediction
 - `dependency_graph.test.ts` - Topological sorting and cycle detection
