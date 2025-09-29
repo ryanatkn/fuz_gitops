@@ -1,31 +1,61 @@
 # TODO_NEXT
 
+## Recently Completed ✅
+
+### Fixture Testing Infrastructure
+- ✅ Created in-memory fixture system (`src/fixtures/repo_fixtures/`)
+  - Type-safe fixture definitions with expected outcomes
+  - Mock operations that work without filesystem/git
+  - Fast unit tests for publishing logic
+- ✅ Fixed integration tests to use real repos
+  - Updated to use root `gitops.config.ts`
+  - Regenerated baseline outputs from actual commands
+  - All 166 tests passing
+- ✅ Consolidated constants in `src/lib/paths.ts`
+  - Extracted `DEFAULT_REPOS_DIR` constant
+  - Made `repos_dir` required on `Gitops_Config`
+  - Fixed path resolution logic
+
+### Known Bug Discovered 🐛
+**Cascade calculation issue** in `publishing_preview.ts`:
+- Dependency updates calculated before auto-changesets generated
+- Results in missing cascading escalations (e.g., repo_a → repo_b → repo_c)
+- Documented in `basic_publishing.ts` fixture with TODO
+- Needs multi-pass or recalculation fix
+
 ## Concrete Next Steps
 
-### 1. Test Real Dry Run with Actual Changesets
+### 1. Fix Cascade Calculation Bug
+- Implement multi-pass version prediction
+- First pass: explicit changesets
+- Second pass: auto-changesets from dependency updates
+- Third pass: bump escalations
+- Verify with `basic_publishing` fixture (should update expected outcomes)
+
+### 2. Test Real Dry Run with Actual Changesets
 - Run `gro gitops_publish --dry` on actual repos with changesets
 - Verify output matches preview expectations
 - Test with bump escalation scenario (patch changeset + breaking dep)
 
-### 2. Test Resume Functionality
+### 3. Test Resume Functionality
 - Simulate failed publish (kill mid-process)
 - Verify `--resume` flag works correctly
 - Test that dry runs don't interfere with resume state
 
-### 3. Add Missing Test Coverage
+### 4. Add Missing Test Coverage
 Priority modules without tests:
 - `npm_registry.ts` - NPM availability checks, exponential backoff
 - `pre_flight_checks.ts` - Workspace/branch validation
 - `dependency_updater.ts` - Package.json updates with changesets
 - `publishing_state.ts` - State persistence and resume logic
 
-### 4. Validate Auto-Changeset Generation in Real Publish
+### 5. Validate Auto-Changeset Generation in Real Publish
 - Publish a package with explicit changesets
 - Verify dependent packages get auto-generated changesets
 - Check changeset content format is correct
 - Ensure git commits are clean
 
-### 5. Test Breaking Change Cascades
+### 6. Test Breaking Change Cascades
 - Create breaking change in leaf package (e.g., moss)
 - Verify cascade propagates correctly (moss → gro → fuz → fuz_blog)
 - Check all affected packages get appropriate bumps

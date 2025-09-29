@@ -48,6 +48,7 @@ export interface Raw_Gitops_Repo_Config {
 
 export const create_empty_gitops_config = (): Gitops_Config => ({
 	repos: [],
+	repos_dir: DEFAULT_REPOS_DIR,
 });
 
 /**

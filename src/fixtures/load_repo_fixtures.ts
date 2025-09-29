@@ -22,6 +22,15 @@ export const fixture_repo_to_local_repo = (repo_data: Repo_Fixture_Data): Local_
 	// Create minimal Pkg object
 	const pkg: Pkg = {
 		name: package_json.name,
+		repo_name,
+		repo_url,
+		owner_name: 'test',
+		homepage_url: `https://test.com/${repo_name}`,
+		logo_url: null,
+		logo_alt: `logo for ${repo_name}`,
+		npm_url: null,
+		changelog_url: null,
+		published: false,
 		package_json,
 		src_json: {
 			name: package_json.name,
