@@ -21,12 +21,14 @@ export interface Fixture_Comparison {
 }
 
 /**
- * Execute a gitops command and capture its output
+ * Execute a gitops command and capture its output.
+ * Defaults to using the root gitops.config.ts for integration testing.
  */
 export const run_gitops_command = async (
 	command: 'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry',
 	args: string[] = [],
 	log?: Logger,
+	config_path: string = 'gitops.config.ts',
 ): Promise<Command_Output> => {
 	// Create output directory if it doesn't exist
 	if (!existsSync(GITOPS_OUTPUT_DIR)) {
@@ -39,9 +41,9 @@ export const run_gitops_command = async (
 	// Build command args - handle gitops_publish_dry specially
 	let full_args: string[];
 	if (command === 'gitops_publish_dry') {
-		full_args = ['gitops_publish', '--dry', '--no-preview', '--format', 'markdown', '--outfile', outfile, ...args];
+		full_args = ['gitops_publish', '--dry', '--no-preview', '--format', 'markdown', '--outfile', outfile, '--path', config_path, ...args];
 	} else {
-		full_args = [command, '--format', 'markdown', '--outfile', outfile, ...args];
+		full_args = [command, '--format', 'markdown', '--outfile', outfile, '--path', config_path, ...args];
 	}
 
 	try {

@@ -3,8 +3,11 @@ import {existsSync} from 'node:fs';
 import {strip_end} from '@ryanatkn/belt/string.js';
 import type {Git_Branch} from '@ryanatkn/gro/git.js';
 
+import {DEFAULT_REPOS_DIR} from '$lib/paths.js';
+
 export interface Gitops_Config {
 	repos: Array<Gitops_Repo_Config>;
+	repos_dir: string;
 }
 
 export type Create_Gitops_Config = (
@@ -13,6 +16,7 @@ export type Create_Gitops_Config = (
 
 export interface Raw_Gitops_Config {
 	repos?: Array<Url | Raw_Gitops_Repo_Config>;
+	repos_dir?: string;
 }
 
 export interface Gitops_Repo_Config {
@@ -54,9 +58,11 @@ export const normalize_gitops_config = (raw_config: Raw_Gitops_Config): Gitops_C
 	const empty_config = create_empty_gitops_config();
 	// All of the raw config properties are optional,
 	// so fall back to the empty values when `undefined`.
-	const {repos} = raw_config;
+	const {repos, repos_dir} = raw_config;
 	return {
 		repos: repos ? repos.map((r) => parse_fuz_repo_config(r)) : empty_config.repos,
+		// Default to two dirs up from config if not specified
+		repos_dir: repos_dir ?? DEFAULT_REPOS_DIR,
 	};
 };
 
