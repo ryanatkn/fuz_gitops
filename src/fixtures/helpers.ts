@@ -1,7 +1,9 @@
 import {spawn_out} from '@ryanatkn/belt/process.js';
-import {readFileSync, existsSync} from 'node:fs';
+import {readFileSync, existsSync, unlinkSync, mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Logger} from '@ryanatkn/belt/log.js';
+
+const GITOPS_OUTPUT_DIR = join('.gro', 'fuz_gitops');
 
 export interface Command_Output {
 	stdout: string;
@@ -26,7 +28,14 @@ export const run_gitops_command = async (
 	args: string[] = [],
 	log?: Logger,
 ): Promise<Command_Output> => {
-	const full_args = [command, '--format', 'markdown', ...args];
+	// Create output directory if it doesn't exist
+	if (!existsSync(GITOPS_OUTPUT_DIR)) {
+		mkdirSync(GITOPS_OUTPUT_DIR, {recursive: true});
+	}
+
+	// Use a file in .gro directory for clean output
+	const outfile = join(GITOPS_OUTPUT_DIR, `${command}_output_${Date.now()}.md`);
+	const full_args = [command, '--format', 'markdown', '--outfile', outfile, ...args];
 
 	try {
 		log?.info(`Running: gro ${full_args.join(' ')}`);
@@ -34,26 +43,35 @@ export const run_gitops_command = async (
 			cwd: process.cwd(),
 		});
 
-		// Check if we have stdout content regardless of result.ok status
-		// The gitops commands may exit with non-zero code but still produce valid output
-		if (result.stdout) {
+		// Read the output from the file if it exists
+		if (existsSync(outfile)) {
+			const content = readFileSync(outfile, 'utf-8');
+			// Clean up the temp file
+			unlinkSync(outfile);
+
 			return {
-				stdout: result.stdout,
+				stdout: content,
 				stderr: result.stderr || '',
 				success: true,
 				command: 'gro',
 				args: full_args,
 			};
 		} else {
+			// If no outfile was created, something went wrong
 			return {
-				stdout: '',
-				stderr: result.stderr || 'Unknown error',
+				stdout: result.stdout || '',
+				stderr: result.stderr || 'Output file not created',
 				success: false,
 				command: 'gro',
 				args: full_args,
 			};
 		}
 	} catch (error) {
+		// Clean up temp file if it exists
+		if (existsSync(outfile)) {
+			unlinkSync(outfile);
+		}
+
 		log?.error(`Failed to run command: ${error}`);
 		return {
 			stdout: '',

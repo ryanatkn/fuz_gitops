@@ -1,6 +1,7 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
+import {writeFile} from 'node:fs/promises';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
@@ -20,6 +21,10 @@ export const Args = z
 			.enum(['stdout', 'json', 'markdown'])
 			.meta({description: 'output format'})
 			.default('stdout'),
+		outfile: z
+			.string()
+			.meta({description: 'write output to file instead of logging'})
+			.optional(),
 	})
 	.strict();
 
@@ -29,7 +34,7 @@ export const task: Task<Args> = {
 	Args,
 	summary: 'analyze dependency structure and relationships across repos',
 	run: async ({args, log}) => {
-		const {path, dir, format} = args;
+		const {path, dir, format, outfile} = args;
 
 		// Get repos ready (without downloading or installing)
 		const {local_repos} = await get_gitops_ready(path, dir, false, false, log);
@@ -61,9 +66,17 @@ export const task: Task<Args> = {
 			publishing_order,
 		});
 
-		// Log the output
-		for (const line of output) {
-			log.info(line);
+		// Output to file or log
+		const content = output.join('\n');
+		if (outfile) {
+			// Write clean output to file
+			await writeFile(outfile, content);
+			log.info(`Output written to ${outfile}`);
+		} else {
+			// Log to console as before
+			for (const line of output) {
+				log.info(line);
+			}
 		}
 	},
 };

@@ -1,6 +1,7 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
+import {writeFile} from 'node:fs/promises';
 
 import {get_gitops_ready} from './gitops_task_helpers.js';
 import {preview_publishing_plan, log_publishing_preview, type Publishing_Preview} from './publishing_preview.js';
@@ -13,6 +14,10 @@ const Args = z
 			.enum(['stdout', 'json', 'markdown'])
 			.describe('output format')
 			.default('stdout'),
+		outfile: z
+			.string()
+			.describe('write output to file instead of logging')
+			.optional(),
 	})
 	.strict();
 
@@ -31,7 +36,7 @@ export const task: Task<Args> = {
 	summary: 'preview what will happen during multi-repo publishing based on changesets',
 	Args,
 	run: async ({args, log}): Promise<void> => {
-		const {dir, path, format} = args;
+		const {dir, path, format, outfile} = args;
 
 		log.info(st('cyan', '🔍 Previewing multi-repo publishing plan...\n'));
 
@@ -55,6 +60,7 @@ export const task: Task<Args> = {
 		const preview = await preview_publishing_plan(local_repos, log);
 
 		// Display the preview based on format
+		let content: string;
 		if (format === 'json') {
 			// Output as JSON
 			const output = {
@@ -65,16 +71,29 @@ export const task: Task<Args> = {
 				warnings: preview.warnings,
 				errors: preview.errors,
 			};
-			log.info(JSON.stringify(output, null, 2));
+			content = JSON.stringify(output, null, 2);
 		} else if (format === 'markdown') {
 			// Output as markdown
 			const lines = format_preview_as_markdown(preview);
-			for (const line of lines) {
+			content = lines.join('\n');
+		} else {
+			// Default stdout format - special handling since it uses log directly
+			if (outfile) {
+				throw new Error('--outfile is not supported with stdout format, use json or markdown');
+			}
+			log_publishing_preview(preview, log);
+			content = '';
+		}
+
+		// Output to file or log
+		if (content && outfile) {
+			await writeFile(outfile, content);
+			log.info(`Output written to ${outfile}`);
+		} else if (content) {
+			// Log line by line for json/markdown formats
+			for (const line of content.split('\n')) {
 				log.info(line);
 			}
-		} else {
-			// Default stdout format
-			log_publishing_preview(preview, log);
 		}
 
 		// Exit with error if there are blocking issues
