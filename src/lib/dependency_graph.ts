@@ -1,42 +1,29 @@
 import type {Local_Repo} from '$lib/local_repo.js';
+import {DEPENDENCY_TYPE, type Dependency_Spec, type Dependency_Graph_Json} from './dependency_types.js';
 
 export interface Dependency_Node {
 	name: string;
 	version: string;
-	repo: Local_Repo;
+	repo?: Local_Repo;
 	dependencies: Map<string, Dependency_Spec>;
 	dependents: Set<string>;
 	publishable: boolean;
-}
-
-export interface Dependency_Spec {
-	type: 'peer' | 'dev' | 'prod';
-	version: string;
-	resolved?: string;
-}
-
-export interface Dependency_Graph_Json {
-	nodes: Array<{
-		name: string;
-		version: string;
-		dependencies: Array<{name: string; spec: Dependency_Spec}>;
-		dependents: Array<string>;
-		publishable: boolean;
-	}>;
-	edges: Array<{from: string; to: string}>;
 }
 
 export class Dependency_Graph {
 	nodes: Map<string, Dependency_Node>;
 	edges: Map<string, Set<string>>; // pkg -> dependents
 
-	constructor(repos: Array<Local_Repo>) {
+	constructor() {
 		this.nodes = new Map();
 		this.edges = new Map();
-		this.build_from_repos(repos);
 	}
 
-	private build_from_repos(repos: Array<Local_Repo>): void {
+	/**
+	 * Initializes the graph from a list of repos.
+	 * This is now a public method to be called by the builder.
+	 */
+	public init_from_repos(repos: Array<Local_Repo>): void {
 		// First pass: create nodes
 		for (const repo of repos) {
 			const {pkg} = repo;
@@ -55,13 +42,13 @@ export class Dependency_Graph {
 			const peerDeps = pkg.package_json.peerDependencies || {};
 
 			for (const [name, version] of Object.entries(deps)) {
-				node.dependencies.set(name, {type: 'prod', version});
+				node.dependencies.set(name, {type: DEPENDENCY_TYPE.PROD, version});
 			}
 			for (const [name, version] of Object.entries(devDeps)) {
-				node.dependencies.set(name, {type: 'dev', version});
+				node.dependencies.set(name, {type: DEPENDENCY_TYPE.DEV, version});
 			}
 			for (const [name, version] of Object.entries(peerDeps)) {
-				node.dependencies.set(name, {type: 'peer', version});
+				node.dependencies.set(name, {type: DEPENDENCY_TYPE.PEER, version});
 			}
 
 			this.nodes.set(pkg.name, node);
@@ -111,7 +98,7 @@ export class Dependency_Graph {
 		for (const node of this.nodes.values()) {
 			for (const [dep_name, spec] of node.dependencies) {
 				// Skip dev dependencies if requested
-				if (exclude_dev && spec.type === 'dev') continue;
+				if (exclude_dev && spec.type === DEPENDENCY_TYPE.DEV) continue;
 
 				if (this.nodes.has(dep_name)) {
 					in_degree.set(node.name, in_degree.get(node.name)! + 1);
@@ -140,7 +127,7 @@ export class Dependency_Graph {
 				for (const other_node of this.nodes.values()) {
 					for (const [dep_name, spec] of other_node.dependencies) {
 						// Skip dev dependencies if requested
-						if (exclude_dev && spec.type === 'dev') continue;
+						if (exclude_dev && spec.type === DEPENDENCY_TYPE.DEV) continue;
 
 						if (dep_name === name) {
 							const new_degree = in_degree.get(other_node.name)! - 1;
@@ -229,7 +216,7 @@ export class Dependency_Graph {
 			if (node) {
 				for (const [dep_name, spec] of node.dependencies) {
 					// Skip dev dependencies
-					if (spec.type === 'dev') continue;
+					if (spec.type === DEPENDENCY_TYPE.DEV) continue;
 
 					if (this.nodes.has(dep_name)) {
 						if (!visited_prod.has(dep_name)) {
@@ -264,7 +251,7 @@ export class Dependency_Graph {
 			if (node) {
 				for (const [dep_name, spec] of node.dependencies) {
 					// Only check dev dependencies
-					if (spec.type !== 'dev') continue;
+					if (spec.type !== DEPENDENCY_TYPE.DEV) continue;
 
 					if (this.nodes.has(dep_name)) {
 						if (!visited_dev.has(dep_name)) {
@@ -329,9 +316,15 @@ export class Dependency_Graph {
 	}
 }
 
+/**
+ * Builder for creating and analyzing dependency graphs.
+ * This is now the single entry point for building graphs.
+ */
 export class Dependency_Graph_Builder {
 	build_from_repos(repos: Array<Local_Repo>): Dependency_Graph {
-		return new Dependency_Graph(repos);
+		const graph = new Dependency_Graph();
+		graph.init_from_repos(repos);
+		return graph;
 	}
 
 	/**
@@ -360,7 +353,7 @@ export class Dependency_Graph_Builder {
 				if (spec.version === '*') {
 					wildcard_deps.push({pkg: node.name, dep: dep_name, version: spec.version});
 				}
-				if (spec.type === 'peer' && !graph.nodes.has(dep_name)) {
+				if (spec.type === DEPENDENCY_TYPE.PEER && !graph.nodes.has(dep_name)) {
 					// External peer dependency
 					missing_peers.push({pkg: node.name, dep: dep_name});
 				}

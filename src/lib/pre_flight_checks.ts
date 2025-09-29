@@ -1,10 +1,11 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import {git_check_clean_workspace, git_current_branch_name} from '@ryanatkn/gro/git.js';
 import {spawn_out} from '@ryanatkn/belt/process.js';
 import {styleText as st} from 'node:util';
 
 import type {Local_Repo} from './local_repo.js';
-import {has_changesets} from './changeset_helpers.js';
+import {has_changesets} from './changeset_reader.js';
+import type {Git_Operations} from './operations.js';
+import {default_git_operations} from './default_operations.js';
 
 export interface Pre_Flight_Options {
 	skip_changesets?: boolean;
@@ -27,6 +28,7 @@ export interface Pre_Flight_Result {
 export const run_pre_flight_checks = async (
 	repos: Array<Local_Repo>,
 	options: Pre_Flight_Options = {},
+	git_ops: Git_Operations = default_git_operations,
 ): Promise<Pre_Flight_Result> => {
 	const {skip_changesets = false, required_branch = 'main', log} = options;
 
@@ -40,16 +42,16 @@ export const run_pre_flight_checks = async (
 	// 1. Check clean workspaces
 	log?.info('  Checking workspace cleanliness...');
 	for (const repo of repos) {
-		const error_message = await git_check_clean_workspace({cwd: repo.repo_dir});
-		if (error_message) {
-			errors.push(`${repo.pkg.name} has uncommitted changes: ${error_message}`);
+		const is_clean = await git_ops.check_clean_workspace(repo.repo_dir);
+		if (!is_clean) {
+			errors.push(`${repo.pkg.name} has uncommitted changes`);
 		}
 	}
 
 	// 2. Check correct branch
 	log?.info(`  Checking branches (expecting ${required_branch})...`);
 	for (const repo of repos) {
-		const branch = await git_current_branch_name({cwd: repo.repo_dir});
+		const branch = await git_ops.current_branch_name(repo.repo_dir);
 		if (branch !== required_branch) {
 			errors.push(`${repo.pkg.name} is on branch '${branch}', expected '${required_branch}'`);
 		}

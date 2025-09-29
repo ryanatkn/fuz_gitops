@@ -3,10 +3,11 @@ import {styleText as st} from 'node:util';
 
 import type {Local_Repo} from './local_repo.js';
 import type {Bump_Type} from './semver.js';
-import {predict_next_version, calculate_next_version, compare_bump_types} from './changeset_reader.js';
+import {calculate_next_version, compare_bump_types} from './changeset_reader.js';
 import {Dependency_Graph_Builder} from './dependency_graph.js';
-import {has_changesets} from './changeset_helpers.js';
 import {needs_update, is_breaking_change} from './version_utils.js';
+import type {Changeset_Operations} from './operations.js';
+import {default_changeset_operations} from './default_operations.js';
 
 export interface Version_Change {
 	package_name: string;
@@ -84,6 +85,7 @@ const get_required_bump_for_dependencies = (
 export const preview_publishing_plan = async (
 	repos: Array<Local_Repo>,
 	log?: Logger,
+	ops: Changeset_Operations = default_changeset_operations,
 ): Promise<Publishing_Preview> => {
 	log?.info(st('cyan', '📋 Generating publishing preview...\n'));
 
@@ -138,11 +140,11 @@ export const preview_publishing_plan = async (
 		if (!repo) continue;
 
 		// Check for changesets
-		const has = await has_changesets(repo);
+		const has = await ops.has_changesets(repo);
 
 		if (has) {
 			// Predict version from changesets
-			const prediction = await predict_next_version(repo, log);
+			const prediction = await ops.predict_next_version(repo, log);
 
 			if (prediction) {
 				const old_version = repo.pkg.package_json.version || '0.0.0';
@@ -293,7 +295,7 @@ export const preview_publishing_plan = async (
 			predicted_versions.set(pkg_name, new_version);
 		} else {
 			// No changesets and no dependency updates
-			const has = await has_changesets(repo);
+			const has = await ops.has_changesets(repo);
 			if (!has) {
 				warnings.push(`${repo.pkg.name} has no changesets and no dependency updates - won't be published`);
 			}
@@ -411,11 +413,11 @@ export const log_publishing_preview = (
 				const type_indicator =
 					update.type === 'dependencies' ? '📦' :
 					update.type === 'peerDependencies' ? '👥' : '🛠️';
-				// Only show "triggers auto-changeset" if package doesn't already have changesets
+				// Only show "triggers auto-changeset" for packages that will get auto-generated changesets
 				const existing_change = version_changes.find(vc => vc.package_name === update.dependent_package);
-				const republish = update.causes_republish &&
-					(!existing_change || (!existing_change.has_changesets && existing_change.will_generate_changeset))
-					? ' (triggers auto-changeset)' : '';
+				const needs_auto_changeset = update.causes_republish &&
+					existing_change?.will_generate_changeset === true;
+				const republish = needs_auto_changeset ? ' (triggers auto-changeset)' : '';
 				log.info(
 					`    ${type_indicator} ${update.updated_dependency} → ${update.new_version}${republish}`,
 				);

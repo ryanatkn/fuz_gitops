@@ -6,14 +6,10 @@ import {join} from 'node:path';
 import {create_src_json} from '@ryanatkn/gro/src_json.js';
 import {parse_svelte_config} from '@ryanatkn/gro/svelte_config.js';
 import {Task_Error} from '@ryanatkn/gro';
-import {
-	git_check_clean_workspace,
-	git_checkout,
-	git_current_branch_name,
-	git_pull,
-} from '@ryanatkn/gro/git.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn} from '@ryanatkn/belt/process.js';
+import type {Git_Operations} from './operations.js';
+import {default_git_operations} from './default_operations.js';
 
 import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
 import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';
@@ -51,27 +47,28 @@ export const load_local_repo = async (
 	resolved_local_repo: Resolved_Local_Repo,
 	install: boolean,
 	_log?: Logger,
+	git_ops: Git_Operations = default_git_operations,
 ): Promise<Local_Repo> => {
 	const {repo_config, repo_dir} = resolved_local_repo;
 
 	// Switch branches if needed, erroring if unable.
-	const branch = await git_current_branch_name({cwd: repo_dir});
+	const branch = await git_ops.current_branch_name(repo_dir);
 	if (branch !== repo_config.branch) {
-		let error_message = await git_check_clean_workspace({cwd: repo_dir});
-		if (error_message) {
+		const is_clean = await git_ops.check_clean_workspace(repo_dir);
+		if (!is_clean) {
 			throw new Task_Error(
-				`Repo ${repo_dir} is not on branch "${repo_config.branch}" and the workspace is unclean, blocking switch: ${error_message}`,
+				`Repo ${repo_dir} is not on branch "${repo_config.branch}" and the workspace is unclean, blocking switch`,
 			);
 		}
-		await git_checkout(repo_config.branch, {cwd: repo_dir});
+		await git_ops.checkout(repo_config.branch, repo_dir);
 
-		await git_pull(undefined, undefined, {cwd: repo_dir});
+		await git_ops.pull(undefined, undefined, repo_dir);
 
 		// Check clean workspace after pull to ensure we're in a good state
-		error_message = await git_check_clean_workspace({cwd: repo_dir});
-		if (error_message) {
+		const is_clean_after = await git_ops.check_clean_workspace(repo_dir);
+		if (!is_clean_after) {
 			throw new Task_Error(
-				`Workspace is unclean after switching to branch "${repo_config.branch}" and pulling: ${error_message}`,
+				`Workspace is unclean after switching to branch "${repo_config.branch}" and pulling`,
 			);
 		}
 
@@ -150,10 +147,11 @@ export const load_local_repos = async (
 	resolved_local_repos: Array<Resolved_Local_Repo>,
 	install: boolean,
 	log?: Logger,
+	git_ops: Git_Operations = default_git_operations,
 ): Promise<Array<Local_Repo>> => {
 	const loaded: Array<Local_Repo> = [];
 	for (const resolved_local_repo of resolved_local_repos) {
-		loaded.push(await load_local_repo(resolved_local_repo, install, log)); // eslint-disable-line no-await-in-loop
+		loaded.push(await load_local_repo(resolved_local_repo, install, log, git_ops)); // eslint-disable-line no-await-in-loop
 	}
 	return loaded;
 };

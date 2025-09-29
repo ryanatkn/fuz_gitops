@@ -2,6 +2,8 @@
  * Version utility functions for handling semver strings and comparisons.
  */
 
+import type {Bump_Type} from './semver.js';
+
 /**
  * Checks if a version string is a wildcard.
  */
@@ -111,5 +113,43 @@ export const detect_bump_type = (
 	if (new_parts[0] > old_parts[0]) return 'major';
 	if (new_parts[1] > old_parts[1]) return 'minor';
 	return 'patch';
+};
+
+/**
+ * Compares bump types. Returns positive if a > b, negative if a < b, 0 if equal.
+ */
+export const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
+	const order: Record<Bump_Type, number> = {
+		major: 3,
+		minor: 2,
+		patch: 1,
+	};
+	return order[a] - order[b];
+};
+
+/**
+ * Calculates the next version based on current version and bump type.
+ */
+export const calculate_next_version = (
+	current_version: string,
+	bump_type: Bump_Type,
+): string => {
+	const parts = current_version.split('.').map(Number);
+	if (parts.length !== 3 || parts.some((p) => Number.isNaN(p))) {
+		throw new Error(`Invalid version format: ${current_version}`);
+	}
+
+	const [major, minor, patch] = parts;
+
+	switch (bump_type) {
+		case 'major':
+			return `${major + 1}.0.0`;
+		case 'minor':
+			return `${major}.${minor + 1}.0`;
+		case 'patch':
+			return `${major}.${minor}.${patch + 1}`;
+		default:
+			throw new Error(`Invalid bump type: ${bump_type}`);
+	}
 };
 

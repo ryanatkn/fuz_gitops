@@ -1,9 +1,11 @@
 import {spawn, spawn_out} from '@ryanatkn/belt/process.js';
 import type {SpawnOptions} from 'node:child_process';
 import {
-	git_check_clean_workspace,
-	git_checkout,
-	git_pull,
+	git_check_clean_workspace as gro_git_check_clean_workspace,
+	git_checkout as gro_git_checkout,
+	git_pull as gro_git_pull,
+	git_current_branch_name as gro_git_current_branch_name,
+	git_current_commit_hash as gro_git_current_commit_hash,
 	type Git_Branch,
 	type Git_Origin,
 } from '@ryanatkn/gro/git.js';
@@ -142,38 +144,83 @@ export const git_switch_branch = async (
 	options?: SpawnOptions,
 ): Promise<void> => {
 	// Check if workspace is clean first
-	const error = await git_check_clean_workspace(options);
+	const error = await gro_git_check_clean_workspace(options);
 	if (error) {
 		throw Error(`Cannot switch branch: ${error}`);
 	}
 
 	// Checkout the branch
-	await git_checkout(branch, options);
+	await gro_git_checkout(branch, options);
 
 	// Pull latest changes if requested
 	if (pull) {
-		await git_pull(undefined, undefined, options);
+		await gro_git_pull(undefined, undefined, options);
 	}
 
 	// Verify workspace is still clean
-	const error_after = await git_check_clean_workspace(options);
+	const error_after = await gro_git_check_clean_workspace(options);
 	if (error_after) {
 		throw Error(`Workspace unclean after switching to ${branch}: ${error_after}`);
 	}
 };
 
-// Re-export commonly used functions from gro for convenience
-export {
-	git_check_clean_workspace,
-	git_checkout,
-	git_current_branch_name,
-	git_current_commit_hash,
-	git_fetch,
-	git_pull,
-	git_push,
-	git_push_to_create,
-	git_remote_branch_exists,
-	git_local_branch_exists,
-	type Git_Branch,
-	type Git_Origin,
-} from '@ryanatkn/gro/git.js';
+/**
+ * Wrapper for gro's git_current_branch_name that throws if null.
+ */
+export const git_current_branch_name_required = async (
+	options?: SpawnOptions,
+): Promise<string> => {
+	const branch = await gro_git_current_branch_name(options);
+	if (!branch) {
+		throw new Error('Failed to get current branch name');
+	}
+	return branch;
+};
+
+/**
+ * Wrapper for gro's git_current_commit_hash that throws if null.
+ */
+export const git_current_commit_hash_required = async (
+	branch?: string,
+	options?: SpawnOptions,
+): Promise<string> => {
+	const hash = await gro_git_current_commit_hash(branch, options);
+	if (!hash) {
+		throw new Error(`Failed to get commit hash for branch: ${branch || 'current'}`);
+	}
+	return hash;
+};
+
+/**
+ * Wrapper for gro's git_check_clean_workspace that returns a boolean.
+ */
+export const git_check_clean_workspace_as_boolean = async (
+	options?: SpawnOptions,
+): Promise<boolean> => {
+	const error = await gro_git_check_clean_workspace(options);
+	return error === null;
+};
+
+/**
+ * Wrapper for gro's git_checkout.
+ */
+export const git_checkout_wrapper = async (
+	branch: string,
+	options?: SpawnOptions,
+): Promise<void> => {
+	await gro_git_checkout(branch as Git_Branch, options);
+};
+
+/**
+ * Wrapper for gro's git_pull.
+ */
+export const git_pull_wrapper = async (
+	origin?: string,
+	branch?: string,
+	options?: SpawnOptions,
+): Promise<void> => {
+	await gro_git_pull(origin as Git_Origin, branch as Git_Branch, options);
+};
+
+// Export types for convenience
+export type {Git_Branch, Git_Origin} from '@ryanatkn/gro/git.js';

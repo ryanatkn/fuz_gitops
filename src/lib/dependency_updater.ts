@@ -12,7 +12,8 @@ import {
 	needs_update,
 	get_update_prefix,
 } from './version_utils.js';
-import {git_add, git_commit} from './git_operations.js';
+import type {Git_Operations} from './operations.js';
+import {default_git_operations} from './default_operations.js';
 
 export type Version_Strategy = 'exact' | 'caret' | 'tilde';
 
@@ -25,6 +26,7 @@ export const update_package_json = async (
 	strategy: Version_Strategy = 'caret',
 	published_versions?: Map<string, Published_Version>,
 	log?: Logger,
+	git_ops: Git_Operations = default_git_operations,
 ): Promise<void> => {
 	if (updates.size === 0) return;
 
@@ -118,13 +120,13 @@ export const update_package_json = async (
 			);
 
 			// Add changeset to git
-			await git_add(changeset_path, {cwd: repo.repo_dir});
+			await git_ops.add(changeset_path, repo.repo_dir);
 		}
 	}
 
 	// Commit the changes (including both package.json and changeset)
-	await git_add('package.json', {cwd: repo.repo_dir});
-	await git_commit(`update dependencies after publishing`, {cwd: repo.repo_dir});
+	await git_ops.add('package.json', repo.repo_dir);
+	await git_ops.commit(`update dependencies after publishing`, repo.repo_dir);
 };
 
 /**
@@ -135,6 +137,7 @@ export const update_all_repos = async (
 	published: Map<string, string>,
 	strategy: Version_Strategy = 'caret',
 	log?: Logger,
+	git_ops: Git_Operations = default_git_operations,
 ): Promise<{updated: number; failed: Array<{repo: string; error: Error}>}> => {
 	let updated_count = 0;
 	const failed: Array<{repo: string; error: Error}> = [];
@@ -173,7 +176,7 @@ export const update_all_repos = async (
 		if (updates.size === 0) continue;
 
 		try {
-			await update_package_json(repo, updates, strategy);
+			await update_package_json(repo, updates, strategy, undefined, log, git_ops);
 			updated_count++;
 			log?.info(`    Updated ${updates.size} dependencies in ${repo.pkg.name}`);
 		} catch (error) {

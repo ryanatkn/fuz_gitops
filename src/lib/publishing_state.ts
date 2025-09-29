@@ -3,6 +3,8 @@ import {existsSync} from 'node:fs';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
+import {PUBLISHING_STATE_PATH} from './paths.js';
+
 export interface Publishing_State {
 	started_at: string;
 	resumed_at?: string;
@@ -17,8 +19,6 @@ export interface State_Options {
 	log?: Logger;
 }
 
-const DEFAULT_STATE_FILE = '.gro/.gitops-publish-state.json';
-
 /**
  * Manages persistent state for multi-repo publishing.
  * Allows resuming from failures and tracking progress.
@@ -29,7 +29,7 @@ export class Publishing_State_Manager {
 	private log?: Logger;
 
 	constructor(options: State_Options = {}) {
-		this.state_file = options.state_file || DEFAULT_STATE_FILE;
+		this.state_file = options.state_file || PUBLISHING_STATE_PATH;
 		this.log = options.log;
 	}
 

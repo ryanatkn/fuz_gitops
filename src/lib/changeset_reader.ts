@@ -1,9 +1,11 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
+import {existsSync} from 'node:fs';
 import {readdir, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 
 import type {Local_Repo} from './local_repo.js';
 import type {Bump_Type} from './semver.js';
+import {compare_bump_types, calculate_next_version} from './version_utils.js';
 
 export interface Changeset_Info {
 	filename: string;
@@ -138,41 +140,26 @@ export const determine_bump_from_changesets = (
 	return highest_bump;
 };
 
-/**
- * Compares bump types. Returns positive if a > b, negative if a < b, 0 if equal.
- */
-export const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
-	const order: Record<Bump_Type, number> = {
-		major: 3,
-		minor: 2,
-		patch: 1,
-	};
-	return order[a] - order[b];
-};
+// Bump comparison and version calculation moved to version_utils.ts
+// Re-export for backwards compatibility
+export {compare_bump_types, calculate_next_version} from './version_utils.js';
 
 /**
- * Calculates the next version based on current version and bump type.
+ * Detects if a repo has changesets.
+ * Used by pre-flight checks and publishing to determine if a repo needs publishing.
  */
-export const calculate_next_version = (
-	current_version: string,
-	bump_type: Bump_Type,
-): string => {
-	const parts = current_version.split('.').map(Number);
-	if (parts.length !== 3 || parts.some((p) => Number.isNaN(p))) {
-		throw new Error(`Invalid version format: ${current_version}`);
+export const has_changesets = async (repo: Local_Repo): Promise<boolean> => {
+	const changesets_dir = join(repo.repo_dir, '.changeset');
+	if (!existsSync(changesets_dir)) {
+		return false;
 	}
 
-	const [major, minor, patch] = parts;
-
-	switch (bump_type) {
-		case 'major':
-			return `${major + 1}.0.0`;
-		case 'minor':
-			return `${major}.${minor + 1}.0`;
-		case 'patch':
-			return `${major}.${minor}.${patch + 1}`;
-		default:
-			throw new Error(`Invalid bump type: ${bump_type}`);
+	try {
+		const files = await readdir(changesets_dir);
+		// Look for markdown files that aren't the README
+		return files.some((file) => file.endsWith('.md') && file !== 'README.md');
+	} catch {
+		return false;
 	}
 };
 

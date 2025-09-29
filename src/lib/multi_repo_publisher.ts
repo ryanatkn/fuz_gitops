@@ -1,6 +1,4 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import {spawn} from '@ryanatkn/belt/process.js';
-import {git_current_commit_hash} from '@ryanatkn/gro/git.js';
 import {Task_Error} from '@ryanatkn/gro';
 import {readFile} from 'node:fs/promises';
 import {join} from 'node:path';
@@ -8,14 +6,13 @@ import {styleText as st} from 'node:util';
 
 import type {Local_Repo} from './local_repo.js';
 import {Dependency_Graph_Builder} from './dependency_graph.js';
-import {wait_for_package} from './npm_registry.js';
 import {update_package_json, type Version_Strategy} from './dependency_updater.js';
 import type {Bump_Type} from './semver.js';
-import {has_changesets} from './changeset_helpers.js';
-import {run_pre_flight_checks, type Pre_Flight_Options} from './pre_flight_checks.js';
+import {type Pre_Flight_Options} from './pre_flight_checks.js';
 import {init_publishing_state, type Publishing_State_Manager} from './publishing_state.js';
 import {needs_update, is_breaking_change, detect_bump_type} from './version_utils.js';
-import {predict_next_version} from './changeset_reader.js';
+import type {Publishing_Operations} from './operations.js';
+import {default_publishing_operations} from './default_operations.js';
 
 export interface Publishing_Options {
 	dry: boolean;
@@ -52,6 +49,7 @@ export interface Publishing_Result {
 export async function publish_repos(
 	repos: Array<Local_Repo>,
 	options: Publishing_Options,
+	ops: Publishing_Operations = default_publishing_operations,
 ): Promise<Publishing_Result> {
 	const start_time = Date.now();
 	const {dry, continue_on_error, update_deps, resume = false, log} = options;
@@ -62,7 +60,7 @@ export async function publish_repos(
 		required_branch: 'main',
 		log,
 	};
-	const pre_flight = await run_pre_flight_checks(repos, pre_flight_options);
+	const pre_flight = await ops.preflight.run_pre_flight_checks(repos, pre_flight_options, ops.git);
 
 	if (!pre_flight.ok) {
 		throw new Task_Error(`Pre-flight checks failed: ${pre_flight.errors.join(', ')}`);
@@ -127,7 +125,7 @@ export async function publish_repos(
 
 		// Check for changesets
 		if (!dry) {
-			const has = await has_changesets(repo);
+			const has = await ops.changeset.has_changesets(repo);
 			if (!has) {
 				log?.info(st('yellow', `  ⚠️  Skipping ${pkg_name} - no changesets`));
 				continue;
@@ -140,7 +138,7 @@ export async function publish_repos(
 
 			// 1. Publish this package
 			log?.info(`Publishing ${pkg_name}...`);
-			const version = await publish_single_repo(repo, options);
+			const version = await publish_single_repo(repo, options, ops);
 			published.set(pkg_name, version);
 			log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
 
@@ -150,7 +148,7 @@ export async function publish_repos(
 			if (!dry) {
 				// 2. Wait for this package to be available on NPM
 				log?.info(`  ⏳ Waiting for ${pkg_name}@${version.new_version} on NPM...`);
-				await wait_for_package(
+				await ops.npm.wait_for_package(
 					pkg_name,
 					version.new_version,
 					{
@@ -192,6 +190,7 @@ export async function publish_repos(
 								options.version_strategy || 'caret',
 								published, // Pass published versions for changeset generation
 								log,
+								ops.git,
 							);
 						}
 					}
@@ -234,6 +233,7 @@ export async function publish_repos(
 					options.version_strategy || 'caret',
 					published, // Pass published versions for changeset generation
 					log,
+					ops.git,
 				);
 			}
 		}
@@ -246,7 +246,7 @@ export async function publish_repos(
 		for (const repo of repos) {
 			try {
 				log?.info(`  Deploying ${repo.pkg.name}...`);
-				const deploy_result = await spawn('gro', ['deploy'], {cwd: repo.repo_dir});
+				const deploy_result = await ops.process.spawn('gro', ['deploy'], {cwd: repo.repo_dir});
 
 				if (deploy_result?.ok) {
 					log?.info(st('green', `  ✅ Deployed ${repo.pkg.name}`));
@@ -296,6 +296,7 @@ export async function publish_repos(
 async function publish_single_repo(
 	repo: Local_Repo,
 	options: Publishing_Options,
+	ops: Publishing_Operations = default_publishing_operations,
 ): Promise<Published_Version> {
 	const {dry, log} = options;
 
@@ -303,7 +304,7 @@ async function publish_single_repo(
 
 	if (dry) {
 		// In dry run, predict version from changesets
-		const prediction = await predict_next_version(repo, log);
+		const prediction = await ops.changeset.predict_next_version(repo, log);
 
 		if (!prediction) {
 			// No changesets found, skip this repo
@@ -325,7 +326,7 @@ async function publish_single_repo(
 	}
 
 	// Run gro publish which handles changesets version, build, and npm publish
-	const publish_result = await spawn('gro', ['publish'], {cwd: repo.repo_dir});
+	const publish_result = await ops.process.spawn('gro', ['publish'], {cwd: repo.repo_dir});
 
 	if (!publish_result.ok) {
 		throw new Error(`Failed to publish ${repo.pkg.name}`);
@@ -342,7 +343,7 @@ async function publish_single_repo(
 	const breaking = is_breaking_change(old_version, bump_type);
 
 	// Get actual commit hash
-	const commit = (await git_current_commit_hash(undefined, {cwd: repo.repo_dir})) || 'HEAD';
+	const commit = await ops.git.current_commit_hash(undefined, repo.repo_dir);
 
 	return {
 		name: repo.pkg.name,
