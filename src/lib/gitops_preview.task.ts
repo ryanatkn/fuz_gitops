@@ -67,6 +67,7 @@ export const task: Task<Args> = {
 				dependency_updates: preview.dependency_updates,
 				breaking_cascades: Object.fromEntries(preview.breaking_cascades),
 				warnings: preview.warnings,
+				info: preview.info,
 				errors: preview.errors,
 			};
 			content = JSON.stringify(output, null, 2);
@@ -112,6 +113,7 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 		dependency_updates,
 		breaking_cascades,
 		warnings,
+		info,
 		errors,
 	} = preview;
 
@@ -233,12 +235,24 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 		}
 	}
 
-	// Warnings
+	// Warnings (actual issues requiring attention)
 	if (warnings.length > 0) {
 		lines.push('## ⚠️ Warnings');
 		lines.push('');
 		for (const warning of warnings) {
 			lines.push(`- ${warning}`);
+		}
+		lines.push('');
+	}
+
+	// Info (packages with no changes - normal status)
+	if (info.length > 0) {
+		lines.push('## ℹ️ No Changes to Publish');
+		lines.push('');
+		lines.push('*These packages have no changesets and no dependency updates:*');
+		lines.push('');
+		for (const pkg of info) {
+			lines.push(`- \`${pkg}\``);
 		}
 		lines.push('');
 	}

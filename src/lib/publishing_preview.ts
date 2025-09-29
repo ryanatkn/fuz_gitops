@@ -40,6 +40,7 @@ export interface Publishing_Preview {
 	dependency_updates: Array<Dependency_Update>;
 	breaking_cascades: Map<string, Array<string>>;
 	warnings: Array<string>;
+	info: Array<string>; // Informational status (not warnings)
 	errors: Array<string>;
 }
 
@@ -95,6 +96,7 @@ export const preview_publishing_plan = async (
 	log?.info(st('cyan', '📋 Generating publishing preview...\n'));
 
 	const warnings: Array<string> = [];
+	const info: Array<string> = []; // Informational status (not warnings)
 	const errors: Array<string> = [];
 	const version_changes: Array<Version_Change> = [];
 	const dependency_updates: Array<Dependency_Update> = [];
@@ -131,6 +133,7 @@ export const preview_publishing_plan = async (
 			dependency_updates,
 			breaking_cascades,
 			warnings,
+			info,
 			errors,
 		};
 	}
@@ -303,12 +306,10 @@ export const preview_publishing_plan = async (
 			// Also update predicted versions for cascade analysis
 			predicted_versions.set(pkg_name, new_version);
 		} else {
-			// No changesets and no dependency updates
+			// No changesets and no dependency updates - informational only
 			const has = await ops.has_changesets(repo);
 			if (!has) {
-				warnings.push(
-					`${repo.pkg.name} has no changesets and no dependency updates - won't be published`,
-				);
+				info.push(`${repo.pkg.name}`);
 			}
 		}
 	}
@@ -319,6 +320,7 @@ export const preview_publishing_plan = async (
 		dependency_updates,
 		breaking_cascades,
 		warnings,
+		info,
 		errors,
 	};
 };
@@ -333,6 +335,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 		dependency_updates,
 		breaking_cascades,
 		warnings,
+		info,
 		errors,
 	} = preview;
 
@@ -439,11 +442,19 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 		}
 	}
 
-	// Warnings
+	// Warnings (actual issues requiring attention)
 	if (warnings.length > 0) {
 		log.warn(st('yellow', '\n⚠️  Warnings:\n'));
 		for (const warning of warnings) {
 			log.warn(`  • ${warning}`);
+		}
+	}
+
+	// Info (packages with no changes to publish - normal status)
+	if (info.length > 0) {
+		log.info(st('dim', '\nℹ️  No changes to publish:\n'));
+		for (const pkg of info) {
+			log.info(st('dim', `  • ${pkg}`));
 		}
 	}
 

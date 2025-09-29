@@ -8,7 +8,7 @@ import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
 import {update_package_json, type Version_Strategy} from '$lib/dependency_updater.js';
 import type {Bump_Type} from '$lib/semver.js';
 import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
-import {init_publishing_state, type Publishing_State_Manager} from '$lib/publishing_state.js';
+import {init_publishing_state, Publishing_State_Manager} from '$lib/publishing_state.js';
 import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
 import type {Publishing_Operations} from '$lib/operations.js';
 import {default_publishing_operations} from '$lib/default_operations.js';
@@ -104,11 +104,11 @@ export const publish_repos = async (
 		throw new Task_Error('Failed to compute publishing order: ' + error);
 	}
 
-	// Initialize or load publishing state
-	const state_manager: Publishing_State_Manager = await init_publishing_state(order, {
-		log,
-	});
-	const packages_to_skip = resume ? state_manager.get_packages_to_skip() : new Set<string>();
+	// Initialize or load publishing state (skip for dry runs - they don't need persistence)
+	const state_manager: Publishing_State_Manager = dry
+		? new Publishing_State_Manager({log}) // Empty manager, no file I/O
+		: await init_publishing_state(order, {log});
+	const packages_to_skip = resume && !dry ? state_manager.get_packages_to_skip() : new Set<string>();
 
 	const published = new Map<string, Published_Version>();
 	const failed = new Map<string, Error>();
@@ -126,18 +126,26 @@ export const publish_repos = async (
 		const repo = repos.find((r) => r.pkg.name === pkg_name);
 		if (!repo) continue;
 
-		// Check for changesets
-		if (!dry) {
-			const has = await ops.changeset.has_changesets(repo);
-			if (!has) {
+		// Check for changesets (both dry and real runs)
+		const has = await ops.changeset.has_changesets(repo);
+		if (!has) {
+			// Skip packages without changesets
+			// In real publish: They might get auto-changesets during dependency updates
+			// In dry run: We can't simulate auto-changesets, so just skip
+			if (dry) {
+				// Silent skip in dry run - preview shows which packages get auto-changesets
+				continue;
+			} else {
 				log?.info(st('yellow', `  ⚠️  Skipping ${pkg_name} - no changesets`));
 				continue;
 			}
 		}
 
 		try {
-			// Mark as current in state
-			state_manager.mark_current(pkg_name);
+			// Mark as current in state (skip for dry runs)
+			if (!dry) {
+				state_manager.mark_current(pkg_name);
+			}
 
 			// 1. Publish this package
 			log?.info(`Publishing ${pkg_name}...`);
@@ -145,8 +153,10 @@ export const publish_repos = async (
 			published.set(pkg_name, version);
 			log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
 
-			// Mark as completed in state
-			await state_manager.mark_completed(pkg_name, version.new_version);
+			// Mark as completed in state (skip for dry runs)
+			if (!dry) {
+				await state_manager.mark_completed(pkg_name, version.new_version);
+			}
 
 			if (!dry) {
 				// 2. Wait for this package to be available on NPM
@@ -204,8 +214,10 @@ export const publish_repos = async (
 			failed.set(pkg_name, err);
 			log?.error(st('red', `  ❌ Failed to publish ${pkg_name}: ${err.message}`));
 
-			// Mark as failed in state
-			await state_manager.mark_failed(pkg_name, err);
+			// Mark as failed in state (skip for dry runs)
+			if (!dry) {
+				await state_manager.mark_failed(pkg_name, err);
+			}
 
 			if (!continue_on_error) break;
 		}

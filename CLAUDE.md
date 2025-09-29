@@ -68,20 +68,56 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - `gro gitops_publish` - publishes repos in dependency order
 - `gro gitops_preview` - shows what would be published (dry run preview)
 - `gro gitops_analyze` - analyzes dependencies and changesets
-- `gro gitops_publish --dry` - simulates publishing without pre-flight checks
+- `gro gitops_publish --dry` - simulates publishing without pre-flight checks or state persistence
 - Handles circular dev dependencies by excluding from topological sort
 - Waits for NPM propagation with exponential backoff
 - Updates cross-repo dependencies automatically
 - Pre-flight checks validate clean workspaces, branches, and npm authentication (skipped for --dry runs)
 
-#### Auto-Changeset Generation
+**Dry Run Behavior**
 
-When a package is published, dependent packages automatically get changesets for dependency updates:
+`gro gitops_publish --dry`:
+- Skips pre-flight checks (workspace, branch, npm auth)
+- Does NOT load or save publishing state (no `.gro/fuz_gitops/publish_state.json`)
+- Simulates publishing for packages with explicit changesets only
+- Packages getting auto-changesets shown in `gro gitops_preview` instead
 
-- **Production/peer deps**: Trigger republishing with auto-generated changesets
-- **Dev deps**: Updated without republishing
-- **Breaking changes**: Propagate as minor (0.x.x) or major (1.x.x) bumps
-- **Bump escalation**: Existing changesets get escalated if dependencies require larger bumps
+#### Changeset Semantics
+
+Packages can publish in four distinct scenarios:
+
+**1. Explicit Changesets (Normal Publishing)**
+- Package has `.changeset/*.md` files
+- Dependency updates don't require higher bump
+- Behavior: Published with version bump from changesets
+- Reported as: "Version Changes (from changesets)"
+
+**2. Explicit Changesets with Bump Escalation**
+- Package has `.changeset/*.md` files specifying bump type
+- BUT dependency updates require a HIGHER bump
+- Behavior: Published with escalated bump (e.g., `patch` → `minor` for breaking dep)
+- Reported as: "Version Changes (bump escalation required)"
+- Example: You write `patch` changeset, but `gro` (breaking) forces `minor`
+
+**3. Auto-Generated Changesets**
+- Package has NO `.changeset/*.md` files
+- BUT has production/peer dependency updates
+- Behavior: Changeset auto-generated, package republished
+- Reported as: "Version Changes (auto-generated for dependency updates)"
+- Example: `gro` publishes → `fuz` depends on `gro` → auto-changeset for `fuz`
+
+**4. No Changes to Publish**
+- Package has NO `.changeset/*.md` files
+- Package has NO production/peer dependency updates
+- Behavior: Skipped (not published)
+- Reported as: Informational status (not a warning)
+- This is normal: Only packages with changes should publish
+
+**Dependency Update Behavior**
+
+When a dependency is updated:
+- **Production/peer deps**: Package must republish (triggers auto-changeset if needed)
+- **Dev deps**: Package.json updated, NO republish (dev-only changes)
 
 #### Key Publishing Modules
 

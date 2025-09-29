@@ -104,18 +104,23 @@
 - Dev dependency cycle (will be ignored): @ryanatkn/fuz_code → @ryanatkn/belt → @ryanatkn/gro → @ryanatkn/moss → @ryanatkn/fuz_code
 - Dev dependency cycle (will be ignored): @ryanatkn/gro → @ryanatkn/moss → @ryanatkn/gro
 - Dev dependency cycle (will be ignored): @ryanatkn/fuz → @ryanatkn/fuz_code → @ryanatkn/fuz
-- @ryanatkn/moss has no changesets and no dependency updates - won't be published
-- @ryanatkn/belt has no changesets and no dependency updates - won't be published
-- @ryanatkn/fuz_template has no changesets and no dependency updates - won't be published
-- @ryanatkn/fuz_mastodon has no changesets and no dependency updates - won't be published
-- @ryanatkn/fuz_code has no changesets and no dependency updates - won't be published
-- webdevladder.net has no changesets and no dependency updates - won't be published
-- ryanatkn.com has no changesets and no dependency updates - won't be published
+
+## ℹ️ No Changes to Publish
+
+_These packages have no changesets and no dependency updates:_
+
+- `@ryanatkn/moss`
+- `@ryanatkn/belt`
+- `@ryanatkn/fuz_template`
+- `@ryanatkn/fuz_mastodon`
+- `@ryanatkn/fuz_code`
+- `webdevladder.net`
+- `ryanatkn.com`
 
 ## Summary
 
 - **Packages to publish**: 5
 - **Dependency updates**: 15
 - **Breaking changes**: 1
-- **Warnings**: 14
+- **Warnings**: 7
 - **Errors**: 0
