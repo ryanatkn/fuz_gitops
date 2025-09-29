@@ -1,6 +1,6 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {git_check_clean_workspace, git_current_branch_name} from '@ryanatkn/gro/git.js';
-import {spawn} from '@ryanatkn/belt/process.js';
+import {spawn_out} from '@ryanatkn/belt/process.js';
 import {styleText as st} from 'node:util';
 
 import type {Local_Repo} from './local_repo.js';
@@ -124,9 +124,9 @@ export const run_pre_flight_checks = async (
  */
 async function check_npm_auth(): Promise<{ok: boolean; error?: string}> {
 	try {
-		const result = await spawn('npm', ['whoami']);
-		if (result.ok && 'stdout' in result) {
-			const username = (result.stdout as string).trim();
+		const result = await spawn_out('npm', ['whoami']);
+		if (result.stdout) {
+			const username = result.stdout.trim();
 			if (username) {
 				return {ok: true};
 			}
@@ -142,8 +142,8 @@ async function check_npm_auth(): Promise<{ok: boolean; error?: string}> {
  */
 async function check_npm_registry(): Promise<{ok: boolean; error?: string}> {
 	try {
-		const result = await spawn('npm', ['ping']);
-		if (result.ok) {
+		const result = await spawn_out('npm', ['ping']);
+		if (result.stdout) {
 			return {ok: true};
 		}
 		return {ok: false, error: 'Failed to ping npm registry'};

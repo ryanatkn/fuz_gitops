@@ -1,5 +1,5 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import {spawn} from '@ryanatkn/belt/process.js';
+import {spawn_out} from '@ryanatkn/belt/process.js';
 import {wait} from '@ryanatkn/belt/async.js';
 import {styleText as st} from 'node:util';
 
@@ -25,10 +25,10 @@ export const check_package_available = async (
 ): Promise<boolean> => {
 	try {
 		// Use npm view to check if the specific version exists
-		const result = await spawn('npm', ['view', `${pkg}@${version}`, 'version']);
+		const result = await spawn_out('npm', ['view', `${pkg}@${version}`, 'version']);
 
-		if (result.ok && 'stdout' in result) {
-			const output = (result.stdout as string).trim();
+		if (result.stdout) {
+			const output = result.stdout.trim();
 			// If we get a version back, it exists
 			return output === version;
 		}
@@ -99,10 +99,10 @@ export const get_package_info = async (
 	log?: Logger,
 ): Promise<Package_Info | null> => {
 	try {
-		const result = await spawn('npm', ['view', pkg, '--json']);
+		const result = await spawn_out('npm', ['view', pkg, '--json']);
 
-		if (result.ok && 'stdout' in result) {
-			const data = JSON.parse(result.stdout as string);
+		if (result.stdout) {
+			const data = JSON.parse(result.stdout);
 			return {
 				name: data.name,
 				version: data.version,

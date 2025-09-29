@@ -1,5 +1,5 @@
 import {spawn_out} from '@ryanatkn/belt/process.js';
-import {readFileSync, writeFileSync, existsSync} from 'node:fs';
+import {readFileSync, existsSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Logger} from '@ryanatkn/belt/log.js';
 
@@ -12,7 +12,7 @@ export interface Command_Output {
 }
 
 export interface Fixture_Comparison {
-	predicted: string;
+	expected: string;
 	actual: string;
 	matches: boolean;
 	differences: Array<string>;
@@ -125,7 +125,7 @@ export const compare_outputs = (predicted: string, actual: string): Fixture_Comp
 	}
 
 	return {
-		predicted: normalized_predicted,
+		expected: normalized_predicted,
 		actual: normalized_actual,
 		matches,
 		differences,
@@ -143,104 +143,4 @@ export const load_fixture = (filename: string): string => {
 	}
 
 	return readFileSync(fixture_path, 'utf-8');
-};
-
-/**
- * Save output to an actual results file
- */
-export const save_actual_output = (filename: string, content: string): void => {
-	const actual_path = join('src/fixtures/actual', filename);
-
-	// Ensure directory exists
-	const fs = require('fs');
-	const path = require('path');
-	const dir = path.dirname(actual_path);
-	if (!fs.existsSync(dir)) {
-		fs.mkdirSync(dir, {recursive: true});
-	}
-
-	writeFileSync(actual_path, content, 'utf-8');
-};
-
-/**
- * Get the path for a prediction fixture file
- */
-export const get_prediction_path = (command: 'gitops_analyze' | 'gitops_preview'): string => {
-	return `${command}_prediction.md`;
-};
-
-/**
- * Get the path for an actual output file
- */
-export const get_actual_path = (command: 'gitops_analyze' | 'gitops_preview'): string => {
-	return `${command}_actual.md`;
-};
-
-/**
- * Extract specific sections from markdown output for targeted comparison
- */
-export const extract_markdown_sections = (content: string): Record<string, string> => {
-	const sections: Record<string, string> = {};
-	const lines = content.split('\n');
-
-	let current_section = 'header';
-	let current_content: Array<string> = [];
-
-	for (const line of lines) {
-		// Check if this is a new section header
-		if (line.startsWith('## ')) {
-			// Save previous section
-			if (current_content.length > 0) {
-				sections[current_section] = current_content.join('\n').trim();
-			}
-
-			// Start new section
-			current_section = line
-				.substring(3)
-				.trim()
-				.toLowerCase()
-				.replace(/[^a-z0-9]/g, '_');
-			current_content = [];
-		} else {
-			current_content.push(line);
-		}
-	}
-
-	// Save final section
-	if (current_content.length > 0) {
-		sections[current_section] = current_content.join('\n').trim();
-	}
-
-	return sections;
-};
-
-/**
- * Compare specific sections of markdown output
- */
-export const compare_sections = (
-	predicted_sections: Record<string, string>,
-	actual_sections: Record<string, string>,
-): Array<{section: string; matches: boolean; differences: Array<string>}> => {
-	const results: Array<{section: string; matches: boolean; differences: Array<string>}> = [];
-
-	// Get all section names from both
-	const all_sections = new Set([
-		...Object.keys(predicted_sections),
-		...Object.keys(actual_sections),
-	]);
-
-	for (const section of all_sections) {
-		const predicted = predicted_sections[section] || '';
-		const actual = actual_sections[section] || '';
-
-		const comparison = compare_outputs(predicted, actual);
-
-		results.push({
-			section,
-			matches: comparison.matches,
-			differences: comparison.differences,
-		});
-	}
-
-	return results;
 };
