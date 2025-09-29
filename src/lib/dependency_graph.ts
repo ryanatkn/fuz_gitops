@@ -204,6 +204,108 @@ export class Dependency_Graph {
 		return cycles;
 	}
 
+	/**
+	 * Detects cycles by dependency type.
+	 * Separates production/peer cycles (errors) from dev cycles (normal).
+	 */
+	detect_cycles_by_type(): {
+		production_cycles: Array<Array<string>>;
+		dev_cycles: Array<Array<string>>;
+	} {
+		const production_cycles: Array<Array<string>> = [];
+		const dev_cycles: Array<Array<string>> = [];
+		const visited_prod = new Set<string>();
+		const visited_dev = new Set<string>();
+		const rec_stack_prod = new Set<string>();
+		const rec_stack_dev = new Set<string>();
+
+		// DFS for production/peer dependencies only
+		const dfs_prod = (name: string, path: Array<string>): void => {
+			visited_prod.add(name);
+			rec_stack_prod.add(name);
+			path.push(name);
+
+			const node = this.nodes.get(name);
+			if (node) {
+				for (const [dep_name, spec] of node.dependencies) {
+					// Skip dev dependencies
+					if (spec.type === 'dev') continue;
+
+					if (this.nodes.has(dep_name)) {
+						if (!visited_prod.has(dep_name)) {
+							dfs_prod(dep_name, [...path]);
+						} else if (rec_stack_prod.has(dep_name)) {
+							// Found a production cycle
+							const cycle_start = path.indexOf(dep_name);
+							const cycle = path.slice(cycle_start).concat(dep_name);
+							// Check if this cycle is unique
+							const cycle_key = [...cycle].sort().join(',');
+							const exists = production_cycles.some(
+								(c) => [...c].sort().join(',') === cycle_key,
+							);
+							if (!exists) {
+								production_cycles.push(cycle);
+							}
+						}
+					}
+				}
+			}
+
+			rec_stack_prod.delete(name);
+		};
+
+		// DFS for dev dependencies only
+		const dfs_dev = (name: string, path: Array<string>): void => {
+			visited_dev.add(name);
+			rec_stack_dev.add(name);
+			path.push(name);
+
+			const node = this.nodes.get(name);
+			if (node) {
+				for (const [dep_name, spec] of node.dependencies) {
+					// Only check dev dependencies
+					if (spec.type !== 'dev') continue;
+
+					if (this.nodes.has(dep_name)) {
+						if (!visited_dev.has(dep_name)) {
+							dfs_dev(dep_name, [...path]);
+						} else if (rec_stack_dev.has(dep_name)) {
+							// Found a dev cycle
+							const cycle_start = path.indexOf(dep_name);
+							const cycle = path.slice(cycle_start).concat(dep_name);
+							// Check if this cycle is unique
+							const cycle_key = [...cycle].sort().join(',');
+							const exists = dev_cycles.some(
+								(c) => [...c].sort().join(',') === cycle_key,
+							);
+							if (!exists) {
+								dev_cycles.push(cycle);
+							}
+						}
+					}
+				}
+			}
+
+			rec_stack_dev.delete(name);
+		};
+
+		// Check for production/peer cycles
+		for (const name of this.nodes.keys()) {
+			if (!visited_prod.has(name)) {
+				dfs_prod(name, []);
+			}
+		}
+
+		// Check for dev cycles
+		for (const name of this.nodes.keys()) {
+			if (!visited_dev.has(name)) {
+				dfs_dev(name, []);
+			}
+		}
+
+		return {production_cycles, dev_cycles};
+	}
+
 	toJSON(): Dependency_Graph_Json {
 		const nodes = Array.from(this.nodes.values()).map((node) => ({
 			name: node.name,
@@ -244,11 +346,12 @@ export class Dependency_Graph_Builder {
 	 * Analyzes the graph for potential issues.
 	 */
 	analyze(graph: Dependency_Graph): {
-		cycles: Array<Array<string>>;
+		production_cycles: Array<Array<string>>;
+		dev_cycles: Array<Array<string>>;
 		wildcard_deps: Array<{pkg: string; dep: string; version: string}>;
 		missing_peers: Array<{pkg: string; dep: string}>;
 	} {
-		const cycles = graph.detect_cycles();
+		const {production_cycles, dev_cycles} = graph.detect_cycles_by_type();
 		const wildcard_deps: Array<{pkg: string; dep: string; version: string}> = [];
 		const missing_peers: Array<{pkg: string; dep: string}> = [];
 
@@ -264,6 +367,6 @@ export class Dependency_Graph_Builder {
 			}
 		}
 
-		return {cycles, wildcard_deps, missing_peers};
+		return {production_cycles, dev_cycles, wildcard_deps, missing_peers};
 	}
 }

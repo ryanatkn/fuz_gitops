@@ -2,10 +2,20 @@ import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
-import {publish_repos, type Publishing_Options} from '$lib/multi_repo_publisher.js';
+import {publish_repos, type Publishing_Options, type Publishing_Result} from '$lib/multi_repo_publisher.js';
 import type {Bump_Type} from '$lib/semver.js';
+import {preview_publishing_plan, log_publishing_preview} from '$lib/publishing_preview.js';
+import {styleText as st} from 'node:util';
 
 export const Args = z.strictObject({
+	path: z
+		.string()
+		.describe('path to the gitops config file')
+		.default('gitops.config.ts'),
+	dir: z
+		.string()
+		.describe('path containing the repos')
+		.optional(),
 	branch: z.string().describe('git branch to publish from').default('main'),
 	bump: z
 		.enum(['major', 'minor', 'patch', 'auto'])
@@ -27,6 +37,10 @@ export const Args = z.strictObject({
 		.boolean()
 		.describe('perform a dry run without actually publishing')
 		.default(false),
+	resume: z
+		.boolean()
+		.describe('resume from previous failed publishing state')
+		.default(false),
 	format: z
 		.enum(['stdout', 'json', 'markdown'])
 		.describe('output format')
@@ -35,6 +49,10 @@ export const Args = z.strictObject({
 		.boolean()
 		.describe('deploy all repos after publishing')
 		.default(false),
+	preview: z
+		.boolean()
+		.describe('show preview before publishing')
+		.default(true),
 });
 export type Args = z.infer<typeof Args>;
 
@@ -43,23 +61,43 @@ export const task: Task<Args> = {
 	Args,
 	run: async ({args, log}): Promise<void> => {
 		const {
+			path,
+			dir,
 			bump,
 			continue_on_error,
 			update_peers,
 			peer_strategy,
 			dry,
+			resume,
 			format,
 			deploy,
+			preview,
 		} = args;
 
 		// Load repos
 		const {local_repos: repos} = await get_gitops_ready(
-			'gitops.config.ts', // Default config path
-			undefined, // Use default repos dir
+			path,
+			dir,
 			false, // Don't download if missing
 			false, // Don't install
 			log,
 		);
+
+		// Show preview if requested (and not resuming)
+		if (preview && !resume && !dry) {
+			log.info(st('cyan', '\n📋 Publishing Preview\n'));
+			const preview_result = await preview_publishing_plan(repos, log);
+			log_publishing_preview(preview_result, log);
+
+			if (preview_result.errors.length > 0) {
+				throw new Error('Cannot proceed with publishing due to errors');
+			}
+
+			// Ask for confirmation
+			log.info(st('yellow', '\n⚠️  This will publish the packages shown above.'));
+			log.info('Press Ctrl+C to cancel, or wait 5 seconds to continue...\n');
+			await new Promise(resolve => setTimeout(resolve, 5000));
+		}
 
 		// Publishing options
 		const options: Publishing_Options = {
@@ -69,6 +107,7 @@ export const task: Task<Args> = {
 			update_deps: update_peers,
 			version_strategy: peer_strategy,
 			deploy,
+			resume,
 			max_wait: 300000, // 5 minutes
 			log,
 		};
@@ -76,26 +115,11 @@ export const task: Task<Args> = {
 		// Execute publishing
 		const result = await publish_repos(repos, options);
 
-		// Output result based on format
-		if (format === 'json') {
-			console.log(JSON.stringify(result, null, 2));
-		} else if (format === 'markdown') {
-			console.log('# Publishing Result\n');
-			console.log(`**Status**: ${result.ok ? '✅ Success' : '❌ Failed'}`);
-			console.log(`**Duration**: ${(result.duration / 1000).toFixed(1)}s`);
-			console.log(`**Published**: ${result.published.length} packages`);
-			if (result.failed.length > 0) {
-				console.log(`**Failed**: ${result.failed.length} packages`);
-			}
-			console.log('\n## Published Packages\n');
-			for (const pkg of result.published) {
-				console.log(`- ${pkg.name}: ${pkg.old_version} → ${pkg.new_version}`);
-			}
-			if (result.failed.length > 0) {
-				console.log('\n## Failed Packages\n');
-				for (const {name, error} of result.failed) {
-					console.log(`- ${name}: ${error.message}`);
-				}
+		// Format and output result
+		if (format !== 'stdout') {
+			const output = format_result(result, format);
+			for (const line of output) {
+				log.info(line);
 			}
 		}
 		// stdout format is handled by the publish_repos function's logging
@@ -105,4 +129,44 @@ export const task: Task<Args> = {
 			process.exit(1);
 		}
 	},
+};
+
+// Format the publishing result for different output formats
+const format_result = (result: Publishing_Result, format: 'json' | 'markdown'): Array<string> => {
+	if (format === 'json') {
+		return JSON.stringify(result, null, 2).split('\n');
+	}
+
+	// Markdown format
+	const lines: Array<string> = [];
+
+	lines.push('# Publishing Result');
+	lines.push('');
+	lines.push(`**Status**: ${result.ok ? '✅ Success' : '❌ Failed'}`);
+	lines.push(`**Duration**: ${(result.duration / 1000).toFixed(1)}s`);
+	lines.push(`**Published**: ${result.published.length} packages`);
+
+	if (result.failed.length > 0) {
+		lines.push(`**Failed**: ${result.failed.length} packages`);
+	}
+
+	if (result.published.length > 0) {
+		lines.push('');
+		lines.push('## Published Packages');
+		lines.push('');
+		for (const pkg of result.published) {
+			lines.push(`- \`${pkg.name}\`: ${pkg.old_version} → ${pkg.new_version}`);
+		}
+	}
+
+	if (result.failed.length > 0) {
+		lines.push('');
+		lines.push('## Failed Packages');
+		lines.push('');
+		for (const {name, error} of result.failed) {
+			lines.push(`- \`${name}\`: ${error.message}`);
+		}
+	}
+
+	return lines;
 };

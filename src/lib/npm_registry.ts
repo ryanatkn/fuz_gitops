@@ -16,159 +16,113 @@ export interface Package_Info {
 }
 
 /**
- * Manages NPM registry operations with retry logic.
+ * Checks if a specific package version is available on NPM.
  */
-export class Npm_Registry {
-	private log?: Logger;
+export const check_package_available = async (
+	pkg: string,
+	version: string,
+	log?: Logger,
+): Promise<boolean> => {
+	try {
+		// Use npm view to check if the specific version exists
+		const result = await spawn('npm', ['view', `${pkg}@${version}`, 'version']);
 
-	constructor(log?: Logger) {
-		this.log = log;
-	}
-
-	/**
-	 * Checks if a specific package version is available on NPM.
-	 */
-	async check_availability(pkg: string, version: string): Promise<boolean> {
-		try {
-			const result = await spawn('npm', ['view', `${pkg}@${version}`, 'version', '--json']);
-
-			if (result.ok && 'stdout' in result) {
-				const stdout = result.stdout as string;
-				if (stdout) {
-					const output = stdout.trim();
-					// npm view returns the version string if found
-					return output.includes(version);
-				}
-			}
-		} catch {
-			// npm command failed
+		if (result.ok && 'stdout' in result) {
+			const output = (result.stdout as string).trim();
+			// If we get a version back, it exists
+			return output === version;
 		}
 
 		return false;
-	}
-
-	/**
-	 * Waits for a package to become available on NPM with exponential backoff.
-	 */
-	async wait_for_package(
-		pkg: string,
-		version: string,
-		options: Wait_Options = {},
-	): Promise<boolean> {
-		const {
-			max_attempts = 30,
-			initial_delay = 1000,
-			max_delay = 60000,
-			timeout = 300000,
-		} = options;
-
-		const start_time = Date.now();
-		let attempt = 0;
-		let delay = initial_delay;
-
-		this.log?.info(`  Waiting for ${pkg}@${version}...`);
-
-		while (Date.now() - start_time < timeout && attempt < max_attempts) {
-			attempt++;
-
-			if (await this.check_availability(pkg, version)) {
-				const duration = Date.now() - start_time;
-				this.log?.info(
-					st('green', `  ✓ ${pkg}@${version} is available`) +
-						st('dim', ` (${(duration / 1000).toFixed(1)}s, ${attempt} checks)`),
-				);
-				return true;
-			}
-
-			// Calculate next delay with exponential backoff and jitter
-			await wait(delay);
-			delay = Math.min(delay * 2, max_delay);
-			delay += Math.random() * delay * 0.25; // Add 25% jitter
-
-			// Log progress occasionally
-			if (attempt % 5 === 0) {
-				const elapsed = ((Date.now() - start_time) / 1000).toFixed(0);
-				this.log?.info(st('dim', `    Still waiting... (${elapsed}s elapsed, ${attempt} checks)`));
-			}
-		}
-
-		// Max attempts or timeout reached
-		const duration = Date.now() - start_time;
-		this.log?.warn(
-			st(
-				'yellow',
-				`  ⚠️  ${pkg}@${version} not available after ${attempt} attempts (${(duration / 1000).toFixed(1)}s)`,
-			),
-		);
-
+	} catch (error) {
+		log?.debug(`Failed to check ${pkg}@${version}: ${error}`);
 		return false;
 	}
+};
 
-	/**
-	 * Waits for multiple packages to become available.
-	 */
-	async wait_for_packages(
-		packages: Array<Package_Info>,
-		options: Wait_Options = {},
-	): Promise<Map<string, boolean>> {
-		const results = new Map<string, boolean>();
+/**
+ * Waits for a package version to become available on NPM with exponential backoff.
+ */
+export const wait_for_package = async (
+	pkg: string,
+	version: string,
+	options: Wait_Options = {},
+	log?: Logger,
+): Promise<void> => {
+	const {
+		max_attempts = 30,
+		initial_delay = 1000,
+		max_delay = 60000,
+		timeout = 300000, // 5 minutes default
+	} = options;
 
-		this.log?.info(
-			st('cyan', `Waiting for ${packages.length} packages to be available on npm...`),
-		);
+	const start_time = Date.now();
+	let attempt = 0;
+	let delay = initial_delay;
 
-		// Check all packages in parallel
-		const promises = packages.map(async ({name, version}) => {
-			const available = await this.wait_for_package(name, version, options);
-			results.set(name, available);
-			return available;
-		});
+	while (attempt < max_attempts) {
+		attempt++;
 
-		const all_results = await Promise.all(promises);
-		const all_available = all_results.every((r) => r);
-
-		if (all_available) {
-			this.log?.info(st('green', `✓ All ${packages.length} packages are now available`));
-		} else {
-			const failed = Array.from(results.entries())
-				.filter(([_, available]) => !available)
-				.map(([name]) => name);
-
-			this.log?.warn(
-				st('yellow', `⚠️  ${failed.length} packages not available: ${failed.join(', ')}`),
-			);
+		// Check timeout
+		if (Date.now() - start_time > timeout) {
+			throw new Error(`Timeout waiting for ${pkg}@${version} after ${timeout}ms`);
 		}
 
-		return results;
+		// Check if package is available
+		if (await check_package_available(pkg, version, log)) {
+			log?.info(st('green', `    ✓ ${pkg}@${version} is now available on NPM`));
+			return;
+		}
+
+		// Log progress occasionally
+		if (attempt % 5 === 0) {
+			log?.debug(`    Still waiting for ${pkg}@${version} (attempt ${attempt}/${max_attempts})`);
+		}
+
+		// Wait with exponential backoff + jitter
+		const jitter = Math.random() * delay * 0.1; // 10% jitter
+		const actual_delay = Math.min(delay + jitter, max_delay);
+		await wait(actual_delay);
+
+		// Exponential backoff
+		delay = Math.min(delay * 1.5, max_delay);
 	}
 
-	/**
-	 * Gets the latest version of a package from NPM.
-	 */
-	async get_latest_version(pkg: string): Promise<string | null> {
-		try {
-			const result = await spawn('npm', ['view', pkg, 'version', '--json']);
+	throw new Error(`${pkg}@${version} not available after ${max_attempts} attempts`);
+};
 
-			if (result.ok && 'stdout' in result) {
-				const stdout = result.stdout as string;
-				if (stdout) {
-					// Parse the version from npm view output
-					const version = JSON.parse(stdout.trim());
-					return version;
-				}
-			}
-		} catch {
-			// npm command failed
+/**
+ * Gets basic package information from NPM.
+ */
+export const get_package_info = async (
+	pkg: string,
+	log?: Logger,
+): Promise<Package_Info | null> => {
+	try {
+		const result = await spawn('npm', ['view', pkg, '--json']);
+
+		if (result.ok && 'stdout' in result) {
+			const data = JSON.parse(result.stdout as string);
+			return {
+				name: data.name,
+				version: data.version,
+			};
 		}
 
 		return null;
+	} catch (error) {
+		log?.debug(`Failed to get package info for ${pkg}: ${error}`);
+		return null;
 	}
+};
 
-	/**
-	 * Checks if a package exists on NPM.
-	 */
-	async package_exists(pkg: string): Promise<boolean> {
-		const latest = await this.get_latest_version(pkg);
-		return latest !== null;
-	}
-}
+/**
+ * Checks if a package exists on NPM.
+ */
+export const package_exists = async (
+	pkg: string,
+	log?: Logger,
+): Promise<boolean> => {
+	const info = await get_package_info(pkg, log);
+	return info !== null;
+};

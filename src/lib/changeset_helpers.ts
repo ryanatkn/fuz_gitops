@@ -1,7 +1,7 @@
 import {existsSync} from 'node:fs';
 import {readdir, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import type {Bump_Type} from './version_manager.js';
+import type {Bump_Type} from './semver.js';
 import type {Local_Repo} from './local_repo.js';
 
 export interface Changeset {
