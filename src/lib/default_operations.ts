@@ -3,6 +3,7 @@
  */
 
 import {spawn} from '@ryanatkn/belt/process.js';
+import {readFile, writeFile} from 'node:fs/promises';
 
 import {has_changesets, read_changesets, predict_next_version} from './changeset_reader.js';
 import {wait_for_package, check_package_available} from './npm_registry.js';
@@ -32,6 +33,7 @@ import type {
 	Process_Operations,
 	Npm_Operations,
 	Preflight_Operations,
+	Fs_Operations,
 	Publishing_Operations,
 } from './operations.js';
 
@@ -113,6 +115,14 @@ export const default_preflight_operations: Preflight_Operations = {
 };
 
 /**
+ * Default file system operations using Node's fs
+ */
+export const default_fs_operations: Fs_Operations = {
+	readFile,
+	writeFile,
+};
+
+/**
  * Combined default operations for publishing
  */
 export const default_publishing_operations: Publishing_Operations = {
@@ -121,4 +131,5 @@ export const default_publishing_operations: Publishing_Operations = {
 	process: default_process_operations,
 	npm: default_npm_operations,
 	preflight: default_preflight_operations,
+	fs: default_fs_operations,
 };

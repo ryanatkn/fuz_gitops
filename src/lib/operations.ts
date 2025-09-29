@@ -97,6 +97,14 @@ export interface Preflight_Operations {
 }
 
 /**
+ * Operations for file system access
+ */
+export interface Fs_Operations {
+	readFile: (path: string, encoding: BufferEncoding) => Promise<string>;
+	writeFile: (path: string, content: string) => Promise<void>;
+}
+
+/**
  * Combined operations for publishing
  */
 export interface Publishing_Operations {
@@ -105,4 +113,5 @@ export interface Publishing_Operations {
 	process: Process_Operations;
 	npm: Npm_Operations;
 	preflight: Preflight_Operations;
+	fs: Fs_Operations;
 }

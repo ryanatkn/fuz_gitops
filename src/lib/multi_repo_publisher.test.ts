@@ -3,8 +3,9 @@ import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 
 import type {Local_Repo} from './local_repo.js';
 import {publish_repos} from './multi_repo_publisher.js';
-import type {Publishing_Operations} from './operations.js';
+import {create_mock_publishing_ops, create_mock_fs} from './test_helpers.js';
 
+// Keep local create_mock_repo for now, can migrate to test_helpers later
 const create_mock_repo = (
 	name: string,
 	version: string,
@@ -50,10 +51,8 @@ test('dry run predicts versions without publishing', async () => {
 	];
 
 	// Create mock operations
-	const mock_ops: Publishing_Operations = {
+	const mock_ops = create_mock_publishing_ops({
 		changeset: {
-			has_changesets: async () => true,
-			read_changesets: async () => [],
 			predict_next_version: async (repo) => {
 				if (repo.pkg.name === 'pkg-a') {
 					return {version: '0.1.1', bump_type: 'patch'};
@@ -64,30 +63,6 @@ test('dry run predicts versions without publishing', async () => {
 				return null;
 			},
 		},
-		git: {
-			current_branch_name: async () => 'main',
-			current_commit_hash: async () => 'abc123',
-			check_clean_workspace: async () => true,
-			checkout: async () => {},
-			pull: async () => {},
-			switch_branch: async () => {},
-			add: async () => {},
-			commit: async () => {},
-			add_and_commit: async () => {},
-			has_changes: async () => false,
-			get_changed_files: async () => [],
-			tag: async () => {},
-			push_tag: async () => {},
-			stash: async () => {},
-			stash_pop: async () => {},
-		},
-		process: {
-			spawn: async () => ({ok: true}),
-		},
-		npm: {
-			wait_for_package: async () => {},
-			check_package_available: async () => true,
-		},
 		preflight: {
 			run_pre_flight_checks: async () => ({
 				ok: true,
@@ -97,7 +72,7 @@ test('dry run predicts versions without publishing', async () => {
 				repos_without_changesets: new Set(),
 			}),
 		},
-	};
+	});
 
 	const result = await publish_repos(
 		repos,
@@ -125,32 +100,11 @@ test('handles publish failures with continue_on_error', async () => {
 		create_mock_repo('pkg-c', '0.3.0'),
 	];
 
+	// Create mock file system
+	const mockFs = create_mock_fs(repos);
+
 	let publish_attempt = 0;
-	const mock_ops: Publishing_Operations = {
-		changeset: {
-			has_changesets: async () => true,
-			read_changesets: async () => [],
-			predict_next_version: async (_repo) => {
-				return {version: '0.1.1', bump_type: 'patch'};
-			},
-		},
-		git: {
-			current_branch_name: async () => 'main',
-			current_commit_hash: async () => 'abc123',
-			check_clean_workspace: async () => true,
-			checkout: async () => {},
-			pull: async () => {},
-			switch_branch: async () => {},
-			add: async () => {},
-			commit: async () => {},
-			add_and_commit: async () => {},
-			has_changes: async () => false,
-			get_changed_files: async () => [],
-			tag: async () => {},
-			push_tag: async () => {},
-			stash: async () => {},
-			stash_pop: async () => {},
-		},
+	const mock_ops = create_mock_publishing_ops({
 		process: {
 			spawn: async (cmd, args) => {
 				if (cmd === 'gro' && args[0] === 'publish') {
@@ -163,10 +117,6 @@ test('handles publish failures with continue_on_error', async () => {
 				return {ok: true};
 			},
 		},
-		npm: {
-			wait_for_package: async () => {},
-			check_package_available: async () => true,
-		},
 		preflight: {
 			run_pre_flight_checks: async () => ({
 				ok: true,
@@ -176,7 +126,16 @@ test('handles publish failures with continue_on_error', async () => {
 				repos_without_changesets: new Set(),
 			}),
 		},
-	};
+		fs: {
+			readFile: async (path: string) => {
+				const content = mockFs.get(path);
+				if (!content) {
+					throw new Error(`File not found: ${path}`);
+				}
+				return content;
+			},
+		},
+	});
 
 	const result = await publish_repos(
 		repos,
@@ -202,41 +161,13 @@ test('skips repos without changesets', async () => {
 		create_mock_repo('pkg-c', '0.3.0'),
 	];
 
+	// Create mock file system
+	const mockFs = create_mock_fs(repos);
+
 	// Create mock operations where only pkg-a has changesets
-	const mock_ops: Publishing_Operations = {
+	const mock_ops = create_mock_publishing_ops({
 		changeset: {
 			has_changesets: async (repo) => repo.pkg.name === 'pkg-a',
-			read_changesets: async () => [],
-			predict_next_version: async (repo) => {
-				if (repo.pkg.name === 'pkg-a') {
-					return {version: '0.1.1', bump_type: 'patch'};
-				}
-				return null;
-			},
-		},
-		git: {
-			current_branch_name: async () => 'main',
-			current_commit_hash: async () => 'abc123',
-			check_clean_workspace: async () => true,
-			checkout: async () => {},
-			pull: async () => {},
-			switch_branch: async () => {},
-			add: async () => {},
-			commit: async () => {},
-			add_and_commit: async () => {},
-			has_changes: async () => false,
-			get_changed_files: async () => [],
-			tag: async () => {},
-			push_tag: async () => {},
-			stash: async () => {},
-			stash_pop: async () => {},
-		},
-		process: {
-			spawn: async () => ({ok: true}),
-		},
-		npm: {
-			wait_for_package: async () => {},
-			check_package_available: async () => true,
 		},
 		preflight: {
 			run_pre_flight_checks: async () => ({
@@ -247,7 +178,17 @@ test('skips repos without changesets', async () => {
 				repos_without_changesets: new Set(['pkg-b', 'pkg-c']),
 			}),
 		},
-	};
+		fs: {
+			readFile: async (path: string) => {
+				const content = mockFs.get(path);
+				if (!content) {
+					throw new Error(`File not found: ${path}`);
+				}
+				return content;
+			},
+			writeFile: async () => {},
+		},
+	});
 
 	const result = await publish_repos(
 		repos,

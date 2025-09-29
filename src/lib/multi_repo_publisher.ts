@@ -1,6 +1,5 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {Task_Error} from '@ryanatkn/gro';
-import {readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {styleText as st} from 'node:util';
 
@@ -334,7 +333,7 @@ async function publish_single_repo(
 
 	// Read the new version from package.json after gro publish
 	const package_json_path = join(repo.repo_dir, 'package.json');
-	const content = await readFile(package_json_path, 'utf8');
+	const content = await ops.fs.readFile(package_json_path, 'utf8');
 	const package_json = JSON.parse(content);
 	const new_version = package_json.version;
 
