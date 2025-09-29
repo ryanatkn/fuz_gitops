@@ -1,7 +1,10 @@
 import {test, assert, describe, beforeAll} from 'vitest';
 import {existsSync} from 'node:fs';
+import {format_file} from '@ryanatkn/gro/format_file.js';
 
 import {run_gitops_command, load_fixture, compare_outputs, type Command_Output} from './helpers.js';
+
+const COMMAND_TIMEOUT = 60_000;
 
 /**
  * Get the path for an output baseline file
@@ -30,15 +33,17 @@ describe('gitops commands match baseline outputs', () => {
 
 			// Run the command
 			command_output = await run_gitops_command('gitops_analyze');
-		}, 60000);
+		}, COMMAND_TIMEOUT);
 
 		test('command executes successfully', () => {
 			assert.ok(command_output.success, `Command failed: ${command_output.stderr}`);
 			assert.ok(command_output.stdout.length > 0, 'Command produced no output');
 		});
 
-		test('output matches baseline', () => {
-			const comparison = compare_outputs(baseline_content, command_output.stdout);
+		test('output matches baseline', async () => {
+			const output_path = get_output_path('gitops_analyze');
+			const formatted_output = await format_file(command_output.stdout, {filepath: output_path});
+			const comparison = compare_outputs(baseline_content, formatted_output);
 			assert.ok(
 				comparison.matches,
 				`Output differs from baseline (${comparison.differences.length} differences). Run 'npm run update:fixtures' to update baseline.`,
@@ -61,15 +66,17 @@ describe('gitops commands match baseline outputs', () => {
 
 			// Run the command
 			command_output = await run_gitops_command('gitops_preview');
-		}, 60000);
+		}, COMMAND_TIMEOUT);
 
 		test('command executes successfully', () => {
 			assert.ok(command_output.success, `Command failed: ${command_output.stderr}`);
 			assert.ok(command_output.stdout.length > 0, 'Command produced no output');
 		});
 
-		test('output matches baseline', () => {
-			const comparison = compare_outputs(baseline_content, command_output.stdout);
+		test('output matches baseline', async () => {
+			const output_path = get_output_path('gitops_preview');
+			const formatted_output = await format_file(command_output.stdout, {filepath: output_path});
+			const comparison = compare_outputs(baseline_content, formatted_output);
 			assert.ok(
 				comparison.matches,
 				`Output differs from baseline (${comparison.differences.length} differences). Run 'npm run update:fixtures' to update baseline.`,
