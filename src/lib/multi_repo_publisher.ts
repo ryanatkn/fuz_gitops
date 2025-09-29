@@ -45,11 +45,11 @@ export interface Publishing_Result {
 /**
  * Publishes multiple repositories in dependency order.
  */
-export async function publish_repos(
+export const publish_repos = async (
 	repos: Array<Local_Repo>,
 	options: Publishing_Options,
 	ops: Publishing_Operations = default_publishing_operations,
-): Promise<Publishing_Result> {
+): Promise<Publishing_Result> => {
 	const start_time = Date.now();
 	const {dry, continue_on_error, update_deps, resume = false, log} = options;
 
@@ -287,16 +287,16 @@ export async function publish_repos(
 		failed: Array.from(failed.entries()).map(([name, error]) => ({name, error})),
 		duration,
 	};
-}
+};
 
 /**
  * Publishes a single repository.
  */
-async function publish_single_repo(
+const publish_single_repo = async (
 	repo: Local_Repo,
 	options: Publishing_Options,
 	ops: Publishing_Operations = default_publishing_operations,
-): Promise<Published_Version> {
+): Promise<Published_Version> => {
 	const {dry, log} = options;
 
 	const old_version = repo.pkg.package_json.version || '0.0.0';
@@ -353,5 +353,4 @@ async function publish_single_repo(
 		commit,
 		tag: `v${new_version}`,
 	};
-}
-
+};

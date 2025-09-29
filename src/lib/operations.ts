@@ -4,6 +4,7 @@
  */
 
 import type {Logger} from '@ryanatkn/belt/log.js';
+import type {SpawnOptions} from 'node:child_process';
 import type {Local_Repo} from './local_repo.js';
 import type {Changeset_Info} from './changeset_reader.js';
 import type {Bump_Type} from './semver.js';
@@ -58,7 +59,7 @@ export interface Process_Operations {
 	spawn: (
 		cmd: string,
 		args: Array<string>,
-		options?: any,
+		options?: SpawnOptions,
 	) => Promise<{ok: boolean; stdout?: string; stderr?: string}>;
 }
 

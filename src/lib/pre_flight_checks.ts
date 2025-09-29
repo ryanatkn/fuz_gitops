@@ -71,9 +71,7 @@ export const run_pre_flight_checks = async (
 		}
 
 		if (repos_without_changesets.size > 0) {
-			log?.warn(
-				st('yellow', `  ⚠️  ${repos_without_changesets.size} packages have no changesets`),
-			);
+			log?.warn(st('yellow', `  ⚠️  ${repos_without_changesets.size} packages have no changesets`));
 		}
 	}
 
@@ -124,7 +122,7 @@ export const run_pre_flight_checks = async (
 /**
  * Checks if npm authentication is configured.
  */
-async function check_npm_auth(): Promise<{ok: boolean; error?: string}> {
+const check_npm_auth = async (): Promise<{ok: boolean; error?: string}> => {
 	try {
 		const result = await spawn_out('npm', ['whoami']);
 		if (result.stdout) {
@@ -137,12 +135,12 @@ async function check_npm_auth(): Promise<{ok: boolean; error?: string}> {
 	} catch (error) {
 		return {ok: false, error: String(error)};
 	}
-}
+};
 
 /**
  * Checks npm registry connectivity.
  */
-async function check_npm_registry(): Promise<{ok: boolean; error?: string}> {
+const check_npm_registry = async (): Promise<{ok: boolean; error?: string}> => {
 	try {
 		const result = await spawn_out('npm', ['ping']);
 		if (result.stdout) {
@@ -152,5 +150,4 @@ async function check_npm_registry(): Promise<{ok: boolean; error?: string}> {
 	} catch (error) {
 		return {ok: false, error: String(error)};
 	}
-}
-
+};
