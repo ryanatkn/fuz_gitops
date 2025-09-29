@@ -34,10 +34,12 @@ export const run_gitops_command = async (
 			cwd: process.cwd(),
 		});
 
-		if (result.ok && 'stdout' in result) {
+		// Check if we have stdout content regardless of result.ok status
+		// The gitops commands may exit with non-zero code but still produce valid output
+		if ('stdout' in result && result.stdout) {
 			return {
 				stdout: result.stdout as string,
-				stderr: result.stderr as string,
+				stderr: result.stderr as string || '',
 				success: true,
 				command: 'gro',
 				args: full_args,

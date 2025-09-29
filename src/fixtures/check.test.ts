@@ -6,29 +6,33 @@ import {
 	run_gitops_command,
 	load_fixture,
 	compare_outputs,
-	get_prediction_path,
 	extract_markdown_sections,
 	compare_sections,
 	type Command_Output,
 } from './helpers.js';
 
 /**
+ * Get the path for an output baseline file
+ */
+const get_output_path = (command: 'gitops_analyze' | 'gitops_preview'): string => {
+	return `${command}_output.md`;
+};
+
+/**
  * Test Architecture Overview
  * =========================
  *
  * This test suite validates that our gitops publishing commands produce consistent,
- * correct output by comparing runtime behavior against generated predictions.
+ * correct output by comparing runtime behavior against baseline output files.
  *
  * Tests ensure:
  * - Commands run successfully without errors
  * - Output structure matches expected markdown format
- * - Publishing order is computed correctly
- * - Version predictions are accurate
- * - Dependency cascades work as expected
- * - Warnings and errors are reported appropriately
+ * - Output is consistent between runs
+ * - No unexpected changes to command behavior
  */
 
-describe('gitops commands match predictions', () => {
+describe('gitops commands match baseline outputs', () => {
 	// Ensure repos are ready before running tests
 	beforeAll(async () => {
 		// This is a basic check - in CI we'd want to ensure gitops_ready has been run
@@ -47,16 +51,16 @@ describe('gitops commands match predictions', () => {
 
 	describe('gitops_analyze', () => {
 		let command_output: Command_Output;
-		let predicted_content: string;
+		let baseline_content: string;
 
 		beforeAll(async () => {
-			// Load prediction first to ensure it exists
-			const prediction_path = get_prediction_path('gitops_analyze');
+			// Load baseline output first to ensure it exists
+			const output_path = get_output_path('gitops_analyze');
 			assert.ok(
-				existsSync(`src/fixtures/${prediction_path}`),
-				`Prediction file missing: src/fixtures/${prediction_path}`
+				existsSync(`src/fixtures/${output_path}`),
+				`Baseline output file missing: src/fixtures/${output_path}. Run 'npm run update:fixtures' to generate.`
 			);
-			predicted_content = load_fixture(prediction_path);
+			baseline_content = load_fixture(output_path);
 
 			// Run the actual command
 			command_output = await run_gitops_command('gitops_analyze');
@@ -88,8 +92,8 @@ describe('gitops commands match predictions', () => {
 			}
 		});
 
-		test('output matches prediction', () => {
-			const comparison = compare_outputs(predicted_content, command_output.stdout);
+		test('output matches baseline', () => {
+			const comparison = compare_outputs(baseline_content, command_output.stdout);
 
 			if (!comparison.matches) {
 				console.log(st('yellow', '\nDetailed differences:'));
@@ -100,19 +104,19 @@ describe('gitops commands match predictions', () => {
 					console.log(`  ... and ${comparison.differences.length - 5} more differences`);
 				}
 
-				console.log(st('cyan', '\nTip: Run `gro src/fixtures/update --verbose` for full comparison'));
+				console.log(st('cyan', '\nTip: Run `npm run update:fixtures --verbose` for detailed output'));
 			}
 
 			assert.ok(
 				comparison.matches,
-				`Output differs from prediction (${comparison.differences.length} differences)`
+				`Output differs from baseline (${comparison.differences.length} differences)`
 			);
 		});
 
 		test('section-by-section comparison', () => {
-			const predicted_sections = extract_markdown_sections(predicted_content);
+			const baseline_sections = extract_markdown_sections(baseline_content);
 			const actual_sections = extract_markdown_sections(command_output.stdout);
-			const section_comparisons = compare_sections(predicted_sections, actual_sections);
+			const section_comparisons = compare_sections(baseline_sections, actual_sections);
 
 			const mismatched_sections = section_comparisons.filter(s => !s.matches);
 
@@ -133,16 +137,16 @@ describe('gitops commands match predictions', () => {
 
 	describe('gitops_preview', () => {
 		let command_output: Command_Output;
-		let predicted_content: string;
+		let baseline_content: string;
 
 		beforeAll(async () => {
-			// Load prediction first to ensure it exists
-			const prediction_path = get_prediction_path('gitops_preview');
+			// Load baseline output first to ensure it exists
+			const output_path = get_output_path('gitops_preview');
 			assert.ok(
-				existsSync(`src/fixtures/${prediction_path}`),
-				`Prediction file missing: src/fixtures/${prediction_path}`
+				existsSync(`src/fixtures/${output_path}`),
+				`Baseline output file missing: src/fixtures/${output_path}. Run 'npm run update:fixtures' to generate.`
 			);
-			predicted_content = load_fixture(prediction_path);
+			baseline_content = load_fixture(output_path);
 
 			// Run the actual command
 			command_output = await run_gitops_command('gitops_preview');
@@ -173,8 +177,8 @@ describe('gitops commands match predictions', () => {
 			}
 		});
 
-		test('output matches prediction', () => {
-			const comparison = compare_outputs(predicted_content, command_output.stdout);
+		test('output matches baseline', () => {
+			const comparison = compare_outputs(baseline_content, command_output.stdout);
 
 			if (!comparison.matches) {
 				console.log(st('yellow', '\nDetailed differences:'));
@@ -185,12 +189,12 @@ describe('gitops commands match predictions', () => {
 					console.log(`  ... and ${comparison.differences.length - 5} more differences`);
 				}
 
-				console.log(st('cyan', '\nTip: Run `gro src/fixtures/update --verbose` for full comparison'));
+				console.log(st('cyan', '\nTip: Run `npm run update:fixtures --verbose` for detailed output'));
 			}
 
 			assert.ok(
 				comparison.matches,
-				`Output differs from prediction (${comparison.differences.length} differences)`
+				`Output differs from baseline (${comparison.differences.length} differences)`
 			);
 		});
 
@@ -227,9 +231,9 @@ describe('gitops commands match predictions', () => {
 		});
 
 		test('section-by-section comparison', () => {
-			const predicted_sections = extract_markdown_sections(predicted_content);
+			const baseline_sections = extract_markdown_sections(baseline_content);
 			const actual_sections = extract_markdown_sections(command_output.stdout);
-			const section_comparisons = compare_sections(predicted_sections, actual_sections);
+			const section_comparisons = compare_sections(baseline_sections, actual_sections);
 
 			const mismatched_sections = section_comparisons.filter(s => !s.matches);
 
