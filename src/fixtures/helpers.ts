@@ -1,4 +1,4 @@
-import {spawn} from '@ryanatkn/belt/process.js';
+import {spawn_out} from '@ryanatkn/belt/process.js';
 import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Logger} from '@ryanatkn/belt/log.js';
@@ -30,16 +30,16 @@ export const run_gitops_command = async (
 
 	try {
 		log?.info(`Running: gro ${full_args.join(' ')}`);
-		const result = await spawn('gro', full_args, {
+		const result = await spawn_out('gro', full_args, {
 			cwd: process.cwd(),
 		});
 
 		// Check if we have stdout content regardless of result.ok status
 		// The gitops commands may exit with non-zero code but still produce valid output
-		if ('stdout' in result && result.stdout) {
+		if (result.stdout) {
 			return {
-				stdout: result.stdout as string,
-				stderr: result.stderr as string || '',
+				stdout: result.stdout,
+				stderr: result.stderr || '',
 				success: true,
 				command: 'gro',
 				args: full_args,
@@ -47,7 +47,7 @@ export const run_gitops_command = async (
 		} else {
 			return {
 				stdout: '',
-				stderr: 'stderr' in result ? result.stderr as string : 'Unknown error',
+				stderr: result.stderr || 'Unknown error',
 				success: false,
 				command: 'gro',
 				args: full_args,
@@ -69,19 +69,21 @@ export const run_gitops_command = async (
  * Normalize command output for comparison by removing dynamic elements
  */
 export const normalize_output = (output: string): string => {
-	return output
-		// Remove any timestamps or dates
-		.replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/g, 'TIMESTAMP')
-		// Remove any specific file paths that might be dynamic
-		.replace(/\/[^\s]+\/dev\/[^\s]*/g, '/path/to/repo')
-		// Normalize line endings
-		.replace(/\r\n/g, '\n')
-		// Remove trailing whitespace from lines
-		.replace(/[ \t]+$/gm, '')
-		// Normalize multiple consecutive empty lines to single
-		.replace(/\n{3,}/g, '\n\n')
-		// Trim overall content
-		.trim();
+	return (
+		output
+			// Remove any timestamps or dates
+			.replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/g, 'TIMESTAMP')
+			// Remove any specific file paths that might be dynamic
+			.replace(/\/[^\s]+\/dev\/[^\s]*/g, '/path/to/repo')
+			// Normalize line endings
+			.replace(/\r\n/g, '\n')
+			// Remove trailing whitespace from lines
+			.replace(/[ \t]+$/gm, '')
+			// Normalize multiple consecutive empty lines to single
+			.replace(/\n{3,}/g, '\n\n')
+			// Trim overall content
+			.trim()
+	);
 };
 
 /**
@@ -108,8 +110,8 @@ export const compare_outputs = (predicted: string, actual: string): Fixture_Comp
 			if (predicted_line !== actual_line) {
 				differences.push(
 					`Line ${i + 1}:\n` +
-					`  Expected: ${JSON.stringify(predicted_line)}\n` +
-					`  Actual:   ${JSON.stringify(actual_line)}`
+						`  Expected: ${JSON.stringify(predicted_line)}\n` +
+						`  Actual:   ${JSON.stringify(actual_line)}`,
 				);
 			}
 		}
@@ -117,7 +119,7 @@ export const compare_outputs = (predicted: string, actual: string): Fixture_Comp
 		// Add summary difference if lines differ significantly
 		if (Math.abs(predicted_lines.length - actual_lines.length) > 0) {
 			differences.push(
-				`Line count differs: expected ${predicted_lines.length}, actual ${actual_lines.length}`
+				`Line count differs: expected ${predicted_lines.length}, actual ${actual_lines.length}`,
 			);
 		}
 	}
@@ -154,7 +156,7 @@ export const save_actual_output = (filename: string, content: string): void => {
 	const path = require('path');
 	const dir = path.dirname(actual_path);
 	if (!fs.existsSync(dir)) {
-		fs.mkdirSync(dir, { recursive: true });
+		fs.mkdirSync(dir, {recursive: true});
 	}
 
 	writeFileSync(actual_path, content, 'utf-8');
@@ -193,7 +195,11 @@ export const extract_markdown_sections = (content: string): Record<string, strin
 			}
 
 			// Start new section
-			current_section = line.substring(3).trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+			current_section = line
+				.substring(3)
+				.trim()
+				.toLowerCase()
+				.replace(/[^a-z0-9]/g, '_');
 			current_content = [];
 		} else {
 			current_content.push(line);

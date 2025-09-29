@@ -1,12 +1,11 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
-import {existsSync, mkdirSync} from 'node:fs';
+import {existsSync, mkdirSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 
 import {
 	run_gitops_command,
-	save_actual_output,
 } from './helpers.js';
 
 const Args = z
@@ -67,8 +66,7 @@ export const task: Task<Args> = {
 				const output_filename = `${command}_output.md`;
 				const output_path = join('src/fixtures', output_filename);
 
-				const fs = require('fs');
-				fs.writeFileSync(output_path, output.stdout, 'utf-8');
+				writeFileSync(output_path, output.stdout, 'utf-8');
 				log.info(st('green', `   ✓ Saved output to: ${output_filename}`));
 
 				if (verbose) {
