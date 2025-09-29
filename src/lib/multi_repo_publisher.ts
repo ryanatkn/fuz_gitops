@@ -1,5 +1,5 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import {spawn_cli} from '@ryanatkn/gro/cli.js';
+import {spawn} from '@ryanatkn/belt/process.js';
 import {git_current_commit_hash} from '@ryanatkn/gro/git.js';
 import {Task_Error} from '@ryanatkn/gro';
 import {readFile} from 'node:fs/promises';
@@ -14,7 +14,7 @@ import type {Bump_Type} from './semver.js';
 import {has_changesets} from './changeset_helpers.js';
 import {run_pre_flight_checks, type Pre_Flight_Options} from './pre_flight_checks.js';
 import {init_publishing_state, type Publishing_State_Manager} from './publishing_state.js';
-import {needs_update, is_breaking_change} from './version_utils.js';
+import {needs_update, is_breaking_change, detect_bump_type} from './version_utils.js';
 import {predict_next_version} from './changeset_reader.js';
 
 export interface Publishing_Options {
@@ -246,7 +246,7 @@ export async function publish_repos(
 		for (const repo of repos) {
 			try {
 				log?.info(`  Deploying ${repo.pkg.name}...`);
-				const deploy_result = await spawn_cli('gro', ['deploy'], log, {cwd: repo.repo_dir});
+				const deploy_result = await spawn('gro', ['deploy'], {cwd: repo.repo_dir});
 
 				if (deploy_result?.ok) {
 					log?.info(st('green', `  ✅ Deployed ${repo.pkg.name}`));
@@ -325,9 +325,9 @@ async function publish_single_repo(
 	}
 
 	// Run gro publish which handles changesets version, build, and npm publish
-	const publish_result = await spawn_cli('gro', ['publish'], log, {cwd: repo.repo_dir});
+	const publish_result = await spawn('gro', ['publish'], {cwd: repo.repo_dir});
 
-	if (!publish_result?.ok) {
+	if (!publish_result.ok) {
 		throw new Error(`Failed to publish ${repo.pkg.name}`);
 	}
 
@@ -353,17 +353,5 @@ async function publish_single_repo(
 		commit,
 		tag: `v${new_version}`,
 	};
-}
-
-/**
- * Detects the bump type by comparing versions.
- */
-function detect_bump_type(old_version: string, new_version: string): 'major' | 'minor' | 'patch' {
-	const old_parts = old_version.split('.').map(Number);
-	const new_parts = new_version.split('.').map(Number);
-
-	if (new_parts[0] > old_parts[0]) return 'major';
-	if (new_parts[1] > old_parts[1]) return 'minor';
-	return 'patch';
 }
 

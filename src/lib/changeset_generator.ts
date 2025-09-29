@@ -54,7 +54,7 @@ export const create_changeset_for_dependency_updates = async (
  * Calculates the required bump type based on dependency updates.
  * Breaking changes propagate up the dependency tree.
  */
-export const calculate_required_bump = (
+const calculate_required_bump = (
 	repo: Local_Repo,
 	updates: Array<Dependency_Update>,
 ): 'major' | 'minor' | 'patch' => {
@@ -79,7 +79,7 @@ export const calculate_required_bump = (
 /**
  * Generates the content of a changeset file.
  */
-const generate_changeset_content = (
+export const generate_changeset_content = (
 	package_name: string,
 	updates: Array<Dependency_Update>,
 	bump_type: 'major' | 'minor' | 'patch',

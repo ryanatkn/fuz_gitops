@@ -13,7 +13,7 @@ import {
 	git_pull,
 } from '@ryanatkn/gro/git.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
-import {spawn_cli} from '@ryanatkn/gro/cli.js';
+import {spawn} from '@ryanatkn/belt/process.js';
 
 import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
 import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';
@@ -50,7 +50,7 @@ export interface Unresolved_Local_Repo {
 export const load_local_repo = async (
 	resolved_local_repo: Resolved_Local_Repo,
 	install: boolean,
-	log?: Logger,
+	_log?: Logger,
 ): Promise<Local_Repo> => {
 	const {repo_config, repo_dir} = resolved_local_repo;
 
@@ -77,7 +77,7 @@ export const load_local_repo = async (
 
 		const sync_args: Array<string> = [];
 		if (install) sync_args.push('--install');
-		await spawn_cli('gro', ['sync', ...sync_args], log, {cwd: resolved_local_repo.repo_dir});
+		await spawn('gro', ['sync', ...sync_args], {cwd: resolved_local_repo.repo_dir});
 	}
 
 	const parsed_svelte_config = await parse_svelte_config({dir_or_config: repo_dir});
@@ -196,7 +196,7 @@ const download_repos = async (
 	const resolved: Array<Resolved_Local_Repo> = [];
 	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
 		log?.info(`cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
-		await spawn_cli('git', ['clone', repo_git_ssh_url], log, {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
+		await spawn('git', ['clone', repo_git_ssh_url], {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
 		const local_repo = resolve_local_repo(repo_config, repos_dir);
 		if (local_repo.type === 'unresolved_local_repo') {
 			throw new Task_Error(`Failed to clone repo ${repo_git_ssh_url} to ${repos_dir}`);

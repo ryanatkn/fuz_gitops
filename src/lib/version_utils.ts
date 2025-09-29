@@ -98,3 +98,18 @@ export const is_breaking_change = (
 	}
 };
 
+/**
+ * Detects the bump type by comparing two version strings.
+ */
+export const detect_bump_type = (
+	old_version: string,
+	new_version: string,
+): 'major' | 'minor' | 'patch' => {
+	const old_parts = old_version.split('.').map(Number);
+	const new_parts = new_version.split('.').map(Number);
+
+	if (new_parts[0] > old_parts[0]) return 'major';
+	if (new_parts[1] > old_parts[1]) return 'minor';
+	return 'patch';
+};
+

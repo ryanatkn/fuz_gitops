@@ -411,7 +411,11 @@ export const log_publishing_preview = (
 				const type_indicator =
 					update.type === 'dependencies' ? '📦' :
 					update.type === 'peerDependencies' ? '👥' : '🛠️';
-				const republish = update.causes_republish ? ' (triggers auto-changeset)' : '';
+				// Only show "triggers auto-changeset" if package doesn't already have changesets
+				const existing_change = version_changes.find(vc => vc.package_name === update.dependent_package);
+				const republish = update.causes_republish &&
+					(!existing_change || (!existing_change.has_changesets && existing_change.will_generate_changeset))
+					? ' (triggers auto-changeset)' : '';
 				log.info(
 					`    ${type_indicator} ${update.updated_dependency} → ${update.new_version}${republish}`,
 				);

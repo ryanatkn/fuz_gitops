@@ -63,16 +63,35 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 
 ### Multi-repo publishing
 
+#### Publishing Workflow
+
 - `gro gitops_publish` - publishes repos in dependency order
+- `gro gitops_preview` - shows what would be published (dry run)
+- `gro gitops_analyze` - analyzes dependencies and changesets
 - Handles circular dev dependencies by excluding from topological sort
 - Waits for NPM propagation with exponential backoff
 - Updates cross-repo dependencies automatically
 
-Key modules:
+#### Auto-Changeset Generation
 
+When a package is published, dependent packages automatically get changesets for dependency updates:
+
+- **Production/peer deps**: Trigger republishing with auto-generated changesets
+- **Dev deps**: Updated without republishing
+- **Breaking changes**: Propagate as minor (0.x.x) or major (1.x.x) bumps
+- **Bump escalation**: Existing changesets get escalated if dependencies require larger bumps
+
+#### Key Publishing Modules
+
+- `multi_repo_publisher.ts` - Main publishing orchestration
+- `publishing_preview.ts` - Dry run predictions and cascade analysis
+- `changeset_reader.ts` - Parses changesets and predicts versions
+- `changeset_generator.ts` - Auto-generates changesets for dependency updates
+- `dependency_graph.ts` - Topological sorting and cycle detection
+- `version_utils.ts` - Version comparison and bump type detection
 - `npm_registry.ts` - NPM availability checks with retry
-- `dependency_updater.ts` - Package.json updates
-- `multi_repo_publisher.ts` - Simple orchestration
+- `dependency_updater.ts` - Package.json updates with changesets
+- `publishing_state.ts` - Failure recovery and resume support
 
 ## Data types
 
@@ -101,8 +120,18 @@ interface Local_Repo {
 
 ```bash
 npm i -D @ryanatkn/fuz_gitops
+
+# Data management
 gro gitops               # update local data
 gro gitops --download    # clone missing repos
+
+# Publishing
+gro gitops_analyze       # analyze dependencies and changesets
+gro gitops_preview       # preview what would be published
+gro gitops_publish       # publish repos in dependency order
+gro gitops_publish --dry # dry run (same as preview)
+
+# Development
 gro dev                  # start dev server
 gro build               # build static site
 gro deploy              # deploy to GitHub Pages
@@ -123,3 +152,21 @@ gro deploy              # deploy to GitHub Pages
 - Caches API responses with 15-minute TTL
 - Atomic file updates with format checking
 - Supports both relative and absolute repo paths
+- Functional programming patterns (arrow functions, pure functions)
+- Changeset-driven versioning with auto-generation
+- State persistence for publishing failure recovery
+
+## Testing
+
+Use vitest with minimal mocking:
+
+```bash
+gro test                 # run all tests
+gro test version_utils   # run specific test file
+```
+
+Core modules tested:
+- `version_utils.test.ts` - Version comparison and semver logic
+- `changeset_reader.test.ts` - Changeset parsing and version prediction
+- `dependency_graph.test.ts` - Topological sorting and cycle detection
+- `changeset_generator.test.ts` - Auto-changeset content generation

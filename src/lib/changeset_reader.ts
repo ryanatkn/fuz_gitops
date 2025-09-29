@@ -12,7 +12,7 @@ export interface Changeset_Info {
 }
 
 /**
- * Parses a changeset file's frontmatter using regexps.
+ * Parses changeset content string (pure function for testing).
  * Format:
  * ---
  * "package-name": patch
@@ -21,48 +21,64 @@ export interface Changeset_Info {
  *
  * Summary of changes
  */
+export const parse_changeset_content = (
+	content: string,
+	filename = 'changeset.md',
+): Changeset_Info | null => {
+	// Match frontmatter between --- markers
+	const frontmatter_match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)/);
+	if (!frontmatter_match) {
+		return null;
+	}
+
+	const frontmatter = frontmatter_match[1];
+	const summary = frontmatter_match[2].trim();
+
+	// Parse package entries
+	const packages: Array<{name: string; bump_type: Bump_Type}> = [];
+
+	// Match lines like: "package-name": patch
+	// or: '@scope/package': minor
+	// Allow leading whitespace
+	const package_regex = /^\s*["']([^"']+)["']\s*:\s*(major|minor|patch)\s*$/gm;
+	let match;
+
+	while ((match = package_regex.exec(frontmatter)) !== null) {
+		packages.push({
+			name: match[1],
+			bump_type: match[2] as Bump_Type,
+		});
+	}
+
+	if (packages.length === 0) {
+		return null;
+	}
+
+	return {
+		filename,
+		packages,
+		summary,
+	};
+};
+
+/**
+ * Parses a changeset file's frontmatter using regexps.
+ */
 export const parse_changeset_file = async (
 	filepath: string,
 	log?: Logger,
 ): Promise<Changeset_Info | null> => {
 	try {
 		const content = await readFile(filepath, 'utf8');
+		const filename = filepath.split('/').pop() || '';
 
-		// Match frontmatter between --- markers
-		const frontmatter_match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)/);
-		if (!frontmatter_match) {
+		const result = parse_changeset_content(content, filename);
+
+		if (!result) {
 			log?.warn(`  Invalid changeset format in ${filepath}`);
-			return null;
 		}
 
-		const frontmatter = frontmatter_match[1];
-		const summary = frontmatter_match[2].trim();
-
-		// Parse package entries
-		const packages: Array<{name: string; bump_type: Bump_Type}> = [];
-
-		// Match lines like: "package-name": patch
-		// or: '@scope/package': minor
-		const package_regex = /^["']([^"']+)["']\s*:\s*(major|minor|patch)\s*$/gm;
-		let match;
-
-		while ((match = package_regex.exec(frontmatter)) !== null) {
-			packages.push({
-				name: match[1],
-				bump_type: match[2] as Bump_Type,
-			});
-		}
-
-		if (packages.length === 0) {
-			log?.warn(`  No packages found in changeset ${filepath}`);
-			return null;
-		}
-
-		return {
-			filename: filepath.split('/').pop() || '',
-			packages,
-			summary,
-		};
+		return result;
 	} catch (error) {
 		log?.error(`  Failed to parse changeset ${filepath}: ${error}`);
 		return null;
@@ -189,23 +205,3 @@ export const predict_next_version = async (
 	};
 };
 
-/**
- * Gets all packages that would be affected by changesets.
- * Useful for determining which repos need publishing.
- */
-export const get_affected_packages = async (
-	repos: Array<Local_Repo>,
-	log?: Logger,
-): Promise<Map<string, Bump_Type>> => {
-	const affected = new Map<string, Bump_Type>();
-
-	for (const repo of repos) {
-		const changesets = await read_changesets(repo, log);
-		const bump_type = determine_bump_from_changesets(changesets, repo.pkg.name);
-		if (bump_type) {
-			affected.set(repo.pkg.name, bump_type);
-		}
-	}
-
-	return affected;
-};
