@@ -97,19 +97,15 @@ Bug fix in tool_b`,
 				to: '1.0.1', // patch bump
 				scenario: 'explicit_changeset',
 			},
-			// TODO: consumer should get 1.1.0 (minor) due to tool_a breaking change
-			// Currently gets 1.0.1 because it's taking the highest bump from individual deps
-			// rather than the highest breaking bump
 			{
 				package_name: '@test/consumer',
 				from: '1.0.0',
-				to: '1.0.1', // Should be 1.1.0 after fixing cascade logic
+				to: '1.0.1', // Patch bump: tool_a's minor (1.0.0 → 1.1.0) is NOT breaking in >=1.0
 				scenario: 'auto_generated',
 			},
 		],
 
-		// TODO: After fixing cascade logic, tool_a should cascade to consumer
-		// Currently consumer is not in breaking_cascades
+		// No breaking cascades: tool_a's minor bump is NOT breaking in >=1.0 (only major is)
 		breaking_cascades: {},
 
 		warnings: ['Dev dependency cycle (will be ignored): @test/tool_a → @test/tool_b → @test/tool_a'],

@@ -93,17 +93,15 @@ Update to private_tool (should not publish)`,
 				to: '1.1.0',
 				scenario: 'explicit_changeset',
 			},
-			// TODO: consumer should get 1.1.0 (minor) from public_lib breaking change
-			// Currently gets 1.0.1 because of cascade bug
 			{
 				package_name: '@test/consumer',
 				from: '1.0.0',
-				to: '1.0.1', // Should be 1.1.0 after fixing cascade bug
+				to: '1.0.1', // Patch bump: public_lib's minor (1.0.0 → 1.1.0) is NOT breaking in >=1.0
 				scenario: 'auto_generated',
 			},
 		],
 
-		// TODO: After fixing cascade bug, should include consumer
+		// No breaking cascades: public_lib's minor bump is NOT breaking in >=1.0 (only major is)
 		breaking_cascades: {},
 
 		// Note: Private packages appear in publishing order and version_changes,

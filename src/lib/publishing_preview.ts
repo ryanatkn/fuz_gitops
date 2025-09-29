@@ -45,6 +45,90 @@ export interface Publishing_Preview {
 }
 
 /**
+ * Calculates dependency updates for all repos based on predicted versions.
+ * Returns both dependency updates and breaking cascades map.
+ */
+const calculate_dependency_updates = (
+	repos: Array<Local_Repo>,
+	predicted_versions: Map<string, string>,
+	breaking_packages: Set<string>,
+): {
+	dependency_updates: Array<Dependency_Update>;
+	breaking_cascades: Map<string, Array<string>>;
+} => {
+	const dependency_updates: Array<Dependency_Update> = [];
+	const breaking_cascades = new Map<string, Array<string>>();
+
+	for (const repo of repos) {
+		// Check prod dependencies
+		if (repo.dependencies) {
+			for (const [dep_name, current_version] of repo.dependencies) {
+				const new_version = predicted_versions.get(dep_name);
+				if (new_version && needs_update(current_version, new_version)) {
+					dependency_updates.push({
+						dependent_package: repo.pkg.name,
+						updated_dependency: dep_name,
+						new_version,
+						type: 'dependencies',
+						causes_republish: true,
+					});
+
+					if (breaking_packages.has(dep_name)) {
+						const cascades = breaking_cascades.get(dep_name) || [];
+						if (!cascades.includes(repo.pkg.name)) {
+							cascades.push(repo.pkg.name);
+						}
+						breaking_cascades.set(dep_name, cascades);
+					}
+				}
+			}
+		}
+
+		// Check peer dependencies
+		if (repo.peer_dependencies) {
+			for (const [dep_name, current_version] of repo.peer_dependencies) {
+				const new_version = predicted_versions.get(dep_name);
+				if (new_version && needs_update(current_version, new_version)) {
+					dependency_updates.push({
+						dependent_package: repo.pkg.name,
+						updated_dependency: dep_name,
+						new_version,
+						type: 'peerDependencies',
+						causes_republish: true,
+					});
+
+					if (breaking_packages.has(dep_name)) {
+						const cascades = breaking_cascades.get(dep_name) || [];
+						if (!cascades.includes(repo.pkg.name)) {
+							cascades.push(repo.pkg.name);
+						}
+						breaking_cascades.set(dep_name, cascades);
+					}
+				}
+			}
+		}
+
+		// Check dev dependencies
+		if (repo.dev_dependencies) {
+			for (const [dep_name, current_version] of repo.dev_dependencies) {
+				const new_version = predicted_versions.get(dep_name);
+				if (new_version && needs_update(current_version, new_version)) {
+					dependency_updates.push({
+						dependent_package: repo.pkg.name,
+						updated_dependency: dep_name,
+						new_version,
+						type: 'devDependencies',
+						causes_republish: false,
+					});
+				}
+			}
+		}
+	}
+
+	return {dependency_updates, breaking_cascades};
+};
+
+/**
  * Determines the required bump type based on dependency updates.
  * Returns null if no bump is required, or the bump type needed.
  */
@@ -184,78 +268,13 @@ export const preview_publishing_plan = async (
 		changed = false;
 		iteration++;
 
-		// Clear and recalculate dependency updates and breaking cascades each iteration
-		const dependency_updates: Array<Dependency_Update> = [];
-		const breaking_cascades = new Map<string, Array<string>>();
-
-		// Calculate dependency updates based on current predicted_versions
-		for (const repo of repos) {
-			// Check prod dependencies
-			if (repo.dependencies) {
-				for (const [dep_name, current_version] of repo.dependencies) {
-					const new_version = predicted_versions.get(dep_name);
-					if (new_version && needs_update(current_version, new_version)) {
-						dependency_updates.push({
-							dependent_package: repo.pkg.name,
-							updated_dependency: dep_name,
-							new_version,
-							type: 'dependencies',
-							causes_republish: true,
-						});
-
-						// Track breaking cascades
-						if (breaking_packages.has(dep_name)) {
-							const cascades = breaking_cascades.get(dep_name) || [];
-							if (!cascades.includes(repo.pkg.name)) {
-								cascades.push(repo.pkg.name);
-							}
-							breaking_cascades.set(dep_name, cascades);
-						}
-					}
-				}
-			}
-
-			// Check peer dependencies
-			if (repo.peer_dependencies) {
-				for (const [dep_name, current_version] of repo.peer_dependencies) {
-					const new_version = predicted_versions.get(dep_name);
-					if (new_version && needs_update(current_version, new_version)) {
-						dependency_updates.push({
-							dependent_package: repo.pkg.name,
-							updated_dependency: dep_name,
-							new_version,
-							type: 'peerDependencies',
-							causes_republish: true,
-						});
-
-						// Peer dependencies also cascade breaking changes
-						if (breaking_packages.has(dep_name)) {
-							const cascades = breaking_cascades.get(dep_name) || [];
-							if (!cascades.includes(repo.pkg.name)) {
-								cascades.push(repo.pkg.name);
-							}
-							breaking_cascades.set(dep_name, cascades);
-						}
-					}
-				}
-			}
-
-			// Check dev dependencies
-			if (repo.dev_dependencies) {
-				for (const [dep_name, current_version] of repo.dev_dependencies) {
-					const new_version = predicted_versions.get(dep_name);
-					if (new_version && needs_update(current_version, new_version)) {
-						dependency_updates.push({
-							dependent_package: repo.pkg.name,
-							updated_dependency: dep_name,
-							new_version,
-							type: 'devDependencies',
-							causes_republish: false,
-						});
-					}
-				}
-			}
-		}
+		// Recalculate dependency updates based on current predicted versions
+		// (breaking_cascades not needed during iteration, only calculated at the end)
+		const {dependency_updates} = calculate_dependency_updates(
+			repos,
+			predicted_versions,
+			breaking_packages,
+		);
 
 		// Process packages to check for bump escalation and auto-generated changesets
 		for (const repo of repos) {
@@ -329,75 +348,12 @@ export const preview_publishing_plan = async (
 		}
 	}
 
-	// Final dependency updates calculation (use last iteration's result)
-	const dependency_updates: Array<Dependency_Update> = [];
-	const breaking_cascades = new Map<string, Array<string>>();
-
-	for (const repo of repos) {
-		// Check prod dependencies
-		if (repo.dependencies) {
-			for (const [dep_name, current_version] of repo.dependencies) {
-				const new_version = predicted_versions.get(dep_name);
-				if (new_version && needs_update(current_version, new_version)) {
-					dependency_updates.push({
-						dependent_package: repo.pkg.name,
-						updated_dependency: dep_name,
-						new_version,
-						type: 'dependencies',
-						causes_republish: true,
-					});
-
-					if (breaking_packages.has(dep_name)) {
-						const cascades = breaking_cascades.get(dep_name) || [];
-						if (!cascades.includes(repo.pkg.name)) {
-							cascades.push(repo.pkg.name);
-						}
-						breaking_cascades.set(dep_name, cascades);
-					}
-				}
-			}
-		}
-
-		// Check peer dependencies
-		if (repo.peer_dependencies) {
-			for (const [dep_name, current_version] of repo.peer_dependencies) {
-				const new_version = predicted_versions.get(dep_name);
-				if (new_version && needs_update(current_version, new_version)) {
-					dependency_updates.push({
-						dependent_package: repo.pkg.name,
-						updated_dependency: dep_name,
-						new_version,
-						type: 'peerDependencies',
-						causes_republish: true,
-					});
-
-					if (breaking_packages.has(dep_name)) {
-						const cascades = breaking_cascades.get(dep_name) || [];
-						if (!cascades.includes(repo.pkg.name)) {
-							cascades.push(repo.pkg.name);
-						}
-						breaking_cascades.set(dep_name, cascades);
-					}
-				}
-			}
-		}
-
-		// Check dev dependencies
-		if (repo.dev_dependencies) {
-			for (const [dep_name, current_version] of repo.dev_dependencies) {
-				const new_version = predicted_versions.get(dep_name);
-				if (new_version && needs_update(current_version, new_version)) {
-					dependency_updates.push({
-						dependent_package: repo.pkg.name,
-						updated_dependency: dep_name,
-						new_version,
-						type: 'devDependencies',
-						causes_republish: false,
-					});
-				}
-			}
-		}
-	}
+	// Final dependency updates calculation after convergence
+	const {dependency_updates, breaking_cascades} = calculate_dependency_updates(
+		repos,
+		predicted_versions,
+		breaking_packages,
+	);
 
 	// Identify packages with no changes
 	for (const repo of repos) {

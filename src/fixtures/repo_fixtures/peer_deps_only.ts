@@ -144,13 +144,11 @@ Small fix (should escalate to minor due to core breaking change)`,
 				to: '3.0.1', // Patch bump from utils' patch
 				scenario: 'auto_generated',
 			},
-			// TODO: plugin_b should escalate to 1.6.0 (minor) after fixing cascade logic
-			// Currently gets 1.5.1 (patch) because escalation doesn't see core's breaking update
 			{
 				package_name: '@test/plugin_b',
 				from: '1.5.0',
-				to: '1.5.1', // Should be 1.6.0 after fixing cascade bug
-				scenario: 'explicit_changeset', // Should be bump_escalation after fix
+				to: '1.5.1', // Patch bump: core's minor (2.0.0 → 2.1.0) is NOT breaking in >=1.0
+				scenario: 'explicit_changeset',
 			},
 		],
 

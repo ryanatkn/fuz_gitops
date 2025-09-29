@@ -52,6 +52,20 @@
 - ✅ All 171 tests passing
 - ✅ Integration test baselines regenerated
 
+### Code Cleanup ✅
+
+**Removed Incorrect TODOs:**
+- Three fixtures had TODOs claiming bugs that were actually correct behavior
+- Issue: TODOs assumed minor bumps in >=1.0 are breaking (they're not per semver!)
+- Fixed in: `circular_dev_deps.ts`, `private_packages.ts`, `peer_deps_only.ts`
+- Added clarifying comments explaining why these are patch bumps
+
+**Refactored `publishing_preview.ts`:**
+- Extracted `calculate_dependency_updates()` helper function
+- Eliminated ~150 lines of duplicated code (appeared 3 times)
+- Improved readability and maintainability
+- No behavioral changes - all tests still pass
+
 ## Concrete Next Steps
 
 ### 1. Test Real Dry Run with Actual Changesets
