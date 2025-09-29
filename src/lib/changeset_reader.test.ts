@@ -218,6 +218,58 @@ Mix of valid and invalid lines.`;
 				{name: 'another-valid', bump_type: 'minor'},
 			]);
 		});
+
+		it('handles only one frontmatter delimiter', () => {
+			const content = `---
+"package-name": patch
+
+Missing closing delimiter.`;
+
+			const result = parse_changeset_content(content);
+
+			expect(result).toBeNull();
+		});
+
+		it('handles multiple frontmatter sections (uses first)', () => {
+			const content = `---
+"first-package": patch
+---
+
+First summary.
+
+---
+"second-package": minor
+---
+
+Second summary should be ignored.`;
+
+			const result = parse_changeset_content(content);
+
+			expect(result?.packages).toEqual([
+				{name: 'first-package', bump_type: 'patch'},
+			]);
+			expect(result?.summary).toContain('First summary');
+		});
+
+		it('handles same package multiple times (highest bump wins)', () => {
+			const content = `---
+"same-package": patch
+"other-package": minor
+"same-package": major
+"same-package": minor
+---
+
+Duplicate package entries.`;
+
+			const result = parse_changeset_content(content);
+
+			expect(result?.packages).toEqual([
+				{name: 'same-package', bump_type: 'patch'}, // First occurrence kept
+				{name: 'other-package', bump_type: 'minor'},
+				{name: 'same-package', bump_type: 'major'}, // Later occurrences also kept (consumer handles)
+				{name: 'same-package', bump_type: 'minor'},
+			]);
+		});
 	});
 
 	describe('determine_bump_from_changesets', () => {
@@ -321,10 +373,18 @@ Mix of valid and invalid lines.`;
 				expect(calculate_next_version('0.0.0', 'major')).toBe('1.0.0');
 			});
 
+			it('handles large version numbers', () => {
+				expect(calculate_next_version('99.99.99', 'patch')).toBe('99.99.100');
+				expect(calculate_next_version('10.20.999', 'minor')).toBe('10.21.0');
+				expect(calculate_next_version('999.0.0', 'major')).toBe('1000.0.0');
+			});
+
 			it('throws on invalid version format', () => {
 				expect(() => calculate_next_version('invalid', 'patch')).toThrow();
 				expect(() => calculate_next_version('1.2', 'patch')).toThrow();
 				expect(() => calculate_next_version('1.2.3.4', 'patch')).toThrow();
+				expect(() => calculate_next_version('v1.2.3', 'patch')).toThrow(); // version prefix
+				expect(() => calculate_next_version('1.2.3-beta', 'patch')).toThrow(); // prerelease
 			});
 		});
 	});

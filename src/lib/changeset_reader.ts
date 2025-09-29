@@ -158,7 +158,7 @@ export const calculate_next_version = (
 	bump_type: Bump_Type,
 ): string => {
 	const parts = current_version.split('.').map(Number);
-	if (parts.length !== 3) {
+	if (parts.length !== 3 || parts.some((p) => Number.isNaN(p))) {
 		throw new Error(`Invalid version format: ${current_version}`);
 	}
 

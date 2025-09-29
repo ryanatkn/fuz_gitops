@@ -186,6 +186,50 @@ describe('Dependency_Graph', () => {
 
 			expect(() => graph.topological_sort()).toThrow(/Circular dependency/);
 		});
+
+		it('handles complex dependency chains', () => {
+			// Create a diamond dependency pattern: app -> [lib-a, lib-b] -> shared
+			const repos = [
+				create_mock_repo('shared', '1.0.0'),
+				create_mock_repo('lib-a', '1.0.0', {shared: '^1.0.0'}),
+				create_mock_repo('lib-b', '1.0.0', {shared: '^1.0.0'}),
+				create_mock_repo('app', '1.0.0', {'lib-a': '^1.0.0', 'lib-b': '^1.0.0'}),
+			];
+
+			const graph = new Dependency_Graph(repos);
+			const order = graph.topological_sort();
+
+			// shared must come before lib-a and lib-b
+			expect(order.indexOf('shared')).toBeLessThan(order.indexOf('lib-a'));
+			expect(order.indexOf('shared')).toBeLessThan(order.indexOf('lib-b'));
+			// lib-a and lib-b must come before app
+			expect(order.indexOf('lib-a')).toBeLessThan(order.indexOf('app'));
+			expect(order.indexOf('lib-b')).toBeLessThan(order.indexOf('app'));
+		});
+
+		it('handles single package with no dependencies', () => {
+			const repos = [create_mock_repo('standalone', '1.0.0')];
+
+			const graph = new Dependency_Graph(repos);
+			const order = graph.topological_sort();
+
+			expect(order).toEqual(['standalone']);
+		});
+
+		it('handles packages with only external dependencies', () => {
+			const repos = [
+				create_mock_repo('pkg-a', '1.0.0', {lodash: '^4.0.0', react: '^18.0.0'}),
+				create_mock_repo('pkg-b', '1.0.0', {express: '^4.0.0'}),
+			];
+
+			const graph = new Dependency_Graph(repos);
+			const order = graph.topological_sort();
+
+			// Both packages can be published in any order since no internal deps
+			expect(order).toHaveLength(2);
+			expect(order).toContain('pkg-a');
+			expect(order).toContain('pkg-b');
+		});
 	});
 
 	describe('detect_cycles', () => {
@@ -230,6 +274,32 @@ describe('Dependency_Graph', () => {
 
 			expect(cycles.length).toBe(2);
 		});
+
+		it('detects longer cycles (3+ packages)', () => {
+			const repos = [
+				create_mock_repo('pkg-a', '1.0.0', {'pkg-b': '^1.0.0'}),
+				create_mock_repo('pkg-b', '1.0.0', {'pkg-c': '^1.0.0'}),
+				create_mock_repo('pkg-c', '1.0.0', {'pkg-a': '^1.0.0'}), // completes cycle
+			];
+
+			const graph = new Dependency_Graph(repos);
+			const cycles = graph.detect_cycles();
+
+			expect(cycles.length).toBe(1);
+			expect(cycles[0]).toHaveLength(4); // a -> b -> c -> a (includes duplicate)
+		});
+
+		it('handles self-dependency (pathological case)', () => {
+			const repos = [
+				create_mock_repo('self-dep', '1.0.0', {'self-dep': '^1.0.0'}),
+			];
+
+			const graph = new Dependency_Graph(repos);
+			const cycles = graph.detect_cycles();
+
+			expect(cycles.length).toBe(1);
+			expect(cycles[0]).toContain('self-dep');
+		});
 	});
 
 	describe('detect_cycles_by_type', () => {
@@ -266,6 +336,53 @@ describe('Dependency_Graph', () => {
 
 			expect(production_cycles.length).toBe(1);
 			expect(dev_cycles.length).toBe(0);
+		});
+
+		it('handles mixed dependency types (no cycles)', () => {
+			// a -> b (prod), b -> a (dev) - this is NOT a cycle in either analysis
+			const repos = [
+				create_mock_repo('mixed-a', '1.0.0', {'mixed-b': '^1.0.0'}), // prod dep
+				create_mock_repo('mixed-b', '1.0.0', undefined, {'mixed-a': '^1.0.0'}), // dev dep back
+			];
+
+			const graph = new Dependency_Graph(repos);
+			const {production_cycles, dev_cycles} = graph.detect_cycles_by_type();
+
+			// No production cycle (dev deps excluded) and no dev cycle (prod deps excluded)
+			expect(production_cycles.length).toBe(0);
+			expect(dev_cycles.length).toBe(0);
+		});
+
+		it('handles complex mixed scenarios (no cycles)', () => {
+			// a -> b (prod), b -> c (peer), a -> c (dev) - no cycles in either analysis
+			const repos = [
+				create_mock_repo('complex-a', '1.0.0', {'complex-b': '^1.0.0'}, {'complex-c': '^1.0.0'}),
+				create_mock_repo('complex-b', '1.0.0', undefined, undefined, {'complex-c': '^1.0.0'}),
+				create_mock_repo('complex-c', '1.0.0'),
+			];
+
+			const graph = new Dependency_Graph(repos);
+			const {production_cycles, dev_cycles} = graph.detect_cycles_by_type();
+
+			// No complete cycles in either analysis
+			expect(production_cycles.length).toBe(0);
+			expect(dev_cycles.length).toBe(0);
+		});
+
+		it('detects actual dev cycles', () => {
+			// Real dev cycle: a -> b (dev), b -> a (dev)
+			const repos = [
+				create_mock_repo('dev-cycle-a', '1.0.0', undefined, {'dev-cycle-b': '^1.0.0'}),
+				create_mock_repo('dev-cycle-b', '1.0.0', undefined, {'dev-cycle-a': '^1.0.0'}),
+			];
+
+			const graph = new Dependency_Graph(repos);
+			const {production_cycles, dev_cycles} = graph.detect_cycles_by_type();
+
+			expect(production_cycles.length).toBe(0);
+			expect(dev_cycles.length).toBe(1);
+			expect(dev_cycles[0]).toContain('dev-cycle-a');
+			expect(dev_cycles[0]).toContain('dev-cycle-b');
 		});
 	});
 
