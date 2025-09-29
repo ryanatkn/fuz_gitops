@@ -14,14 +14,17 @@
 
 ## Version Changes (auto-generated for dependency updates)
 
-| Package              | From    | To      | Bump  | Breaking |
-| -------------------- | ------- | ------- | ----- | -------- |
-| `@ryanatkn/fuz`      | 0.147.0 | 0.148.0 | minor | 💥 Yes   |
-| `@ryanatkn/fuz_blog` | 0.15.0  | 0.16.0  | minor | 💥 Yes   |
+| Package                  | From    | To      | Bump  | Breaking |
+| ------------------------ | ------- | ------- | ----- | -------- |
+| `@ryanatkn/fuz`          | 0.147.0 | 0.148.0 | minor | 💥 Yes   |
+| `@ryanatkn/fuz_blog`     | 0.15.0  | 0.16.0  | minor | 💥 Yes   |
+| `@ryanatkn/fuz_mastodon` | 0.32.0  | 0.33.0  | minor | 💥 Yes   |
 
 ## Breaking Change Cascades
 
 - `@ryanatkn/gro` affects: `@ryanatkn/fuz`, `@ryanatkn/fuz_blog`, `@ryanatkn/fuz_gitops`
+- `@ryanatkn/fuz` affects: `@ryanatkn/fuz_blog`, `@ryanatkn/fuz_mastodon`, `@ryanatkn/fuz_gitops`
+- `@ryanatkn/fuz_mastodon` affects: `@ryanatkn/fuz_blog`
 
 ## Dependency Updates
 
@@ -29,12 +32,14 @@
 
 | Dependency      | New Version | Type            | Triggers Republish |
 | --------------- | ----------- | --------------- | ------------------ |
+| `@ryanatkn/fuz` | 0.148.0     | devDependencies | No                 |
 | `@ryanatkn/gro` | 0.168.0     | devDependencies | No                 |
 
 ### @ryanatkn/moss
 
 | Dependency      | New Version | Type            | Triggers Republish |
 | --------------- | ----------- | --------------- | ------------------ |
+| `@ryanatkn/fuz` | 0.148.0     | devDependencies | No                 |
 | `@ryanatkn/gro` | 0.168.0     | devDependencies | No                 |
 
 ### @ryanatkn/fuz
@@ -44,56 +49,79 @@
 | `@ryanatkn/gro` | 0.168.0     | peerDependencies | Yes                |
 | `@ryanatkn/gro` | 0.168.0     | devDependencies  | No                 |
 
+### @ryanatkn/gro
+
+| Dependency      | New Version | Type            | Triggers Republish |
+| --------------- | ----------- | --------------- | ------------------ |
+| `@ryanatkn/fuz` | 0.148.0     | devDependencies | No                 |
+
 ### @ryanatkn/belt
 
 | Dependency      | New Version | Type            | Triggers Republish |
 | --------------- | ----------- | --------------- | ------------------ |
+| `@ryanatkn/fuz` | 0.148.0     | devDependencies | No                 |
 | `@ryanatkn/gro` | 0.168.0     | devDependencies | No                 |
 
 ### @ryanatkn/fuz_template
 
 | Dependency      | New Version | Type            | Triggers Republish |
 | --------------- | ----------- | --------------- | ------------------ |
+| `@ryanatkn/fuz` | 0.148.0     | devDependencies | No                 |
 | `@ryanatkn/gro` | 0.168.0     | devDependencies | No                 |
 
 ### @ryanatkn/fuz_blog
 
-| Dependency      | New Version | Type             | Triggers Republish |
-| --------------- | ----------- | ---------------- | ------------------ |
-| `@ryanatkn/gro` | 0.168.0     | peerDependencies | Yes                |
-| `@ryanatkn/gro` | 0.168.0     | devDependencies  | No                 |
+| Dependency               | New Version | Type             | Triggers Republish |
+| ------------------------ | ----------- | ---------------- | ------------------ |
+| `@ryanatkn/fuz`          | 0.148.0     | peerDependencies | Yes                |
+| `@ryanatkn/fuz_mastodon` | 0.33.0      | peerDependencies | Yes                |
+| `@ryanatkn/gro`          | 0.168.0     | peerDependencies | Yes                |
+| `@ryanatkn/fuz`          | 0.148.0     | devDependencies  | No                 |
+| `@ryanatkn/fuz_mastodon` | 0.33.0      | devDependencies  | No                 |
+| `@ryanatkn/gro`          | 0.168.0     | devDependencies  | No                 |
 
 ### @ryanatkn/fuz_mastodon
 
-| Dependency      | New Version | Type            | Triggers Republish |
-| --------------- | ----------- | --------------- | ------------------ |
-| `@ryanatkn/gro` | 0.168.0     | devDependencies | No                 |
+| Dependency      | New Version | Type             | Triggers Republish |
+| --------------- | ----------- | ---------------- | ------------------ |
+| `@ryanatkn/fuz` | 0.148.0     | peerDependencies | Yes                |
+| `@ryanatkn/fuz` | 0.148.0     | devDependencies  | No                 |
+| `@ryanatkn/gro` | 0.168.0     | devDependencies  | No                 |
 
 ### @ryanatkn/fuz_code
 
 | Dependency      | New Version | Type            | Triggers Republish |
 | --------------- | ----------- | --------------- | ------------------ |
+| `@ryanatkn/fuz` | 0.148.0     | devDependencies | No                 |
 | `@ryanatkn/gro` | 0.168.0     | devDependencies | No                 |
 
 ### @ryanatkn/fuz_gitops
 
 | Dependency      | New Version | Type             | Triggers Republish |
 | --------------- | ----------- | ---------------- | ------------------ |
+| `@ryanatkn/fuz` | 0.148.0     | peerDependencies | Yes                |
 | `@ryanatkn/gro` | 0.168.0     | peerDependencies | Yes                |
+| `@ryanatkn/fuz` | 0.148.0     | devDependencies  | No                 |
 | `@ryanatkn/gro` | 0.168.0     | devDependencies  | No                 |
 
 ### webdevladder.net
 
-| Dependency      | New Version | Type            | Triggers Republish |
-| --------------- | ----------- | --------------- | ------------------ |
-| `@ryanatkn/gro` | 0.168.0     | devDependencies | No                 |
+| Dependency               | New Version | Type            | Triggers Republish |
+| ------------------------ | ----------- | --------------- | ------------------ |
+| `@ryanatkn/fuz`          | 0.148.0     | devDependencies | No                 |
+| `@ryanatkn/fuz_blog`     | 0.16.0      | devDependencies | No                 |
+| `@ryanatkn/fuz_mastodon` | 0.33.0      | devDependencies | No                 |
+| `@ryanatkn/gro`          | 0.168.0     | devDependencies | No                 |
 
 ### ryanatkn.com
 
-| Dependency             | New Version | Type            | Triggers Republish |
-| ---------------------- | ----------- | --------------- | ------------------ |
-| `@ryanatkn/fuz_gitops` | 0.51.0      | devDependencies | No                 |
-| `@ryanatkn/gro`        | 0.168.0     | devDependencies | No                 |
+| Dependency               | New Version | Type            | Triggers Republish |
+| ------------------------ | ----------- | --------------- | ------------------ |
+| `@ryanatkn/fuz`          | 0.148.0     | devDependencies | No                 |
+| `@ryanatkn/fuz_blog`     | 0.16.0      | devDependencies | No                 |
+| `@ryanatkn/fuz_gitops`   | 0.51.0      | devDependencies | No                 |
+| `@ryanatkn/fuz_mastodon` | 0.33.0      | devDependencies | No                 |
+| `@ryanatkn/gro`          | 0.168.0     | devDependencies | No                 |
 
 ## ⚠️ Warnings
 
@@ -112,15 +140,14 @@ _These packages have no changesets and no dependency updates:_
 - `@ryanatkn/moss`
 - `@ryanatkn/belt`
 - `@ryanatkn/fuz_template`
-- `@ryanatkn/fuz_mastodon`
 - `@ryanatkn/fuz_code`
 - `webdevladder.net`
 - `ryanatkn.com`
 
 ## Summary
 
-- **Packages to publish**: 5
-- **Dependency updates**: 15
-- **Breaking changes**: 1
+- **Packages to publish**: 6
+- **Dependency updates**: 35
+- **Breaking changes**: 3
 - **Warnings**: 7
 - **Errors**: 0

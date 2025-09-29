@@ -19,6 +19,7 @@ export interface Repo_Fixture_Data {
 	package_json: {
 		name: string;
 		version: string;
+		private?: boolean;
 		dependencies?: Record<string, string>;
 		devDependencies?: Record<string, string>;
 		peerDependencies?: Record<string, string>;
@@ -49,6 +50,8 @@ export interface Repo_Fixture_Set {
 		version_changes: Array<Repo_Fixture_Expected_Version_Change>;
 		/** Expected breaking change cascades (source package -> affected packages) */
 		breaking_cascades?: Record<string, Array<string>>;
+		/** Expected informational messages (packages with no changes) */
+		info?: Array<string>;
 		/** Expected warnings */
 		warnings?: Array<string>;
 		/** Expected errors */

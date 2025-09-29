@@ -113,21 +113,22 @@ Patch change in repo_c (will escalate to minor due to breaking dependency)`,
 				to: '0.2.0',
 				scenario: 'auto_generated',
 			},
-			// TODO: repo_c currently gets 0.1.1 (patch) instead of 0.2.0 (escalated to minor)
-			// This is because dependency_updates are calculated before auto-changesets,
-			// so repo_c doesn't see repo_b's update. Needs multi-pass or recalculation.
 			{
 				package_name: '@test/repo_c',
 				from: '0.1.0',
-				to: '0.1.1', // Should be 0.2.0 after fixing cascade bug
-				scenario: 'explicit_changeset', // Should be bump_escalation after fix
+				to: '0.2.0', // Correctly escalated from patch due to repo_b's breaking update
+				scenario: 'bump_escalation',
 			},
 		],
 
 		breaking_cascades: {
-			// TODO: Should include repo_c after fixing cascade bug
-			'@test/repo_a': ['@test/repo_b'],
+			// Each entry shows DIRECT dependents, not transitive
+			'@test/repo_a': ['@test/repo_b'], // repo_b directly depends on repo_a
+			'@test/repo_b': ['@test/repo_c'], // repo_c directly depends on repo_b
 		},
+
+		// Packages with no changes to publish
+		info: ['@test/repo_d', '@test/repo_e'],
 
 		warnings: [],
 		errors: [],
