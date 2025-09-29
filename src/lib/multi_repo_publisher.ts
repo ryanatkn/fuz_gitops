@@ -53,16 +53,20 @@ export const publish_repos = async (
 	const start_time = Date.now();
 	const {dry, continue_on_error, update_deps, resume = false, log} = options;
 
-	// Pre-flight checks
-	const pre_flight_options: Pre_Flight_Options = {
-		skip_changesets: false, // Always check for changesets
-		required_branch: 'main',
-		log,
-	};
-	const pre_flight = await ops.preflight.run_pre_flight_checks(repos, pre_flight_options, ops.git);
+	// Pre-flight checks (skip for dry runs since we're not actually publishing)
+	if (!dry) {
+		const pre_flight_options: Pre_Flight_Options = {
+			skip_changesets: false, // Always check for changesets
+			required_branch: 'main',
+			log,
+		};
+		const pre_flight = await ops.preflight.run_pre_flight_checks(repos, pre_flight_options, ops.git);
 
-	if (!pre_flight.ok) {
-		throw new Task_Error(`Pre-flight checks failed: ${pre_flight.errors.join(', ')}`);
+		if (!pre_flight.ok) {
+			throw new Task_Error(`Pre-flight checks failed: ${pre_flight.errors.join(', ')}`);
+		}
+	} else {
+		log?.info('⏭️  Skipping pre-flight checks for dry run');
 	}
 
 	// Build dependency graph

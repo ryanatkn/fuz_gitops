@@ -24,7 +24,7 @@ export interface Fixture_Comparison {
  * Execute a gitops command and capture its output
  */
 export const run_gitops_command = async (
-	command: 'gitops_analyze' | 'gitops_preview',
+	command: 'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry',
 	args: string[] = [],
 	log?: Logger,
 ): Promise<Command_Output> => {
@@ -35,7 +35,14 @@ export const run_gitops_command = async (
 
 	// Use a file in .gro directory for clean output
 	const outfile = join(GITOPS_OUTPUT_DIR, `${command}_output_${Date.now()}.md`);
-	const full_args = [command, '--format', 'markdown', '--outfile', outfile, ...args];
+
+	// Build command args - handle gitops_publish_dry specially
+	let full_args: string[];
+	if (command === 'gitops_publish_dry') {
+		full_args = ['gitops_publish', '--dry', '--no-preview', '--format', 'markdown', '--outfile', outfile, ...args];
+	} else {
+		full_args = [command, '--format', 'markdown', '--outfile', outfile, ...args];
+	}
 
 	try {
 		log?.info(`Running: gro ${full_args.join(' ')}`);

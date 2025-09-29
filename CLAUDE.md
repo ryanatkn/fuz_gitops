@@ -66,11 +66,13 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 #### Publishing Workflow
 
 - `gro gitops_publish` - publishes repos in dependency order
-- `gro gitops_preview` - shows what would be published (dry run)
+- `gro gitops_preview` - shows what would be published (dry run preview)
 - `gro gitops_analyze` - analyzes dependencies and changesets
+- `gro gitops_publish --dry` - simulates publishing without pre-flight checks
 - Handles circular dev dependencies by excluding from topological sort
 - Waits for NPM propagation with exponential backoff
 - Updates cross-repo dependencies automatically
+- Pre-flight checks validate clean workspaces, branches, and npm authentication (skipped for --dry runs)
 
 #### Auto-Changeset Generation
 
@@ -129,13 +131,16 @@ gro gitops --download    # clone missing repos
 gro gitops_analyze       # analyze dependencies and changesets
 gro gitops_preview       # preview what would be published
 gro gitops_publish       # publish repos in dependency order
-gro gitops_publish --dry # dry run (same as preview)
+gro gitops_publish --dry # dry run without pre-flight checks
 
 # Development
 gro dev                  # start dev server
 gro build               # build static site
 gro deploy              # deploy to GitHub Pages
-gro src/fixtures/update # same as `npm run update-generated-fixtures`
+
+# Fixture Management
+gro src/fixtures/update  # regenerate baseline outputs for gitops commands
+gro test src/fixtures/check # validate command outputs match baselines
 ```
 
 ## Dependencies
@@ -164,6 +169,7 @@ Use vitest with minimal mocking:
 ```bash
 gro test                 # run all tests
 gro test version_utils   # run specific test file
+gro test src/fixtures/check # validate command output fixtures
 ```
 
 Core modules tested:
@@ -172,3 +178,15 @@ Core modules tested:
 - `changeset_reader.test.ts` - Changeset parsing and version prediction
 - `dependency_graph.test.ts` - Topological sorting and cycle detection
 - `changeset_generator.test.ts` - Auto-changeset content generation
+
+### Fixture Testing
+
+The fixture system validates that gitops commands produce consistent output:
+
+- `src/fixtures/gitops_analyze_output.md` - Baseline for `gro gitops_analyze`
+- `src/fixtures/gitops_preview_output.md` - Baseline for `gro gitops_preview`
+- `src/fixtures/gitops_publish_dry_output.md` - Baseline for `gro gitops_publish --dry`
+- `src/fixtures/check.test.ts` - Compares live output against baselines
+- `src/fixtures/update.task.ts` - Regenerates baselines when needed
+
+To update baselines after intentional changes: `gro src/fixtures/update`

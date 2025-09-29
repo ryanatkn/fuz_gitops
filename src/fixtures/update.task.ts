@@ -37,9 +37,10 @@ export const task: Task<Args> = {
 			log.info(`Created directory: ${output_dir}`);
 		}
 
-		const commands: Array<'gitops_analyze' | 'gitops_preview'> = [
+		const commands: Array<'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry'> = [
 			'gitops_analyze',
 			'gitops_preview',
+			'gitops_publish_dry',
 		];
 		const results: Array<{
 			command: string;

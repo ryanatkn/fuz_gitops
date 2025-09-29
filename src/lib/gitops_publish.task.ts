@@ -27,6 +27,7 @@ export const Args = z.strictObject({
 	format: z.enum(['stdout', 'json', 'markdown']).describe('output format').default('stdout'),
 	deploy: z.boolean().describe('deploy all repos after publishing').default(false),
 	preview: z.boolean().describe('show preview before publishing').default(true),
+	outfile: z.string().describe('write output to file instead of logging').optional(),
 });
 export type Args = z.infer<typeof Args>;
 
@@ -46,6 +47,7 @@ export const task: Task<Args> = {
 			format,
 			deploy,
 			preview,
+			outfile,
 		} = args;
 
 		// Load repos
@@ -92,9 +94,22 @@ export const task: Task<Args> = {
 		// Format and output result
 		if (format !== 'stdout') {
 			const output = format_result(result, format);
-			for (const line of output) {
-				log.info(line);
+			const content = output.join('\n');
+
+			// Write to file if specified
+			if (outfile) {
+				const {writeFile} = await import('node:fs/promises');
+				await writeFile(outfile, content);
+				log.info(`Output written to ${outfile}`);
+			} else {
+				// Log line by line
+				for (const line of output) {
+					log.info(line);
+				}
 			}
+		} else if (outfile) {
+			// stdout format with outfile is not supported
+			throw new Error('--outfile is not supported with stdout format, use json or markdown');
 		}
 		// stdout format is handled by the publish_repos function's logging
 
