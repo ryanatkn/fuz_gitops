@@ -127,7 +127,7 @@ test('handles publish failures with continue_on_error', async () => {
 			}),
 		},
 		fs: {
-			readFile: async (path: string) => {
+			readFile: async (path) => {
 				const content = mockFs.get(path);
 				if (!content) {
 					throw new Error(`File not found: ${path}`);
@@ -179,7 +179,7 @@ test('skips repos without changesets', async () => {
 			}),
 		},
 		fs: {
-			readFile: async (path: string) => {
+			readFile: async (path) => {
 				const content = mockFs.get(path);
 				if (!content) {
 					throw new Error(`File not found: ${path}`);
@@ -206,4 +206,3 @@ test('skips repos without changesets', async () => {
 	expect(result.published.length).toBe(1);
 	expect(result.published[0].name).toBe('pkg-a');
 });
-
