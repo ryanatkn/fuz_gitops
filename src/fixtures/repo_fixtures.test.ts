@@ -9,10 +9,7 @@ import {major_bumps} from './repo_fixtures/major_bumps.js';
 import {peer_deps_only} from './repo_fixtures/peer_deps_only.js';
 import {fixture_to_local_repos} from './load_repo_fixtures.js';
 import {create_mock_changeset_ops} from './mock_changeset_operations.js';
-import type {
-	Repo_Fixture_Set,
-	Repo_Fixture_Expected_Version_Change,
-} from './repo_fixture_types.js';
+import type {Repo_Fixture_Set, Repo_Fixture_Expected_Version_Change} from './repo_fixture_types.js';
 
 // All fixtures to test
 const FIXTURES = [

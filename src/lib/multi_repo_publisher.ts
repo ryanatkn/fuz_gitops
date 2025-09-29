@@ -60,7 +60,11 @@ export const publish_repos = async (
 			required_branch: 'main',
 			log,
 		};
-		const pre_flight = await ops.preflight.run_pre_flight_checks(repos, pre_flight_options, ops.git);
+		const pre_flight = await ops.preflight.run_pre_flight_checks(
+			repos,
+			pre_flight_options,
+			ops.git,
+		);
 
 		if (!pre_flight.ok) {
 			throw new Task_Error(`Pre-flight checks failed: ${pre_flight.errors.join(', ')}`);
@@ -108,7 +112,8 @@ export const publish_repos = async (
 	const state_manager: Publishing_State_Manager = dry
 		? new Publishing_State_Manager({log}) // Empty manager, no file I/O
 		: await init_publishing_state(order, {log});
-	const packages_to_skip = resume && !dry ? state_manager.get_packages_to_skip() : new Set<string>();
+	const packages_to_skip =
+		resume && !dry ? state_manager.get_packages_to_skip() : new Set<string>();
 
 	const published = new Map<string, Published_Version>();
 	const failed = new Map<string, Error>();

@@ -1,7 +1,12 @@
 import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 
 import type {Local_Repo} from '$lib/local_repo.js';
-import type {Publishing_Operations, Changeset_Operations} from '$lib/operations.js';
+import type {
+	Publishing_Operations,
+	Changeset_Operations,
+	Git_Operations,
+	Fs_Operations,
+} from '$lib/operations.js';
 import type {Bump_Type} from '$lib/semver.js';
 
 export interface Mock_Repo_Options {
@@ -85,24 +90,7 @@ export const create_mock_publishing_ops = (
 		}),
 		...overrides.changeset,
 	},
-	git: {
-		current_branch_name: async () => 'main',
-		current_commit_hash: async () => 'abc123',
-		check_clean_workspace: async () => true,
-		checkout: async () => {},
-		pull: async () => {},
-		switch_branch: async () => {},
-		add: async () => {},
-		commit: async () => {},
-		add_and_commit: async () => {},
-		has_changes: async () => false,
-		get_changed_files: async () => [],
-		tag: async () => {},
-		push_tag: async () => {},
-		stash: async () => {},
-		stash_pop: async () => {},
-		...overrides.git,
-	},
+	git: create_mock_git_ops(overrides.git),
 	process: {
 		spawn: async () => ({ok: true}),
 		...overrides.process,
@@ -138,9 +126,9 @@ const incrementPatch = (version: string): string => {
 };
 
 /**
- * Creates a mock file system with package.json files
+ * Creates a map of package.json file paths to contents for testing
  */
-export const create_mock_fs = (
+export const create_mock_package_json_files = (
 	repos: Array<Local_Repo>,
 	updatedVersions: Map<string, string> = new Map(),
 ): Map<string, string> => {
@@ -175,3 +163,52 @@ export const create_mock_changeset_ops = (
 		return versionPredictions.get(repo.pkg.name) || null;
 	},
 });
+
+/**
+ * Creates mock Git_Operations for testing
+ */
+export const create_mock_git_ops = (overrides: Partial<Git_Operations> = {}): Git_Operations => ({
+	current_branch_name: async () => 'main',
+	current_commit_hash: async () => 'abc123',
+	check_clean_workspace: async () => true,
+	checkout: async () => {},
+	pull: async () => {},
+	switch_branch: async () => {},
+	add: async () => {},
+	commit: async () => {},
+	add_and_commit: async () => {},
+	has_changes: async () => false,
+	get_changed_files: async () => [],
+	tag: async () => {},
+	push_tag: async () => {},
+	stash: async () => {},
+	stash_pop: async () => {},
+	...overrides,
+});
+
+/**
+ * Creates mock Fs_Operations for testing with in-memory storage
+ */
+export const create_mock_fs_ops = (): Fs_Operations & {
+	get: (path: string) => string | undefined;
+	set: (path: string, content: string) => void;
+} => {
+	const files = new Map<string, string>();
+
+	return {
+		readFile: async (path: string, _encoding: BufferEncoding): Promise<string> => {
+			const content = files.get(path);
+			if (content === undefined) {
+				throw new Error(`File not found: ${path}`);
+			}
+			return content;
+		},
+		writeFile: async (path: string, content: string): Promise<void> => {
+			files.set(path, content);
+		},
+		get: (path: string): string | undefined => files.get(path),
+		set: (path: string, content: string): void => {
+			files.set(path, content);
+		},
+	};
+};

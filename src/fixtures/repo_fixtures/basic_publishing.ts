@@ -98,7 +98,13 @@ Patch change in repo_c (will escalate to minor due to breaking dependency)`,
 
 	expected_outcomes: {
 		// Topological sort places packages with no dependencies first
-		publishing_order: ['@test/repo_a', '@test/repo_d', '@test/repo_e', '@test/repo_b', '@test/repo_c'],
+		publishing_order: [
+			'@test/repo_a',
+			'@test/repo_d',
+			'@test/repo_e',
+			'@test/repo_b',
+			'@test/repo_c',
+		],
 
 		version_changes: [
 			{

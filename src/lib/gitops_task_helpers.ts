@@ -62,11 +62,12 @@ export const resolve_gitops_paths = (
 	const config_dir = dirname(config_path);
 
 	// Priority: explicit dir arg → config repos_dir → default (parent of config dir)
-	const repos_dir = dir !== undefined
-		? resolve(dir)
-		: config_repos_dir !== undefined
-			? resolve(config_dir, config_repos_dir)
-			: resolve(config_dir, DEFAULT_REPOS_DIR);
+	const repos_dir =
+		dir !== undefined
+			? resolve(dir)
+			: config_repos_dir !== undefined
+				? resolve(config_dir, config_repos_dir)
+				: resolve(config_dir, DEFAULT_REPOS_DIR);
 
 	return {config_path, repos_dir};
 };

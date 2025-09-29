@@ -9,7 +9,9 @@ const COMMAND_TIMEOUT = 60_000;
 /**
  * Get the path for an output baseline file
  */
-const get_output_path = (command: 'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry'): string => {
+const get_output_path = (
+	command: 'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry',
+): string => {
 	return `${command}_output.md`;
 };
 

@@ -108,7 +108,9 @@ Bug fix in tool_b`,
 		// No breaking cascades: tool_a's minor bump is NOT breaking in >=1.0 (only major is)
 		breaking_cascades: {},
 
-		warnings: ['Dev dependency cycle (will be ignored): @test/tool_a → @test/tool_b → @test/tool_a'],
+		warnings: [
+			'Dev dependency cycle (will be ignored): @test/tool_a → @test/tool_b → @test/tool_a',
+		],
 		errors: [],
 	},
 };

@@ -12,7 +12,8 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  */
 export const private_packages: Repo_Fixture_Set = {
 	name: 'private_packages',
-	description: 'Tests that private packages are excluded from publishing but dependents can publish',
+	description:
+		'Tests that private packages are excluded from publishing but dependents can publish',
 
 	repos: [
 		// public_lib: Normal public package with breaking change

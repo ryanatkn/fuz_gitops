@@ -1,5 +1,4 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import {writeFile, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 
 import type {Local_Repo} from '$lib/local_repo.js';
@@ -9,8 +8,8 @@ import {
 	create_dependency_updates,
 } from '$lib/changeset_generator.js';
 import {needs_update, get_update_prefix} from '$lib/version_utils.js';
-import type {Git_Operations} from '$lib/operations.js';
-import {default_git_operations} from '$lib/default_operations.js';
+import type {Git_Operations, Fs_Operations} from '$lib/operations.js';
+import {default_git_operations, default_fs_operations} from '$lib/default_operations.js';
 
 export type Version_Strategy = 'exact' | 'caret' | 'tilde';
 
@@ -24,13 +23,14 @@ export const update_package_json = async (
 	published_versions?: Map<string, Published_Version>,
 	log?: Logger,
 	git_ops: Git_Operations = default_git_operations,
+	fs_ops: Fs_Operations = default_fs_operations,
 ): Promise<void> => {
 	if (updates.size === 0) return;
 
 	const package_json_path = join(repo.repo_dir, 'package.json');
 
 	// Read current package.json
-	const content = await readFile(package_json_path, 'utf8');
+	const content = await fs_ops.readFile(package_json_path, 'utf8');
 	const package_json = JSON.parse(content);
 
 	// Apply version strategy
@@ -77,7 +77,7 @@ export const update_package_json = async (
 	if (!updated) return;
 
 	// Write updated package.json
-	await writeFile(package_json_path, JSON.stringify(package_json, null, '\t') + '\n');
+	await fs_ops.writeFile(package_json_path, JSON.stringify(package_json, null, '\t') + '\n');
 
 	// Create changeset if we have published version info
 	if (published_versions && published_versions.size > 0) {
@@ -135,6 +135,7 @@ export const update_all_repos = async (
 	strategy: Version_Strategy = 'caret',
 	log?: Logger,
 	git_ops: Git_Operations = default_git_operations,
+	fs_ops: Fs_Operations = default_fs_operations,
 ): Promise<{updated: number; failed: Array<{repo: string; error: Error}>}> => {
 	let updated_count = 0;
 	const failed: Array<{repo: string; error: Error}> = [];
@@ -173,7 +174,7 @@ export const update_all_repos = async (
 		if (updates.size === 0) continue;
 
 		try {
-			await update_package_json(repo, updates, strategy, undefined, log, git_ops);
+			await update_package_json(repo, updates, strategy, undefined, log, git_ops, fs_ops);
 			updated_count++;
 			log?.info(`    Updated ${updates.size} dependencies in ${repo.pkg.name}`);
 		} catch (error) {

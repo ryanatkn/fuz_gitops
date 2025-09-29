@@ -2,7 +2,11 @@ import {test, expect} from 'vitest';
 
 import type {Local_Repo} from '$lib/local_repo.js';
 import {publish_repos} from '$lib/multi_repo_publisher.js';
-import {create_mock_repo, create_mock_publishing_ops, create_mock_fs} from '$lib/test_helpers.js';
+import {
+	create_mock_repo,
+	create_mock_publishing_ops,
+	create_mock_package_json_files,
+} from '$lib/test_helpers.js';
 
 test('dry run predicts versions without publishing', async () => {
 	const repos: Array<Local_Repo> = [
@@ -61,7 +65,7 @@ test('handles publish failures with continue_on_error', async () => {
 	];
 
 	// Create mock file system
-	const mockFs = create_mock_fs(repos);
+	const mock_fs = create_mock_package_json_files(repos);
 
 	let publish_attempt = 0;
 	const mock_ops = create_mock_publishing_ops({
@@ -88,7 +92,7 @@ test('handles publish failures with continue_on_error', async () => {
 		},
 		fs: {
 			readFile: async (path) => {
-				const content = mockFs.get(path);
+				const content = mock_fs.get(path);
 				if (!content) {
 					throw new Error(`File not found: ${path}`);
 				}
@@ -182,7 +186,7 @@ test('skips repos without changesets', async () => {
 	];
 
 	// Create mock file system
-	const mockFs = create_mock_fs(repos);
+	const mock_fs = create_mock_package_json_files(repos);
 
 	// Create mock operations where only pkg-a has changesets
 	const mock_ops = create_mock_publishing_ops({
@@ -200,7 +204,7 @@ test('skips repos without changesets', async () => {
 		},
 		fs: {
 			readFile: async (path) => {
-				const content = mockFs.get(path);
+				const content = mock_fs.get(path);
 				if (!content) {
 					throw new Error(`File not found: ${path}`);
 				}

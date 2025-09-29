@@ -16,9 +16,7 @@ import type {Repo_Fixture_Set} from './repo_fixture_types.js';
  */
 export const create_mock_changeset_ops = (fixture: Repo_Fixture_Set): Changeset_Operations => {
 	// Create lookup map for quick access
-	const repos_by_name = new Map(
-		fixture.repos.map((repo) => [repo.package_json.name, repo]),
-	);
+	const repos_by_name = new Map(fixture.repos.map((repo) => [repo.package_json.name, repo]));
 
 	return {
 		has_changesets: async (repo: Local_Repo): Promise<boolean> => {
