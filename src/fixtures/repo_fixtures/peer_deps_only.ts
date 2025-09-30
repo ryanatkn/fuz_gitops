@@ -18,7 +18,7 @@ export const peer_deps_only: Repo_Fixture_Set = {
 		// core: The core library that plugins depend on
 		{
 			repo_name: 'core',
-			repo_url: 'https://github.com/test/core',
+			repo_url: 'https://gitops.fuz.dev/test/core',
 			package_json: {
 				name: '@test/core',
 				version: '2.0.0',
@@ -38,7 +38,7 @@ New feature in core (minor, not breaking in >=1.0)`,
 		// utils: Utility library (non-breaking patch)
 		{
 			repo_name: 'utils',
-			repo_url: 'https://github.com/test/utils',
+			repo_url: 'https://gitops.fuz.dev/test/utils',
 			package_json: {
 				name: '@test/utils',
 				version: '1.0.0',
@@ -58,7 +58,7 @@ Bug fix in utils`,
 		// plugin_a: Plugin with peer dep on core only
 		{
 			repo_name: 'plugin_a',
-			repo_url: 'https://github.com/test/plugin_a',
+			repo_url: 'https://gitops.fuz.dev/test/plugin_a',
 			package_json: {
 				name: '@test/plugin_a',
 				version: '1.0.0',
@@ -72,7 +72,7 @@ Bug fix in utils`,
 		// plugin_b: Plugin with peer deps on both core and utils
 		{
 			repo_name: 'plugin_b',
-			repo_url: 'https://github.com/test/plugin_b',
+			repo_url: 'https://gitops.fuz.dev/test/plugin_b',
 			package_json: {
 				name: '@test/plugin_b',
 				version: '1.5.0',
@@ -96,7 +96,7 @@ Small fix (should escalate to minor due to core breaking change)`,
 		// adapter: Adapter with only peer deps, no changesets
 		{
 			repo_name: 'adapter',
-			repo_url: 'https://github.com/test/adapter',
+			repo_url: 'https://gitops.fuz.dev/test/adapter',
 			package_json: {
 				name: '@test/adapter',
 				version: '3.0.0',

@@ -16,7 +16,7 @@ export const basic_publishing: Repo_Fixture_Set = {
 		// repo_a: Leaf package with breaking changeset
 		{
 			repo_name: 'repo_a',
-			repo_url: 'https://github.com/test/repo_a',
+			repo_url: 'https://gitops.fuz.dev/test/repo_a',
 			package_json: {
 				name: '@test/repo_a',
 				version: '0.1.0',
@@ -36,7 +36,7 @@ Breaking change in repo_a`,
 		// repo_b: Auto-changeset scenario (depends on repo_a, no explicit changeset)
 		{
 			repo_name: 'repo_b',
-			repo_url: 'https://github.com/test/repo_b',
+			repo_url: 'https://gitops.fuz.dev/test/repo_b',
 			package_json: {
 				name: '@test/repo_b',
 				version: '0.1.0',
@@ -50,7 +50,7 @@ Breaking change in repo_a`,
 		// repo_c: Bump escalation scenario (peer dep on repo_b, patch changeset escalates to minor)
 		{
 			repo_name: 'repo_c',
-			repo_url: 'https://github.com/test/repo_c',
+			repo_url: 'https://gitops.fuz.dev/test/repo_c',
 			package_json: {
 				name: '@test/repo_c',
 				version: '0.1.0',
@@ -73,7 +73,7 @@ Patch change in repo_c (will escalate to minor due to breaking dependency)`,
 		// repo_d: No changes scenario (no deps, no changeset)
 		{
 			repo_name: 'repo_d',
-			repo_url: 'https://github.com/test/repo_d',
+			repo_url: 'https://gitops.fuz.dev/test/repo_d',
 			package_json: {
 				name: '@test/repo_d',
 				version: '0.1.0',
@@ -84,7 +84,7 @@ Patch change in repo_c (will escalate to minor due to breaking dependency)`,
 		// repo_e: Dev-only dependency (doesn't trigger republish)
 		{
 			repo_name: 'repo_e',
-			repo_url: 'https://github.com/test/repo_e',
+			repo_url: 'https://gitops.fuz.dev/test/repo_e',
 			package_json: {
 				name: '@test/repo_e',
 				version: '0.1.0',

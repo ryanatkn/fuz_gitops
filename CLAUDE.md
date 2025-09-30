@@ -175,8 +175,9 @@ gro build               # build static site
 gro deploy              # deploy to GitHub Pages
 
 # Fixture Management
-gro src/fixtures/update  # regenerate baseline outputs for gitops commands
-gro test src/fixtures/check # validate command outputs match baselines
+gro src/fixtures/generate_repos # generate test git repos from fixture data
+gro src/fixtures/update         # regenerate baseline outputs for gitops commands
+gro test src/fixtures/check     # validate command outputs match baselines
 ```
 
 ## Dependencies
@@ -214,15 +215,31 @@ Core modules tested:
 - `changeset_reader.test.ts` - Changeset parsing and version prediction
 - `dependency_graph.test.ts` - Topological sorting and cycle detection
 - `changeset_generator.test.ts` - Auto-changeset content generation
+- `pre_flight_checks.test.ts` - Workspace, branch, and npm validation
+- `dependency_updater.test.ts` - Package.json updates and git commits
+- `publishing_state.test.ts` - State management for resume functionality
 
 ### Fixture Testing
 
-The fixture system validates that gitops commands produce consistent output:
+The fixture system uses **generated git repositories** for isolated, reproducible integration tests:
 
+**Generated Test Repos:**
+- `src/fixtures/repos/` - Auto-generated from fixture data (gitignored)
+- `src/fixtures/repo_fixtures/*.ts` - Source of truth for test repo definitions
+- `src/fixtures/generate_repos.ts` - Idempotent repo generation logic
+- `src/fixtures/gitops.fixtures.config.ts` - Gitops config for test repos
+
+**Baseline Validation:**
 - `src/fixtures/gitops_analyze_output.md` - Baseline for `gro gitops_analyze`
 - `src/fixtures/gitops_preview_output.md` - Baseline for `gro gitops_preview`
 - `src/fixtures/gitops_publish_dry_output.md` - Baseline for `gro gitops_publish --dry`
 - `src/fixtures/check.test.ts` - Compares live output against baselines
 - `src/fixtures/update.task.ts` - Regenerates baselines when needed
 
-To update baselines after intentional changes: `gro src/fixtures/update`
+**Workflow:**
+1. Define fixture data in `repo_fixtures/*.ts`
+2. Run `gro src/fixtures/generate_repos` to create test git repos
+3. Run `gro src/fixtures/update` to capture baseline outputs
+4. Run `gro test src/fixtures/check` to validate outputs match baselines
+
+Test repos are isolated from real workspace repos and can run in CI without cloning.

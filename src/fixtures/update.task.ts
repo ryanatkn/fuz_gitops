@@ -6,6 +6,23 @@ import {join} from 'node:path';
 
 import {run_gitops_command} from './helpers.js';
 import {format_file} from '@ryanatkn/gro/format_file.js';
+import {generate_all_fixtures, fixtures_exist} from './generate_repos.js';
+import {basic_publishing} from './repo_fixtures/basic_publishing.js';
+import {deep_cascade} from './repo_fixtures/deep_cascade.js';
+import {circular_dev_deps} from './repo_fixtures/circular_dev_deps.js';
+import {private_packages} from './repo_fixtures/private_packages.js';
+import {major_bumps} from './repo_fixtures/major_bumps.js';
+import {peer_deps_only} from './repo_fixtures/peer_deps_only.js';
+
+// All fixture sets
+const FIXTURES = [
+	basic_publishing,
+	deep_cascade,
+	circular_dev_deps,
+	private_packages,
+	major_bumps,
+	peer_deps_only,
+];
 
 const Args = z
 	.object({
@@ -29,6 +46,18 @@ export const task: Task<Args> = {
 		const {verbose} = args;
 
 		log.info(st('cyan', '🔧 Capturing gitops command outputs...\n'));
+
+		// Generate fixture repos if missing
+		log.info('Checking fixture repositories...');
+		const missing = FIXTURES.some((f) => !fixtures_exist(f.name));
+
+		if (missing) {
+			log.info(st('yellow', '  Generating fixture repos (some are missing)...\n'));
+			await generate_all_fixtures(FIXTURES, log);
+			log.info('');
+		} else {
+			log.info(st('green', '  ✓ Fixture repos already exist\n'));
+		}
 
 		// Ensure output directory exists
 		const output_dir = 'src/fixtures';

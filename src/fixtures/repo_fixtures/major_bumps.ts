@@ -15,7 +15,7 @@ export const major_bumps: Repo_Fixture_Set = {
 		// unstable: Pre-1.0 package graduating to 1.0.0
 		{
 			repo_name: 'unstable',
-			repo_url: 'https://github.com/test/unstable',
+			repo_url: 'https://gitops.fuz.dev/test/unstable',
 			package_json: {
 				name: '@test/unstable',
 				version: '0.9.5',
@@ -35,7 +35,7 @@ Graduating to 1.0.0 - stable release`,
 		// stable: Existing 1.x package getting major bump to 2.0.0
 		{
 			repo_name: 'stable',
-			repo_url: 'https://github.com/test/stable',
+			repo_url: 'https://gitops.fuz.dev/test/stable',
 			package_json: {
 				name: '@test/stable',
 				version: '1.5.2',
@@ -55,7 +55,7 @@ Breaking API changes - bumping to 2.0.0`,
 		// app_using_unstable: Depends on unstable (0.9.5 → 1.0.0)
 		{
 			repo_name: 'app_using_unstable',
-			repo_url: 'https://github.com/test/app_using_unstable',
+			repo_url: 'https://gitops.fuz.dev/test/app_using_unstable',
 			package_json: {
 				name: '@test/app_using_unstable',
 				version: '1.0.0',
@@ -69,7 +69,7 @@ Breaking API changes - bumping to 2.0.0`,
 		// app_using_stable: Depends on stable (1.5.2 → 2.0.0)
 		{
 			repo_name: 'app_using_stable',
-			repo_url: 'https://github.com/test/app_using_stable',
+			repo_url: 'https://gitops.fuz.dev/test/app_using_stable',
 			package_json: {
 				name: '@test/app_using_stable',
 				version: '2.3.0',
@@ -83,7 +83,7 @@ Breaking API changes - bumping to 2.0.0`,
 		// complex_app: Depends on both unstable and stable
 		{
 			repo_name: 'complex_app',
-			repo_url: 'https://github.com/test/complex_app',
+			repo_url: 'https://gitops.fuz.dev/test/complex_app',
 			package_json: {
 				name: '@test/complex_app',
 				version: '3.0.0',

@@ -19,7 +19,7 @@ export const circular_dev_deps: Repo_Fixture_Set = {
 		// tool_a: Has explicit minor changeset, devDep on tool_b
 		{
 			repo_name: 'tool_a',
-			repo_url: 'https://github.com/test/tool_a',
+			repo_url: 'https://gitops.fuz.dev/test/tool_a',
 			package_json: {
 				name: '@test/tool_a',
 				version: '1.0.0',
@@ -42,7 +42,7 @@ New feature in tool_a`,
 		// tool_b: Has explicit patch changeset, devDep on tool_a (creates cycle)
 		{
 			repo_name: 'tool_b',
-			repo_url: 'https://github.com/test/tool_b',
+			repo_url: 'https://gitops.fuz.dev/test/tool_b',
 			package_json: {
 				name: '@test/tool_b',
 				version: '1.0.0',
@@ -65,7 +65,7 @@ Bug fix in tool_b`,
 		// consumer: Depends on both tools via production dependencies
 		{
 			repo_name: 'consumer',
-			repo_url: 'https://github.com/test/consumer',
+			repo_url: 'https://gitops.fuz.dev/test/consumer',
 			package_json: {
 				name: '@test/consumer',
 				version: '1.0.0',

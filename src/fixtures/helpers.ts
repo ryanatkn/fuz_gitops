@@ -22,13 +22,13 @@ export interface Fixture_Comparison {
 
 /**
  * Execute a gitops command and capture its output.
- * Defaults to using the root gitops.config.ts for integration testing.
+ * Defaults to using the fixture config for isolated testing.
  */
 export const run_gitops_command = async (
 	command: 'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry',
 	args: string[] = [],
 	log?: Logger,
-	config_path: string = 'gitops.config.ts',
+	config_path: string = 'src/fixtures/gitops.fixtures.config.ts',
 ): Promise<Command_Output> => {
 	// Create output directory if it doesn't exist
 	if (!existsSync(GITOPS_OUTPUT_DIR)) {

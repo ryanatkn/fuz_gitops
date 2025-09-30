@@ -9,6 +9,9 @@ node_modules
 /.gro
 /.zzz
 
+# Generated test repos
+/src/fixtures/repos/
+
 # Env
 .env*
 !.env.example

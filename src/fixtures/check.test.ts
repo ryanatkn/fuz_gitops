@@ -3,8 +3,36 @@ import {existsSync} from 'node:fs';
 import {format_file} from '@ryanatkn/gro/format_file.js';
 
 import {run_gitops_command, load_fixture, compare_outputs, type Command_Output} from './helpers.js';
+import {generate_all_fixtures, fixtures_exist} from './generate_repos.js';
+import {basic_publishing} from './repo_fixtures/basic_publishing.js';
+import {deep_cascade} from './repo_fixtures/deep_cascade.js';
+import {circular_dev_deps} from './repo_fixtures/circular_dev_deps.js';
+import {private_packages} from './repo_fixtures/private_packages.js';
+import {major_bumps} from './repo_fixtures/major_bumps.js';
+import {peer_deps_only} from './repo_fixtures/peer_deps_only.js';
 
 const COMMAND_TIMEOUT = 60_000;
+
+// All fixture sets
+const FIXTURES = [
+	basic_publishing,
+	deep_cascade,
+	circular_dev_deps,
+	private_packages,
+	major_bumps,
+	peer_deps_only,
+];
+
+// Generate fixture repos before running tests
+beforeAll(async () => {
+	// Check if any fixtures are missing
+	const missing = FIXTURES.some((f) => !fixtures_exist(f.name));
+
+	if (missing) {
+		// Generate all fixtures if any are missing
+		await generate_all_fixtures(FIXTURES);
+	}
+}, 120_000); // Allow up to 2 minutes for fixture generation
 
 /**
  * Get the path for an output baseline file

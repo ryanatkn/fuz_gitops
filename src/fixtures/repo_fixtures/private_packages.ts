@@ -19,7 +19,7 @@ export const private_packages: Repo_Fixture_Set = {
 		// public_lib: Normal public package with breaking change
 		{
 			repo_name: 'public_lib',
-			repo_url: 'https://github.com/test/public_lib',
+			repo_url: 'https://gitops.fuz.dev/test/public_lib',
 			package_json: {
 				name: '@test/public_lib',
 				version: '1.0.0',
@@ -39,7 +39,7 @@ New feature in public_lib`,
 		// private_tool: Private package (should be skipped entirely)
 		{
 			repo_name: 'private_tool',
-			repo_url: 'https://github.com/test/private_tool',
+			repo_url: 'https://gitops.fuz.dev/test/private_tool',
 			package_json: {
 				name: '@test/private_tool',
 				version: '1.0.0',
@@ -60,7 +60,7 @@ Update to private_tool (should not publish)`,
 		// consumer: Depends on both public and private packages
 		{
 			repo_name: 'consumer',
-			repo_url: 'https://github.com/test/consumer',
+			repo_url: 'https://gitops.fuz.dev/test/consumer',
 			package_json: {
 				name: '@test/consumer',
 				version: '1.0.0',

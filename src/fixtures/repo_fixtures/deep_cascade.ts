@@ -19,7 +19,7 @@ export const deep_cascade: Repo_Fixture_Set = {
 		// leaf: Bottom of dependency tree, breaking change
 		{
 			repo_name: 'leaf',
-			repo_url: 'https://github.com/test/leaf',
+			repo_url: 'https://gitops.fuz.dev/test/leaf',
 			package_json: {
 				name: '@test/leaf',
 				version: '0.1.0',
@@ -39,7 +39,7 @@ Breaking change in leaf package`,
 		// branch: Depends on leaf, should get auto-changeset
 		{
 			repo_name: 'branch',
-			repo_url: 'https://github.com/test/branch',
+			repo_url: 'https://gitops.fuz.dev/test/branch',
 			package_json: {
 				name: '@test/branch',
 				version: '0.1.0',
@@ -53,7 +53,7 @@ Breaking change in leaf package`,
 		// trunk: Depends on branch (peer), patch changeset should escalate to minor
 		{
 			repo_name: 'trunk',
-			repo_url: 'https://github.com/test/trunk',
+			repo_url: 'https://gitops.fuz.dev/test/trunk',
 			package_json: {
 				name: '@test/trunk',
 				version: '0.1.0',
@@ -76,7 +76,7 @@ Small fix in trunk (will escalate to minor due to breaking peer dependency)`,
 		// root: Top of tree, depends on trunk, should get auto-changeset
 		{
 			repo_name: 'root',
-			repo_url: 'https://github.com/test/root',
+			repo_url: 'https://gitops.fuz.dev/test/root',
 			package_json: {
 				name: '@test/root',
 				version: '0.1.0',
