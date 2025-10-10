@@ -194,6 +194,10 @@
           "kind": "function"
         },
         {
+          "name": "resolve_local_repos",
+          "kind": "function"
+        },
+        {
           "name": "load_local_repos",
           "kind": "function"
         },
