@@ -11,7 +11,7 @@ import {
 	git_checkout,
 	git_current_branch_name,
 	git_pull,
-} from '@ryanatkn/gro/git.js';
+} from '@ryanatkn/belt/git.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn_cli} from '@ryanatkn/gro/cli.js';
 
