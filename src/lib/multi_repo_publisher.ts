@@ -4,8 +4,8 @@ import {join} from 'node:path';
 import {styleText as st} from 'node:util';
 
 import type {Local_Repo} from '$lib/local_repo.js';
-import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
 import {update_package_json, type Version_Strategy} from '$lib/dependency_updater.js';
+import {validate_dependency_graph} from '$lib/graph_validation.js';
 import type {Bump_Type} from '$lib/semver.js';
 import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
 import {init_publishing_state, Publishing_State_Manager} from '$lib/publishing_state.js';
@@ -76,40 +76,12 @@ export const publish_repos = async (
 		log?.info('⏭️  Skipping pre-flight checks for dry run');
 	}
 
-	// Build dependency graph
-	log?.info('📊 Analyzing dependencies...');
-	const builder = new Dependency_Graph_Builder();
-	const graph = builder.build_from_repos(repos);
-
-	// Check for cycles
-	const {production_cycles, dev_cycles} = graph.detect_cycles_by_type();
-
-	if (production_cycles.length > 0) {
-		log?.error(st('red', '❌ Production/peer dependency cycles detected:'));
-		for (const cycle of production_cycles) {
-			log?.error(`  ${cycle.join(' → ')}`);
-		}
-		throw new Task_Error(
-			`Cannot publish with production/peer dependency cycles. ` +
-				`These must be resolved before publishing.`,
-		);
-	}
-
-	if (dev_cycles.length > 0) {
-		log?.info(st('yellow', '⚠️  Dev dependency cycles detected (this is normal):'));
-		for (const cycle of dev_cycles) {
-			log?.info(st('dim', `  ${cycle.join(' → ')}`));
-		}
-	}
-
-	// Compute publishing order
-	let order: Array<string>;
-	try {
-		order = graph.topological_sort(true); // exclude dev deps to break cycles
-		log?.info(`  Publishing order: ${order.join(' → ')}`);
-	} catch (error) {
-		throw new Task_Error('Failed to compute publishing order: ' + error);
-	}
+	// Build dependency graph and validate
+	const {publishing_order: order} = validate_dependency_graph(repos, log, {
+		throw_on_prod_cycles: true,
+		log_cycles: true,
+		log_order: true,
+	});
 
 	// Initialize or load publishing state (skip for dry runs - they don't need persistence)
 	const state_manager: Publishing_State_Manager = dry

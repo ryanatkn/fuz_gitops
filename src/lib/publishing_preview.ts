@@ -3,7 +3,7 @@ import {styleText as st} from 'node:util';
 
 import type {Local_Repo} from '$lib/local_repo.js';
 import type {Bump_Type} from '$lib/semver.js';
-import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
+import {validate_dependency_graph} from '$lib/graph_validation.js';
 import {
 	needs_update,
 	is_breaking_change,
@@ -184,13 +184,39 @@ export const preview_publishing_plan = async (
 	const info: Array<string> = []; // Informational status (not warnings)
 	const errors: Array<string> = [];
 
-	// Build dependency graph
-	const builder = new Dependency_Graph_Builder();
-	const graph = builder.build_from_repos(repos);
+	// Build dependency graph and validate
+	let publishing_order: Array<string>;
+	let production_cycles: Array<Array<string>>;
+	let dev_cycles: Array<Array<string>>;
 
-	// Check for cycles
-	const {production_cycles, dev_cycles} = graph.detect_cycles_by_type();
+	try {
+		const validation = validate_dependency_graph(repos, undefined, {
+			throw_on_prod_cycles: false, // Collect errors instead of throwing
+			log_cycles: false, // We'll handle our own error collection
+			log_order: false, // Preview doesn't need to log order
+		});
+		publishing_order = validation.publishing_order;
+		production_cycles = validation.production_cycles;
+		dev_cycles = validation.dev_cycles;
 
+		// Add topological sort error if present
+		if (validation.sort_error) {
+			errors.push(validation.sort_error);
+		}
+	} catch (error) {
+		errors.push(`Failed to validate dependency graph: ${error}`);
+		return {
+			publishing_order: [],
+			version_changes: [],
+			dependency_updates: [],
+			breaking_cascades: new Map(),
+			warnings,
+			info,
+			errors,
+		};
+	}
+
+	// Collect cycle errors
 	if (production_cycles.length > 0) {
 		for (const cycle of production_cycles) {
 			errors.push(`Production dependency cycle: ${cycle.join(' → ')}`);
@@ -202,23 +228,6 @@ export const preview_publishing_plan = async (
 		info.push(
 			`${dev_cycles.length} dev dependency cycle(s) detected (normal, shown in gitops_analyze)`,
 		);
-	}
-
-	// Compute publishing order
-	let publishing_order: Array<string> = [];
-	try {
-		publishing_order = graph.topological_sort(true); // exclude dev deps
-	} catch (error) {
-		errors.push(`Failed to compute publishing order: ${error}`);
-		return {
-			publishing_order: [],
-			version_changes: [],
-			dependency_updates: [],
-			breaking_cascades: new Map(),
-			warnings,
-			info,
-			errors,
-		};
 	}
 
 	// Initial pass: get all packages with explicit changesets

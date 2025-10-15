@@ -66,7 +66,7 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 #### Publishing Workflow
 
 - `gro gitops_publish` - publishes repos in dependency order
-- `gro gitops_preview` - shows what would be published (dry run preview)
+- `gro gitops_preview` - predicts what would be published (read-only prediction)
 - `gro gitops_analyze` - analyzes dependencies and changesets
 - `gro gitops_publish --dry` - simulates publishing without pre-flight checks or state persistence
 - Handles circular dev dependencies by excluding from topological sort
@@ -74,13 +74,20 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - Updates cross-repo dependencies automatically
 - Pre-flight checks validate clean workspaces, branches, and npm authentication (skipped for --dry runs)
 
-**Dry Run Behavior**
+**Preview vs Dry Run**
+
+`gro gitops_preview`:
+- **Read-only prediction** - Shows what would be published
+- Uses fixed-point iteration to resolve transitive cascades (max 10 iterations)
+- Shows all 4 publishing scenarios: explicit changesets, bump escalation, auto-generated changesets, and no changes
+- No side effects - does not modify any files or state
 
 `gro gitops_publish --dry`:
+- **Simulated execution** - Runs the same code path as real publishing
 - Skips pre-flight checks (workspace, branch, npm auth)
 - Does NOT load or save publishing state (no `.gro/fuz_gitops/publish_state.json`)
-- Simulates publishing for packages with explicit changesets only
-- Packages getting auto-changesets shown in `gro gitops_preview` instead
+- Only simulates packages with explicit changesets (can't auto-generate changesets without real publishes)
+- Use preview for comprehensive "what would happen" analysis; use dry run to test execution flow
 
 #### Changeset Semantics
 
@@ -122,14 +129,50 @@ When a dependency is updated:
 #### Key Publishing Modules
 
 - `multi_repo_publisher.ts` - Main publishing orchestration
-- `publishing_preview.ts` - Dry run predictions and cascade analysis
+- `publishing_preview.ts` - Preview generation and cascade analysis
 - `changeset_reader.ts` - Parses changesets and predicts versions
 - `changeset_generator.ts` - Auto-generates changesets for dependency updates
 - `dependency_graph.ts` - Topological sorting and cycle detection
+- `graph_validation.ts` - Shared cycle detection and publishing order computation
 - `version_utils.ts` - Version comparison and bump type detection
 - `npm_registry.ts` - NPM availability checks with retry
 - `dependency_updater.ts` - Package.json updates with changesets
 - `publishing_state.ts` - Failure recovery and resume support
+
+#### Publishing Algorithms
+
+**Fixed-Point Iteration (Cascade Resolution)**
+
+The preview generation uses fixed-point iteration to resolve transitive breaking change cascades:
+
+1. **Initial pass**: Identify all packages with explicit changesets
+2. **Iteration loop** (max 10 iterations):
+   - Calculate dependency updates based on predicted versions
+   - For each package:
+     - Check if dependencies require a bump (prod/peer deps only)
+     - **Bump escalation**: If existing changesets specify lower bump than required, escalate
+     - **Auto-changesets**: If no changesets but deps updated, generate auto-changeset
+     - Track breaking changes to propagate to dependents
+   - Loop until no new version changes discovered (fixed point reached)
+3. **Final pass**: Calculate all dependency updates and cascades
+
+The 10-iteration limit prevents infinite loops while handling complex dependency graphs. In practice, most repos converge in 2-3 iterations.
+
+**Cycle Detection Strategy**
+
+The system uses topological sort with dev dependency exclusion:
+
+- **Production/peer cycles**: Block publishing (error, must be resolved)
+  - These create impossible ordering: Package A depends on Package B which depends on Package A
+  - Solution: Move one dependency to devDependencies or restructure
+- **Dev cycles**: Allowed and normal (warning only)
+  - Dev dependencies don't affect runtime, so cycles are safe
+  - Topological sort excludes dev deps (`exclude_dev=true`) to break these cycles
+- **Publishing order**: Computed via topological sort on prod/peer deps only
+  - Ensures dependencies publish before dependents
+  - Dev dependencies updated in separate phase after all publishing completes
+
+This strategy enables practical multi-repo patterns (e.g., shared test utilities) while preventing runtime dependency issues.
 
 ## Data types
 

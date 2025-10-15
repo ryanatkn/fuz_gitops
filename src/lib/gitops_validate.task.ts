@@ -1,7 +1,12 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
-import {spawn_out} from '@ryanatkn/belt/process.js';
+
+import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
+import {validate_dependency_graph} from '$lib/graph_validation.js';
+import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
+import {preview_publishing_plan} from '$lib/publishing_preview.js';
+import {publish_repos, type Publishing_Options} from '$lib/multi_repo_publisher.js';
 
 export const Args = z
 	.object({
@@ -39,34 +44,38 @@ export const task: Task<Args> = {
 
 		const start_time = Date.now();
 
-		// Build common args
-		const common_args = ['--path', path];
-		if (dir) {
-			common_args.push('--dir', dir);
-		}
+		// Load repos once (shared by all commands)
+		log.info(st('dim', '📦 Loading repositories...\n'));
+		const {local_repos} = await get_gitops_ready(path, dir, false, false, log);
+		log.info(st('dim', `   Found ${local_repos.length} local repos\n`));
 
 		// 1. Run gitops_analyze
 		log.info(st('yellow', '📊 Running gitops_analyze...\n'));
 		const analyze_start = Date.now();
 		try {
-			const analyze_result = await spawn_out('gro', ['gitops_analyze', ...common_args]);
+			// Build dependency graph and validate (but don't throw on cycles for analyze)
+			const {graph} = validate_dependency_graph(local_repos, undefined, {
+				throw_on_prod_cycles: false, // Analyze should report, not throw
+				log_cycles: false, // We'll collect our own statistics
+				log_order: false,
+			});
+
+			// Perform additional analysis
+			const builder = new Dependency_Graph_Builder();
+			const analysis = builder.analyze(graph);
+
 			const analyze_duration = Date.now() - analyze_start;
 
-			const analyze_output = analyze_result.stdout || '';
-			// Count warning sections (wildcard deps, dev cycles)
+			// Collect warnings and errors
 			const warning_details: Array<string> = [];
-			if (/⚠️\s+Found \d+ wildcard dependencies/.test(analyze_output)) {
+			if (analysis.wildcard_deps.length > 0) {
 				warning_details.push('wildcard dependencies');
 			}
-			if (/⚠️\s+Found \d+ dev circular dependencies/.test(analyze_output)) {
+			if (analysis.dev_cycles.length > 0) {
 				warning_details.push('dev circular dependencies');
 			}
 			const warnings = warning_details.length;
-			// Count error sections (production cycles)
-			const has_prod_cycles = /❌ Found \d+ production\/peer circular dependencies/.test(
-				analyze_output,
-			);
-			const errors = has_prod_cycles ? 1 : 0;
+			const errors = analysis.production_cycles.length > 0 ? 1 : 0;
 
 			results.push({
 				command: 'gitops_analyze',
@@ -100,16 +109,11 @@ export const task: Task<Args> = {
 		log.info(st('yellow', '🔮 Running gitops_preview...\n'));
 		const preview_start = Date.now();
 		try {
-			const preview_result = await spawn_out('gro', ['gitops_preview', ...common_args]);
+			const preview = await preview_publishing_plan(local_repos, undefined);
 			const preview_duration = Date.now() - preview_start;
 
-			const preview_output = preview_result.stdout || '';
-			// Count actual warning lines in the Warnings section
-			const warnings_section = preview_output.match(/⚠️\s+Warnings:\s+([\s\S]*?)(?=\n\nℹ️|$)/);
-			const warnings = warnings_section ? (warnings_section[1].match(/•/g) || []).length : 0;
-			// Count error lines in the Errors section
-			const errors_section = preview_output.match(/❌ Errors found:\s+([\s\S]*?)(?=\n\n|$)/);
-			const errors = errors_section ? (errors_section[1].match(/•/g) || []).length : 0;
+			const warnings = preview.warnings.length;
+			const errors = preview.errors.length;
 
 			results.push({
 				command: 'gitops_preview',
@@ -142,25 +146,25 @@ export const task: Task<Args> = {
 		log.info(st('yellow', '🧪 Running gitops_publish --dry...\n'));
 		const dry_start = Date.now();
 		try {
-			const dry_result = await spawn_out('gro', [
-				'gitops_publish',
-				'--dry',
-				'--no-preview',
-				...common_args,
-			]);
+			const options: Publishing_Options = {
+				dry: true,
+				bump: 'auto',
+				continue_on_error: false,
+				update_deps: true,
+				log: undefined, // Silent for validation
+			};
+
+			const result = await publish_repos(local_repos, options);
 			const dry_duration = Date.now() - dry_start;
 
-			const dry_output = dry_result.stdout || '';
-			// Count actual warning lines in the Warnings section
-			const warnings_section = dry_output.match(/⚠️\s+Warnings:\s+([\s\S]*?)(?=\n\n|$)/);
-			const warnings = warnings_section ? (warnings_section[1].match(/•/g) || []).length : 0;
-			// Count error lines in the Errors section
-			const errors_section = dry_output.match(/❌ Errors found:\s+([\s\S]*?)(?=\n\n|$)/);
-			const errors = errors_section ? (errors_section[1].match(/•/g) || []).length : 0;
+			// Dry run doesn't have warnings/errors in the same format
+			// We'll just check if it succeeded
+			const warnings = 0;
+			const errors = result.ok ? 0 : result.failed.length;
 
 			results.push({
 				command: 'gitops_publish --dry',
-				success: true,
+				success: result.ok,
 				warnings,
 				errors,
 				duration: dry_duration,

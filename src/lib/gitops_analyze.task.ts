@@ -4,8 +4,9 @@ import {styleText as st} from 'node:util';
 import {writeFile} from 'node:fs/promises';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
-import {Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
+import {type Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
 import type {Local_Repo} from '$lib/local_repo.js';
+import {validate_dependency_graph} from '$lib/graph_validation.js';
 
 export const Args = z
 	.object({
@@ -36,26 +37,19 @@ export const task: Task<Args> = {
 		// Get repos ready (without downloading or installing)
 		const {local_repos} = await get_gitops_ready(path, dir, false, false, log);
 
-		// Build dependency graph
-		const builder = new Dependency_Graph_Builder();
-		const graph = builder.build_from_repos(local_repos);
+		// Build dependency graph and validate (but don't throw on cycles for analyze)
+		const {graph, publishing_order: order} = validate_dependency_graph(local_repos, log, {
+			throw_on_prod_cycles: false, // Analyze should report, not throw
+			log_cycles: false, // We'll show cycles in our formatted output
+			log_order: false, // We'll show order in our formatted output
+		});
 
-		// Perform analysis
+		// Perform additional analysis
+		const builder = new Dependency_Graph_Builder();
 		const analysis = builder.analyze(graph);
 
-		// Get publishing order
-		let publishing_order: Array<string> | null = null;
-		try {
-			// Exclude dev dependencies to break cycles
-			publishing_order = graph.topological_sort(true);
-		} catch (_error) {
-			// Cycles prevent topological sort (should only happen with prod/peer cycles)
-			if (analysis.production_cycles.length > 0) {
-				log.error(
-					'Cannot determine publishing order due to circular dependencies in prod/peer deps',
-				);
-			}
-		}
+		// Publishing order (may be null if prod cycles exist)
+		const publishing_order = order.length > 0 ? order : null;
 
 		// Get formatted output
 		const output = get_output(format, {
