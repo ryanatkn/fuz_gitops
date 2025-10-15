@@ -1,7 +1,7 @@
 import type {Url} from '@ryanatkn/belt/url.js';
 import {existsSync} from 'node:fs';
 import {strip_end} from '@ryanatkn/belt/string.js';
-import type {Git_Branch} from '@ryanatkn/gro/git.js';
+import type {Git_Branch} from '@ryanatkn/belt/git.js';
 
 import {DEFAULT_REPOS_DIR} from '$lib/paths.js';
 

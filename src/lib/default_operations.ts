@@ -4,6 +4,7 @@
 
 import {spawn} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
+import type {Git_Branch, Git_Origin} from '@ryanatkn/belt/git.js';
 
 import {has_changesets, read_changesets, predict_next_version} from '$lib/changeset_reader.js';
 import {wait_for_package, check_package_available} from '$lib/npm_registry.js';
@@ -24,8 +25,6 @@ import {
 	git_check_clean_workspace_as_boolean,
 	git_checkout_wrapper,
 	git_pull_wrapper,
-	type Git_Branch,
-	type Git_Origin,
 } from '$lib/git_operations.js';
 import type {
 	Changeset_Operations,
@@ -67,9 +66,10 @@ export const default_git_operations: Git_Operations = {
 		git_switch_branch(branch as Git_Branch, pull, cwd ? {cwd} : undefined),
 
 	// Staging and committing
-	add: async (files: string | string[], cwd?: string) => git_add(files, cwd ? {cwd} : undefined),
+	add: async (files: string | Array<string>, cwd?: string) =>
+		git_add(files, cwd ? {cwd} : undefined),
 	commit: async (message: string, cwd?: string) => git_commit(message, cwd ? {cwd} : undefined),
-	add_and_commit: async (files: string | string[], message: string, cwd?: string) =>
+	add_and_commit: async (files: string | Array<string>, message: string, cwd?: string) =>
 		git_add_and_commit(files, message, cwd ? {cwd} : undefined),
 	has_changes: async (cwd?: string) => git_has_changes(cwd ? {cwd} : undefined),
 	get_changed_files: async (cwd?: string) => git_get_changed_files(cwd ? {cwd} : undefined),

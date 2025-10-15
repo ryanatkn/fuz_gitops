@@ -8,12 +8,15 @@ import {
 	git_current_commit_hash as gro_git_current_commit_hash,
 	type Git_Branch,
 	type Git_Origin,
-} from '@ryanatkn/gro/git.js';
+} from '@ryanatkn/belt/git.js';
 
 /**
  * Adds files to git staging area and throws if anything goes wrong.
  */
-export const git_add = async (files: string | string[], options?: SpawnOptions): Promise<void> => {
+export const git_add = async (
+	files: string | Array<string>,
+	options?: SpawnOptions,
+): Promise<void> => {
 	const file_list = Array.isArray(files) ? files : [files];
 	const result = await spawn('git', ['add', ...file_list], options);
 	if (!result.ok) {
@@ -35,7 +38,7 @@ export const git_commit = async (message: string, options?: SpawnOptions): Promi
  * Adds files and commits in one operation and throws if anything goes wrong.
  */
 export const git_add_and_commit = async (
-	files: string | string[],
+	files: string | Array<string>,
 	message: string,
 	options?: SpawnOptions,
 ): Promise<void> => {
@@ -84,7 +87,7 @@ export const git_has_changes = async (options?: SpawnOptions): Promise<boolean> 
 /**
  * Returns list of changed files compared to HEAD.
  */
-export const git_get_changed_files = async (options?: SpawnOptions): Promise<string[]> => {
+export const git_get_changed_files = async (options?: SpawnOptions): Promise<Array<string>> => {
 	const {stdout} = await spawn_out('git', ['diff', '--name-only', 'HEAD'], options);
 	if (!stdout) return [];
 
@@ -200,6 +203,3 @@ export const git_pull_wrapper = async (
 ): Promise<void> => {
 	await gro_git_pull(origin as Git_Origin, branch as Git_Branch, options);
 };
-
-// Export types for convenience
-export type {Git_Branch, Git_Origin} from '@ryanatkn/gro/git.js';
