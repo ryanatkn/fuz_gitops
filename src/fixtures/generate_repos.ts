@@ -46,7 +46,10 @@ export default config;
 	// Create src/lib directory so gro can find source files
 	mkdirSync(join(repo_path, 'src/lib'), {recursive: true});
 	// Create empty index.ts so the lib directory isn't empty
-	writeFileSync(join(repo_path, 'src/lib/index.ts'), 'export const value = "Fixture repo module";\n');
+	writeFileSync(
+		join(repo_path, 'src/lib/index.ts'),
+		'export const value = "Fixture repo module";\n',
+	);
 
 	// Create .changeset directory and files if changesets exist
 	if (repo_data.changesets && repo_data.changesets.length > 0) {
