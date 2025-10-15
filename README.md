@@ -35,29 +35,50 @@ npm i -D @ryanatkn/fuz_gitops
   in either `process.env`, a project-local `.env`, or the parent directory at `../.env`
   (currently optional to read public repos, but it's recommended regardless,
   and you'll need to select options to support private repos)
-- re-export the `gro gitops` task by creating `$lib/gitops.task.ts` with
-  the contents `export * from '@ryanatkn/fuz_gitops/gitops.task.js';`
-- run `gro gitops` to update the local data
+- re-export the `gro gitops_sync` task by creating `$lib/gitops_sync.task.ts` with
+  the contents `export * from '@ryanatkn/fuz_gitops/gitops_sync.task.js';`
+- run `gro gitops_sync` to sync repos and update the local data
 
-### Publishing multiple repos
+## Architecture
 
-```bash
-gro gitops_publish         # publish all repos with changesets
-gro gitops_publish --dry   # preview what would be published
+```
+gitops.config.ts → local repos → GitHub API → repos.ts → UI components
 ```
 
-Publishes repos in dependency order, handling:
+- **Operations pattern**: Dependency injection for all side effects (git, npm, fs)
+- **Fixture testing**: Generated git repos for isolated tests
+- **Changeset-driven**: Automatic version bumps and dependency updates
 
-- Circular dev dependencies
-- NPM registry propagation delays
-- Automatic dependency updates across repos
+See [CLAUDE.md](CLAUDE.md#architecture) for detailed documentation.
+
+## Quick Start
+
+### Syncing repo metadata
+
+```bash
+gro gitops_sync               # sync repos and generate UI data
+gro gitops_sync --download    # clone missing repos first
+```
+
+### Publishing packages
+
+```bash
+gro gitops_validate      # validate before publishing (read-only)
+gro gitops_publish       # publish all repos with changesets
+```
+
+**See [CLAUDE.md](CLAUDE.md) for comprehensive documentation:**
+- Command reference (read-only vs side effects)
+- Publishing workflows and examples
+- Troubleshooting guide
+- Architecture and testing patterns
 
 Getting started as a dev? Start with [Gro](https://github.com/grogarden/gro)
 and the [Fuz template](https://github.com/fuz-dev/fuz_template).
 
 TODO
 
-- figure out better automation than manually running `gro gitops`
+- figure out better automation than manually running `gro gitops_sync`
 - show the rate limit info
 - think about how fuz_gitops could use both GitHub Actions and
   [Forgejo Actions](https://forgejo.org/docs/v1.20/user/actions/)

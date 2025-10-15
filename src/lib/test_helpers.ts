@@ -2,7 +2,7 @@ import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 
 import type {Local_Repo} from '$lib/local_repo.js';
 import type {
-	Publishing_Operations,
+	Gitops_Operations,
 	Changeset_Operations,
 	Git_Operations,
 	Fs_Operations,
@@ -70,18 +70,18 @@ export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
 };
 
 /**
- * Creates mock Publishing_Operations with sensible defaults
+ * Creates mock Gitops_Operations with sensible defaults
  */
-export const create_mock_publishing_ops = (
+export const create_mock_gitops_ops = (
 	overrides: Partial<{
-		changeset: Partial<Publishing_Operations['changeset']>;
-		git: Partial<Publishing_Operations['git']>;
-		process: Partial<Publishing_Operations['process']>;
-		npm: Partial<Publishing_Operations['npm']>;
-		preflight: Partial<Publishing_Operations['preflight']>;
-		fs: Partial<Publishing_Operations['fs']>;
+		changeset: Partial<Gitops_Operations['changeset']>;
+		git: Partial<Gitops_Operations['git']>;
+		process: Partial<Gitops_Operations['process']>;
+		npm: Partial<Gitops_Operations['npm']>;
+		preflight: Partial<Gitops_Operations['preflight']>;
+		fs: Partial<Gitops_Operations['fs']>;
 	}> = {},
-): Publishing_Operations => ({
+): Gitops_Operations => ({
 	changeset: {
 		has_changesets: async () => true,
 		read_changesets: async () => [],

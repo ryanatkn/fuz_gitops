@@ -10,8 +10,8 @@ import type {Bump_Type} from '$lib/semver.js';
 import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
 import {init_publishing_state, Publishing_State_Manager} from '$lib/publishing_state.js';
 import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
-import type {Publishing_Operations} from '$lib/operations.js';
-import {default_publishing_operations} from '$lib/default_operations.js';
+import type {Gitops_Operations} from '$lib/operations.js';
+import {default_gitops_operations} from '$lib/default_operations.js';
 
 export interface Publishing_Options {
 	dry: boolean;
@@ -48,7 +48,7 @@ export interface Publishing_Result {
 export const publish_repos = async (
 	repos: Array<Local_Repo>,
 	options: Publishing_Options,
-	ops: Publishing_Operations = default_publishing_operations,
+	ops: Gitops_Operations = default_gitops_operations,
 ): Promise<Publishing_Result> => {
 	const start_time = Date.now();
 	const {dry, continue_on_error, update_deps, resume = false, log} = options;
@@ -317,7 +317,7 @@ export const publish_repos = async (
 const publish_single_repo = async (
 	repo: Local_Repo,
 	options: Publishing_Options,
-	ops: Publishing_Operations = default_publishing_operations,
+	ops: Gitops_Operations = default_gitops_operations,
 ): Promise<Published_Version> => {
 	const {dry, log} = options;
 

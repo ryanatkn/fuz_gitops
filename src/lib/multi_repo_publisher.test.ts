@@ -4,7 +4,7 @@ import type {Local_Repo} from '$lib/local_repo.js';
 import {publish_repos} from '$lib/multi_repo_publisher.js';
 import {
 	create_mock_repo,
-	create_mock_publishing_ops,
+	create_mock_gitops_ops,
 	create_mock_package_json_files,
 } from '$lib/test_helpers.js';
 
@@ -15,7 +15,7 @@ test('dry run predicts versions without publishing', async () => {
 	];
 
 	// Create mock operations
-	const mock_ops = create_mock_publishing_ops({
+	const mock_ops = create_mock_gitops_ops({
 		changeset: {
 			predict_next_version: async (repo) => {
 				if (repo.pkg.name === 'pkg-a') {
@@ -68,7 +68,7 @@ test('handles publish failures with continue_on_error', async () => {
 	const mock_fs = create_mock_package_json_files(repos);
 
 	let publish_attempt = 0;
-	const mock_ops = create_mock_publishing_ops({
+	const mock_ops = create_mock_gitops_ops({
 		process: {
 			spawn: async (cmd, args) => {
 				if (cmd === 'gro' && args[0] === 'publish') {
@@ -125,7 +125,7 @@ test('handles breaking change cascades in dry run', async () => {
 		create_mock_repo({name: 'pkg-app', version: '0.2.0', deps: {'pkg-mid': '^0.3.0'}}),
 	];
 
-	const mock_ops = create_mock_publishing_ops({
+	const mock_ops = create_mock_gitops_ops({
 		changeset: {
 			predict_next_version: async (repo) => {
 				// pkg-core has a breaking change (0.x minor bump)
@@ -189,7 +189,7 @@ test('skips repos without changesets', async () => {
 	const mock_fs = create_mock_package_json_files(repos);
 
 	// Create mock operations where only pkg-a has changesets
-	const mock_ops = create_mock_publishing_ops({
+	const mock_ops = create_mock_gitops_ops({
 		changeset: {
 			has_changesets: async (repo) => repo.pkg.name === 'pkg-a',
 		},

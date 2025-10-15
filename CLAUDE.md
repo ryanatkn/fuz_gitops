@@ -19,7 +19,7 @@ gitops.config.ts -> local repos -> GitHub API -> repos.ts -> UI components
 ### Key files
 
 - `gitops.config.ts` - user config defining repo collections
-- `src/lib/gitops.task.ts` - main Gro task orchestrating operations
+- `src/lib/gitops_sync.task.ts` - syncs local repos and generates UI data
 - `src/lib/local_repo.ts` - manages local repo clones, branch switching
 - `src/lib/github.ts` - GitHub API client for PRs, CI status
 - `src/lib/fetch_repo_data.ts` - fetches remote repo metadata
@@ -38,7 +38,7 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 
 ## Main operations
 
-### `gro gitops` Task
+### `gro gitops_sync` Task
 
 1. Loads config from `gitops.config.ts`
 2. Resolves local repos (clones missing if `--download`)
@@ -160,8 +160,8 @@ interface Local_Repo {
 npm i -D @ryanatkn/fuz_gitops
 
 # Data management
-gro gitops               # update local data
-gro gitops --download    # clone missing repos
+gro gitops_sync               # sync repos and update local data
+gro gitops_sync --download    # clone missing repos
 
 # Publishing
 gro gitops_validate      # validate configuration (runs analyze, preview, and dry run)
@@ -182,6 +182,26 @@ gro src/fixtures/update         # regenerate baseline outputs for gitops command
 gro test src/fixtures/check     # validate command outputs match baselines
 ```
 
+## Commands Reference
+
+Commands are categorized by their side effects:
+
+### Read-Only Commands (Safe, No Side Effects)
+- `gro gitops_analyze` - Analyze dependency graph, detect cycles
+- `gro gitops_preview` - Preview version changes and cascades
+- `gro gitops_validate` - Run all validation checks (analyze + preview + dry run)
+- `gro gitops_publish --dry` - Simulate publishing without pre-flight checks
+
+### Data Sync Commands (Local Changes Only)
+- `gro gitops_sync` - Fetch repo metadata, generate src/routes/repos.ts (also ensures repos are cloned and ready)
+
+### Publishing Commands (Git & NPM Side Effects)
+- `gro gitops_publish` - Publish packages, update dependencies, git commits
+
+**Command Workflow:**
+- `gitops_validate` runs: `gitops_analyze` + `gitops_preview` + `gitops_publish --dry`
+- `gitops_publish` runs: `gitops_preview` (with confirmation) + actual publish
+
 ## Dependencies
 
 - `@ryanatkn/gro` - build tool and task runner
@@ -201,9 +221,23 @@ gro test src/fixtures/check     # validate command outputs match baselines
 - Changeset-driven versioning with auto-generation
 - State persistence for publishing failure recovery
 
+## Testability & Operations Pattern
+
+This project uses **dependency injection** for all side effects, making it fully testable without mocks:
+
+**Why:** Functions that call git, npm, or file system are hard to test. The operations pattern abstracts these into interfaces.
+
+**How:** See `src/lib/operations.ts` - all external dependencies (git, npm, fs, process) are defined as interfaces. Tests provide mock implementations.
+
+**Example:**
+- Production: `multi_repo_publisher(repos, options, default_gitops_operations)`
+- Tests: `multi_repo_publisher(repos, options, mock_gitops_operations)`
+
+See `src/lib/default_operations.ts` for real implementations and test files for mock implementations.
+
 ## Testing
 
-Use vitest with minimal mocking:
+Uses vitest with **zero mocks** - all tests use the operations pattern for dependency injection (see above).
 
 ```bash
 gro test                 # run all tests

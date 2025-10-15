@@ -43,7 +43,7 @@ export type Args = z.infer<typeof Args>;
  */
 export const task: Task<Args> = {
 	Args,
-	summary: 'gets gitops ready and runs scripts',
+	summary: 'syncs local repos and generates UI data from repo metadata',
 	run: async ({args, log, svelte_config, invoke_task}) => {
 		const {path, dir, outdir = svelte_config.routes_path, download, install, sync} = args;
 

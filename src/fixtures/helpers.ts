@@ -10,7 +10,7 @@ export interface Command_Output {
 	stderr: string;
 	success: boolean;
 	command: string;
-	args: string[];
+	args: Array<string>;
 }
 
 export interface Fixture_Comparison {
@@ -26,7 +26,7 @@ export interface Fixture_Comparison {
  */
 export const run_gitops_command = async (
 	command: 'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry',
-	args: string[] = [],
+	args: Array<string> = [],
 	log?: Logger,
 	config_path: string = 'src/fixtures/gitops.fixtures.config.ts',
 ): Promise<Command_Output> => {
@@ -39,7 +39,7 @@ export const run_gitops_command = async (
 	const outfile = join(GITOPS_OUTPUT_DIR, `${command}_output_${Date.now()}.md`);
 
 	// Build command args - handle gitops_publish_dry specially
-	let full_args: string[];
+	let full_args: Array<string>;
 	if (command === 'gitops_publish_dry') {
 		full_args = [
 			'gitops_publish',

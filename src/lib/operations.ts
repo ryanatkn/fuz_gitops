@@ -1,6 +1,24 @@
 /**
- * Operation interfaces for dependency injection
- * Allows functions to be testable by parameterizing external dependencies
+ * Operations interfaces for dependency injection.
+ *
+ * This is the core pattern enabling testability without mocks.
+ * All side effects (git, npm, fs, process) are abstracted into interfaces.
+ *
+ * **Production usage:**
+ * ```typescript
+ * import {default_gitops_operations} from '$lib/default_operations.js';
+ * await publish_repos(repos, options, default_gitops_operations);
+ * ```
+ *
+ * **Test usage:**
+ * ```typescript
+ * import {mock_gitops_operations} from '$lib/fixtures/mock_operations.js';
+ * const result = await publish_repos(repos, options, mock_gitops_operations);
+ * // Assert on result without any real git/npm calls
+ * ```
+ *
+ * See `default_operations.ts` for real implementations.
+ * See test files (*.test.ts) for mock implementations.
  */
 
 import type {Logger} from '@ryanatkn/belt/log.js';
@@ -37,11 +55,11 @@ export interface Git_Operations {
 	switch_branch: (branch: string, pull?: boolean, cwd?: string) => Promise<void>;
 
 	// Staging and committing
-	add: (files: string | string[], cwd?: string) => Promise<void>;
+	add: (files: string | Array<string>, cwd?: string) => Promise<void>;
 	commit: (message: string, cwd?: string) => Promise<void>;
-	add_and_commit: (files: string | string[], message: string, cwd?: string) => Promise<void>;
+	add_and_commit: (files: string | Array<string>, message: string, cwd?: string) => Promise<void>;
 	has_changes: (cwd?: string) => Promise<boolean>;
-	get_changed_files: (cwd?: string) => Promise<string[]>;
+	get_changed_files: (cwd?: string) => Promise<Array<string>>;
 
 	// Tagging
 	tag: (tag_name: string, message?: string, cwd?: string) => Promise<void>;
@@ -109,9 +127,9 @@ export interface Fs_Operations {
 }
 
 /**
- * Combined operations for publishing
+ * Combined operations for all gitops functionality
  */
-export interface Publishing_Operations {
+export interface Gitops_Operations {
 	changeset: Changeset_Operations;
 	git: Git_Operations;
 	process: Process_Operations;

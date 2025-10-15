@@ -33,7 +33,7 @@ import type {
 	Npm_Operations,
 	Preflight_Operations,
 	Fs_Operations,
-	Publishing_Operations,
+	Gitops_Operations,
 } from '$lib/operations.js';
 
 /**
@@ -147,9 +147,9 @@ export const default_fs_operations: Fs_Operations = {
 };
 
 /**
- * Combined default operations for publishing
+ * Combined default operations for all gitops functionality
  */
-export const default_publishing_operations: Publishing_Operations = {
+export const default_gitops_operations: Gitops_Operations = {
 	changeset: default_changeset_operations,
 	git: default_git_operations,
 	process: default_process_operations,
