@@ -84,6 +84,8 @@ export interface Npm_Operations {
 		log?: Logger,
 	) => Promise<void>;
 	check_package_available: (pkg: string, version: string, log?: Logger) => Promise<boolean>;
+	check_auth: () => Promise<{ok: boolean; username?: string; error?: string}>;
+	check_registry: () => Promise<{ok: boolean; error?: string}>;
 }
 
 /**
@@ -94,6 +96,7 @@ export interface Preflight_Operations {
 		repos: Array<Local_Repo>,
 		options: Pre_Flight_Options,
 		git_ops?: Git_Operations,
+		npm_ops?: Npm_Operations,
 	) => Promise<Pre_Flight_Result>;
 }
 

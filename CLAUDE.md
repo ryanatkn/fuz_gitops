@@ -164,10 +164,12 @@ gro gitops               # update local data
 gro gitops --download    # clone missing repos
 
 # Publishing
+gro gitops_validate      # validate configuration (runs analyze, preview, and dry run)
 gro gitops_analyze       # analyze dependencies and changesets
 gro gitops_preview       # preview what would be published
 gro gitops_publish       # publish repos in dependency order
 gro gitops_publish --dry # dry run without pre-flight checks
+gro gitops_publish --no-preview # skip preview confirmation before publishing
 
 # Development
 gro dev                  # start dev server
@@ -243,3 +245,210 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 4. Run `gro test src/fixtures/check` to validate outputs match baselines
 
 Test repos are isolated from real workspace repos and can run in CI without cloning.
+
+## Publishing Workflows
+
+### Safe Validation Workflow
+
+Before publishing, always validate your configuration:
+
+```bash
+# 1. Run comprehensive validation (no side effects)
+gro gitops_validate
+
+# 2. Review analyze output
+gro gitops_analyze
+
+# 3. Review preview to see what will be published
+gro gitops_preview
+
+# 4. Test with dry run
+gro gitops_publish --dry
+
+# 5. If everything looks good, publish
+gro gitops_publish
+```
+
+### Real-World Examples
+
+**Example 1: Publishing a single package with changesets**
+
+```bash
+# Create a changeset for your package
+cd packages/my-package
+npx changeset
+# Follow prompts to describe changes
+
+# Preview what will be published
+gro gitops_preview
+# Output shows: my-package: 1.0.0 → 1.1.0 (minor)
+
+# Publish
+gro gitops_publish
+```
+
+**Example 2: Publishing multiple packages with cascading dependencies**
+
+```bash
+# You have changesets in @my/core
+# Dependents: @my/ui depends on @my/core
+
+# Preview shows cascade
+gro gitops_preview
+# Output:
+#   @my/core: 1.0.0 → 2.0.0 (major, BREAKING)
+#   @my/ui: 1.5.0 → 2.0.0 (auto-changeset, BREAKING cascade)
+
+# Publish in dependency order
+gro gitops_publish
+```
+
+**Example 3: Recovering from failures with --resume**
+
+```bash
+# Publishing failed midway through
+gro gitops_publish
+# Error: Failed to publish @my/package-5
+
+# Fix the issue, then resume
+gro gitops_publish --resume
+# Skips already-published packages, continues from failure
+```
+
+**Example 4: Using dry run for planning**
+
+```bash
+# See what would happen without actually publishing
+gro gitops_publish --dry
+
+# Save output to file for review
+gro gitops_publish --dry --format markdown --outfile publish-plan.md
+```
+
+**Example 5: Bump escalation**
+
+```bash
+# You created a patch changeset for @my/app
+# But @my/core (dependency) has a breaking change
+
+# Preview shows escalation
+gro gitops_preview
+# Output:
+#   @my/core: 1.0.0 → 2.0.0 (major, BREAKING)
+#   @my/app: 2.0.0 → 3.0.0 (patch → major, escalated)
+
+# Publish handles escalation automatically
+gro gitops_publish
+```
+
+## Troubleshooting
+
+### Common Errors and Solutions
+
+**Error: "Pre-flight checks failed: workspace has uncommitted changes"**
+
+Solution: Commit or stash your changes before publishing
+```bash
+git status
+git add .
+git commit -m "prepare for publish"
+```
+
+**Error: "Pre-flight checks failed: not on main branch"**
+
+Solution: Switch to main branch
+```bash
+git checkout main
+git pull
+```
+
+**Error: "npm authentication failed"**
+
+Solution: Log in to npm
+```bash
+npm login
+npm whoami  # verify login
+```
+
+**Warning: "Preview differs from actual publish"**
+
+This can happen if:
+- Another publish happened between preview and actual
+- NPM registry has not propagated yet
+
+Solution: Run preview again, compare outputs
+
+**Error: "Circular dependency detected in production dependencies"**
+
+Solution: Production/peer circular dependencies block publishing. You must:
+1. Identify the cycle in `gro gitops_analyze` output
+2. Move one dependency to devDependencies
+3. Or restructure to remove the cycle
+
+Note: Dev dependency cycles are normal and allowed.
+
+**Error: "Failed to publish: package not found on NPM after 5 minutes"**
+
+Solution: NPM propagation can be slow. Either:
+- Wait longer and use `--resume`
+- Check NPM registry status
+- Verify package was actually published
+
+**Issue: "Auto-changeset generated when I didn't expect it"**
+
+This happens when:
+- A dependency was published with a new version
+- Your package has that dependency in dependencies or peerDependencies
+
+This is correct behavior - packages must republish when their dependencies change.
+
+**Issue: "Package not publishing even though I have a changeset"**
+
+Check:
+1. Changeset file is in `.changeset/` directory
+2. Changeset file is not `README.md`
+3. Changeset references the correct package name
+4. Changeset has valid frontmatter format
+
+**Issue: "Publish state file causing issues"**
+
+The state file is stored in `.gro/fuz_gitops/publish_state.json`
+
+To reset:
+```bash
+rm .gro/fuz_gitops/publish_state.json
+```
+
+### Debugging Tips
+
+**View detailed dependency graph:**
+```bash
+gro gitops_analyze --format markdown --outfile deps.md
+```
+
+**Compare preview vs actual:**
+```bash
+# Before publishing
+gro gitops_preview --format markdown --outfile preview.md
+
+# After publishing (dry run)
+gro gitops_publish --dry --format markdown --outfile actual.md
+
+# Compare files
+diff preview.md actual.md
+```
+
+**Check what changed since last publish:**
+```bash
+# In each repo
+git log --oneline
+ls .changeset/
+```
+
+## Output Directory
+
+All gitops-generated files are stored in `.gro/fuz_gitops/`:
+- `publish_state.json` - Persistent state for resume functionality
+- Temporary output files during command execution
+
+This directory should be gitignored (already in `.gitignore`).

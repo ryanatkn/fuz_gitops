@@ -64,6 +64,7 @@ export const publish_repos = async (
 			repos,
 			pre_flight_options,
 			ops.git,
+			ops.npm,
 		);
 
 		if (!pre_flight.ok) {

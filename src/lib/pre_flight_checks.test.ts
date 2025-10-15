@@ -1,7 +1,7 @@
 import {describe, it, expect} from 'vitest';
 
 import {run_pre_flight_checks} from '$lib/pre_flight_checks.js';
-import {create_mock_repo, create_mock_git_ops} from '$lib/test_helpers.js';
+import {create_mock_repo, create_mock_git_ops, create_mock_npm_ops} from '$lib/test_helpers.js';
 import type {Local_Repo} from '$lib/local_repo.js';
 
 describe('pre_flight_checks', () => {
@@ -12,8 +12,14 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops({
 				check_clean_workspace: async () => true,
 			});
+			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(repos, {skip_changesets: true}, git_ops);
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
 
 			expect(result.ok).toBe(true);
 			expect(result.errors).toHaveLength(0);
@@ -28,9 +34,16 @@ describe('pre_flight_checks', () => {
 					call_count++;
 					return call_count !== 2; // Second repo fails
 				},
+				get_changed_files: async () => ['src/main.ts'], // Simulate changed files
 			});
+			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(repos, {skip_changesets: true}, git_ops);
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
 
 			expect(result.ok).toBe(false);
 			expect(result.errors).toHaveLength(1);
@@ -47,9 +60,16 @@ describe('pre_flight_checks', () => {
 
 			const git_ops = create_mock_git_ops({
 				check_clean_workspace: async () => false, // All dirty
+				get_changed_files: async () => ['src/file.ts'], // Simulate changed files
 			});
+			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(repos, {skip_changesets: true}, git_ops);
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
 
 			expect(result.ok).toBe(false);
 			expect(result.errors).toHaveLength(3);
@@ -63,11 +83,13 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops({
 				current_branch_name: async () => 'main',
 			});
+			const npm_ops = create_mock_npm_ops();
 
 			const result = await run_pre_flight_checks(
 				repos,
-				{skip_changesets: true, required_branch: 'main'},
+				{skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
+				npm_ops,
 			);
 
 			expect(result.ok).toBe(true);
@@ -84,11 +106,13 @@ describe('pre_flight_checks', () => {
 					return call_count === 1 ? 'main' : 'develop';
 				},
 			});
+			const npm_ops = create_mock_npm_ops();
 
 			const result = await run_pre_flight_checks(
 				repos,
-				{skip_changesets: true, required_branch: 'main'},
+				{skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
+				npm_ops,
 			);
 
 			expect(result.ok).toBe(false);
@@ -104,11 +128,13 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops({
 				current_branch_name: async () => 'release',
 			});
+			const npm_ops = create_mock_npm_ops();
 
 			const result = await run_pre_flight_checks(
 				repos,
-				{skip_changesets: true, required_branch: 'release'},
+				{skip_changesets: true, required_branch: 'release', check_remote: false},
 				git_ops,
+				npm_ops,
 			);
 
 			expect(result.ok).toBe(true);
@@ -121,7 +147,13 @@ describe('pre_flight_checks', () => {
 				current_branch_name: async () => 'develop',
 			});
 
-			const result = await run_pre_flight_checks(repos, {skip_changesets: true}, git_ops);
+			const npm_ops = create_mock_npm_ops();
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
 
 			expect(result.ok).toBe(false);
 			expect(result.errors[0]).toContain("expected 'main'");
@@ -133,8 +165,9 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'}), create_mock_repo({name: 'package-b'})];
 
 			const git_ops = create_mock_git_ops();
+			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(repos, {}, git_ops);
+			const result = await run_pre_flight_checks(repos, {check_remote: false}, git_ops, npm_ops);
 
 			// Without actual changesets, all should be marked as without
 			expect(result.repos_without_changesets.size).toBe(2);
@@ -145,8 +178,9 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'}), create_mock_repo({name: 'package-b'})];
 
 			const git_ops = create_mock_git_ops();
+			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(repos, {}, git_ops);
+			const result = await run_pre_flight_checks(repos, {check_remote: false}, git_ops, npm_ops);
 
 			// Filter for changeset-related warnings (may also have npm warnings)
 			const changeset_warnings = result.warnings.filter((w) => w.includes('no changesets'));
@@ -158,7 +192,13 @@ describe('pre_flight_checks', () => {
 
 			const git_ops = create_mock_git_ops();
 
-			const result = await run_pre_flight_checks(repos, {skip_changesets: true}, git_ops);
+			const npm_ops = create_mock_npm_ops();
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
 
 			expect(result.repos_with_changesets.size).toBe(0);
 			expect(result.repos_without_changesets.size).toBe(0);
@@ -179,7 +219,13 @@ describe('pre_flight_checks', () => {
 
 			// This test depends on actual npm being logged in
 			// In a real test, we'd mock spawn_out
-			const result = await run_pre_flight_checks(repos, {skip_changesets: true}, git_ops);
+			const npm_ops = create_mock_npm_ops();
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
 
 			// We can't assert npm auth result without mocking spawn
 			// but we can check the structure
@@ -203,20 +249,23 @@ describe('pre_flight_checks', () => {
 					clean_call++;
 					return clean_call !== 1; // First repo is dirty
 				},
+				get_changed_files: async () => ['src/main.ts'], // Simulate changed files
 				current_branch_name: async () => {
 					branch_call++;
 					return 'develop'; // Both on wrong branch
 				},
 			});
+			const npm_ops = create_mock_npm_ops();
 
 			const result = await run_pre_flight_checks(
 				repos,
-				{skip_changesets: true, required_branch: 'main'},
+				{skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
+				npm_ops,
 			);
 
 			expect(result.ok).toBe(false);
-			expect(result.errors.length).toBeGreaterThanOrEqual(3); // dirty + 2 wrong branches
+			expect(result.errors.length).toBe(3); // 1 dirty + 2 wrong branches
 		});
 	});
 
@@ -225,7 +274,13 @@ describe('pre_flight_checks', () => {
 			const repos: Array<Local_Repo> = [];
 			const git_ops = create_mock_git_ops();
 
-			const result = await run_pre_flight_checks(repos, {skip_changesets: true}, git_ops);
+			const npm_ops = create_mock_npm_ops();
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
 
 			expect(result.ok).toBe(true);
 			expect(result.errors).toHaveLength(0);
@@ -238,7 +293,13 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'})];
 			const git_ops = create_mock_git_ops();
 
-			const result = await run_pre_flight_checks(repos, {skip_changesets: true}, git_ops);
+			const npm_ops = create_mock_npm_ops();
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
 
 			expect(result).toHaveProperty('ok');
 			expect(result).toHaveProperty('warnings');

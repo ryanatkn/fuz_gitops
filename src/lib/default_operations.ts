@@ -2,7 +2,7 @@
  * Default implementations of operations interfaces
  */
 
-import {spawn} from '@ryanatkn/belt/process.js';
+import {spawn, spawn_out} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
 import type {Git_Branch, Git_Origin} from '@ryanatkn/belt/git.js';
 
@@ -98,14 +98,44 @@ export const default_process_operations: Process_Operations = {
 export const default_npm_operations: Npm_Operations = {
 	wait_for_package,
 	check_package_available,
+	check_auth: async () => {
+		try {
+			const result = await spawn_out('npm', ['whoami']);
+			if (result.stdout) {
+				const username = result.stdout.trim();
+				if (username) {
+					return {ok: true, username};
+				}
+			}
+			return {ok: false, error: 'Not logged in to npm'};
+		} catch (error) {
+			return {ok: false, error: String(error)};
+		}
+	},
+	check_registry: async () => {
+		try {
+			const result = await spawn_out('npm', ['ping']);
+			if (result.stdout) {
+				return {ok: true};
+			}
+			return {ok: false, error: 'Failed to ping npm registry'};
+		} catch (error) {
+			return {ok: false, error: String(error)};
+		}
+	},
 };
 
 /**
  * Default pre-flight operations
  */
 export const default_preflight_operations: Preflight_Operations = {
-	run_pre_flight_checks: async (repos, options, git_ops) =>
-		run_pre_flight_checks(repos, options, git_ops || default_git_operations),
+	run_pre_flight_checks: async (repos, options, git_ops, npm_ops) =>
+		run_pre_flight_checks(
+			repos,
+			options,
+			git_ops || default_git_operations,
+			npm_ops || default_npm_operations,
+		),
 };
 
 /**

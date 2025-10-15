@@ -6,6 +6,7 @@ import type {
 	Changeset_Operations,
 	Git_Operations,
 	Fs_Operations,
+	Npm_Operations,
 } from '$lib/operations.js';
 import type {Bump_Type} from '$lib/semver.js';
 
@@ -95,11 +96,7 @@ export const create_mock_publishing_ops = (
 		spawn: async () => ({ok: true}),
 		...overrides.process,
 	},
-	npm: {
-		wait_for_package: async () => {},
-		check_package_available: async () => true,
-		...overrides.npm,
-	},
+	npm: create_mock_npm_ops(overrides.npm),
 	preflight: {
 		run_pre_flight_checks: async () => ({
 			ok: true,
@@ -183,6 +180,17 @@ export const create_mock_git_ops = (overrides: Partial<Git_Operations> = {}): Gi
 	push_tag: async () => {},
 	stash: async () => {},
 	stash_pop: async () => {},
+	...overrides,
+});
+
+/**
+ * Creates mock Npm_Operations for testing
+ */
+export const create_mock_npm_ops = (overrides: Partial<Npm_Operations> = {}): Npm_Operations => ({
+	wait_for_package: async () => {},
+	check_package_available: async () => true,
+	check_auth: async () => ({ok: true, username: 'testuser'}),
+	check_registry: async () => ({ok: true}),
 	...overrides,
 });
 
