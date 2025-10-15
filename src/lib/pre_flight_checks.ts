@@ -5,7 +5,7 @@ import {styleText as st} from 'node:util';
 import type {Local_Repo} from '$lib/local_repo.js';
 import {has_changesets} from '$lib/changeset_reader.js';
 import type {Git_Operations, Npm_Operations} from '$lib/operations.js';
-import {default_git_operations, default_npm_operations} from '$lib/default_operations.js';
+import {default_git_operations, default_npm_operations} from '$lib/operations_defaults.js';
 
 export interface Pre_Flight_Options {
 	skip_changesets?: boolean;
@@ -45,8 +45,8 @@ export const run_pre_flight_checks = async (
 
 	const warnings: Array<string> = [];
 	const errors: Array<string> = [];
-	const repos_with_changesets = new Set<string>();
-	const repos_without_changesets = new Set<string>();
+	const repos_with_changesets: Set<string> = new Set();
+	const repos_without_changesets: Set<string> = new Set();
 	let npm_username: string | undefined;
 	let estimated_duration: number | undefined;
 
@@ -55,11 +55,11 @@ export const run_pre_flight_checks = async (
 	// 1. Check clean workspaces with detailed file analysis
 	log?.info('  Checking workspace cleanliness...');
 	for (const repo of repos) {
-		const is_clean = await git_ops.check_clean_workspace(repo.repo_dir);
+		const is_clean = await git_ops.check_clean_workspace(repo.repo_dir); // eslint-disable-line no-await-in-loop
 		if (!is_clean) {
 			// Get list of changed files for better error message
 			try {
-				const changed_files = await git_ops.get_changed_files(repo.repo_dir);
+				const changed_files = await git_ops.get_changed_files(repo.repo_dir); // eslint-disable-line no-await-in-loop
 				const unexpected_files = changed_files.filter(
 					(file) =>
 						!file.startsWith('.changeset/') &&
@@ -86,7 +86,7 @@ export const run_pre_flight_checks = async (
 	// 2. Check correct branch
 	log?.info(`  Checking branches (expecting ${required_branch})...`);
 	for (const repo of repos) {
-		const branch = await git_ops.current_branch_name(repo.repo_dir);
+		const branch = await git_ops.current_branch_name(repo.repo_dir); // eslint-disable-line no-await-in-loop
 		if (branch !== required_branch) {
 			errors.push(`${repo.pkg.name} is on branch '${branch}', expected '${required_branch}'`);
 		}
@@ -96,7 +96,7 @@ export const run_pre_flight_checks = async (
 	if (!skip_changesets) {
 		log?.info('  Checking for changesets...');
 		for (const repo of repos) {
-			const has = await has_changesets(repo);
+			const has = await has_changesets(repo); // eslint-disable-line no-await-in-loop
 			if (has) {
 				repos_with_changesets.add(repo.pkg.name);
 			} else {

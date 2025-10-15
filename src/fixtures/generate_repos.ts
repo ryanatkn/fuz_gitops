@@ -46,7 +46,7 @@ export default config;
 	// Create src/lib directory so gro can find source files
 	mkdirSync(join(repo_path, 'src/lib'), {recursive: true});
 	// Create empty index.ts so the lib directory isn't empty
-	writeFileSync(join(repo_path, 'src/lib/index.ts'), 'console.log("Fixture repo module");\n');
+	writeFileSync(join(repo_path, 'src/lib/index.ts'), 'export const value = "Fixture repo module";\n');
 
 	// Create .changeset directory and files if changesets exist
 	if (repo_data.changesets && repo_data.changesets.length > 0) {
@@ -113,7 +113,7 @@ export const generate_fixture_set = async (
 
 	// Generate each repo
 	for (const repo_data of fixture.repos) {
-		await generate_fixture_repo(repo_data, fixture.name, log);
+		await generate_fixture_repo(repo_data, fixture.name, log); // eslint-disable-line no-await-in-loop
 	}
 
 	log?.info(`✓ Generated ${fixture.repos.length} repos for ${fixture.name}`);
@@ -129,7 +129,7 @@ export const generate_all_fixtures = async (
 	log?.info(`Generating ${fixtures.length} fixture sets...\n`);
 
 	for (const fixture of fixtures) {
-		await generate_fixture_set(fixture, log);
+		await generate_fixture_set(fixture, log); // eslint-disable-line no-await-in-loop
 		log?.info(''); // blank line between fixtures
 	}
 

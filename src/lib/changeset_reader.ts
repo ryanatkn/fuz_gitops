@@ -28,7 +28,7 @@ export const parse_changeset_content = (
 	filename = 'changeset.md',
 ): Changeset_Info | null => {
 	// Match frontmatter between --- markers
-	const frontmatter_match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)/);
+	const frontmatter_match = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)/.exec(content);
 	if (!frontmatter_match) {
 		return null;
 	}
@@ -104,14 +104,14 @@ export const read_changesets = async (
 
 		for (const file of changeset_files) {
 			const filepath = join(changesets_dir, file);
-			const changeset = await parse_changeset_file(filepath, log);
+			const changeset = await parse_changeset_file(filepath, log); // eslint-disable-line no-await-in-loop
 			if (changeset) {
 				changesets.push(changeset);
 			}
 		}
 
 		return changesets;
-	} catch (error) {
+	} catch (_error) {
 		// No .changeset directory or error reading
 		return [];
 	}

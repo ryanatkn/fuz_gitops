@@ -9,7 +9,7 @@ import {
 } from '$lib/changeset_generator.js';
 import {needs_update, get_update_prefix} from '$lib/version_utils.js';
 import type {Git_Operations, Fs_Operations} from '$lib/operations.js';
-import {default_git_operations, default_fs_operations} from '$lib/default_operations.js';
+import {default_git_operations, default_fs_operations} from '$lib/operations_defaults.js';
 
 export type Version_Strategy = 'exact' | 'caret' | 'tilde';
 
@@ -82,7 +82,7 @@ export const update_package_json = async (
 	// Create changeset if we have published version info
 	if (published_versions && published_versions.size > 0) {
 		// Build dependency updates info for changeset
-		const all_deps = new Map<string, string>();
+		const all_deps: Map<string, string> = new Map();
 
 		// Collect all current dependencies with their versions
 		if (repo.dependencies) {
@@ -141,7 +141,7 @@ export const update_all_repos = async (
 	const failed: Array<{repo: string; error: Error}> = [];
 
 	for (const repo of repos) {
-		const updates = new Map<string, string>();
+		const updates: Map<string, string> = new Map();
 
 		// Find dependencies that were published
 		if (repo.dependencies) {
@@ -174,7 +174,7 @@ export const update_all_repos = async (
 		if (updates.size === 0) continue;
 
 		try {
-			await update_package_json(repo, updates, strategy, undefined, log, git_ops, fs_ops);
+			await update_package_json(repo, updates, strategy, undefined, log, git_ops, fs_ops); // eslint-disable-line no-await-in-loop
 			updated_count++;
 			log?.info(`    Updated ${updates.size} dependencies in ${repo.pkg.name}`);
 		} catch (error) {
@@ -197,10 +197,10 @@ export const find_updates_needed = (
 	string,
 	{current: string; new: string; type: 'dependencies' | 'devDependencies' | 'peerDependencies'}
 > => {
-	const updates = new Map<
+	const updates: Map<
 		string,
 		{current: string; new: string; type: 'dependencies' | 'devDependencies' | 'peerDependencies'}
-	>();
+	> = new Map();
 
 	// Check dependencies
 	if (repo.dependencies) {

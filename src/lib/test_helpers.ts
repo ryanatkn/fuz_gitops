@@ -10,6 +10,8 @@ import type {
 } from '$lib/operations.js';
 import type {Bump_Type} from '$lib/semver.js';
 
+/* eslint-disable @typescript-eslint/require-await,@typescript-eslint/no-empty-function */
+
 export interface Mock_Repo_Options {
 	name: string;
 	version?: string;
@@ -129,7 +131,7 @@ export const create_mock_package_json_files = (
 	repos: Array<Local_Repo>,
 	updatedVersions: Map<string, string> = new Map(),
 ): Map<string, string> => {
-	const fs = new Map<string, string>();
+	const fs: Map<string, string> = new Map();
 
 	for (const repo of repos) {
 		const version =
@@ -201,7 +203,7 @@ export const create_mock_fs_ops = (): Fs_Operations & {
 	get: (path: string) => string | undefined;
 	set: (path: string, content: string) => void;
 } => {
-	const files = new Map<string, string>();
+	const files: Map<string, string> = new Map();
 
 	return {
 		readFile: async (path: string, _encoding: BufferEncoding): Promise<string> => {

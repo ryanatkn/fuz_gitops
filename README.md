@@ -68,6 +68,7 @@ gro gitops_publish       # publish all repos with changesets
 ```
 
 **See [CLAUDE.md](CLAUDE.md) for comprehensive documentation:**
+
 - Command reference (read-only vs side effects)
 - Publishing workflows and examples
 - Troubleshooting guide

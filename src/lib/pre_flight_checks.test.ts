@@ -4,6 +4,8 @@ import {run_pre_flight_checks} from '$lib/pre_flight_checks.js';
 import {create_mock_repo, create_mock_git_ops, create_mock_npm_ops} from '$lib/test_helpers.js';
 import type {Local_Repo} from '$lib/local_repo.js';
 
+/* eslint-disable @typescript-eslint/require-await */
+
 describe('pre_flight_checks', () => {
 	describe('workspace cleanliness', () => {
 		it('passes when all workspaces are clean', async () => {
@@ -266,6 +268,8 @@ describe('pre_flight_checks', () => {
 
 			expect(result.ok).toBe(false);
 			expect(result.errors.length).toBe(3); // 1 dirty + 2 wrong branches
+			expect(clean_call).toBe(2); // Check called for both repos
+			expect(branch_call).toBe(2); // Check called for both repos
 		});
 	});
 

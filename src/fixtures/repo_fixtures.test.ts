@@ -85,7 +85,7 @@ const validate_breaking_cascades = (
 		const actual_affected = preview.breaking_cascades.get(pkg);
 		assert.ok(actual_affected, `${fixture_name}: Found breaking cascade for ${pkg}`);
 		assert.deepEqual(
-			actual_affected?.sort(),
+			actual_affected.sort(),
 			affected.sort(),
 			`${fixture_name}: Breaking cascade for ${pkg} matches`,
 		);

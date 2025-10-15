@@ -132,7 +132,7 @@ describe('changeset_generator', () => {
 				['external-lib', '^3.0.0'], // not published
 			]);
 
-			const published_versions = new Map<string, Published_Version>([
+			const published_versions: Map<string, Published_Version> = new Map([
 				[
 					'lib-a',
 					{
@@ -188,7 +188,7 @@ describe('changeset_generator', () => {
 		it('handles breaking changes', () => {
 			const dependencies = new Map([['breaking-lib', '^0.5.0']]);
 
-			const published_versions = new Map<string, Published_Version>([
+			const published_versions: Map<string, Published_Version> = new Map([
 				[
 					'breaking-lib',
 					{
@@ -217,7 +217,7 @@ describe('changeset_generator', () => {
 				['gte-lib', '>=1.0.0'],
 			]);
 
-			const published_versions = new Map<string, Published_Version>([
+			const published_versions: Map<string, Published_Version> = new Map([
 				[
 					'caret-lib',
 					{

@@ -7,6 +7,7 @@ export interface Format_Options {
 	colorize?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 type Formattable_Data = string | Array<string> | Record<string, unknown> | unknown;
 
 /**

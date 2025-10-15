@@ -22,7 +22,7 @@ export const strip_version_prefix = (version: string): string => {
  * Gets the version prefix (^, ~, or empty string).
  */
 export const get_version_prefix = (version: string): string => {
-	const match = version.match(/^[\^~><=]/);
+	const match = /^[\^~><=]/.exec(version);
 	return match ? match[0] : '';
 };
 

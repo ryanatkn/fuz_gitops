@@ -211,7 +211,7 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 	// Dependency updates
 	if (dependency_updates.length > 0) {
 		// Group by package
-		const updates_by_package = new Map<string, typeof dependency_updates>();
+		const updates_by_package: Map<string, typeof dependency_updates> = new Map();
 		for (const update of dependency_updates) {
 			const updates = updates_by_package.get(update.dependent_package) || [];
 			updates.push(update);

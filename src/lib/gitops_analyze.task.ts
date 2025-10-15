@@ -48,7 +48,7 @@ export const task: Task<Args> = {
 		try {
 			// Exclude dev dependencies to break cycles
 			publishing_order = graph.topological_sort(true);
-		} catch (error) {
+		} catch (_error) {
 			// Cycles prevent topological sort (should only happen with prod/peer cycles)
 			if (analysis.production_cycles.length > 0) {
 				log.error(

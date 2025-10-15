@@ -82,7 +82,7 @@ export const task: Task<Args> = {
 
 			try {
 				// Run the command
-				const output = await run_gitops_command(command, [], log);
+				const output = await run_gitops_command(command, [], log); // eslint-disable-line no-await-in-loop
 
 				if (!output.success) {
 					log.error(`❌ Command failed: ${command}`);
@@ -95,7 +95,7 @@ export const task: Task<Args> = {
 				const output_filename = `${command}_output.md`;
 				const output_path = join('src/fixtures', output_filename);
 
-				const formatted_contents = await format_file(output.stdout, {filepath: output_filename});
+				const formatted_contents = await format_file(output.stdout, {filepath: output_filename}); // eslint-disable-line no-await-in-loop
 
 				writeFileSync(output_path, formatted_contents, 'utf-8');
 				log.info(st('green', `   ✓ Saved output to: ${output_filename}`));

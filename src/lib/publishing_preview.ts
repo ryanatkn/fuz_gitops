@@ -11,7 +11,7 @@ import {
 	calculate_next_version,
 } from '$lib/version_utils.js';
 import type {Changeset_Operations} from '$lib/operations.js';
-import {default_changeset_operations} from '$lib/default_operations.js';
+import {default_changeset_operations} from '$lib/operations_defaults.js';
 
 export interface Version_Change {
 	package_name: string;
@@ -57,7 +57,7 @@ const calculate_dependency_updates = (
 	breaking_cascades: Map<string, Array<string>>;
 } => {
 	const dependency_updates: Array<Dependency_Update> = [];
-	const breaking_cascades = new Map<string, Array<string>>();
+	const breaking_cascades: Map<string, Array<string>> = new Map();
 
 	for (const repo of repos) {
 		// Check prod dependencies
@@ -221,8 +221,8 @@ export const preview_publishing_plan = async (
 	}
 
 	// Initial pass: get all packages with explicit changesets
-	const predicted_versions = new Map<string, string>();
-	const breaking_packages = new Set<string>();
+	const predicted_versions: Map<string, string> = new Map();
+	const breaking_packages: Set<string> = new Set();
 	const version_changes: Array<Version_Change> = [];
 
 	for (const pkg_name of publishing_order) {
@@ -230,11 +230,11 @@ export const preview_publishing_plan = async (
 		if (!repo) continue;
 
 		// Check for changesets
-		const has = await ops.has_changesets(repo);
+		const has = await ops.has_changesets(repo); // eslint-disable-line no-await-in-loop
 
 		if (has) {
 			// Predict version from changesets
-			const prediction = await ops.predict_next_version(repo, log);
+			const prediction = await ops.predict_next_version(repo, log); // eslint-disable-line no-await-in-loop
 
 			if (prediction) {
 				const old_version = repo.pkg.package_json.version || '0.0.0';
@@ -359,9 +359,9 @@ export const preview_publishing_plan = async (
 	for (const repo of repos) {
 		const has_version_change = version_changes.some((vc) => vc.package_name === repo.pkg.name);
 		if (!has_version_change) {
-			const has = await ops.has_changesets(repo);
+			const has = await ops.has_changesets(repo); // eslint-disable-line no-await-in-loop
 			if (!has) {
-				info.push(`${repo.pkg.name}`);
+				info.push(repo.pkg.name);
 			}
 		}
 	}
@@ -467,7 +467,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 	// Dependency updates
 	if (dependency_updates.length > 0) {
 		// Group by package
-		const updates_by_package = new Map<string, Array<Dependency_Update>>();
+		const updates_by_package: Map<string, Array<Dependency_Update>> = new Map();
 		for (const update of dependency_updates) {
 			const updates = updates_by_package.get(update.dependent_package) || [];
 			updates.push(update);

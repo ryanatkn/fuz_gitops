@@ -151,7 +151,7 @@ export class Publishing_State_Manager {
 	get_packages_to_skip(): Set<string> {
 		if (!this.state) return new Set();
 
-		const skip = new Set<string>();
+		const skip: Set<string> = new Set();
 
 		// Skip completed packages
 		for (const completed of this.state.completed) {

@@ -37,7 +37,7 @@ export class Dependency_Graph {
 				repo,
 				dependencies: new Map(),
 				dependents: new Set(),
-				publishable: !!pkg.package_json.private === false,
+				publishable: !!pkg.package_json.private === false, // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
 			};
 
 			// Extract dependencies
@@ -91,11 +91,11 @@ export class Dependency_Graph {
 	 * @param exclude_dev - If true, excludes dev dependencies from the sort
 	 */
 	topological_sort(exclude_dev = false): Array<string> {
-		const visited = new Set<string>();
+		const visited: Set<string> = new Set();
 		const result: Array<string> = [];
 
 		// Count incoming edges for each node
-		const in_degree = new Map<string, number>();
+		const in_degree: Map<string, number> = new Map();
 		for (const name of this.nodes.keys()) {
 			in_degree.set(name, 0);
 		}
@@ -160,8 +160,8 @@ export class Dependency_Graph {
 	 */
 	detect_cycles(): Array<Array<string>> {
 		const cycles: Array<Array<string>> = [];
-		const visited = new Set<string>();
-		const rec_stack = new Set<string>();
+		const visited: Set<string> = new Set();
+		const rec_stack: Set<string> = new Set();
 
 		const dfs = (name: string, path: Array<string>): void => {
 			visited.add(name);
@@ -205,10 +205,10 @@ export class Dependency_Graph {
 	} {
 		const production_cycles: Array<Array<string>> = [];
 		const dev_cycles: Array<Array<string>> = [];
-		const visited_prod = new Set<string>();
-		const visited_dev = new Set<string>();
-		const rec_stack_prod = new Set<string>();
-		const rec_stack_dev = new Set<string>();
+		const visited_prod: Set<string> = new Set();
+		const visited_dev: Set<string> = new Set();
+		const rec_stack_prod: Set<string> = new Set();
+		const rec_stack_dev: Set<string> = new Set();
 
 		// DFS for production/peer dependencies only
 		const dfs_prod = (name: string, path: Array<string>): void => {

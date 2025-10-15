@@ -11,7 +11,9 @@ import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
 import {init_publishing_state, Publishing_State_Manager} from '$lib/publishing_state.js';
 import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
 import type {Gitops_Operations} from '$lib/operations.js';
-import {default_gitops_operations} from '$lib/default_operations.js';
+import {default_gitops_operations} from '$lib/operations_defaults.js';
+
+/* eslint-disable no-await-in-loop */
 
 export interface Publishing_Options {
 	dry: boolean;
@@ -116,8 +118,8 @@ export const publish_repos = async (
 	const packages_to_skip =
 		resume && !dry ? state_manager.get_packages_to_skip() : new Set<string>();
 
-	const published = new Map<string, Published_Version>();
-	const failed = new Map<string, Error>();
+	const published: Map<string, Published_Version> = new Map();
+	const failed: Map<string, Error> = new Map();
 
 	// Phase 1: Publish each package and immediately update dependents
 	log?.info(st('cyan', `\n🚀 Publishing ${order.length} packages...\n`));
@@ -182,7 +184,7 @@ export const publish_repos = async (
 				// 3. Update all repos that have prod/peer deps on this package
 				if (update_deps) {
 					for (const dependent_repo of repos) {
-						const updates = new Map<string, string>();
+						const updates: Map<string, string> = new Map();
 
 						// Check prod dependencies
 						if (dependent_repo.dependencies?.has(pkg_name)) {
@@ -234,7 +236,7 @@ export const publish_repos = async (
 		log?.info(st('cyan', '\n🔄 Updating dev dependencies...\n'));
 
 		for (const repo of repos) {
-			const dev_updates = new Map<string, string>();
+			const dev_updates: Map<string, string> = new Map();
 
 			// Check dev dependencies only
 			if (repo.dev_dependencies) {
@@ -269,7 +271,7 @@ export const publish_repos = async (
 				log?.info(`  Deploying ${repo.pkg.name}...`);
 				const deploy_result = await ops.process.spawn('gro', ['deploy'], {cwd: repo.repo_dir});
 
-				if (deploy_result?.ok) {
+				if (deploy_result.ok) {
 					log?.info(st('green', `  ✅ Deployed ${repo.pkg.name}`));
 				} else {
 					log?.warn(st('yellow', `  ⚠️  Failed to deploy ${repo.pkg.name}`));

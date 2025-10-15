@@ -1,15 +1,12 @@
-/**
- * Mock changeset operations that read from fixture data instead of filesystem.
- */
-
 import type {Logger} from '@ryanatkn/belt/log.js';
 import type {Changeset_Operations} from '$lib/operations.js';
 import type {Local_Repo} from '$lib/local_repo.js';
-import type {Changeset_Info} from '$lib/changeset_reader.js';
-import {parse_changeset_content} from '$lib/changeset_reader.js';
+import {parse_changeset_content, type Changeset_Info} from '$lib/changeset_reader.js';
 import {compare_bump_types, calculate_next_version} from '$lib/version_utils.js';
 import type {Bump_Type} from '$lib/semver.js';
 import type {Repo_Fixture_Set} from './repo_fixture_types.js';
+
+/* eslint-disable @typescript-eslint/require-await */
 
 /**
  * Create mock changeset operations that read from fixture data.

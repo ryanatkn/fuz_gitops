@@ -9,7 +9,7 @@ import {Task_Error} from '@ryanatkn/gro';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn} from '@ryanatkn/belt/process.js';
 import type {Git_Operations} from '$lib/operations.js';
-import {default_git_operations} from '$lib/default_operations.js';
+import {default_git_operations} from '$lib/operations_defaults.js';
 
 import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
 import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';

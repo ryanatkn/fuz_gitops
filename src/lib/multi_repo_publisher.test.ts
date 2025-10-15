@@ -8,6 +8,8 @@ import {
 	create_mock_package_json_files,
 } from '$lib/test_helpers.js';
 
+/* eslint-disable @typescript-eslint/require-await */
+
 test('dry run predicts versions without publishing', async () => {
 	const repos: Array<Local_Repo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
@@ -210,7 +212,7 @@ test('skips repos without changesets', async () => {
 				}
 				return content;
 			},
-			writeFile: async () => {},
+			writeFile: async () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
 		},
 	});
 

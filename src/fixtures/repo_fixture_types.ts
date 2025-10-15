@@ -32,7 +32,7 @@ export interface Repo_Fixture_Expected_Version_Change {
 	package_name: string;
 	from: string;
 	to: string;
-	scenario: 'explicit_changeset' | 'bump_escalation' | 'auto_generated' | 'no_changes';
+	scenario: 'explicit_changeset' | 'bump_escalation' | 'auto_generated';
 }
 
 export interface Repo_Fixture_Set {

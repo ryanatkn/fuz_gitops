@@ -9,6 +9,8 @@ import {
 import {create_mock_repo, create_mock_git_ops, create_mock_fs_ops} from '$lib/test_helpers.js';
 import type {Git_Operations} from '$lib/operations.js';
 
+/* eslint-disable @typescript-eslint/require-await */
+
 /**
  * Creates mock git operations that track calls
  */
@@ -345,7 +347,7 @@ describe('dependency_updater', () => {
 			const fs = create_mock_fs_ops();
 			const repo = create_mock_repo({name: 'test-pkg'});
 
-			const updates = new Map<string, string>();
+			const updates: Map<string, string> = new Map();
 			const git_ops = create_trackable_git_ops();
 
 			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
@@ -518,8 +520,8 @@ describe('dependency_updater', () => {
 
 			const result = await update_all_repos(repos, published, 'caret', undefined, git_ops, fs);
 
-			expect(result!.updated).toBe(2);
-			expect(result!.failed).toHaveLength(0);
+			expect(result.updated).toBe(2);
+			expect(result.failed).toHaveLength(0);
 		});
 
 		it('skips repos without matching dependencies', async () => {
@@ -551,7 +553,7 @@ describe('dependency_updater', () => {
 
 			const result = await update_all_repos(repos, published, 'caret', undefined, git_ops, fs);
 
-			expect(result!.updated).toBe(1); // only pkg-a
+			expect(result.updated).toBe(1); // only pkg-a
 		});
 
 		it('reports failures for problematic repos', async () => {
@@ -566,10 +568,10 @@ describe('dependency_updater', () => {
 
 			const result = await update_all_repos(repos, published, 'caret', undefined, git_ops, fs);
 
-			expect(result!.updated).toBe(0);
-			expect(result!.failed).toHaveLength(1);
-			expect(result!.failed[0].repo).toBe('pkg-a');
-			expect(result!.failed[0].error).toBeInstanceOf(Error);
+			expect(result.updated).toBe(0);
+			expect(result.failed).toHaveLength(1);
+			expect(result.failed[0].repo).toBe('pkg-a');
+			expect(result.failed[0].error).toBeInstanceOf(Error);
 		});
 	});
 });

@@ -38,7 +38,7 @@ export const semver_parse = (version: string): Semver => {
 		throw new Error(`Invalid semver: ${version}`);
 	}
 
-	const match = clean.match(SEMVER_REGEX)!;
+	const match = SEMVER_REGEX.exec(clean)!;
 	return {
 		major: parseInt(match[1], 10),
 		minor: parseInt(match[2], 10),
