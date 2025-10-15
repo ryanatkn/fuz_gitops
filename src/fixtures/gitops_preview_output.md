@@ -9,14 +9,16 @@
 
 No packages have changesets to publish.
 
-## ⚠️ Warnings
+## ℹ️ No Changes to Publish
 
-- Dev dependency cycle (will be ignored): @test/tool_a → @test/tool_b → @test/tool_a
+_These packages have no changesets and no dependency updates:_
+
+- `1 dev dependency cycle(s) detected (normal, shown in gitops_analyze)`
 
 ## Summary
 
 - **Packages to publish**: 0
 - **Dependency updates**: 0
-- **Breaking changes**: 0
-- **Warnings**: 1
+- **Major version bumps**: 0
+- **Warnings**: 0
 - **Errors**: 2

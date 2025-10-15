@@ -197,10 +197,11 @@ export const preview_publishing_plan = async (
 		}
 	}
 
+	// Dev cycles are shown in gitops_analyze, not repeated here
 	if (dev_cycles.length > 0) {
-		for (const cycle of dev_cycles) {
-			warnings.push(`Dev dependency cycle (will be ignored): ${cycle.join(' → ')}`);
-		}
+		info.push(
+			`${dev_cycles.length} dev dependency cycle(s) detected (normal, shown in gitops_analyze)`,
+		);
 	}
 
 	// Compute publishing order
@@ -417,7 +418,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 		if (with_changesets.length > 0) {
 			log.info(st('cyan', '\n🔢 Version Changes (from changesets):\n'));
 			for (const change of with_changesets) {
-				const breaking_indicator = change.breaking ? ' 💥' : '';
+				const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
 				log.info(
 					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
 						`(${change.bump_type})${breaking_indicator}`,
@@ -428,7 +429,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 		if (with_escalation.length > 0) {
 			log.info(st('yellow', '\n⬆️  Version Changes (bump escalation required):\n'));
 			for (const change of with_escalation) {
-				const breaking_indicator = change.breaking ? ' 💥' : '';
+				const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
 				log.info(
 					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
 						`(${change.existing_bump} → ${change.required_bump})${breaking_indicator}`,
@@ -445,7 +446,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 		if (with_auto_changesets.length > 0) {
 			log.info(st('cyan', '\n🔄 Version Changes (auto-generated for dependency updates):\n'));
 			for (const change of with_auto_changesets) {
-				const breaking_indicator = change.breaking ? ' 💥' : '';
+				const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
 				log.info(
 					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
 						`(${change.bump_type}) [auto-changeset]${breaking_indicator}`,
@@ -456,9 +457,9 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 		log.info(st('yellow', '\n⚠️  No packages to publish'));
 	}
 
-	// Breaking cascades
+	// Dependency cascades
 	if (breaking_cascades.size > 0) {
-		log.info(st('red', '\n💥 Breaking Change Cascades:\n'));
+		log.info(st('yellow', '\n🔄 Dependency Cascades:\n'));
 		for (const [pkg, affected] of breaking_cascades) {
 			log.info(`  • ${pkg} affects: ${affected.join(', ')}`);
 		}
@@ -466,30 +467,41 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 
 	// Dependency updates
 	if (dependency_updates.length > 0) {
-		// Group by package
-		const updates_by_package: Map<string, Array<Dependency_Update>> = new Map();
+		// Group by package, then by dependency name
+		const updates_by_package: Map<string, Map<string, Array<Dependency_Update>>> = new Map();
 		for (const update of dependency_updates) {
-			const updates = updates_by_package.get(update.dependent_package) || [];
-			updates.push(update);
-			updates_by_package.set(update.dependent_package, updates);
+			if (!updates_by_package.has(update.dependent_package)) {
+				updates_by_package.set(update.dependent_package, new Map());
+			}
+			const pkg_updates = updates_by_package.get(update.dependent_package)!;
+			const dep_updates = pkg_updates.get(update.updated_dependency) || [];
+			dep_updates.push(update);
+			pkg_updates.set(update.updated_dependency, dep_updates);
 		}
 
 		log.info(st('cyan', '\n🔄 Dependency Updates:\n'));
-		for (const [pkg, updates] of updates_by_package) {
+		for (const [pkg, deps_map] of updates_by_package) {
 			log.info(`  ${pkg}:`);
-			for (const update of updates) {
-				const type_indicator =
-					update.type === 'dependencies' ? '📦' : update.type === 'peerDependencies' ? '👥' : '🛠️';
-				// Only show "triggers auto-changeset" for packages that will get auto-generated changesets
-				const existing_change = version_changes.find(
-					(vc) => vc.package_name === update.dependent_package,
-				);
+			for (const [dep_name, updates] of deps_map) {
+				// Collect all dependency types for this dependency
+				const types: Array<string> = [];
+				let causes_republish = false;
+				for (const update of updates) {
+					if (update.type === 'dependencies') types.push('📦 prod');
+					else if (update.type === 'peerDependencies') types.push('👥 peer');
+					else types.push('🛠️ dev');
+					if (update.causes_republish) causes_republish = true;
+				}
+
+				// Check if this triggers auto-changeset
+				const existing_change = version_changes.find((vc) => vc.package_name === pkg);
 				const needs_auto_changeset =
-					update.causes_republish && existing_change?.will_generate_changeset === true;
+					causes_republish && existing_change?.will_generate_changeset === true;
+
+				// Format output
+				const type_list = types.join(', ');
 				const republish = needs_auto_changeset ? ' (triggers auto-changeset)' : '';
-				log.info(
-					`    ${type_indicator} ${update.updated_dependency} → ${update.new_version}${republish}`,
-				);
+				log.info(`    ${dep_name} → ${updates[0].new_version} [${type_list}]${republish}`);
 			}
 		}
 	}
@@ -505,16 +517,18 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 	// Info (packages with no changes to publish - normal status)
 	if (info.length > 0) {
 		log.info(st('dim', '\nℹ️  No changes to publish:\n'));
+		log.info(st('dim', '(These packages have no changesets and no dependency updates - this is normal)\n'));
 		for (const pkg of info) {
 			log.info(st('dim', `  • ${pkg}`));
 		}
 	}
 
 	// Summary
+	const major_bump_count = version_changes.filter((vc) => vc.bump_type === 'major').length;
 	log.info(st('cyan', '\n📊 Summary:\n'));
 	log.info(`  • ${version_changes.length} packages to publish`);
 	log.info(`  • ${dependency_updates.length} dependency updates`);
-	log.info(`  • ${breaking_cascades.size} packages with breaking changes`);
+	log.info(`  • ${major_bump_count} packages with major version bumps`);
 	log.info(`  • ${warnings.length} warnings`);
 	log.info(`  • ${errors.length} errors`);
 };

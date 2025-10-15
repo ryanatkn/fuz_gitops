@@ -149,12 +149,12 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 		if (with_changesets.length > 0) {
 			lines.push('## Version Changes (from changesets)');
 			lines.push('');
-			lines.push('| Package | From | To | Bump | Breaking |');
-			lines.push('|---------|------|----|------|----------|');
+			lines.push('| Package | From | To | Bump | Major |');
+			lines.push('|---------|------|----|------|-------|');
 			for (const change of with_changesets) {
-				const breaking = change.breaking ? '💥 Yes' : 'No';
+				const is_major = change.bump_type === 'major' ? '💥 Yes' : 'No';
 				lines.push(
-					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.bump_type} | ${breaking} |`,
+					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.bump_type} | ${is_major} |`,
 				);
 			}
 			lines.push('');
@@ -163,12 +163,12 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 		if (with_escalation.length > 0) {
 			lines.push('## Version Changes (bump escalation required)');
 			lines.push('');
-			lines.push('| Package | From | To | Changesets Bump | Required Bump | Breaking |');
-			lines.push('|---------|------|-----|-----------------|---------------|----------|');
+			lines.push('| Package | From | To | Changesets Bump | Required Bump | Major |');
+			lines.push('|---------|------|-----|-----------------|---------------|-------|');
 			for (const change of with_escalation) {
-				const breaking = change.breaking ? '💥 Yes' : 'No';
+				const is_major = change.bump_type === 'major' ? '💥 Yes' : 'No';
 				lines.push(
-					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.existing_bump} | ${change.required_bump} | ${breaking} |`,
+					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.existing_bump} | ${change.required_bump} | ${is_major} |`,
 				);
 			}
 			lines.push('');
@@ -181,12 +181,12 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 		if (with_auto_changesets.length > 0) {
 			lines.push('## Version Changes (auto-generated for dependency updates)');
 			lines.push('');
-			lines.push('| Package | From | To | Bump | Breaking |');
-			lines.push('|---------|------|-----|------|----------|');
+			lines.push('| Package | From | To | Bump | Major |');
+			lines.push('|---------|------|-----|------|-------|');
 			for (const change of with_auto_changesets) {
-				const breaking = change.breaking ? '💥 Yes' : 'No';
+				const is_major = change.bump_type === 'major' ? '💥 Yes' : 'No';
 				lines.push(
-					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.bump_type} | ${breaking} |`,
+					`| \`${change.package_name}\` | ${change.from} | ${change.to} | ${change.bump_type} | ${is_major} |`,
 				);
 			}
 			lines.push('');
@@ -198,9 +198,9 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 		lines.push('');
 	}
 
-	// Breaking cascades
+	// Dependency cascades
 	if (breaking_cascades.size > 0) {
-		lines.push('## Breaking Change Cascades');
+		lines.push('## Dependency Cascades');
 		lines.push('');
 		for (const [pkg, affected] of breaking_cascades) {
 			lines.push(`- \`${pkg}\` affects: ${affected.map((a) => `\`${a}\``).join(', ')}`);
@@ -239,6 +239,8 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 	if (warnings.length > 0) {
 		lines.push('## ⚠️ Warnings');
 		lines.push('');
+		lines.push('*Issues that require attention:*');
+		lines.push('');
 		for (const warning of warnings) {
 			lines.push(`- ${warning}`);
 		}
@@ -258,11 +260,12 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 	}
 
 	// Summary
+	const major_bump_count = version_changes.filter((vc) => vc.bump_type === 'major').length;
 	lines.push('## Summary');
 	lines.push('');
 	lines.push(`- **Packages to publish**: ${version_changes.length}`);
 	lines.push(`- **Dependency updates**: ${dependency_updates.length}`);
-	lines.push(`- **Breaking changes**: ${breaking_cascades.size}`);
+	lines.push(`- **Major version bumps**: ${major_bump_count}`);
 	lines.push(`- **Warnings**: ${warnings.length}`);
 	lines.push(`- **Errors**: ${errors.length}`);
 

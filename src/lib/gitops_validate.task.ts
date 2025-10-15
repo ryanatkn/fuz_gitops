@@ -34,6 +34,7 @@ export const task: Task<Args> = {
 			warnings: number;
 			errors: number;
 			duration: number;
+			warning_details?: Array<string>;
 		}> = [];
 
 		const start_time = Date.now();
@@ -52,8 +53,20 @@ export const task: Task<Args> = {
 			const analyze_duration = Date.now() - analyze_start;
 
 			const analyze_output = analyze_result.stdout || '';
-			const warnings = (analyze_output.match(/⚠️/g) || []).length;
-			const errors = (analyze_output.match(/❌/g) || []).length;
+			// Count warning sections (wildcard deps, dev cycles)
+			const warning_details: Array<string> = [];
+			if (/⚠️\s+Found \d+ wildcard dependencies/.test(analyze_output)) {
+				warning_details.push('wildcard dependencies');
+			}
+			if (/⚠️\s+Found \d+ dev circular dependencies/.test(analyze_output)) {
+				warning_details.push('dev circular dependencies');
+			}
+			const warnings = warning_details.length;
+			// Count error sections (production cycles)
+			const has_prod_cycles = /❌ Found \d+ production\/peer circular dependencies/.test(
+				analyze_output,
+			);
+			const errors = has_prod_cycles ? 1 : 0;
 
 			results.push({
 				command: 'gitops_analyze',
@@ -61,6 +74,7 @@ export const task: Task<Args> = {
 				warnings,
 				errors,
 				duration: analyze_duration,
+				warning_details,
 			});
 
 			log.info(st('green', `  ✓ gitops_analyze completed in ${analyze_duration}ms\n`));
@@ -90,8 +104,12 @@ export const task: Task<Args> = {
 			const preview_duration = Date.now() - preview_start;
 
 			const preview_output = preview_result.stdout || '';
-			const warnings = (preview_output.match(/⚠️/g) || []).length;
-			const errors = (preview_output.match(/❌/g) || []).length;
+			// Count actual warning lines in the Warnings section
+			const warnings_section = preview_output.match(/⚠️\s+Warnings:\s+([\s\S]*?)(?=\n\nℹ️|$)/);
+			const warnings = warnings_section ? (warnings_section[1].match(/•/g) || []).length : 0;
+			// Count error lines in the Errors section
+			const errors_section = preview_output.match(/❌ Errors found:\s+([\s\S]*?)(?=\n\n|$)/);
+			const errors = errors_section ? (errors_section[1].match(/•/g) || []).length : 0;
 
 			results.push({
 				command: 'gitops_preview',
@@ -133,8 +151,12 @@ export const task: Task<Args> = {
 			const dry_duration = Date.now() - dry_start;
 
 			const dry_output = dry_result.stdout || '';
-			const warnings = (dry_output.match(/⚠️/g) || []).length;
-			const errors = (dry_output.match(/❌/g) || []).length;
+			// Count actual warning lines in the Warnings section
+			const warnings_section = dry_output.match(/⚠️\s+Warnings:\s+([\s\S]*?)(?=\n\n|$)/);
+			const warnings = warnings_section ? (warnings_section[1].match(/•/g) || []).length : 0;
+			// Count error lines in the Errors section
+			const errors_section = dry_output.match(/❌ Errors found:\s+([\s\S]*?)(?=\n\n|$)/);
+			const errors = errors_section ? (errors_section[1].match(/•/g) || []).length : 0;
 
 			results.push({
 				command: 'gitops_publish --dry',
@@ -186,7 +208,10 @@ export const task: Task<Args> = {
 
 			log.info(st(status_color, `  ${status_icon} ${result.command} (${duration}s)`));
 			if (result.warnings > 0) {
-				log.info(st('yellow', `    ⚠️  ${result.warnings} warning(s)`));
+				const details = result.warning_details?.length
+					? ` (${result.warning_details.join(', ')})`
+					: '';
+				log.info(st('yellow', `    ⚠️  ${result.warnings} warning(s)${details}`));
 			}
 			if (result.errors > 0) {
 				log.info(st('red', `    ❌ ${result.errors} error(s)`));

@@ -112,8 +112,8 @@ test('handles circular dev dependencies', async () => {
 
 	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
 
-	// Should have warnings for dev cycles
-	expect(preview.warnings.some((w) => w.includes('Dev dependency cycle'))).toBe(true);
+	// Should have info about dev cycles (not warnings anymore)
+	expect(preview.info.some((i) => i.includes('dev dependency cycle(s) detected'))).toBe(true);
 
 	// Should still compute publishing order
 	expect(preview.publishing_order.length).toBe(2);
