@@ -88,12 +88,27 @@ export const task: Task<Args> = {
 			log,
 		};
 
-		// Execute publishing
-		const result = await publish_repos(repos, options);
+		// Execute publishing (may throw on fatal errors like circular dependencies)
+		let result: Publishing_Result;
+		let fatal_error: Error | null = null;
 
-		// Format and output result
+		try {
+			result = await publish_repos(repos, options);
+		} catch (error) {
+			// Construct a failure result for fatal errors so output can still be generated
+			fatal_error = error instanceof Error ? error : new Error(String(error));
+			result = {
+				ok: false,
+				published: [],
+				// Note: FATAL_ERROR is a placeholder - only fatal_error.message is displayed in output
+				failed: [{name: 'FATAL_ERROR', error: fatal_error}],
+				duration: 0,
+			};
+		}
+
+		// Format and output result (always runs, even on fatal errors)
 		if (format !== 'stdout') {
-			const output = format_result(result, format);
+			const output = format_result(result, format, fatal_error);
 			const content = output.join('\n');
 
 			// Write to file if specified
@@ -114,14 +129,18 @@ export const task: Task<Args> = {
 		// stdout format is handled by the publish_repos function's logging
 
 		// Exit with error if failed
-		if (!result.ok) {
+		if (!result.ok || fatal_error) {
 			process.exit(1);
 		}
 	},
 };
 
 // Format the publishing result for different output formats
-const format_result = (result: Publishing_Result, format: 'json' | 'markdown'): Array<string> => {
+const format_result = (
+	result: Publishing_Result,
+	format: 'json' | 'markdown',
+	fatal_error?: Error | null,
+): Array<string> => {
 	if (format === 'json') {
 		return JSON.stringify(result, null, 2).split('\n');
 	}
@@ -131,6 +150,18 @@ const format_result = (result: Publishing_Result, format: 'json' | 'markdown'): 
 
 	lines.push('# Publishing Result');
 	lines.push('');
+
+	// Show fatal error prominently if present
+	if (fatal_error) {
+		lines.push('## ❌ Fatal Error');
+		lines.push('');
+		lines.push(`**Error**: ${fatal_error.message}`);
+		lines.push('');
+		lines.push('Publishing could not proceed due to the error above.');
+		lines.push('');
+		return lines;
+	}
+
 	lines.push(`**Status**: ${result.ok ? '✅ Success' : '❌ Failed'}`);
 	lines.push(`**Duration**: ${(result.duration / 1000).toFixed(1)}s`);
 	lines.push(`**Published**: ${result.published.length} packages`);

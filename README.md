@@ -60,11 +60,20 @@ gro gitops_sync               # sync repos and generate UI data
 gro gitops_sync --download    # clone missing repos first
 ```
 
+### Diagnostic commands (read-only)
+
+```bash
+gro gitops_validate      # run all validation checks (analyze + preview + dry run)
+gro gitops_analyze       # analyze dependency graph and detect cycles
+gro gitops_preview       # preview version changes and cascades
+gro gitops_publish --dry # simulate publishing without side effects
+```
+
 ### Publishing packages
 
 ```bash
-gro gitops_validate      # validate before publishing (read-only)
-gro gitops_publish       # publish all repos with changesets
+gro gitops_publish           # publish all repos with changesets
+gro gitops_publish --resume  # resume from failed state
 ```
 
 **See [CLAUDE.md](CLAUDE.md) for comprehensive documentation:**

@@ -265,6 +265,17 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 - `src/fixtures/generate_repos.ts` - Idempotent repo generation logic
 - `src/fixtures/gitops.fixtures.config.ts` - Gitops config for test repos
 
+**Fixture Scenarios (9 total):**
+- `basic_publishing` - All 4 publishing scenarios (explicit, auto-generated, bump escalation, no changes)
+- `deep_cascade` - 4-level dependency chains with cascading breaking changes
+- `circular_dev_deps` - Dev dependency cycles (allowed, non-blocking)
+- `circular_prod_deps_error` - Production circular dependencies (error detection)
+- `private_packages` - Private package handling (skipped from publishing)
+- `major_bumps` - Major version transitions (0.x → 1.0, 1.x → 2.0)
+- `peer_deps_only` - Plugin/adapter patterns (peer dependencies only)
+- `isolated_packages` - Independent packages with no internal dependencies
+- `multiple_dep_types` - Packages with both peer and dev deps on same dependency
+
 **Baseline Validation:**
 - `src/fixtures/gitops_analyze_output.md` - Baseline for `gro gitops_analyze`
 - `src/fixtures/gitops_preview_output.md` - Baseline for `gro gitops_preview`

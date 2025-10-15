@@ -2,7 +2,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
 
 /**
  * Tests deep cascading updates through 4 levels of dependencies.
- * This fixture validates the multi-pass cascade calculation fix from TODO_NEXT.md #1.
+ * Validates multi-level dependency cascading with bump escalation.
  *
  * Dependency chain: leaf → branch → trunk → root
  * - leaf: Breaking change (minor bump)

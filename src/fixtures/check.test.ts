@@ -10,6 +10,9 @@ import {circular_dev_deps} from './repo_fixtures/circular_dev_deps.js';
 import {private_packages} from './repo_fixtures/private_packages.js';
 import {major_bumps} from './repo_fixtures/major_bumps.js';
 import {peer_deps_only} from './repo_fixtures/peer_deps_only.js';
+import {circular_prod_deps_error} from './repo_fixtures/circular_prod_deps_error.js';
+import {isolated_packages} from './repo_fixtures/isolated_packages.js';
+import {multiple_dep_types} from './repo_fixtures/multiple_dep_types.js';
 
 const COMMAND_TIMEOUT = 60_000;
 
@@ -21,6 +24,9 @@ const FIXTURES = [
 	private_packages,
 	major_bumps,
 	peer_deps_only,
+	circular_prod_deps_error,
+	isolated_packages,
+	multiple_dep_types,
 ];
 
 // Generate fixture repos before running tests
