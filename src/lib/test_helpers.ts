@@ -153,6 +153,21 @@ export const create_mock_package_json_files = (
 };
 
 /**
+ * Creates a mock repo with simulated changesets directory
+ */
+export const create_mock_repo_with_changesets = (
+	options: Mock_Repo_Options & {changesets?: boolean},
+): Local_Repo & {has_changesets: boolean} => {
+	const repo = create_mock_repo(options);
+	const has_changesets = options.changesets ?? true;
+
+	return {
+		...repo,
+		has_changesets,
+	};
+};
+
+/**
  * Creates mock Changeset_Operations with custom version predictions
  */
 export const create_mock_changeset_ops = (
@@ -213,6 +228,30 @@ export const create_mock_build_ops = (
 });
 
 /**
+ * Creates a successful pre-flight mock with specified repos
+ */
+export const create_preflight_mock = (
+	repos_with_changesets: Array<string> = [],
+	repos_without_changesets: Array<string> = [],
+): {
+	run_pre_flight_checks: () => Promise<{
+		ok: boolean;
+		warnings: Array<string>;
+		errors: Array<string>;
+		repos_with_changesets: Set<string>;
+		repos_without_changesets: Set<string>;
+	}>;
+} => ({
+	run_pre_flight_checks: async () => ({
+		ok: true,
+		warnings: [],
+		errors: [],
+		repos_with_changesets: new Set(repos_with_changesets),
+		repos_without_changesets: new Set(repos_without_changesets),
+	}),
+});
+
+/**
  * Creates mock Fs_Operations for testing with in-memory storage
  */
 export const create_mock_fs_ops = (): Fs_Operations & {
@@ -236,5 +275,72 @@ export const create_mock_fs_ops = (): Fs_Operations & {
 		set: (path: string, content: string): void => {
 			files.set(path, content);
 		},
+	};
+};
+
+/**
+ * Creates and populates fs ops from package.json files
+ */
+export const create_populated_fs_ops = (
+	repos: Array<Local_Repo>,
+	updated_versions?: Map<string, string>,
+): Fs_Operations & {
+	get: (path: string) => string | undefined;
+	set: (path: string, content: string) => void;
+} => {
+	const fs_ops = create_mock_fs_ops();
+	const package_files = create_mock_package_json_files(repos, updated_versions);
+	for (const [path, content] of package_files) {
+		fs_ops.set(path, content);
+	}
+	return fs_ops;
+};
+
+/**
+ * Tracked command for process operations
+ */
+export interface Tracked_Command {
+	cmd: string;
+	args: Array<string>;
+	cwd: string;
+}
+
+/**
+ * Creates process operations that track which commands were spawned
+ */
+export const create_tracking_process_ops = (): {
+	ops: {
+		spawn: (
+			cmd: string,
+			args: Array<string>,
+			options?: {cwd?: string | URL},
+		) => Promise<{ok: boolean; stdout?: string; stderr?: string}>;
+	};
+	get_spawned_commands: () => Array<Tracked_Command>;
+	get_commands_by_type: (cmd_name: string) => Array<Tracked_Command>;
+	get_package_names_from_cwd: (commands: Array<Tracked_Command>) => Array<string>;
+} => {
+	const spawned_commands: Array<Tracked_Command> = [];
+
+	return {
+		ops: {
+			spawn: async (
+				cmd: string,
+				args: Array<string>,
+				options?: {cwd?: string | URL},
+			): Promise<{ok: boolean; stdout?: string; stderr?: string}> => {
+				spawned_commands.push({
+					cmd,
+					args,
+					cwd: typeof options?.cwd === 'string' ? options.cwd : '',
+				});
+				return {ok: true};
+			},
+		},
+		get_spawned_commands: () => spawned_commands,
+		get_commands_by_type: (cmd_name: string) =>
+			spawned_commands.filter((c) => c.cmd === 'gro' && c.args[0] === cmd_name),
+		get_package_names_from_cwd: (commands: Array<Tracked_Command>) =>
+			commands.map((c) => c.cwd.split('/').pop() || ''),
 	};
 };

@@ -47,16 +47,7 @@ export const task: Task<Args> = {
 	summary: 'publish all repos in dependency order',
 	Args,
 	run: async ({args, log}): Promise<void> => {
-		const {
-			path,
-			dir,
-			peer_strategy,
-			dry,
-			format,
-			deploy,
-			plan,
-			outfile,
-		} = args;
+		const {path, dir, peer_strategy, dry, format, deploy, plan, outfile} = args;
 
 		// Load repos
 		const {local_repos: repos} = await get_gitops_ready(
