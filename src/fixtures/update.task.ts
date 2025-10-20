@@ -51,18 +51,18 @@ export const task: Task<Args> = {
 	run: async ({args, log}): Promise<void> => {
 		const {verbose} = args;
 
-		log.info(st('cyan', '🔧 Capturing gitops command outputs...\n'));
+		log.info(st('cyan', 'Capturing gitops command outputs...'));
 
 		// Generate fixture repos if missing
 		log.info('Checking fixture repositories...');
 		const missing = FIXTURES.some((f) => !fixtures_exist(f.name));
 
 		if (missing) {
-			log.info(st('yellow', '  Generating fixture repos (some are missing)...\n'));
+			log.info(st('yellow', '  Generating fixture repos (some are missing)...'));
 			await generate_all_fixtures(FIXTURES, log);
 			log.info('');
 		} else {
-			log.info(st('green', '  ✓ Fixture repos already exist\n'));
+			log.info(st('green', '  ✓ Fixture repos already exist'));
 		}
 
 		// Ensure output directory exists
@@ -84,7 +84,7 @@ export const task: Task<Args> = {
 		}> = [];
 
 		for (const command of commands) {
-			log.info(st('yellow', `\n📋 Processing ${command}...`));
+			log.info(st('yellow', `Processing ${command}...`));
 
 			try {
 				// Run the command
@@ -108,7 +108,10 @@ export const task: Task<Args> = {
 
 				if (verbose) {
 					log.info(`   Output length: ${formatted_contents.length} characters`);
-					log.info(`   First few lines:\n${formatted_contents.split('\n').slice(0, 3).join('\n')}`);
+					log.info(`   First few lines:`);
+					for (const line of formatted_contents.split('\n').slice(0, 3)) {
+						log.info(`     ${line}`);
+					}
 				}
 
 				results.push({command, success: true, output_file: output_filename});
@@ -119,7 +122,7 @@ export const task: Task<Args> = {
 		}
 
 		// Summary
-		log.info(st('cyan', '\n📊 Summary:'));
+		log.info(st('cyan', 'Summary:'));
 		const successful = results.filter((r) => r.success);
 		const failed = results.filter((r) => !r.success);
 
@@ -141,7 +144,7 @@ export const task: Task<Args> = {
 		}
 
 		if (failed.length === 0) {
-			log.info(st('green', '\n✅ All commands completed successfully'));
+			log.info(st('green', '✅ All commands completed successfully'));
 			log.info('   Output files can now be used as baselines for testing');
 		}
 

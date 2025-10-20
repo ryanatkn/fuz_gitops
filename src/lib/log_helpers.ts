@@ -31,7 +31,10 @@ export const format_dev_cycles = (
 
 	const lines: Array<string> = [];
 	lines.push(
-		st('dim', `\nℹ️  Found ${analysis.dev_cycles.length} dev circular dependencies (normal, non-blocking):`),
+		st(
+			'dim',
+			`\nℹ️  Found ${analysis.dev_cycles.length} dev circular dependencies (normal, non-blocking):`,
+		),
 	);
 	for (const cycle of analysis.dev_cycles) {
 		lines.push(st('dim', `  ${cycle.join(' → ')}`));
@@ -50,7 +53,10 @@ export const format_production_cycles = (
 
 	const lines: Array<string> = [];
 	lines.push(
-		st('red', `\n❌ Found ${analysis.production_cycles.length} production/peer circular dependencies (blocks publishing):`),
+		st(
+			'red',
+			`\n❌ Found ${analysis.production_cycles.length} production/peer circular dependencies (blocks publishing):`,
+		),
 	);
 	for (const cycle of analysis.production_cycles) {
 		lines.push(`  ${st('red', cycle.join(' → '))}`);

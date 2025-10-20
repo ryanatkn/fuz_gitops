@@ -35,15 +35,15 @@ const FIXTURES = [
 export const task: Task = {
 	summary: 'generate git repositories from fixture data',
 	run: async ({log}): Promise<void> => {
-		log.info(st('cyan', '🔧 Generating fixture repositories...\n'));
+		log.info(st('cyan', 'Generating fixture repositories...'));
 
 		try {
 			await generate_all_fixtures(FIXTURES, log);
 
-			log.info(st('green', '\n✅ All fixture repositories generated successfully'));
+			log.info(st('green', '✅ All fixture repositories generated successfully'));
 			log.info('   Repos are ready for testing in src/fixtures/repos/');
 		} catch (error) {
-			log.error(st('red', '\n❌ Failed to generate fixture repositories'));
+			log.error(st('red', '❌ Failed to generate fixture repositories'));
 			log.error(`   Error: ${error}`);
 			throw error;
 		}

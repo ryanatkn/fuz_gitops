@@ -144,11 +144,7 @@ const validate_errors = (
 		// If no expected errors specified, assert no errors
 		assert.equal(plan.errors.length, 0, `${fixture_name}: No unexpected errors`);
 	} else {
-		assert.deepEqual(
-			plan.errors.sort(),
-			expected.sort(),
-			`${fixture_name}: Errors match expected`,
-		);
+		assert.deepEqual(plan.errors.sort(), expected.sort(), `${fixture_name}: Errors match expected`);
 	}
 };
 

@@ -179,7 +179,7 @@ export const generate_publishing_plan = async (
 	log?: Logger,
 	ops: Changeset_Operations = default_changeset_operations,
 ): Promise<Publishing_Plan> => {
-	log?.info(st('cyan', '📋 Generating publishing plan...\n'));
+	log?.info(st('cyan', 'Generating publishing plan...'));
 
 	const warnings: Array<string> = [];
 	const info: Array<string> = []; // Informational status (not warnings)
@@ -400,9 +400,9 @@ const log_version_change_group = (
 ): void => {
 	if (changes.length === 0) return;
 
-	log.info(st(color, `\n${header}`));
+	log.info(st(color, header));
 	for (const change of changes) {
-		const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
+		const breaking_indicator = change.bump_type === 'major' ? ' (BREAKING)' : '';
 		const extra = extra_info ? ` ${extra_info(change)}` : '';
 		log.info(
 			`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
@@ -427,7 +427,7 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 
 	// Errors
 	if (errors.length > 0) {
-		log.error(st('red', '\n❌ Errors found:'));
+		log.error(st('red', 'Errors found:'));
 		for (const error of errors) {
 			log.error(`  • ${error}`);
 		}
@@ -435,7 +435,7 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 
 	// Publishing order
 	if (publishing_order.length > 0) {
-		log.info(st('cyan', '\n📦 Publishing Order:'));
+		log.info(st('cyan', 'Publishing Order:'));
 		log.info(`  ${publishing_order.join(' → ')}`);
 	}
 
@@ -449,18 +449,13 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 		const with_auto_changesets = version_changes.filter((vc) => vc.will_generate_changeset);
 
 		// Log each group with appropriate formatting
-		log_version_change_group(
-			with_changesets,
-			'🔢 Version Changes (from changesets):',
-			'cyan',
-			log,
-		);
+		log_version_change_group(with_changesets, 'Version Changes (from changesets):', 'cyan', log);
 
 		// Escalation changes need extra explanation after each
 		if (with_escalation.length > 0) {
-			log.info(st('yellow', '\n⬆️  Version Changes (bump escalation required):'));
+			log.info(st('yellow', 'Version Changes (bump escalation required):'));
 			for (const change of with_escalation) {
-				const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
+				const breaking_indicator = change.bump_type === 'major' ? ' (BREAKING)' : '';
 				log.info(
 					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
 						`(${change.existing_bump} → ${change.required_bump})${breaking_indicator}`,
@@ -476,13 +471,13 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 
 		log_version_change_group(
 			with_auto_changesets,
-			'🔄 Version Changes (auto-generated for dependency updates):',
+			'Version Changes (auto-generated for dependency updates):',
 			'cyan',
 			log,
 			() => '[auto-changeset]',
 		);
 	} else {
-		log.info(st('yellow', '\n⚠️  No packages to publish'));
+		log.info(st('yellow', '⚠️  No packages to publish'));
 	}
 
 	// Dependency cascades
@@ -490,7 +485,7 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 		const cascade_items = Array.from(breaking_cascades).map(
 			([pkg, affected]) => `${pkg} affects: ${affected.join(', ')}`,
 		);
-		log_list(cascade_items, '🔄 Dependency Cascades:', 'yellow', log);
+		log_list(cascade_items, 'Dependency Cascades:', 'yellow', log);
 	}
 
 	// Dependency updates
@@ -507,7 +502,7 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 			pkg_updates.set(update.updated_dependency, dep_updates);
 		}
 
-		log.info(st('cyan', '\n🔄 Dependency Updates:'));
+		log.info(st('cyan', 'Dependency Updates:'));
 		for (const [pkg, deps_map] of updates_by_package) {
 			log.info(`  ${pkg}:`);
 			for (const [dep_name, updates] of deps_map) {
@@ -515,9 +510,9 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 				const types: Array<string> = [];
 				let causes_republish = false;
 				for (const update of updates) {
-					if (update.type === 'dependencies') types.push('📦 prod');
-					else if (update.type === 'peerDependencies') types.push('👥 peer');
-					else types.push('🛠️ dev');
+					if (update.type === 'dependencies') types.push('prod');
+					else if (update.type === 'peerDependencies') types.push('peer');
+					else types.push('dev');
 					if (update.causes_republish) causes_republish = true;
 				}
 
@@ -539,14 +534,16 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 
 	// Info (packages with no changes to publish - normal status)
 	if (info.length > 0) {
-		log.info(st('dim', '\nℹ️  No changes to publish:'));
-		log.info(st('dim', '(These packages have no changesets and no dependency updates - this is normal)'));
+		log.info(st('dim', 'ℹ️  No changes to publish:'));
+		log.info(
+			st('dim', '(These packages have no changesets and no dependency updates - this is normal)'),
+		);
 		log_list(info, '', 'dim', log);
 	}
 
 	// Summary
 	const major_bump_count = version_changes.filter((vc) => vc.bump_type === 'major').length;
-	log.info(st('cyan', '\n📊 Summary:'));
+	log.info(st('cyan', 'Summary:'));
 	log.info(`  • ${version_changes.length} packages to publish`);
 	log.info(`  • ${dependency_updates.length} dependency updates`);
 	log.info(`  • ${major_bump_count} packages with major version bumps`);

@@ -308,7 +308,11 @@ describe('validate_dependency_graph', () => {
 
 		it('handles packages with only external dependencies', () => {
 			const repos = [
-				create_mock_repo({name: 'app', version: '1.0.0', deps: {react: '^18.0.0', lodash: '^4.0.0'}}),
+				create_mock_repo({
+					name: 'app',
+					version: '1.0.0',
+					deps: {react: '^18.0.0', lodash: '^4.0.0'},
+				}),
 			];
 
 			const result = validate_dependency_graph(repos);

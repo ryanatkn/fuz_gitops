@@ -125,18 +125,14 @@ export const run_pre_flight_checks = async (
 		for (const repo of repos_to_build) {
 			const build_result = await build_ops.build_package(repo, log); // eslint-disable-line no-await-in-loop
 			if (!build_result.ok) {
-				errors.push(
-					`${repo.pkg.name} failed to build: ${build_result.error || 'unknown error'}`,
-				);
+				errors.push(`${repo.pkg.name} failed to build: ${build_result.error || 'unknown error'}`);
 			} else {
 				log?.info(st('dim', `    ✓ ${repo.pkg.name} built successfully`));
 			}
 		}
 
 		if (errors.some((err) => err.includes('failed to build'))) {
-			log?.error(
-				st('red', '  ❌ Build validation failed - fix build errors before publishing'),
-			);
+			log?.error(st('red', '  ❌ Build validation failed - fix build errors before publishing'));
 		} else {
 			log?.info(st('green', '  ✓ All builds validated successfully'));
 		}

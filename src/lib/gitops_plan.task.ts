@@ -36,7 +36,7 @@ export const task: Task<Args> = {
 	run: async ({args, log}): Promise<void> => {
 		const {dir, path, format, outfile} = args;
 
-		log.info(st('cyan', '🔍 Generating multi-repo publishing plan...\n'));
+		log.info(st('cyan', 'Generating multi-repo publishing plan...'));
 
 		// Load local repos
 		const {local_repos} = await get_gitops_ready(

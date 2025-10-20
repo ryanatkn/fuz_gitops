@@ -63,7 +63,7 @@ export const task: Task<Args> = {
 
 		// Show plan if requested (and not resuming)
 		if (plan && !resume && !dry) {
-			log.info(st('cyan', '\n📋 Publishing Plan\n'));
+			log.info(st('cyan', 'Publishing Plan'));
 			const plan_result = await generate_publishing_plan(repos, log);
 			log_publishing_plan(plan_result, log);
 
@@ -72,7 +72,7 @@ export const task: Task<Args> = {
 			}
 
 			// Ask for confirmation
-			log.info(st('yellow', '\n⚠️  This will publish the packages shown above.'));
+			log.info(st('yellow', '⚠️  This will publish the packages shown above.'));
 			process.stdout.write('Continue with publishing? (y/n): ');
 			const confirmed = await prompt_for_confirmation();
 			if (!confirmed) {
