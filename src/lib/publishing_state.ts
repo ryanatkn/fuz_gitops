@@ -1,4 +1,4 @@
-import {readFile, writeFile} from 'node:fs/promises';
+import {readFile, writeFile, unlink} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
@@ -178,7 +178,6 @@ export class Publishing_State_Manager {
 	 */
 	async clear_state(): Promise<void> {
 		if (existsSync(this.state_file)) {
-			const {unlink} = await import('node:fs/promises');
 			await unlink(this.state_file);
 			this.log?.info(`Cleared state file: ${this.state_file}`);
 		}

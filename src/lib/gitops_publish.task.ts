@@ -1,5 +1,7 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
+import {writeFile} from 'node:fs/promises';
+import {createInterface} from 'node:readline/promises';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {
@@ -117,7 +119,6 @@ export const task: Task<Args> = {
 
 			// Write to file if specified
 			if (outfile) {
-				const {writeFile} = await import('node:fs/promises');
 				await writeFile(outfile, content);
 				log.info(`Output written to ${outfile}`);
 			} else {
@@ -200,8 +201,7 @@ const format_result = (
  * Returns true if user enters 'y', false otherwise.
  */
 const prompt_for_confirmation = async (): Promise<boolean> => {
-	const readline = await import('node:readline/promises');
-	const rl = readline.createInterface({
+	const rl = createInterface({
 		input: process.stdin,
 		output: process.stdout,
 	});
