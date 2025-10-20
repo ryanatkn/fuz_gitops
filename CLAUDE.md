@@ -101,7 +101,6 @@ This prevents the known issue in `gro publish` where build failures leave repos 
 `gro gitops_publish --dry`:
 - **Simulated execution** - Runs the same code path as real publishing
 - Skips pre-flight checks (workspace, branch, npm auth)
-- Does NOT load or save publishing state (no `.gro/fuz_gitops/publish_state.json`)
 - Only simulates packages with explicit changesets (can't auto-generate changesets without real publishes)
 - Use plan for comprehensive "what would happen" analysis; use dry run to test execution flow
 
@@ -153,7 +152,6 @@ When a dependency is updated:
 - `version_utils.ts` - Version comparison and bump type detection
 - `npm_registry.ts` - NPM availability checks with retry
 - `dependency_updater.ts` - Package.json updates with changesets
-- `publishing_state.ts` - Failure recovery and resume support
 - `pre_flight_checks.ts` - Pre-publish validation including build checks
 - `operations.ts` - Dependency injection interfaces for testability (including build operations)
 
@@ -280,7 +278,7 @@ Commands are categorized by their side effects:
 - Supports both relative and absolute repo paths
 - Functional programming patterns (arrow functions, pure functions)
 - Changeset-driven versioning with auto-generation
-- State persistence for publishing failure recovery
+- Natural resumption via changeset consumption (no state files needed)
 
 ## Testability & Operations Pattern
 
@@ -314,7 +312,6 @@ Core modules tested:
 - `changeset_generator.test.ts` - Auto-changeset content generation
 - `pre_flight_checks.test.ts` - Workspace, branch, and npm validation
 - `dependency_updater.test.ts` - Package.json updates and git commits
-- `publishing_state.test.ts` - State management for resume functionality
 
 ### Fixture Testing
 
@@ -409,16 +406,17 @@ gro gitops_plan
 gro gitops_publish
 ```
 
-**Example 3: Recovering from failures with --resume**
+**Example 3: Recovering from failures (natural resumption)**
 
 ```bash
 # Publishing failed midway through
 gro gitops_publish
 # Error: Failed to publish @my/package-5
 
-# Fix the issue, then resume
-gro gitops_publish --resume
-# Skips already-published packages, continues from failure
+# Fix the issue, then re-run the same command
+gro gitops_publish
+# Already-published packages have no changesets → skipped automatically
+# Failed packages still have changesets → retried automatically
 ```
 
 **Example 4: Using plan for planning**
@@ -508,7 +506,7 @@ Note: Dev dependency cycles are normal and allowed.
 **Error: "Failed to publish: package not found on NPM after 5 minutes"**
 
 Solution: NPM propagation can be slow. Either:
-- Wait longer and use `--resume`
+- Wait longer and re-run `gro gitops_publish` (already-published packages will be skipped)
 - Check NPM registry status
 - Verify package was actually published
 
@@ -528,14 +526,19 @@ Check:
 3. Changeset references the correct package name
 4. Changeset has valid frontmatter format
 
-**Issue: "Publish state file causing issues"**
+**Issue: "How does resumption work after failures?"**
 
-The state file is stored in `.gro/fuz_gitops/publish_state.json`
+Resumption is **automatic** and **natural**:
+1. When `gro publish` succeeds, it consumes changesets
+2. When you re-run `gro gitops_publish`, packages without changesets are skipped
+3. Failed packages still have changesets, so they're automatically retried
+4. No flags needed, no state files, just re-run the same command!
 
-To reset:
-```bash
-rm .gro/fuz_gitops/publish_state.json
-```
+This is safer than explicit state tracking because:
+- No stale state files to confuse users
+- No need to remember `--resume` flag
+- Git workspace checks catch incomplete operations
+- Changeset consumption provides natural, foolproof resumption
 
 ### Debugging Tips
 
@@ -566,7 +569,6 @@ ls .changeset/
 ## Output Directory
 
 All gitops-generated files are stored in `.gro/fuz_gitops/`:
-- `publish_state.json` - Persistent state for resume functionality
 - Temporary output files during command execution
 
 This directory should be gitignored (already in `.gitignore`).

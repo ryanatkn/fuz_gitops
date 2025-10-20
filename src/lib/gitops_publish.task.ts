@@ -25,7 +25,6 @@ export const Args = z.strictObject({
 		.describe('version strategy for peer dependencies')
 		.default('caret' as const),
 	dry: z.boolean().describe('perform a dry run without actually publishing').default(false),
-	resume: z.boolean().describe('resume from previous failed publishing state').default(false),
 	format: z.enum(['stdout', 'json', 'markdown']).describe('output format').default('stdout'),
 	deploy: z.boolean().describe('deploy all repos after publishing').default(false),
 	plan: z.boolean().describe('show plan before publishing').default(true),
@@ -45,7 +44,6 @@ export const task: Task<Args> = {
 			update_peers,
 			peer_strategy,
 			dry,
-			resume,
 			format,
 			deploy,
 			plan,
@@ -61,8 +59,8 @@ export const task: Task<Args> = {
 			log,
 		);
 
-		// Show plan if requested (and not resuming)
-		if (plan && !resume && !dry) {
+		// Show plan if requested (skip for dry runs)
+		if (plan && !dry) {
 			log.info(st('cyan', 'Publishing Plan'));
 			const plan_result = await generate_publishing_plan(repos, log);
 			log_publishing_plan(plan_result, log);
@@ -89,7 +87,6 @@ export const task: Task<Args> = {
 			update_deps: update_peers,
 			version_strategy: peer_strategy,
 			deploy,
-			resume,
 			max_wait: 300000, // 5 minutes
 			log,
 		};

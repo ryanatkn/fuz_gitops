@@ -72,9 +72,10 @@ gro gitops_publish --dry # simulate publishing without side effects
 ### Publishing packages
 
 ```bash
-gro gitops_publish           # publish all repos with changesets
-gro gitops_publish --resume  # resume from failed state
+gro gitops_publish  # publish all repos with changesets
 ```
+
+**Note:** If publishing fails, simply re-run the same command. Already-published packages will be automatically skipped (their changesets have been consumed), and failed packages will be retried naturally.
 
 **See [CLAUDE.md](CLAUDE.md) for comprehensive documentation:**
 

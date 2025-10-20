@@ -8,7 +8,6 @@ import {update_package_json, type Version_Strategy} from '$lib/dependency_update
 import {validate_dependency_graph} from '$lib/graph_validation.js';
 import type {Bump_Type} from '$lib/semver.js';
 import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
-import {init_publishing_state, Publishing_State_Manager} from '$lib/publishing_state.js';
 import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
 import type {Gitops_Operations} from '$lib/operations.js';
 import {default_gitops_operations} from '$lib/operations_defaults.js';
@@ -23,7 +22,6 @@ export interface Publishing_Options {
 	version_strategy?: Version_Strategy;
 	deploy?: boolean;
 	max_wait?: number;
-	resume?: boolean; // Resume from saved state
 	log?: Logger;
 }
 
@@ -53,7 +51,7 @@ export const publish_repos = async (
 	ops: Gitops_Operations = default_gitops_operations,
 ): Promise<Publishing_Result> => {
 	const start_time = Date.now();
-	const {dry, continue_on_error, update_deps, resume = false, log} = options;
+	const {dry, continue_on_error, update_deps, log} = options;
 
 	// Pre-flight checks (skip for dry runs since we're not actually publishing)
 	if (!dry) {
@@ -84,13 +82,6 @@ export const publish_repos = async (
 		log_order: true,
 	});
 
-	// Initialize or load publishing state (skip for dry runs - they don't need persistence)
-	const state_manager: Publishing_State_Manager = dry
-		? new Publishing_State_Manager({log}) // Empty manager, no file I/O
-		: await init_publishing_state(order, {log});
-	const packages_to_skip =
-		resume && !dry ? state_manager.get_packages_to_skip() : new Set<string>();
-
 	const published: Map<string, Published_Version> = new Map();
 	const failed: Map<string, Error> = new Map();
 
@@ -98,12 +89,6 @@ export const publish_repos = async (
 	log?.info(st('cyan', `\n🚀 Publishing ${order.length} packages...\n`));
 
 	for (const pkg_name of order) {
-		// Skip if already processed (from resumed state)
-		if (packages_to_skip.has(pkg_name)) {
-			log?.info(st('dim', `  Skipping ${pkg_name} (already processed)`));
-			continue;
-		}
-
 		const repo = repos.find((r) => r.pkg.name === pkg_name);
 		if (!repo) continue;
 
@@ -123,21 +108,11 @@ export const publish_repos = async (
 		}
 
 		try {
-			// Mark as current in state (skip for dry runs)
-			if (!dry) {
-				state_manager.mark_current(pkg_name);
-			}
-
 			// 1. Publish this package
 			log?.info(`Publishing ${pkg_name}...`);
 			const version = await publish_single_repo(repo, options, ops);
 			published.set(pkg_name, version);
 			log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
-
-			// Mark as completed in state (skip for dry runs)
-			if (!dry) {
-				await state_manager.mark_completed(pkg_name, version.new_version);
-			}
 
 			if (!dry) {
 				// 2. Wait for this package to be available on NPM
@@ -194,11 +169,6 @@ export const publish_repos = async (
 			const err = error instanceof Error ? error : new Error(String(error));
 			failed.set(pkg_name, err);
 			log?.error(st('red', `  ❌ Failed to publish ${pkg_name}: ${err.message}`));
-
-			// Mark as failed in state (skip for dry runs)
-			if (!dry) {
-				await state_manager.mark_failed(pkg_name, err);
-			}
 
 			if (!continue_on_error) break;
 		}
@@ -270,14 +240,8 @@ export const publish_repos = async (
 
 	if (ok) {
 		log?.info(st('green', '\n✨ All packages published successfully!\n'));
-		// Clear state file on successful completion
-		if (!dry) {
-			await state_manager.clear_state();
-		}
 	} else {
 		log?.error(st('red', '\n❌ Some packages failed to publish\n'));
-		// State file remains for potential resume
-		log?.info(st('yellow', '\n💾 State saved - you can resume with --resume flag'));
 	}
 
 	return {
