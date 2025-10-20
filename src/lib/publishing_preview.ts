@@ -12,6 +12,7 @@ import {
 } from '$lib/version_utils.js';
 import type {Changeset_Operations} from '$lib/operations.js';
 import {default_changeset_operations} from '$lib/operations_defaults.js';
+import {log_list} from '$lib/log_helpers.js';
 
 export interface Version_Change {
 	package_name: string;
@@ -388,6 +389,29 @@ export const preview_publishing_plan = async (
 };
 
 /**
+ * Helper to log a group of version changes with consistent formatting.
+ */
+const log_version_change_group = (
+	changes: Array<Version_Change>,
+	header: string,
+	color: 'cyan' | 'yellow',
+	log: Logger,
+	extra_info?: (change: Version_Change) => string,
+): void => {
+	if (changes.length === 0) return;
+
+	log.info(st(color, `\n${header}`));
+	for (const change of changes) {
+		const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
+		const extra = extra_info ? ` ${extra_info(change)}` : '';
+		log.info(
+			`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
+				`(${change.bump_type})${extra}${breaking_indicator}`,
+		);
+	}
+};
+
+/**
  * Formats and logs the publishing preview for user review.
  */
 export const log_publishing_preview = (preview: Publishing_Preview, log: Logger): void => {
@@ -403,7 +427,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 
 	// Errors
 	if (errors.length > 0) {
-		log.error(st('red', '\n❌ Errors found:\n'));
+		log.error(st('red', '\n❌ Errors found:'));
 		for (const error of errors) {
 			log.error(`  • ${error}`);
 		}
@@ -411,7 +435,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 
 	// Publishing order
 	if (publishing_order.length > 0) {
-		log.info(st('cyan', '\n📦 Publishing Order:\n'));
+		log.info(st('cyan', '\n📦 Publishing Order:'));
 		log.info(`  ${publishing_order.join(' → ')}`);
 	}
 
@@ -424,19 +448,17 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 		const with_escalation = version_changes.filter((vc) => vc.needs_bump_escalation);
 		const with_auto_changesets = version_changes.filter((vc) => vc.will_generate_changeset);
 
-		if (with_changesets.length > 0) {
-			log.info(st('cyan', '\n🔢 Version Changes (from changesets):\n'));
-			for (const change of with_changesets) {
-				const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
-				log.info(
-					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
-						`(${change.bump_type})${breaking_indicator}`,
-				);
-			}
-		}
+		// Log each group with appropriate formatting
+		log_version_change_group(
+			with_changesets,
+			'🔢 Version Changes (from changesets):',
+			'cyan',
+			log,
+		);
 
+		// Escalation changes need extra explanation after each
 		if (with_escalation.length > 0) {
-			log.info(st('yellow', '\n⬆️  Version Changes (bump escalation required):\n'));
+			log.info(st('yellow', '\n⬆️  Version Changes (bump escalation required):'));
 			for (const change of with_escalation) {
 				const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
 				log.info(
@@ -452,26 +474,23 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 			}
 		}
 
-		if (with_auto_changesets.length > 0) {
-			log.info(st('cyan', '\n🔄 Version Changes (auto-generated for dependency updates):\n'));
-			for (const change of with_auto_changesets) {
-				const breaking_indicator = change.bump_type === 'major' ? ' 💥' : '';
-				log.info(
-					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
-						`(${change.bump_type}) [auto-changeset]${breaking_indicator}`,
-				);
-			}
-		}
+		log_version_change_group(
+			with_auto_changesets,
+			'🔄 Version Changes (auto-generated for dependency updates):',
+			'cyan',
+			log,
+			() => '[auto-changeset]',
+		);
 	} else {
 		log.info(st('yellow', '\n⚠️  No packages to publish'));
 	}
 
 	// Dependency cascades
 	if (breaking_cascades.size > 0) {
-		log.info(st('yellow', '\n🔄 Dependency Cascades:\n'));
-		for (const [pkg, affected] of breaking_cascades) {
-			log.info(`  • ${pkg} affects: ${affected.join(', ')}`);
-		}
+		const cascade_items = Array.from(breaking_cascades).map(
+			([pkg, affected]) => `${pkg} affects: ${affected.join(', ')}`,
+		);
+		log_list(cascade_items, '🔄 Dependency Cascades:', 'yellow', log);
 	}
 
 	// Dependency updates
@@ -488,7 +507,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 			pkg_updates.set(update.updated_dependency, dep_updates);
 		}
 
-		log.info(st('cyan', '\n🔄 Dependency Updates:\n'));
+		log.info(st('cyan', '\n🔄 Dependency Updates:'));
 		for (const [pkg, deps_map] of updates_by_package) {
 			log.info(`  ${pkg}:`);
 			for (const [dep_name, updates] of deps_map) {
@@ -516,25 +535,18 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 	}
 
 	// Warnings (actual issues requiring attention)
-	if (warnings.length > 0) {
-		log.warn(st('yellow', '\n⚠️  Warnings:\n'));
-		for (const warning of warnings) {
-			log.warn(`  • ${warning}`);
-		}
-	}
+	log_list(warnings, '⚠️  Warnings:', 'yellow', log, 'warn');
 
 	// Info (packages with no changes to publish - normal status)
 	if (info.length > 0) {
-		log.info(st('dim', '\nℹ️  No changes to publish:\n'));
-		log.info(st('dim', '(These packages have no changesets and no dependency updates - this is normal)\n'));
-		for (const pkg of info) {
-			log.info(st('dim', `  • ${pkg}`));
-		}
+		log.info(st('dim', '\nℹ️  No changes to publish:'));
+		log.info(st('dim', '(These packages have no changesets and no dependency updates - this is normal)'));
+		log_list(info, '', 'dim', log);
 	}
 
 	// Summary
 	const major_bump_count = version_changes.filter((vc) => vc.bump_type === 'major').length;
-	log.info(st('cyan', '\n📊 Summary:\n'));
+	log.info(st('cyan', '\n📊 Summary:'));
 	log.info(`  • ${version_changes.length} packages to publish`);
 	log.info(`  • ${dependency_updates.length} dependency updates`);
 	log.info(`  • ${major_bump_count} packages with major version bumps`);

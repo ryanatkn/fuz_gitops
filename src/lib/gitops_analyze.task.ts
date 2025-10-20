@@ -7,6 +7,11 @@ import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {type Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
 import type {Local_Repo} from '$lib/local_repo.js';
 import {validate_dependency_graph} from '$lib/graph_validation.js';
+import {
+	format_wildcard_dependencies,
+	format_dev_cycles,
+	format_production_cycles,
+} from '$lib/log_helpers.js';
 
 export const Args = z
 	.object({
@@ -206,7 +211,7 @@ const format_stdout = (
 ): Array<string> => {
 	const lines: Array<string> = [];
 
-	lines.push(st('cyan', `\n📊 Analyzing ${repos.length} repositories\n`));
+	lines.push(st('cyan', `📊 Analyzing ${repos.length} repositories...`));
 
 	// Publishing order
 	if (publishing_order) {
@@ -237,42 +242,14 @@ const format_stdout = (
 	}
 	lines.push('');
 
-	// Wildcard analysis
-	if (analysis.wildcard_deps.length > 0) {
-		lines.push(st('yellow', `\n⚠️  Found ${analysis.wildcard_deps.length} wildcard dependencies:`));
-		for (const {pkg, dep, version} of analysis.wildcard_deps) {
-			lines.push(`  ${pkg} → ${dep} ${st('red', version)}`);
-		}
-		lines.push('');
-	}
+	// Dependency analysis
+	lines.push(...format_wildcard_dependencies(analysis));
+	lines.push(...format_production_cycles(analysis));
+	lines.push(...format_dev_cycles(analysis));
 
-	// Cycle detection
+	// Success message based on cycle detection
 	const has_prod_cycles = analysis.production_cycles.length > 0;
 	const has_dev_cycles = analysis.dev_cycles.length > 0;
-
-	if (has_prod_cycles) {
-		lines.push(
-			st(
-				'red',
-				`\n❌ Found ${analysis.production_cycles.length} production/peer circular dependencies (blocks publishing):`,
-			),
-		);
-		for (const cycle of analysis.production_cycles) {
-			lines.push(`  ${st('red', cycle.join(' → '))}`);
-		}
-	}
-
-	if (has_dev_cycles) {
-		lines.push(
-			st(
-				'yellow',
-				`\n⚠️  Found ${analysis.dev_cycles.length} dev circular dependencies (normal, non-blocking):`,
-			),
-		);
-		for (const cycle of analysis.dev_cycles) {
-			lines.push(`  ${st('dim', cycle.join(' → '))}`);
-		}
-	}
 
 	if (!has_prod_cycles && !has_dev_cycles) {
 		lines.push(st('green', '✅ No circular dependencies detected'));

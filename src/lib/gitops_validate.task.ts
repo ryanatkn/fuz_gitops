@@ -7,6 +7,7 @@ import {validate_dependency_graph} from '$lib/graph_validation.js';
 import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
 import {preview_publishing_plan} from '$lib/publishing_preview.js';
 import {publish_repos, type Publishing_Options} from '$lib/multi_repo_publisher.js';
+import {log_dependency_analysis} from '$lib/log_helpers.js';
 
 export const Args = z
 	.object({
@@ -40,6 +41,8 @@ export const task: Task<Args> = {
 			errors: number;
 			duration: number;
 			warning_details?: Array<string>;
+			info_details?: Array<string>;
+			analysis?: ReturnType<Dependency_Graph_Builder['analyze']>;
 		}> = [];
 
 		const start_time = Date.now();
@@ -66,13 +69,14 @@ export const task: Task<Args> = {
 
 			const analyze_duration = Date.now() - analyze_start;
 
-			// Collect warnings and errors
+			// Collect warnings, info, and errors
 			const warning_details: Array<string> = [];
+			const info_details: Array<string> = [];
 			if (analysis.wildcard_deps.length > 0) {
 				warning_details.push('wildcard dependencies');
 			}
 			if (analysis.dev_cycles.length > 0) {
-				warning_details.push('dev circular dependencies');
+				info_details.push('dev circular dependencies');
 			}
 			const warnings = warning_details.length;
 			const errors = analysis.production_cycles.length > 0 ? 1 : 0;
@@ -84,12 +88,15 @@ export const task: Task<Args> = {
 				errors,
 				duration: analyze_duration,
 				warning_details,
+				info_details,
+				analysis,
 			});
 
 			log.info(st('green', `  ✓ gitops_analyze completed in ${analyze_duration}ms\n`));
-			if (warnings > 0) {
-				log.warn(st('yellow', `  ⚠️  Found ${warnings} warning(s)\n`));
-			}
+
+			// Print detailed analysis
+			log_dependency_analysis(analysis, log, '  ');
+
 			if (errors > 0) {
 				log.error(st('red', `  ❌ Found ${errors} error(s)\n`));
 			}
@@ -159,21 +166,17 @@ export const task: Task<Args> = {
 
 			// Dry run doesn't have warnings/errors in the same format
 			// We'll just check if it succeeded
-			const warnings = 0;
 			const errors = result.ok ? 0 : result.failed.length;
 
 			results.push({
 				command: 'gitops_publish --dry',
 				success: result.ok,
-				warnings,
+				warnings: 0,
 				errors,
 				duration: dry_duration,
 			});
 
 			log.info(st('green', `  ✓ gitops_publish --dry completed in ${dry_duration}ms\n`));
-			if (warnings > 0) {
-				log.warn(st('yellow', `  ⚠️  Found ${warnings} warning(s)\n`));
-			}
 			if (errors > 0) {
 				log.error(st('red', `  ❌ Found ${errors} error(s)\n`));
 			}
@@ -216,6 +219,9 @@ export const task: Task<Args> = {
 					? ` (${result.warning_details.join(', ')})`
 					: '';
 				log.info(st('yellow', `    ⚠️  ${result.warnings} warning(s)${details}`));
+			}
+			if (result.info_details && result.info_details.length > 0) {
+				log.info(st('dim', `    ℹ️  ${result.info_details.join(', ')}`));
 			}
 			if (result.errors > 0) {
 				log.info(st('red', `    ❌ ${result.errors} error(s)`));

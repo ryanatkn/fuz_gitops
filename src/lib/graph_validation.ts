@@ -66,7 +66,7 @@ export const validate_dependency_graph = (
 
 	// Log dev cycles (informational, not an error)
 	if (dev_cycles.length > 0 && log_cycles) {
-		log?.info(st('yellow', '⚠️  Dev dependency cycles detected (this is normal):'));
+		log?.info(st('dim', 'ℹ️  Dev dependency cycles detected (this is normal):'));
 		for (const cycle of dev_cycles) {
 			log?.info(st('dim', `  ${cycle.join(' → ')}`));
 		}
