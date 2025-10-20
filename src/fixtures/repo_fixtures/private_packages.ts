@@ -77,7 +77,7 @@ Update to private_tool (should not publish)`,
 
 	expected_outcomes: {
 		// Note: private_tool appears in publishing order but won't actually publish
-		// The publishing preview shows all packages in dependency order
+		// The publishing plan shows all packages in dependency order
 		publishing_order: ['@test/public_lib', '@test/private_tool', '@test/consumer'],
 
 		version_changes: [

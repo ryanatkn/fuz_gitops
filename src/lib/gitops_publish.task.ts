@@ -26,7 +26,7 @@ export const Args = z.strictObject({
 	resume: z.boolean().describe('resume from previous failed publishing state').default(false),
 	format: z.enum(['stdout', 'json', 'markdown']).describe('output format').default('stdout'),
 	deploy: z.boolean().describe('deploy all repos after publishing').default(false),
-	preview: z.boolean().describe('show plan before publishing').default(true),
+	plan: z.boolean().describe('show plan before publishing').default(true),
 	outfile: z.string().describe('write output to file instead of logging').optional(),
 });
 export type Args = z.infer<typeof Args>;
@@ -46,7 +46,7 @@ export const task: Task<Args> = {
 			resume,
 			format,
 			deploy,
-			preview,
+			plan,
 			outfile,
 		} = args;
 
@@ -60,7 +60,7 @@ export const task: Task<Args> = {
 		);
 
 		// Show plan if requested (and not resuming)
-		if (preview && !resume && !dry) {
+		if (plan && !resume && !dry) {
 			log.info(st('cyan', '\n📋 Publishing Plan\n'));
 			const plan_result = await generate_publishing_plan(repos, log);
 			log_publishing_plan(plan_result, log);
@@ -71,8 +71,12 @@ export const task: Task<Args> = {
 
 			// Ask for confirmation
 			log.info(st('yellow', '\n⚠️  This will publish the packages shown above.'));
-			log.info('Press Ctrl+C to cancel, or wait 5 seconds to continue...\n');
-			await new Promise((resolve) => setTimeout(resolve, 5000));
+			process.stdout.write('Continue with publishing? (y/n): ');
+			const confirmed = await prompt_for_confirmation();
+			if (!confirmed) {
+				log.info('Publishing cancelled');
+				process.exit(0);
+			}
 		}
 
 		// Publishing options
@@ -189,4 +193,21 @@ const format_result = (
 	}
 
 	return lines;
+};
+
+/**
+ * Prompts user for y/n confirmation.
+ * Returns true if user enters 'y', false otherwise.
+ */
+const prompt_for_confirmation = async (): Promise<boolean> => {
+	const readline = await import('node:readline/promises');
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout,
+	});
+
+	const answer = await rl.question('');
+	rl.close();
+
+	return answer.toLowerCase() === 'y';
 };

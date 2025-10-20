@@ -212,7 +212,7 @@ gro gitops_analyze       # analyze dependencies and changesets
 gro gitops_plan          # generate publishing plan
 gro gitops_publish       # publish repos in dependency order
 gro gitops_publish --dry # dry run without pre-flight checks
-gro gitops_publish --no-preview # skip plan confirmation before publishing
+gro gitops_publish --no-plan # skip plan confirmation before publishing
 
 # Development
 gro dev                  # start dev server

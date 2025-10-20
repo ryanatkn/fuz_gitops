@@ -113,7 +113,7 @@ export const publish_repos = async (
 			// In real publish: They might get auto-changesets during dependency updates
 			// In dry run: We can't simulate auto-changesets, so just skip
 			if (dry) {
-				// Silent skip in dry run - preview shows which packages get auto-changesets
+				// Silent skip in dry run - plan shows which packages get auto-changesets
 				continue;
 			} else {
 				log?.info(st('yellow', `  ⚠️  Skipping ${pkg_name} - no changesets`));

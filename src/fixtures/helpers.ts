@@ -44,7 +44,7 @@ export const run_gitops_command = async (
 		full_args = [
 			'gitops_publish',
 			'--dry',
-			'--no-preview',
+			'--no-plan',
 			'--format',
 			'markdown',
 			'--outfile',
