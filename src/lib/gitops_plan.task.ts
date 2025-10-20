@@ -10,16 +10,23 @@ import {
 	type Publishing_Plan,
 } from '$lib/publishing_plan.js';
 
-const Args = z
-	.object({
-		dir: z.string().describe('root directory for repos').optional(),
-		path: z.string().describe('path to gitops config file').default('gitops.config.ts'),
-		format: z.enum(['stdout', 'json', 'markdown']).describe('output format').default('stdout'),
-		outfile: z.string().describe('write output to file instead of logging').optional(),
-	})
-	.strict();
+export const Args = z.strictObject({
+	path: z
+		.string()
+		.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
+		.default('gitops.config.ts'),
+	dir: z
+		.string()
+		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
+		.optional(),
+	format: z
+		.enum(['stdout', 'json', 'markdown'])
+		.meta({description: 'output format'})
+		.default('stdout'),
+	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
+});
 
-type Args = z.infer<typeof Args>;
+export type Args = z.infer<typeof Args>;
 
 /**
  * Generate a publishing plan showing what would happen during multi-repo publishing.

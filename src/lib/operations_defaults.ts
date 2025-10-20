@@ -4,7 +4,7 @@
 
 import {spawn, spawn_out} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
-import type {Git_Branch, Git_Origin} from '@ryanatkn/belt/git.js';
+import {git_checkout, git_pull, type Git_Branch, type Git_Origin} from '@ryanatkn/belt/git.js';
 
 import {has_changesets, read_changesets, predict_next_version} from '$lib/changeset_reader.js';
 import {wait_for_package, check_package_available} from '$lib/npm_registry.js';
@@ -24,8 +24,6 @@ import {
 	git_current_branch_name_required,
 	git_current_commit_hash_required,
 	git_check_clean_workspace_as_boolean,
-	git_checkout_wrapper,
-	git_pull_wrapper,
 	git_has_remote,
 } from '$lib/git_operations.js';
 import type {
@@ -61,10 +59,11 @@ export const default_git_operations: Git_Operations = {
 		git_check_clean_workspace_as_boolean(cwd ? {cwd} : undefined),
 
 	// Branch operations
-	checkout: async (branch: string, cwd?: string) =>
-		git_checkout_wrapper(branch, cwd ? {cwd} : undefined),
+	checkout: async (branch: string, cwd?: string) => {
+		await git_checkout(branch, cwd ? {cwd} : undefined); // TODO probably change the upstream type
+	},
 	pull: async (origin?: string, branch?: string, cwd?: string) =>
-		git_pull_wrapper(origin, branch, cwd ? {cwd} : undefined),
+		git_pull(origin, branch, cwd ? {cwd} : undefined),
 	switch_branch: async (branch: string, pull?: boolean, cwd?: string) =>
 		git_switch_branch(branch as Git_Branch, pull, cwd ? {cwd} : undefined),
 	has_remote: async (remote?: string, cwd?: string) =>

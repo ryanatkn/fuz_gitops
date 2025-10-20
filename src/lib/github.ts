@@ -6,10 +6,10 @@ import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 /**
  * @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
  */
-export const Github_Pull_Request = z.object({
+export const Github_Pull_Request = z.strictObject({
 	number: z.number(),
 	title: z.string(),
-	user: z.object({
+	user: z.strictObject({
 		login: z.string(),
 	}),
 	draft: z.boolean(),
@@ -53,14 +53,14 @@ export const fetch_github_pull_requests = async (
 /**
  * @see https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference
  */
-export const Github_Check_Runs_Item = z.object({
+export const Github_Check_Runs_Item = z.strictObject({
 	status: z.enum(['queued', 'in_progress', 'completed']),
 	conclusion: z
 		.enum(['success', 'failure', 'neutral', 'cancelled', 'skipped', 'timed_out', 'action_required'])
 		.nullable(),
 });
 export type Github_Check_Runs_Item = z.infer<typeof Github_Check_Runs_Item>;
-export const Github_Check_Runs = z.object({
+export const Github_Check_Runs = z.strictObject({
 	total_count: z.number(),
 	check_runs: z.array(Github_Check_Runs_Item),
 });

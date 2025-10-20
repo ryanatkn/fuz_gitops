@@ -9,18 +9,16 @@ import {generate_publishing_plan} from '$lib/publishing_plan.js';
 import {publish_repos, type Publishing_Options} from '$lib/multi_repo_publisher.js';
 import {log_dependency_analysis} from '$lib/log_helpers.js';
 
-export const Args = z
-	.object({
-		path: z
-			.string()
-			.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
-			.default('gitops.config.ts'),
-		dir: z
-			.string()
-			.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
-			.optional(),
-	})
-	.strict();
+export const Args = z.strictObject({
+	path: z
+		.string()
+		.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
+		.default('gitops.config.ts'),
+	dir: z
+		.string()
+		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
+		.optional(),
+});
 
 export type Args = z.infer<typeof Args>;
 
@@ -155,8 +153,6 @@ export const task: Task<Args> = {
 		try {
 			const options: Publishing_Options = {
 				dry: true,
-				bump: 'auto',
-				continue_on_error: false,
 				update_deps: true,
 				log: undefined, // Silent for validation
 			};

@@ -6,7 +6,6 @@ import {styleText as st} from 'node:util';
 import type {Local_Repo} from '$lib/local_repo.js';
 import {update_package_json, type Version_Strategy} from '$lib/dependency_updater.js';
 import {validate_dependency_graph} from '$lib/graph_validation.js';
-import type {Bump_Type} from '$lib/semver.js';
 import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
 import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
 import type {Gitops_Operations} from '$lib/operations.js';
@@ -16,8 +15,6 @@ import {default_gitops_operations} from '$lib/operations_defaults.js';
 
 export interface Publishing_Options {
 	dry: boolean;
-	bump: Bump_Type | 'auto';
-	continue_on_error: boolean;
 	update_deps: boolean;
 	version_strategy?: Version_Strategy;
 	deploy?: boolean;
@@ -51,7 +48,7 @@ export const publish_repos = async (
 	ops: Gitops_Operations = default_gitops_operations,
 ): Promise<Publishing_Result> => {
 	const start_time = Date.now();
-	const {dry, continue_on_error, update_deps, log} = options;
+	const {dry, update_deps, log} = options;
 
 	// Pre-flight checks (skip for dry runs since we're not actually publishing)
 	if (!dry) {
@@ -169,8 +166,7 @@ export const publish_repos = async (
 			const err = error instanceof Error ? error : new Error(String(error));
 			failed.set(pkg_name, err);
 			log?.error(st('red', `  ❌ Failed to publish ${pkg_name}: ${err.message}`));
-
-			if (!continue_on_error) break;
+			break; // Always fail fast on error
 		}
 	}
 

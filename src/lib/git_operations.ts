@@ -201,27 +201,6 @@ export const git_check_clean_workspace_as_boolean = async (
 };
 
 /**
- * Wrapper for gro's git_checkout.
- */
-export const git_checkout_wrapper = async (
-	branch: string,
-	options?: SpawnOptions,
-): Promise<void> => {
-	await gro_git_checkout(branch as Git_Branch, options);
-};
-
-/**
- * Wrapper for gro's git_pull.
- */
-export const git_pull_wrapper = async (
-	origin?: string,
-	branch?: string,
-	options?: SpawnOptions,
-): Promise<void> => {
-	await gro_git_pull(origin as Git_Origin, branch as Git_Branch, options);
-};
-
-/**
  * Checks if a git remote exists.
  */
 export const git_has_remote = async (

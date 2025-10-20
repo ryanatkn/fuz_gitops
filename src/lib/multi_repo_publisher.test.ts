@@ -44,8 +44,6 @@ test('dry run predicts versions without publishing', async () => {
 		repos,
 		{
 			dry: true,
-			bump: 'auto',
-			continue_on_error: false,
 			update_deps: false,
 		},
 		mock_ops,
@@ -59,7 +57,7 @@ test('dry run predicts versions without publishing', async () => {
 	expect(result.published[1].new_version).toBe('0.2.1');
 });
 
-test('handles publish failures with continue_on_error', async () => {
+test('always fails fast on publish errors', async () => {
 	const repos: Array<Local_Repo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0'}),
@@ -107,17 +105,16 @@ test('handles publish failures with continue_on_error', async () => {
 		repos,
 		{
 			dry: false,
-			bump: 'auto',
-			continue_on_error: true,
 			update_deps: false,
 		},
 		mock_ops,
 	);
 
+	// With fail-fast behavior: only pkg-a fails, no other packages are attempted
 	expect(result.ok).toBe(false);
 	expect(result.failed.length).toBe(1);
 	expect(result.failed[0].name).toBe('pkg-a');
-	expect(result.published.length).toBe(2); // pkg-b and pkg-c should succeed
+	expect(result.published.length).toBe(0); // No packages published after failure
 });
 
 test('handles breaking change cascades in dry run', async () => {
@@ -159,8 +156,6 @@ test('handles breaking change cascades in dry run', async () => {
 		repos,
 		{
 			dry: true,
-			bump: 'auto',
-			continue_on_error: false,
 			update_deps: false,
 		},
 		mock_ops,
@@ -220,8 +215,6 @@ test('skips repos without changesets', async () => {
 		repos,
 		{
 			dry: false,
-			bump: 'auto',
-			continue_on_error: false,
 			update_deps: false,
 		},
 		mock_ops,

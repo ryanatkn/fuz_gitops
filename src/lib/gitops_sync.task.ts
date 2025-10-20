@@ -15,27 +15,25 @@ import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
-export const Args = z
-	.object({
-		path: z
-			.string()
-			.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
-			.default('gitops.config.ts'),
-		dir: z
-			.string()
-			.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
-			.optional(),
-		outdir: z
-			.string()
-			.meta({description: 'path to the directory for the generated files, defaults to $routes/'})
-			.optional(),
-		download: z.boolean().meta({description: 'download all missing local repos'}).default(false),
-		check: z
-			.boolean()
-			.meta({description: 'check repos are ready without fetching remote data'})
-			.default(false),
-	})
-	.strict();
+export const Args = z.strictObject({
+	path: z
+		.string()
+		.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
+		.default('gitops.config.ts'),
+	dir: z
+		.string()
+		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
+		.optional(),
+	outdir: z
+		.string()
+		.meta({description: 'path to the directory for the generated files, defaults to $routes/'})
+		.optional(),
+	download: z.boolean().meta({description: 'download all missing local repos'}).default(false),
+	check: z
+		.boolean()
+		.meta({description: 'check repos are ready without fetching remote data'})
+		.default(false),
+});
 export type Args = z.infer<typeof Args>;
 
 /**

@@ -13,23 +13,21 @@ import {
 	format_production_cycles,
 } from '$lib/log_helpers.js';
 
-export const Args = z
-	.object({
-		path: z
-			.string()
-			.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
-			.default('gitops.config.ts'),
-		dir: z
-			.string()
-			.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
-			.optional(),
-		format: z
-			.enum(['stdout', 'json', 'markdown'])
-			.meta({description: 'output format'})
-			.default('stdout'),
-		outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
-	})
-	.strict();
+export const Args = z.strictObject({
+	path: z
+		.string()
+		.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
+		.default('gitops.config.ts'),
+	dir: z
+		.string()
+		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
+		.optional(),
+	format: z
+		.enum(['stdout', 'json', 'markdown'])
+		.meta({description: 'output format'})
+		.default('stdout'),
+	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
+});
 
 export type Args = z.infer<typeof Args>;
 

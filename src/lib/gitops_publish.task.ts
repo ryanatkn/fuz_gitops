@@ -9,26 +9,37 @@ import {
 	type Publishing_Options,
 	type Publishing_Result,
 } from '$lib/multi_repo_publisher.js';
-import type {Bump_Type} from '$lib/semver.js';
 import {generate_publishing_plan, log_publishing_plan} from '$lib/publishing_plan.js';
 import {styleText as st} from 'node:util';
 
 export const Args = z.strictObject({
-	path: z.string().describe('path to the gitops config file').default('gitops.config.ts'),
-	dir: z.string().describe('path containing the repos').optional(),
-	branch: z.string().describe('git branch to publish from').default('main'),
-	bump: z.enum(['major', 'minor', 'patch', 'auto']).describe('version bump type').default('auto'),
-	continue_on_error: z.boolean().describe('continue publishing if a package fails').default(false),
-	update_peers: z.boolean().describe('update peer dependencies after publishing').default(true),
+	path: z
+		.string()
+		.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
+		.default('gitops.config.ts'),
+	dir: z
+		.string()
+		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
+		.optional(),
 	peer_strategy: z
 		.enum(['exact', 'caret', 'tilde'])
-		.describe('version strategy for peer dependencies')
+		.meta({description: 'version strategy for peer dependencies'})
 		.default('caret' as const),
-	dry: z.boolean().describe('perform a dry run without actually publishing').default(false),
-	format: z.enum(['stdout', 'json', 'markdown']).describe('output format').default('stdout'),
-	deploy: z.boolean().describe('deploy all repos after publishing').default(false),
-	plan: z.boolean().describe('show plan before publishing').default(true),
-	outfile: z.string().describe('write output to file instead of logging').optional(),
+	dry: z
+		.boolean()
+		.meta({description: 'perform a dry run without actually publishing'})
+		.default(false),
+	format: z
+		.enum(['stdout', 'json', 'markdown'])
+		.meta({description: 'output format'})
+		.default('stdout'),
+	deploy: z.boolean().meta({description: 'deploy all repos after publishing'}).default(false),
+	plan: z.boolean().meta({description: 'dual of no-plan'}).default(true),
+	'no-plan': z
+		.boolean()
+		.meta({description: 'skip plan confirmation before publishing'})
+		.default(false),
+	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
 });
 export type Args = z.infer<typeof Args>;
 
@@ -39,9 +50,6 @@ export const task: Task<Args> = {
 		const {
 			path,
 			dir,
-			bump,
-			continue_on_error,
-			update_peers,
 			peer_strategy,
 			dry,
 			format,
@@ -81,9 +89,7 @@ export const task: Task<Args> = {
 		// Publishing options
 		const options: Publishing_Options = {
 			dry,
-			bump: bump as Bump_Type | 'auto',
-			continue_on_error,
-			update_deps: update_peers,
+			update_deps: true, // Always update dependencies
 			version_strategy: peer_strategy,
 			deploy,
 			max_wait: 300000, // 5 minutes
