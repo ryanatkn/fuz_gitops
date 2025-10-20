@@ -98,6 +98,23 @@ export const git_get_changed_files = async (options?: SpawnOptions): Promise<Arr
 };
 
 /**
+ * Checks if a specific file changed between two commits.
+ */
+export const git_has_file_changed = async (
+	from_commit: string,
+	to_commit: string,
+	file_path: string,
+	options?: SpawnOptions,
+): Promise<boolean> => {
+	const {stdout} = await spawn_out(
+		'git',
+		['diff', '--name-only', from_commit, to_commit, '--', file_path],
+		options,
+	);
+	return stdout ? stdout.trim().length > 0 : false;
+};
+
+/**
  * Stashes current changes and throws if anything goes wrong.
  */
 export const git_stash = async (message?: string, options?: SpawnOptions): Promise<void> => {
@@ -202,4 +219,17 @@ export const git_pull_wrapper = async (
 	options?: SpawnOptions,
 ): Promise<void> => {
 	await gro_git_pull(origin as Git_Origin, branch as Git_Branch, options);
+};
+
+/**
+ * Checks if a git remote exists.
+ */
+export const git_has_remote = async (
+	remote: string = 'origin',
+	options?: SpawnOptions,
+): Promise<boolean> => {
+	const {stdout} = await spawn_out('git', ['remote'], options);
+	if (!stdout) return false;
+	const remotes = stdout.split('\n').map((r) => r.trim()).filter(Boolean);
+	return remotes.includes(remote);
 };

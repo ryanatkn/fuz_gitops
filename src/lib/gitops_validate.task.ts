@@ -49,7 +49,7 @@ export const task: Task<Args> = {
 
 		// Load repos once (shared by all commands)
 		log.info(st('dim', 'Loading repositories...'));
-		const {local_repos} = await get_gitops_ready(path, dir, false, false, log);
+		const {local_repos} = await get_gitops_ready(path, dir, false, log);
 		log.info(st('dim', `   Found ${local_repos.length} local repos`));
 
 		// 1. Run gitops_analyze

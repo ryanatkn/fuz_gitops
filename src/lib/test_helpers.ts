@@ -176,6 +176,7 @@ export const create_mock_git_ops = (overrides: Partial<Git_Operations> = {}): Gi
 	checkout: async () => {},
 	pull: async () => {},
 	switch_branch: async () => {},
+	has_remote: async () => false,
 	add: async () => {},
 	commit: async () => {},
 	add_and_commit: async () => {},
@@ -185,6 +186,7 @@ export const create_mock_git_ops = (overrides: Partial<Git_Operations> = {}): Gi
 	push_tag: async () => {},
 	stash: async () => {},
 	stash_pop: async () => {},
+	has_file_changed: async () => false,
 	...overrides,
 });
 
@@ -196,6 +198,7 @@ export const create_mock_npm_ops = (overrides: Partial<Npm_Operations> = {}): Np
 	check_package_available: async () => true,
 	check_auth: async () => ({ok: true, username: 'testuser'}),
 	check_registry: async () => ({ok: true}),
+	install: async () => ({ok: true}),
 	...overrides,
 });
 

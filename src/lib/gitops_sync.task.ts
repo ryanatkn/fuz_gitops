@@ -30,9 +30,6 @@ export const Args = z
 			.meta({description: 'path to the directory for the generated files, defaults to $routes/'})
 			.optional(),
 		download: z.boolean().meta({description: 'download all missing local repos'}).default(false),
-		install: z.boolean().meta({description: 'opt into installing packages'}).default(false),
-		sync: z.boolean().meta({description: 'dual of no-sync'}).default(true),
-		'no-sync': z.boolean().meta({description: 'opt out of gro sync'}).default(false),
 		check: z
 			.boolean()
 			.meta({description: 'check repos are ready without fetching remote data'})
@@ -48,13 +45,9 @@ export const task: Task<Args> = {
 	Args,
 	summary: 'syncs local repos and generates UI data from repo metadata',
 	run: async ({args, log, svelte_config, invoke_task}) => {
-		const {path, dir, outdir = svelte_config.routes_path, download, install, sync, check} = args;
+		const {path, dir, outdir = svelte_config.routes_path, download, check} = args;
 
-		if (sync) {
-			await invoke_task('sync', {install});
-		}
-
-		const {local_repos} = await get_gitops_ready(path, dir, download, install, log);
+		const {local_repos} = await get_gitops_ready(path, dir, download, log);
 
 		const outfile = resolve(outdir, 'repos.ts');
 

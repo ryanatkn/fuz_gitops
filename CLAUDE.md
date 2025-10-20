@@ -52,7 +52,7 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - Resolves repo URLs to local directories
 - Clones missing repos via SSH
 - Switches branches maintaining clean workspace
-- Runs `gro sync` after branch changes
+- Automatically installs dependencies when package.json changes (after clone or pull)
 
 ### Data fetching
 

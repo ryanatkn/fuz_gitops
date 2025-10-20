@@ -53,6 +53,7 @@ export interface Git_Operations {
 	checkout: (branch: string, cwd?: string) => Promise<void>;
 	pull: (origin?: string, branch?: string, cwd?: string) => Promise<void>;
 	switch_branch: (branch: string, pull?: boolean, cwd?: string) => Promise<void>;
+	has_remote: (remote?: string, cwd?: string) => Promise<boolean>;
 
 	// Staging and committing
 	add: (files: string | Array<string>, cwd?: string) => Promise<void>;
@@ -68,6 +69,22 @@ export interface Git_Operations {
 	// Stashing
 	stash: (message?: string, cwd?: string) => Promise<void>;
 	stash_pop: (cwd?: string) => Promise<void>;
+
+	// File change detection
+	/**
+	 * Checks if a specific file changed between two commits.
+	 * @param from_commit - Starting commit hash
+	 * @param to_commit - Ending commit hash
+	 * @param file_path - Path to file to check (relative to repo root)
+	 * @param cwd - Working directory (repo path)
+	 * @returns true if file changed between commits, false otherwise
+	 */
+	has_file_changed: (
+		from_commit: string,
+		to_commit: string,
+		file_path: string,
+		cwd?: string,
+	) => Promise<boolean>;
 }
 
 /**
@@ -111,6 +128,7 @@ export interface Npm_Operations {
 	check_package_available: (pkg: string, version: string, log?: Logger) => Promise<boolean>;
 	check_auth: () => Promise<{ok: boolean; username?: string; error?: string}>;
 	check_registry: () => Promise<{ok: boolean; error?: string}>;
+	install: (cwd?: string) => Promise<{ok: boolean; error?: string}>;
 }
 
 /**

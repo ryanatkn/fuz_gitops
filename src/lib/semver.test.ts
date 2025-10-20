@@ -17,7 +17,7 @@ import {
 	semver_min_version,
 	semver_max_version,
 	type Semver,
-} from './semver.js';
+} from '$lib/semver.js';
 
 // Test helpers
 const version = (

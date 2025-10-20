@@ -17,6 +17,7 @@ import {
 	git_push_tag,
 	git_has_changes,
 	git_get_changed_files,
+	git_has_file_changed,
 	git_stash,
 	git_stash_pop,
 	git_switch_branch,
@@ -25,6 +26,7 @@ import {
 	git_check_clean_workspace_as_boolean,
 	git_checkout_wrapper,
 	git_pull_wrapper,
+	git_has_remote,
 } from '$lib/git_operations.js';
 import type {
 	Changeset_Operations,
@@ -65,6 +67,8 @@ export const default_git_operations: Git_Operations = {
 		git_pull_wrapper(origin, branch, cwd ? {cwd} : undefined),
 	switch_branch: async (branch: string, pull?: boolean, cwd?: string) =>
 		git_switch_branch(branch as Git_Branch, pull, cwd ? {cwd} : undefined),
+	has_remote: async (remote?: string, cwd?: string) =>
+		git_has_remote(remote, cwd ? {cwd} : undefined),
 
 	// Staging and committing
 	add: async (files: string | Array<string>, cwd?: string) =>
@@ -84,6 +88,10 @@ export const default_git_operations: Git_Operations = {
 	// Stashing
 	stash: async (message?: string, cwd?: string) => git_stash(message, cwd ? {cwd} : undefined),
 	stash_pop: async (cwd?: string) => git_stash_pop(cwd ? {cwd} : undefined),
+
+	// File change detection
+	has_file_changed: async (from_commit: string, to_commit: string, file_path: string, cwd?: string) =>
+		git_has_file_changed(from_commit, to_commit, file_path, cwd ? {cwd} : undefined),
 };
 
 /**
@@ -120,6 +128,18 @@ export const default_npm_operations: Npm_Operations = {
 				return {ok: true};
 			}
 			return {ok: false, error: 'Failed to ping npm registry'};
+		} catch (error) {
+			return {ok: false, error: String(error)};
+		}
+	},
+	install: async (cwd?: string) => {
+		try {
+			const result = await spawn('npm', ['install'], cwd ? {cwd} : undefined);
+			if (result.ok) {
+				return {ok: true};
+			} else {
+				return {ok: false, error: 'Install failed'};
+			}
 		} catch (error) {
 			return {ok: false, error: String(error)};
 		}

@@ -8,6 +8,7 @@ import {load_gitops_config, type Gitops_Config} from '$lib/gitops_config.js';
 import {load_local_repos, resolve_local_repos, type Local_Repo} from '$lib/local_repo.js';
 import {resolve_gitops_config} from '$lib/resolved_gitops_config.js';
 import {DEFAULT_REPOS_DIR} from '$lib/paths.js';
+import {default_git_operations, default_npm_operations} from '$lib/operations_defaults.js';
 
 /**
  * Readies the workspace for all gitops repos.
@@ -20,7 +21,6 @@ export const get_gitops_ready = async (
 	path: string,
 	dir: string | undefined,
 	download: boolean,
-	install: boolean,
 	log?: Logger,
 ): Promise<{
 	config_path: string;
@@ -48,7 +48,12 @@ export const get_gitops_ready = async (
 		log,
 	);
 
-	const local_repos = await load_local_repos(resolved_local_repos, install, log);
+	const local_repos = await load_local_repos(
+		resolved_local_repos,
+		log,
+		default_git_operations,
+		default_npm_operations,
+	);
 
 	return {config_path, repos_dir, gitops_config, local_repos};
 };

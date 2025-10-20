@@ -8,8 +8,8 @@ import {parse_svelte_config} from '@ryanatkn/gro/svelte_config.js';
 import {Task_Error} from '@ryanatkn/gro';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn} from '@ryanatkn/belt/process.js';
-import type {Git_Operations} from '$lib/operations.js';
-import {default_git_operations} from '$lib/operations_defaults.js';
+import type {Git_Operations, Npm_Operations} from '$lib/operations.js';
+import {default_git_operations, default_npm_operations} from '$lib/operations_defaults.js';
 
 import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
 import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';
@@ -41,19 +41,24 @@ export interface Unresolved_Local_Repo {
 }
 
 /**
- * Loads the data for a resolved local repo, switching branches if needed.
+ * Loads the data for a resolved local repo, switching branches if needed and pulling latest changes.
+ * Automatically installs dependencies if package.json changed during pull.
  */
 export const load_local_repo = async (
 	resolved_local_repo: Resolved_Local_Repo,
-	install: boolean,
 	_log?: Logger,
 	git_ops: Git_Operations = default_git_operations,
+	npm_ops: Npm_Operations = default_npm_operations,
 ): Promise<Local_Repo> => {
 	const {repo_config, repo_dir} = resolved_local_repo;
 
-	// Switch branches if needed, erroring if unable.
+	// Record commit hash before any changes
+	const commit_before = await git_ops.current_commit_hash(undefined, repo_dir);
+
+	// Switch to target branch if needed
 	const branch = await git_ops.current_branch_name(repo_dir);
-	if (branch !== repo_config.branch) {
+	const switched_branches = branch !== repo_config.branch;
+	if (switched_branches) {
 		const is_clean = await git_ops.check_clean_workspace(repo_dir);
 		if (!is_clean) {
 			throw new Task_Error(
@@ -61,20 +66,44 @@ export const load_local_repo = async (
 			);
 		}
 		await git_ops.checkout(repo_config.branch, repo_dir);
+	}
 
+	// Only pull if remote exists (skip for local-only repos, test fixtures)
+	const has_origin = await git_ops.has_remote('origin', repo_dir);
+	if (has_origin) {
 		await git_ops.pull(undefined, undefined, repo_dir);
+	}
 
-		// Check clean workspace after pull to ensure we're in a good state
-		const is_clean_after = await git_ops.check_clean_workspace(repo_dir);
-		if (!is_clean_after) {
-			throw new Task_Error(
-				`Workspace is unclean after switching to branch "${repo_config.branch}" and pulling`,
-			);
+	// Check clean workspace after pull to ensure we're in a good state
+	const is_clean_after = await git_ops.check_clean_workspace(repo_dir);
+	if (!is_clean_after) {
+		throw new Task_Error(
+			`Workspace is unclean after pulling branch "${repo_config.branch}"`,
+		);
+	}
+
+	// Record commit hash after pull
+	const commit_after = await git_ops.current_commit_hash(undefined, repo_dir);
+
+	// Track if we got new commits
+	const got_new_commits = commit_before !== commit_after;
+
+	// Only install if package.json changed
+	if (got_new_commits) {
+		const package_json_changed = await git_ops.has_file_changed(
+			commit_before,
+			commit_after,
+			'package.json',
+			repo_dir,
+		);
+		if (package_json_changed) {
+			const install_result = await npm_ops.install(resolved_local_repo.repo_dir);
+			if (!install_result.ok) {
+				throw new Task_Error(
+					`Failed to install dependencies in ${repo_dir}: ${install_result.error}`,
+				);
+			}
 		}
-
-		const sync_args: Array<string> = [];
-		if (install) sync_args.push('--install');
-		await spawn('gro', ['sync', ...sync_args], {cwd: resolved_local_repo.repo_dir});
 	}
 
 	const parsed_svelte_config = await parse_svelte_config({dir_or_config: repo_dir});
@@ -119,6 +148,7 @@ export const resolve_local_repos = async (
 				repos_dir,
 				resolved_config.unresolved_local_repos,
 				log,
+				default_npm_operations,
 			);
 			resolved_local_repos = (resolved_config.resolved_local_repos ?? [])
 				.concat(downloaded)
@@ -145,13 +175,13 @@ export const resolve_local_repos = async (
 
 export const load_local_repos = async (
 	resolved_local_repos: Array<Resolved_Local_Repo>,
-	install: boolean,
 	log?: Logger,
 	git_ops: Git_Operations = default_git_operations,
+	npm_ops: Npm_Operations = default_npm_operations,
 ): Promise<Array<Local_Repo>> => {
 	const loaded: Array<Local_Repo> = [];
 	for (const resolved_local_repo of resolved_local_repos) {
-		loaded.push(await load_local_repo(resolved_local_repo, install, log, git_ops)); // eslint-disable-line no-await-in-loop
+		loaded.push(await load_local_repo(resolved_local_repo, log, git_ops, npm_ops)); // eslint-disable-line no-await-in-loop
 	}
 	return loaded;
 };
@@ -190,6 +220,7 @@ const download_repos = async (
 	repos_dir: string,
 	unresolved_local_repos: Array<Unresolved_Local_Repo>,
 	log: Logger | undefined,
+	npm_ops: Npm_Operations = default_npm_operations,
 ): Promise<Array<Resolved_Local_Repo>> => {
 	const resolved: Array<Resolved_Local_Repo> = [];
 	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
@@ -198,6 +229,14 @@ const download_repos = async (
 		const local_repo = resolve_local_repo(repo_config, repos_dir);
 		if (local_repo.type === 'unresolved_local_repo') {
 			throw new Task_Error(`Failed to clone repo ${repo_git_ssh_url} to ${repos_dir}`);
+		}
+		// Always install dependencies after cloning
+		log?.info(`installing dependencies for newly cloned repo ${local_repo.repo_dir}`);
+		const install_result = await npm_ops.install(local_repo.repo_dir); // eslint-disable-line no-await-in-loop
+		if (!install_result.ok) {
+			throw new Task_Error(
+				`Failed to install dependencies in ${local_repo.repo_dir}: ${install_result.error}`,
+			);
 		}
 		resolved.push(local_repo);
 	}

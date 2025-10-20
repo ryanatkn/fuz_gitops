@@ -43,7 +43,6 @@ export const task: Task<Args> = {
 			path,
 			dir,
 			false, // Don't download if missing
-			false, // Don't install
 			log,
 		);
 
