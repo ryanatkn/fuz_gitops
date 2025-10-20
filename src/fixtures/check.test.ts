@@ -44,7 +44,7 @@ beforeAll(async () => {
  * Get the path for an output baseline file
  */
 const get_output_path = (
-	command: 'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry',
+	command: 'gitops_analyze' | 'gitops_plan' | 'gitops_publish_dry',
 ): string => {
 	return `${command}_output.md`;
 };
@@ -87,13 +87,13 @@ describe('gitops commands match baseline outputs', () => {
 		});
 	});
 
-	describe('gitops_preview', () => {
+	describe('gitops_plan', () => {
 		let command_output: Command_Output;
 		let baseline_content: string;
 
 		beforeAll(async () => {
 			// Load baseline output
-			const output_path = get_output_path('gitops_preview');
+			const output_path = get_output_path('gitops_plan');
 			assert.ok(
 				existsSync(`src/fixtures/${output_path}`),
 				`Baseline file missing: src/fixtures/${output_path}. Run 'npm run update:fixtures' to generate.`,
@@ -101,7 +101,7 @@ describe('gitops commands match baseline outputs', () => {
 			baseline_content = load_fixture(output_path);
 
 			// Run the command
-			command_output = await run_gitops_command('gitops_preview');
+			command_output = await run_gitops_command('gitops_plan');
 		}, COMMAND_TIMEOUT);
 
 		test('command executes successfully', () => {
@@ -110,7 +110,7 @@ describe('gitops commands match baseline outputs', () => {
 		});
 
 		test('output matches baseline', async () => {
-			const output_path = get_output_path('gitops_preview');
+			const output_path = get_output_path('gitops_plan');
 			const formatted_output = await format_file(command_output.stdout, {filepath: output_path});
 			const comparison = compare_outputs(baseline_content, formatted_output);
 			assert.ok(

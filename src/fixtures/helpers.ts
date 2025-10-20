@@ -25,7 +25,7 @@ export interface Fixture_Comparison {
  * Defaults to using the fixture config for isolated testing.
  */
 export const run_gitops_command = async (
-	command: 'gitops_analyze' | 'gitops_preview' | 'gitops_publish_dry',
+	command: 'gitops_analyze' | 'gitops_plan' | 'gitops_publish_dry',
 	args: Array<string> = [],
 	log?: Logger,
 	config_path: string = 'src/fixtures/gitops.fixtures.config.ts',

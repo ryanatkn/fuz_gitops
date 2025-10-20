@@ -66,7 +66,7 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 #### Publishing Workflow
 
 - `gro gitops_publish` - publishes repos in dependency order
-- `gro gitops_preview` - predicts what would be published (read-only prediction)
+- `gro gitops_plan` - generates a publishing plan (read-only prediction)
 - `gro gitops_analyze` - analyzes dependencies and changesets
 - `gro gitops_publish --dry` - simulates publishing without pre-flight checks or state persistence
 - Handles circular dev dependencies by excluding from topological sort
@@ -74,10 +74,10 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - Updates cross-repo dependencies automatically
 - Pre-flight checks validate clean workspaces, branches, and npm authentication (skipped for --dry runs)
 
-**Preview vs Dry Run**
+**Plan vs Dry Run**
 
-`gro gitops_preview`:
-- **Read-only prediction** - Shows what would be published
+`gro gitops_plan`:
+- **Read-only prediction** - Generates a publishing plan showing what would be published
 - Uses fixed-point iteration to resolve transitive cascades (max 10 iterations)
 - Shows all 4 publishing scenarios: explicit changesets, bump escalation, auto-generated changesets, and no changes
 - No side effects - does not modify any files or state
@@ -87,7 +87,7 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - Skips pre-flight checks (workspace, branch, npm auth)
 - Does NOT load or save publishing state (no `.gro/fuz_gitops/publish_state.json`)
 - Only simulates packages with explicit changesets (can't auto-generate changesets without real publishes)
-- Use preview for comprehensive "what would happen" analysis; use dry run to test execution flow
+- Use plan for comprehensive "what would happen" analysis; use dry run to test execution flow
 
 #### Changeset Semantics
 
@@ -129,7 +129,7 @@ When a dependency is updated:
 #### Key Publishing Modules
 
 - `multi_repo_publisher.ts` - Main publishing orchestration
-- `publishing_preview.ts` - Preview generation and cascade analysis
+- `publishing_plan.ts` - Publishing plan generation and cascade analysis
 - `changeset_reader.ts` - Parses changesets and predicts versions
 - `changeset_generator.ts` - Auto-generates changesets for dependency updates
 - `dependency_graph.ts` - Topological sorting and cycle detection
@@ -143,7 +143,7 @@ When a dependency is updated:
 
 **Fixed-Point Iteration (Cascade Resolution)**
 
-The preview generation uses fixed-point iteration to resolve transitive breaking change cascades:
+The publishing plan generation uses fixed-point iteration to resolve transitive breaking change cascades:
 
 1. **Initial pass**: Identify all packages with explicit changesets
 2. **Iteration loop** (max 10 iterations):
@@ -207,12 +207,12 @@ gro gitops_sync               # sync repos and update local data
 gro gitops_sync --download    # clone missing repos
 
 # Publishing
-gro gitops_validate      # validate configuration (runs analyze, preview, and dry run)
+gro gitops_validate      # validate configuration (runs analyze, plan, and dry run)
 gro gitops_analyze       # analyze dependencies and changesets
-gro gitops_preview       # preview what would be published
+gro gitops_plan          # generate publishing plan
 gro gitops_publish       # publish repos in dependency order
 gro gitops_publish --dry # dry run without pre-flight checks
-gro gitops_publish --no-preview # skip preview confirmation before publishing
+gro gitops_publish --no-preview # skip plan confirmation before publishing
 
 # Development
 gro dev                  # start dev server
@@ -231,8 +231,8 @@ Commands are categorized by their side effects:
 
 ### Read-Only Commands (Safe, No Side Effects)
 - `gro gitops_analyze` - Analyze dependency graph, detect cycles
-- `gro gitops_preview` - Preview version changes and cascades
-- `gro gitops_validate` - Run all validation checks (analyze + preview + dry run)
+- `gro gitops_plan` - Generate publishing plan showing version changes and cascades
+- `gro gitops_validate` - Run all validation checks (analyze + plan + dry run)
 - `gro gitops_publish --dry` - Simulate publishing without pre-flight checks
 
 ### Data Sync Commands (Local Changes Only)
@@ -242,8 +242,8 @@ Commands are categorized by their side effects:
 - `gro gitops_publish` - Publish packages, update dependencies, git commits
 
 **Command Workflow:**
-- `gitops_validate` runs: `gitops_analyze` + `gitops_preview` + `gitops_publish --dry`
-- `gitops_publish` runs: `gitops_preview` (with confirmation) + actual publish
+- `gitops_validate` runs: `gitops_analyze` + `gitops_plan` + `gitops_publish --dry`
+- `gitops_publish` runs: `gitops_plan` (with confirmation) + actual publish
 
 ## Dependencies
 
@@ -321,7 +321,7 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 
 **Baseline Validation:**
 - `src/fixtures/gitops_analyze_output.md` - Baseline for `gro gitops_analyze`
-- `src/fixtures/gitops_preview_output.md` - Baseline for `gro gitops_preview`
+- `src/fixtures/gitops_plan_output.md` - Baseline for `gro gitops_plan`
 - `src/fixtures/gitops_publish_dry_output.md` - Baseline for `gro gitops_publish --dry`
 - `src/fixtures/check.test.ts` - Compares live output against baselines
 - `src/fixtures/update.task.ts` - Regenerates baselines when needed
@@ -347,8 +347,8 @@ gro gitops_validate
 # 2. Review analyze output
 gro gitops_analyze
 
-# 3. Review preview to see what will be published
-gro gitops_preview
+# 3. Review plan to see what will be published
+gro gitops_plan
 
 # 4. Test with dry run
 gro gitops_publish --dry
@@ -367,8 +367,8 @@ cd packages/my-package
 npx changeset
 # Follow prompts to describe changes
 
-# Preview what will be published
-gro gitops_preview
+# Generate plan to see what will be published
+gro gitops_plan
 # Output shows: my-package: 1.0.0 → 1.1.0 (minor)
 
 # Publish
@@ -381,8 +381,8 @@ gro gitops_publish
 # You have changesets in @my/core
 # Dependents: @my/ui depends on @my/core
 
-# Preview shows cascade
-gro gitops_preview
+# Plan shows cascade
+gro gitops_plan
 # Output:
 #   @my/core: 1.0.0 → 2.0.0 (major, BREAKING)
 #   @my/ui: 1.5.0 → 2.0.0 (auto-changeset, BREAKING cascade)
@@ -403,14 +403,14 @@ gro gitops_publish --resume
 # Skips already-published packages, continues from failure
 ```
 
-**Example 4: Using dry run for planning**
+**Example 4: Using plan for planning**
 
 ```bash
 # See what would happen without actually publishing
-gro gitops_publish --dry
+gro gitops_plan
 
 # Save output to file for review
-gro gitops_publish --dry --format markdown --outfile publish-plan.md
+gro gitops_plan --format markdown --outfile publish-plan.md
 ```
 
 **Example 5: Bump escalation**
@@ -419,8 +419,8 @@ gro gitops_publish --dry --format markdown --outfile publish-plan.md
 # You created a patch changeset for @my/app
 # But @my/core (dependency) has a breaking change
 
-# Preview shows escalation
-gro gitops_preview
+# Plan shows escalation
+gro gitops_plan
 # Output:
 #   @my/core: 1.0.0 → 2.0.0 (major, BREAKING)
 #   @my/app: 2.0.0 → 3.0.0 (patch → major, escalated)
@@ -458,13 +458,13 @@ npm login
 npm whoami  # verify login
 ```
 
-**Warning: "Preview differs from actual publish"**
+**Warning: "Plan differs from actual publish"**
 
 This can happen if:
-- Another publish happened between preview and actual
+- Another publish happened between plan generation and actual publish
 - NPM registry has not propagated yet
 
-Solution: Run preview again, compare outputs
+Solution: Run plan again, compare outputs
 
 **Error: "Circular dependency detected in production dependencies"**
 
@@ -514,16 +514,16 @@ rm .gro/fuz_gitops/publish_state.json
 gro gitops_analyze --format markdown --outfile deps.md
 ```
 
-**Compare preview vs actual:**
+**Compare plan vs actual:**
 ```bash
 # Before publishing
-gro gitops_preview --format markdown --outfile preview.md
+gro gitops_plan --format markdown --outfile plan.md
 
 # After publishing (dry run)
 gro gitops_publish --dry --format markdown --outfile actual.md
 
 # Compare files
-diff preview.md actual.md
+diff plan.md actual.md
 ```
 
 **Check what changed since last publish:**

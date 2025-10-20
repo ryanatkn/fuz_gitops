@@ -17,7 +17,7 @@ export interface Serialized_Graph {
 	edges: Array<[string, string]>;
 }
 
-export interface Serialized_Publishing_Preview {
+export interface Serialized_Publishing_Plan {
 	publishing_order: Array<string>;
 	version_changes: Array<{
 		package_name: string;

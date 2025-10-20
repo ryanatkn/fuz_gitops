@@ -8,7 +8,7 @@ import {
 	type Publishing_Result,
 } from '$lib/multi_repo_publisher.js';
 import type {Bump_Type} from '$lib/semver.js';
-import {preview_publishing_plan, log_publishing_preview} from '$lib/publishing_preview.js';
+import {generate_publishing_plan, log_publishing_plan} from '$lib/publishing_plan.js';
 import {styleText as st} from 'node:util';
 
 export const Args = z.strictObject({
@@ -26,7 +26,7 @@ export const Args = z.strictObject({
 	resume: z.boolean().describe('resume from previous failed publishing state').default(false),
 	format: z.enum(['stdout', 'json', 'markdown']).describe('output format').default('stdout'),
 	deploy: z.boolean().describe('deploy all repos after publishing').default(false),
-	preview: z.boolean().describe('show preview before publishing').default(true),
+	preview: z.boolean().describe('show plan before publishing').default(true),
 	outfile: z.string().describe('write output to file instead of logging').optional(),
 });
 export type Args = z.infer<typeof Args>;
@@ -59,13 +59,13 @@ export const task: Task<Args> = {
 			log,
 		);
 
-		// Show preview if requested (and not resuming)
+		// Show plan if requested (and not resuming)
 		if (preview && !resume && !dry) {
-			log.info(st('cyan', '\n📋 Publishing Preview\n'));
-			const preview_result = await preview_publishing_plan(repos, log);
-			log_publishing_preview(preview_result, log);
+			log.info(st('cyan', '\n📋 Publishing Plan\n'));
+			const plan_result = await generate_publishing_plan(repos, log);
+			log_publishing_plan(plan_result, log);
 
-			if (preview_result.errors.length > 0) {
+			if (plan_result.errors.length > 0) {
 				throw new Error('Cannot proceed with publishing due to errors');
 			}
 

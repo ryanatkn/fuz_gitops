@@ -5,10 +5,10 @@ import {writeFile} from 'node:fs/promises';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {
-	preview_publishing_plan,
-	log_publishing_preview,
-	type Publishing_Preview,
-} from '$lib/publishing_preview.js';
+	generate_publishing_plan,
+	log_publishing_plan,
+	type Publishing_Plan,
+} from '$lib/publishing_plan.js';
 
 const Args = z
 	.object({
@@ -22,21 +22,21 @@ const Args = z
 type Args = z.infer<typeof Args>;
 
 /**
- * Preview what would happen during multi-repo publishing.
+ * Generate a publishing plan showing what would happen during multi-repo publishing.
  * Shows version changes, dependency updates, and breaking change cascades.
  *
  * Usage:
- *   gro gitops_preview
- *   gro gitops_preview --dir ../repos
- *   gro gitops_preview --path ./custom.config.ts
+ *   gro gitops_plan
+ *   gro gitops_plan --dir ../repos
+ *   gro gitops_plan --path ./custom.config.ts
  */
 export const task: Task<Args> = {
-	summary: 'preview what will happen during multi-repo publishing based on changesets',
+	summary: 'generate a publishing plan based on changesets',
 	Args,
 	run: async ({args, log}): Promise<void> => {
 		const {dir, path, format, outfile} = args;
 
-		log.info(st('cyan', '🔍 Previewing multi-repo publishing plan...\n'));
+		log.info(st('cyan', '🔍 Generating multi-repo publishing plan...\n'));
 
 		// Load local repos
 		const {local_repos} = await get_gitops_ready(
@@ -54,33 +54,33 @@ export const task: Task<Args> = {
 
 		log.info(`  Found ${local_repos.length} local repos`);
 
-		// Generate publishing preview
-		const preview = await preview_publishing_plan(local_repos, log);
+		// Generate publishing plan
+		const plan = await generate_publishing_plan(local_repos, log);
 
-		// Display the preview based on format
+		// Display the plan based on format
 		let content: string;
 		if (format === 'json') {
 			// Output as JSON
 			const output = {
-				publishing_order: preview.publishing_order,
-				version_changes: preview.version_changes,
-				dependency_updates: preview.dependency_updates,
-				breaking_cascades: Object.fromEntries(preview.breaking_cascades),
-				warnings: preview.warnings,
-				info: preview.info,
-				errors: preview.errors,
+				publishing_order: plan.publishing_order,
+				version_changes: plan.version_changes,
+				dependency_updates: plan.dependency_updates,
+				breaking_cascades: Object.fromEntries(plan.breaking_cascades),
+				warnings: plan.warnings,
+				info: plan.info,
+				errors: plan.errors,
 			};
 			content = JSON.stringify(output, null, 2);
 		} else if (format === 'markdown') {
 			// Output as markdown
-			const lines = format_preview_as_markdown(preview);
+			const lines = format_plan_as_markdown(plan);
 			content = lines.join('\n');
 		} else {
 			// Default stdout format - special handling since it uses log directly
 			if (outfile) {
 				throw new Error('--outfile is not supported with stdout format, use json or markdown');
 			}
-			log_publishing_preview(preview, log);
+			log_publishing_plan(plan, log);
 			content = '';
 		}
 
@@ -96,16 +96,16 @@ export const task: Task<Args> = {
 		}
 
 		// Exit with error if there are blocking issues
-		if (preview.errors.length > 0) {
-			throw new Error('Publishing preview found errors that would block publishing');
+		if (plan.errors.length > 0) {
+			throw new Error('Publishing plan found errors that would block publishing');
 		}
 	},
 };
 
 /**
- * Format the publishing preview as markdown.
+ * Format the publishing plan as markdown.
  */
-const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> => {
+const format_plan_as_markdown = (plan: Publishing_Plan): Array<string> => {
 	const lines: Array<string> = [];
 	const {
 		publishing_order,
@@ -115,9 +115,9 @@ const format_preview_as_markdown = (preview: Publishing_Preview): Array<string> 
 		warnings,
 		info,
 		errors,
-	} = preview;
+	} = plan;
 
-	lines.push('# Publishing Preview');
+	lines.push('# Publishing Plan');
 	lines.push('');
 
 	// Errors

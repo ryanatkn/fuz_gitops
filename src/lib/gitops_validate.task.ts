@@ -5,7 +5,7 @@ import {styleText as st} from 'node:util';
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {validate_dependency_graph} from '$lib/graph_validation.js';
 import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
-import {preview_publishing_plan} from '$lib/publishing_preview.js';
+import {generate_publishing_plan} from '$lib/publishing_plan.js';
 import {publish_repos, type Publishing_Options} from '$lib/multi_repo_publisher.js';
 import {log_dependency_analysis} from '$lib/log_helpers.js';
 
@@ -112,25 +112,25 @@ export const task: Task<Args> = {
 			log.error(st('red', `  ✗ gitops_analyze failed: ${error}\n`));
 		}
 
-		// 2. Run gitops_preview
-		log.info(st('yellow', '🔮 Running gitops_preview...\n'));
-		const preview_start = Date.now();
+		// 2. Run gitops_plan
+		log.info(st('yellow', '🔮 Running gitops_plan...\n'));
+		const plan_start = Date.now();
 		try {
-			const preview = await preview_publishing_plan(local_repos, undefined);
-			const preview_duration = Date.now() - preview_start;
+			const plan = await generate_publishing_plan(local_repos, undefined);
+			const plan_duration = Date.now() - plan_start;
 
-			const warnings = preview.warnings.length;
-			const errors = preview.errors.length;
+			const warnings = plan.warnings.length;
+			const errors = plan.errors.length;
 
 			results.push({
-				command: 'gitops_preview',
+				command: 'gitops_plan',
 				success: true,
 				warnings,
 				errors,
-				duration: preview_duration,
+				duration: plan_duration,
 			});
 
-			log.info(st('green', `  ✓ gitops_preview completed in ${preview_duration}ms\n`));
+			log.info(st('green', `  ✓ gitops_plan completed in ${plan_duration}ms\n`));
 			if (warnings > 0) {
 				log.warn(st('yellow', `  ⚠️  Found ${warnings} warning(s)\n`));
 			}
@@ -138,15 +138,15 @@ export const task: Task<Args> = {
 				log.error(st('red', `  ❌ Found ${errors} error(s)\n`));
 			}
 		} catch (error) {
-			const preview_duration = Date.now() - preview_start;
+			const plan_duration = Date.now() - plan_start;
 			results.push({
-				command: 'gitops_preview',
+				command: 'gitops_plan',
 				success: false,
 				warnings: 0,
 				errors: 1,
-				duration: preview_duration,
+				duration: plan_duration,
 			});
-			log.error(st('red', `  ✗ gitops_preview failed: ${error}\n`));
+			log.error(st('red', `  ✗ gitops_plan failed: ${error}\n`));
 		}
 
 		// 3. Run gitops_publish --dry

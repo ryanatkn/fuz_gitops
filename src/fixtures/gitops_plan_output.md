@@ -1,4 +1,4 @@
-# Publishing Preview
+# Publishing Plan
 
 ## ❌ Errors
 

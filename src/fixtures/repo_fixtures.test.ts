@@ -1,6 +1,6 @@
 import {describe, test, assert} from 'vitest';
 
-import {preview_publishing_plan, type Publishing_Preview} from '$lib/publishing_preview.js';
+import {generate_publishing_plan, type Publishing_Plan} from '$lib/publishing_plan.js';
 import {basic_publishing} from './repo_fixtures/basic_publishing.js';
 import {deep_cascade} from './repo_fixtures/deep_cascade.js';
 import {circular_dev_deps} from './repo_fixtures/circular_dev_deps.js';
@@ -31,19 +31,19 @@ const FIXTURES = [
  * Validates version changes match expected outcomes
  */
 const validate_version_changes = (
-	preview: Publishing_Preview,
+	plan: Publishing_Plan,
 	expected: Array<Repo_Fixture_Expected_Version_Change>,
 	fixture_name: string,
 ): void => {
 	assert.equal(
-		preview.version_changes.length,
+		plan.version_changes.length,
 		expected.length,
 		`${fixture_name}: Correct number of version changes`,
 	);
 
 	// Verify each version change
 	for (const expected_change of expected) {
-		const actual = preview.version_changes.find(
+		const actual = plan.version_changes.find(
 			(vc) => vc.package_name === expected_change.package_name,
 		);
 		assert.ok(actual, `${fixture_name}: Found version change for ${expected_change.package_name}`);
@@ -81,14 +81,14 @@ const validate_version_changes = (
  * Validates breaking cascades match expected outcomes
  */
 const validate_breaking_cascades = (
-	preview: Publishing_Preview,
+	plan: Publishing_Plan,
 	expected: Record<string, Array<string>> | undefined,
 	fixture_name: string,
 ): void => {
 	if (!expected) return;
 
 	for (const [pkg, affected] of Object.entries(expected)) {
-		const actual_affected = preview.breaking_cascades.get(pkg);
+		const actual_affected = plan.breaking_cascades.get(pkg);
 		assert.ok(actual_affected, `${fixture_name}: Found breaking cascade for ${pkg}`);
 		assert.deepEqual(
 			actual_affected.sort(),
@@ -102,14 +102,14 @@ const validate_breaking_cascades = (
  * Validates info messages match expected outcomes
  */
 const validate_info = (
-	preview: Publishing_Preview,
+	plan: Publishing_Plan,
 	expected: Array<string> | undefined,
 	fixture_name: string,
 ): void => {
 	if (!expected) return;
 
 	assert.deepEqual(
-		preview.info.sort(),
+		plan.info.sort(),
 		expected.sort(),
 		`${fixture_name}: Info messages match expected`,
 	);
@@ -119,14 +119,14 @@ const validate_info = (
  * Validates warnings match expected outcomes
  */
 const validate_warnings = (
-	preview: Publishing_Preview,
+	plan: Publishing_Plan,
 	expected: Array<string> | undefined,
 	fixture_name: string,
 ): void => {
 	if (expected === undefined) return; // Don't validate if not specified
 
 	assert.deepEqual(
-		preview.warnings.sort(),
+		plan.warnings.sort(),
 		expected.sort(),
 		`${fixture_name}: Warnings match expected`,
 	);
@@ -136,16 +136,16 @@ const validate_warnings = (
  * Validates errors match expected outcomes
  */
 const validate_errors = (
-	preview: Publishing_Preview,
+	plan: Publishing_Plan,
 	expected: Array<string> | undefined,
 	fixture_name: string,
 ): void => {
 	if (expected === undefined) {
 		// If no expected errors specified, assert no errors
-		assert.equal(preview.errors.length, 0, `${fixture_name}: No unexpected errors`);
+		assert.equal(plan.errors.length, 0, `${fixture_name}: No unexpected errors`);
 	} else {
 		assert.deepEqual(
-			preview.errors.sort(),
+			plan.errors.sort(),
 			expected.sort(),
 			`${fixture_name}: Errors match expected`,
 		);
@@ -159,29 +159,29 @@ const test_fixture = async (fixture: Repo_Fixture_Set): Promise<void> => {
 	const repos = fixture_to_local_repos(fixture);
 	const ops = create_mock_changeset_ops(fixture);
 
-	const preview = await preview_publishing_plan(repos, undefined, ops);
+	const plan = await generate_publishing_plan(repos, undefined, ops);
 
 	// Check publishing order
 	assert.deepEqual(
-		preview.publishing_order,
+		plan.publishing_order,
 		fixture.expected_outcomes.publishing_order,
 		`${fixture.name}: Publishing order matches expected`,
 	);
 
 	// Check version changes
-	validate_version_changes(preview, fixture.expected_outcomes.version_changes, fixture.name);
+	validate_version_changes(plan, fixture.expected_outcomes.version_changes, fixture.name);
 
 	// Check breaking cascades
-	validate_breaking_cascades(preview, fixture.expected_outcomes.breaking_cascades, fixture.name);
+	validate_breaking_cascades(plan, fixture.expected_outcomes.breaking_cascades, fixture.name);
 
 	// Check info messages
-	validate_info(preview, fixture.expected_outcomes.info, fixture.name);
+	validate_info(plan, fixture.expected_outcomes.info, fixture.name);
 
 	// Check warnings
-	validate_warnings(preview, fixture.expected_outcomes.warnings, fixture.name);
+	validate_warnings(plan, fixture.expected_outcomes.warnings, fixture.name);
 
 	// Check errors
-	validate_errors(preview, fixture.expected_outcomes.errors, fixture.name);
+	validate_errors(plan, fixture.expected_outcomes.errors, fixture.name);
 };
 
 // Run tests for all fixtures

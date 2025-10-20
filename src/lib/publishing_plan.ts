@@ -35,7 +35,7 @@ export interface Dependency_Update {
 	causes_republish: boolean;
 }
 
-export interface Publishing_Preview {
+export interface Publishing_Plan {
 	publishing_order: Array<string>;
 	version_changes: Array<Version_Change>;
 	dependency_updates: Array<Dependency_Update>;
@@ -170,16 +170,16 @@ const get_required_bump_for_dependencies = (
 };
 
 /**
- * Generates a preview of what would happen during publishing.
+ * Generates a publishing plan showing what would happen during publishing.
  * Shows version changes, dependency updates, and breaking change cascades.
  * Uses fixed-point iteration to resolve transitive cascades.
  */
-export const preview_publishing_plan = async (
+export const generate_publishing_plan = async (
 	repos: Array<Local_Repo>,
 	log?: Logger,
 	ops: Changeset_Operations = default_changeset_operations,
-): Promise<Publishing_Preview> => {
-	log?.info(st('cyan', '📋 Generating publishing preview...\n'));
+): Promise<Publishing_Plan> => {
+	log?.info(st('cyan', '📋 Generating publishing plan...\n'));
 
 	const warnings: Array<string> = [];
 	const info: Array<string> = []; // Informational status (not warnings)
@@ -194,7 +194,7 @@ export const preview_publishing_plan = async (
 		const validation = validate_dependency_graph(repos, undefined, {
 			throw_on_prod_cycles: false, // Collect errors instead of throwing
 			log_cycles: false, // We'll handle our own error collection
-			log_order: false, // Preview doesn't need to log order
+			log_order: false, // Plan generation doesn't need to log order
 		});
 		publishing_order = validation.publishing_order;
 		production_cycles = validation.production_cycles;
@@ -412,9 +412,9 @@ const log_version_change_group = (
 };
 
 /**
- * Formats and logs the publishing preview for user review.
+ * Formats and logs the publishing plan for user review.
  */
-export const log_publishing_preview = (preview: Publishing_Preview, log: Logger): void => {
+export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void => {
 	const {
 		publishing_order,
 		version_changes,
@@ -423,7 +423,7 @@ export const log_publishing_preview = (preview: Publishing_Preview, log: Logger)
 		warnings,
 		info,
 		errors,
-	} = preview;
+	} = plan;
 
 	// Errors
 	if (errors.length > 0) {

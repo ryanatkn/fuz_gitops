@@ -1,7 +1,7 @@
 import {test, expect} from 'vitest';
 
 import type {Local_Repo} from '$lib/local_repo.js';
-import {preview_publishing_plan} from '$lib/publishing_preview.js';
+import {generate_publishing_plan} from '$lib/publishing_plan.js';
 import type {Changeset_Operations} from '$lib/operations.js';
 import {create_mock_repo} from '$lib/test_helpers.js';
 
@@ -27,14 +27,14 @@ test('detects breaking change cascades', async () => {
 		},
 	};
 
-	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
 
 	// pkg-a should have a breaking change (0.x.x minor bump)
-	expect(preview.version_changes.find((vc) => vc.package_name === 'pkg-a')?.breaking).toBe(true);
+	expect(plan.version_changes.find((vc) => vc.package_name === 'pkg-a')?.breaking).toBe(true);
 
 	// pkg-b should cascade the breaking change
-	expect(preview.breaking_cascades.has('pkg-a')).toBe(true);
-	expect(preview.breaking_cascades.get('pkg-a')).toContain('pkg-b');
+	expect(plan.breaking_cascades.has('pkg-a')).toBe(true);
+	expect(plan.breaking_cascades.get('pkg-a')).toContain('pkg-b');
 });
 
 test('handles bump escalation', async () => {
@@ -58,10 +58,10 @@ test('handles bump escalation', async () => {
 		},
 	};
 
-	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
 
 	// pkg-b should have bump escalation due to breaking dep
-	const pkg_b_change = preview.version_changes.find((vc) => vc.package_name === 'pkg-b');
+	const pkg_b_change = plan.version_changes.find((vc) => vc.package_name === 'pkg-b');
 	expect(pkg_b_change?.needs_bump_escalation).toBe(true);
 	expect(pkg_b_change?.required_bump).toBe('minor');
 });
@@ -85,15 +85,15 @@ test('generates auto-changesets for dependency updates', async () => {
 		},
 	};
 
-	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
 
 	// pkg-b should get auto-changeset for dependency update
-	const pkg_b_change = preview.version_changes.find((vc) => vc.package_name === 'pkg-b');
+	const pkg_b_change = plan.version_changes.find((vc) => vc.package_name === 'pkg-b');
 	expect(pkg_b_change?.will_generate_changeset).toBe(true);
 	expect(pkg_b_change?.has_changesets).toBe(false);
 
 	// pkg-c should not get auto-changeset (dev dependency only)
-	const pkg_c_change = preview.version_changes.find((vc) => vc.package_name === 'pkg-c');
+	const pkg_c_change = plan.version_changes.find((vc) => vc.package_name === 'pkg-c');
 	expect(pkg_c_change).toBeUndefined();
 });
 
@@ -110,16 +110,16 @@ test('handles circular dev dependencies', async () => {
 		predict_next_version: async () => null,
 	};
 
-	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
 
 	// Should have info about dev cycles (not warnings anymore)
-	expect(preview.info.some((i) => i.includes('dev dependency cycle(s) detected'))).toBe(true);
+	expect(plan.info.some((i) => i.includes('dev dependency cycle(s) detected'))).toBe(true);
 
 	// Should still compute publishing order
-	expect(preview.publishing_order.length).toBe(2);
+	expect(plan.publishing_order.length).toBe(2);
 
 	// Should not have errors
-	expect(preview.errors.length).toBe(0);
+	expect(plan.errors.length).toBe(0);
 });
 
 test('detects production circular dependencies', async () => {
@@ -135,11 +135,11 @@ test('detects production circular dependencies', async () => {
 		predict_next_version: async () => null,
 	};
 
-	const preview = await preview_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
 
 	// Should have errors for production cycles
-	expect(preview.errors.some((e) => e.includes('Production dependency cycle'))).toBe(true);
+	expect(plan.errors.some((e) => e.includes('Production dependency cycle'))).toBe(true);
 
 	// Should not compute publishing order
-	expect(preview.publishing_order.length).toBe(0);
+	expect(plan.publishing_order.length).toBe(0);
 });
