@@ -230,6 +230,9 @@ export const git_has_remote = async (
 ): Promise<boolean> => {
 	const {stdout} = await spawn_out('git', ['remote'], options);
 	if (!stdout) return false;
-	const remotes = stdout.split('\n').map((r) => r.trim()).filter(Boolean);
+	const remotes = stdout
+		.split('\n')
+		.map((r) => r.trim())
+		.filter(Boolean);
 	return remotes.includes(remote);
 };

@@ -77,9 +77,7 @@ export const load_local_repo = async (
 	// Check clean workspace after pull to ensure we're in a good state
 	const is_clean_after = await git_ops.check_clean_workspace(repo_dir);
 	if (!is_clean_after) {
-		throw new Task_Error(
-			`Workspace is unclean after pulling branch "${repo_config.branch}"`,
-		);
+		throw new Task_Error(`Workspace is unclean after pulling branch "${repo_config.branch}"`);
 	}
 
 	// Record commit hash after pull

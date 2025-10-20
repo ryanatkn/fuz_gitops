@@ -90,8 +90,12 @@ export const default_git_operations: Git_Operations = {
 	stash_pop: async (cwd?: string) => git_stash_pop(cwd ? {cwd} : undefined),
 
 	// File change detection
-	has_file_changed: async (from_commit: string, to_commit: string, file_path: string, cwd?: string) =>
-		git_has_file_changed(from_commit, to_commit, file_path, cwd ? {cwd} : undefined),
+	has_file_changed: async (
+		from_commit: string,
+		to_commit: string,
+		file_path: string,
+		cwd?: string,
+	) => git_has_file_changed(from_commit, to_commit, file_path, cwd ? {cwd} : undefined),
 };
 
 /**
