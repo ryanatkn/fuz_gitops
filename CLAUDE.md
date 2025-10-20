@@ -72,7 +72,23 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - Handles circular dev dependencies by excluding from topological sort
 - Waits for NPM propagation with exponential backoff
 - Updates cross-repo dependencies automatically
-- Pre-flight checks validate clean workspaces, branches, and npm authentication (skipped for --dry runs)
+- Pre-flight checks validate clean workspaces, branches, builds, and npm authentication (skipped for --dry runs)
+
+**Build Validation (Fail-Fast Safety)**
+
+The publishing workflow includes build validation in pre-flight checks to prevent broken state:
+
+1. **Pre-flight phase** (before any publishing):
+   - Runs `gro build` on all packages with changesets
+   - Validates builds using current versions (no side effects)
+   - Fails fast if ANY build fails
+
+2. **Publishing phase** (after validation):
+   - Runs `gro publish --no-build` for each package
+   - Builds already validated, so no risk of build failures mid-publish
+   - Also runs `gro deploy --no-build` if `--deploy` flag used
+
+This prevents the known issue in `gro publish` where build failures leave repos in broken state (version bumped but not published).
 
 **Plan vs Dry Run**
 
@@ -138,6 +154,8 @@ When a dependency is updated:
 - `npm_registry.ts` - NPM availability checks with retry
 - `dependency_updater.ts` - Package.json updates with changesets
 - `publishing_state.ts` - Failure recovery and resume support
+- `pre_flight_checks.ts` - Pre-publish validation including build checks
+- `operations.ts` - Dependency injection interfaces for testability (including build operations)
 
 #### Publishing Algorithms
 
@@ -270,7 +288,7 @@ This project uses **dependency injection** for all side effects, making it fully
 
 **Why:** Functions that call git, npm, or file system are hard to test. The operations pattern abstracts these into interfaces.
 
-**How:** See `src/lib/operations.ts` - all external dependencies (git, npm, fs, process) are defined as interfaces. Tests provide mock implementations.
+**How:** See `src/lib/operations.ts` - all external dependencies (git, npm, fs, process, build) are defined as interfaces. Tests provide mock implementations.
 
 **Example:**
 - Production: `multi_repo_publisher(repos, options, default_gitops_operations)`
@@ -457,6 +475,18 @@ Solution: Log in to npm
 npm login
 npm whoami  # verify login
 ```
+
+**Error: "Pre-flight checks failed: [package] failed to build"**
+
+Solution: Fix the build errors before publishing
+```bash
+cd path/to/package
+gro build  # See the full build error
+# Fix the errors
+gro build  # Verify it works
+```
+
+Build validation runs during pre-flight checks to prevent broken state. All packages must build successfully before any publishing begins.
 
 **Warning: "Plan differs from actual publish"**
 

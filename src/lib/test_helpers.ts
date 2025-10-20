@@ -7,6 +7,7 @@ import type {
 	Git_Operations,
 	Fs_Operations,
 	Npm_Operations,
+	Build_Operations,
 } from '$lib/operations.js';
 import type {Bump_Type} from '$lib/semver.js';
 
@@ -82,6 +83,7 @@ export const create_mock_gitops_ops = (
 		npm: Partial<Gitops_Operations['npm']>;
 		preflight: Partial<Gitops_Operations['preflight']>;
 		fs: Partial<Gitops_Operations['fs']>;
+		build: Partial<Gitops_Operations['build']>;
 	}> = {},
 ): Gitops_Operations => ({
 	changeset: {
@@ -114,6 +116,7 @@ export const create_mock_gitops_ops = (
 		writeFile: async () => {},
 		...overrides.fs,
 	},
+	build: create_mock_build_ops(overrides.build),
 });
 
 /**
@@ -193,6 +196,16 @@ export const create_mock_npm_ops = (overrides: Partial<Npm_Operations> = {}): Np
 	check_package_available: async () => true,
 	check_auth: async () => ({ok: true, username: 'testuser'}),
 	check_registry: async () => ({ok: true}),
+	...overrides,
+});
+
+/**
+ * Creates mock Build_Operations for testing
+ */
+export const create_mock_build_ops = (
+	overrides: Partial<Build_Operations> = {},
+): Build_Operations => ({
+	build_package: async () => ({ok: true}),
 	...overrides,
 });
 

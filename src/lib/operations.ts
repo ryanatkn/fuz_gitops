@@ -82,6 +82,13 @@ export interface Process_Operations {
 }
 
 /**
+ * Operations for building packages
+ */
+export interface Build_Operations {
+	build_package: (repo: Local_Repo, log?: Logger) => Promise<{ok: boolean; error?: string}>;
+}
+
+/**
  * Options for waiting for NPM packages
  */
 export interface Wait_Options {
@@ -115,6 +122,7 @@ export interface Preflight_Operations {
 		options: Pre_Flight_Options,
 		git_ops?: Git_Operations,
 		npm_ops?: Npm_Operations,
+		build_ops?: Build_Operations,
 	) => Promise<Pre_Flight_Result>;
 }
 
@@ -136,4 +144,5 @@ export interface Gitops_Operations {
 	npm: Npm_Operations;
 	preflight: Preflight_Operations;
 	fs: Fs_Operations;
+	build: Build_Operations;
 }

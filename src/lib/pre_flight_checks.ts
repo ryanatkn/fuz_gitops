@@ -4,11 +4,16 @@ import {styleText as st} from 'node:util';
 
 import type {Local_Repo} from '$lib/local_repo.js';
 import {has_changesets} from '$lib/changeset_reader.js';
-import type {Git_Operations, Npm_Operations} from '$lib/operations.js';
-import {default_git_operations, default_npm_operations} from '$lib/operations_defaults.js';
+import type {Git_Operations, Npm_Operations, Build_Operations} from '$lib/operations.js';
+import {
+	default_git_operations,
+	default_npm_operations,
+	default_build_operations,
+} from '$lib/operations_defaults.js';
 
 export interface Pre_Flight_Options {
 	skip_changesets?: boolean;
+	skip_build_validation?: boolean; // Skip build validation (useful for tests)
 	required_branch?: string;
 	check_remote?: boolean; // Check if git remote is reachable
 	estimate_time?: boolean; // Estimate total publish time
@@ -27,16 +32,18 @@ export interface Pre_Flight_Result {
 
 /**
  * Runs pre-flight checks for all repos before publishing.
- * Validates workspaces, branches, changesets, and npm auth.
+ * Validates workspaces, branches, changesets, builds, and npm auth.
  */
 export const run_pre_flight_checks = async (
 	repos: Array<Local_Repo>,
 	options: Pre_Flight_Options = {},
 	git_ops: Git_Operations = default_git_operations,
 	npm_ops: Npm_Operations = default_npm_operations,
+	build_ops: Build_Operations = default_build_operations,
 ): Promise<Pre_Flight_Result> => {
 	const {
 		skip_changesets = false,
+		skip_build_validation = false,
 		required_branch = 'main',
 		check_remote = true,
 		estimate_time = true,
@@ -110,7 +117,32 @@ export const run_pre_flight_checks = async (
 		}
 	}
 
-	// 4. Check git remote reachability (skip in tests when check_remote is false)
+	// 4. Validate builds for packages with changesets
+	if (!skip_build_validation && repos_with_changesets.size > 0) {
+		log?.info(st('cyan', `  Validating builds for ${repos_with_changesets.size} package(s)...`));
+		const repos_to_build = repos.filter((repo) => repos_with_changesets.has(repo.pkg.name));
+
+		for (const repo of repos_to_build) {
+			const build_result = await build_ops.build_package(repo, log); // eslint-disable-line no-await-in-loop
+			if (!build_result.ok) {
+				errors.push(
+					`${repo.pkg.name} failed to build: ${build_result.error || 'unknown error'}`,
+				);
+			} else {
+				log?.info(st('dim', `    ✓ ${repo.pkg.name} built successfully`));
+			}
+		}
+
+		if (errors.some((err) => err.includes('failed to build'))) {
+			log?.error(
+				st('red', '  ❌ Build validation failed - fix build errors before publishing'),
+			);
+		} else {
+			log?.info(st('green', '  ✓ All builds validated successfully'));
+		}
+	}
+
+	// 5. Check git remote reachability (skip in tests when check_remote is false)
 	if (check_remote && repos.length > 0) {
 		log?.info('  Checking git remote connectivity...');
 		// Only check first repo to avoid slowing down tests with multiple remote checks
@@ -120,7 +152,7 @@ export const run_pre_flight_checks = async (
 		}
 	}
 
-	// 5. Check npm authentication with username
+	// 6. Check npm authentication with username
 	log?.info('  Checking npm authentication...');
 	const npm_auth_result = await npm_ops.check_auth();
 	if (!npm_auth_result.ok) {
@@ -130,14 +162,14 @@ export const run_pre_flight_checks = async (
 		log?.info(st('dim', `    Logged in as: ${npm_username}`));
 	}
 
-	// 6. Check network connectivity (npm registry)
+	// 7. Check network connectivity (npm registry)
 	log?.info('  Checking npm registry connectivity...');
 	const registry_result = await npm_ops.check_registry();
 	if (!registry_result.ok) {
 		warnings.push(`npm registry check failed: ${registry_result.error}`);
 	}
 
-	// 7. Estimate total publish time
+	// 8. Estimate total publish time
 	if (estimate_time) {
 		const packages_to_publish = repos_with_changesets.size;
 		if (packages_to_publish > 0) {

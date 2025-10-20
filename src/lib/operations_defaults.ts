@@ -33,6 +33,7 @@ import type {
 	Npm_Operations,
 	Preflight_Operations,
 	Fs_Operations,
+	Build_Operations,
 	Gitops_Operations,
 } from '$lib/operations.js';
 
@@ -129,12 +130,13 @@ export const default_npm_operations: Npm_Operations = {
  * Default pre-flight operations
  */
 export const default_preflight_operations: Preflight_Operations = {
-	run_pre_flight_checks: async (repos, options, git_ops, npm_ops) =>
+	run_pre_flight_checks: async (repos, options, git_ops, npm_ops, build_ops) =>
 		run_pre_flight_checks(
 			repos,
 			options,
 			git_ops || default_git_operations,
 			npm_ops || default_npm_operations,
+			build_ops || default_build_operations,
 		),
 };
 
@@ -147,6 +149,25 @@ export const default_fs_operations: Fs_Operations = {
 };
 
 /**
+ * Default build operations using gro build
+ */
+export const default_build_operations: Build_Operations = {
+	build_package: async (repo, log) => {
+		try {
+			log?.info(`  Building ${repo.pkg.name}...`);
+			const spawned = await spawn_out('gro', ['build'], {cwd: repo.repo_dir});
+			if (spawned.result.ok) {
+				return {ok: true};
+			} else {
+				return {ok: false, error: spawned.stderr || spawned.stdout || 'Build failed'};
+			}
+		} catch (error) {
+			return {ok: false, error: String(error)};
+		}
+	},
+};
+
+/**
  * Combined default operations for all gitops functionality
  */
 export const default_gitops_operations: Gitops_Operations = {
@@ -156,4 +177,5 @@ export const default_gitops_operations: Gitops_Operations = {
 	npm: default_npm_operations,
 	preflight: default_preflight_operations,
 	fs: default_fs_operations,
+	build: default_build_operations,
 };

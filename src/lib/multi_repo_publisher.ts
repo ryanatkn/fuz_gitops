@@ -67,6 +67,7 @@ export const publish_repos = async (
 			pre_flight_options,
 			ops.git,
 			ops.npm,
+			ops.build,
 		);
 
 		if (!pre_flight.ok) {
@@ -241,7 +242,9 @@ export const publish_repos = async (
 		for (const repo of repos) {
 			try {
 				log?.info(`  Deploying ${repo.pkg.name}...`);
-				const deploy_result = await ops.process.spawn('gro', ['deploy'], {cwd: repo.repo_dir});
+				const deploy_result = await ops.process.spawn('gro', ['deploy', '--no-build'], {
+					cwd: repo.repo_dir,
+				});
 
 				if (deploy_result.ok) {
 					log?.info(st('green', `  ✅ Deployed ${repo.pkg.name}`));
@@ -320,8 +323,10 @@ const publish_single_repo = async (
 		};
 	}
 
-	// Run gro publish which handles changesets version, build, and npm publish
-	const publish_result = await ops.process.spawn('gro', ['publish'], {cwd: repo.repo_dir});
+	// Run gro publish with --no-build (builds were validated in pre-flight checks)
+	const publish_result = await ops.process.spawn('gro', ['publish', '--no-build'], {
+		cwd: repo.repo_dir,
+	});
 
 	if (!publish_result.ok) {
 		throw new Error(`Failed to publish ${repo.pkg.name}`);
