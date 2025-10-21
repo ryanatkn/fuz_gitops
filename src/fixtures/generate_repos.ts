@@ -79,8 +79,8 @@ export default config;
 		}
 	}
 
-	// Initialize git repo
-	await spawn_out('git', ['init'], {cwd: repo_path});
+	// Initialize git repo with main as initial branch
+	await spawn_out('git', ['init', '-b', 'main'], {cwd: repo_path});
 	await spawn_out('git', ['config', 'user.email', 'test@example.com'], {cwd: repo_path});
 	await spawn_out('git', ['config', 'user.name', 'Test User'], {cwd: repo_path});
 
