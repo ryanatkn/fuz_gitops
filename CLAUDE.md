@@ -399,8 +399,9 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 **Workflow:**
 
 1. Define fixture data with expected outcomes in `repo_fixtures/*.ts`
-2. Run `gro src/fixtures/generate_repos` to create test git repos
-3. Run `gro test src/fixtures/check` to validate commands against expected outcomes
+2. Run `gro test src/fixtures/check` to validate commands against expected outcomes
+
+Fixture repos are auto-generated on first test run if missing. To manually regenerate: `gro src/fixtures/generate_repos`
 
 Each fixture runs in isolation with its own config, validating:
 - Publishing order (topological sort correctness)
