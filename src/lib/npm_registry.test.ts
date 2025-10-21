@@ -1,5 +1,6 @@
 import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest';
-import type {Logger} from '@ryanatkn/belt/log.js';
+import {spawn_out} from '@ryanatkn/belt/process.js';
+import {wait} from '@ryanatkn/belt/async.js';
 
 import {
 	check_package_available,
@@ -8,6 +9,7 @@ import {
 	package_exists,
 	type Wait_Options,
 } from '$lib/npm_registry.js';
+import {create_mock_logger} from '$lib/test_helpers.js';
 
 /* eslint-disable @typescript-eslint/require-await */
 
@@ -22,30 +24,6 @@ vi.mock('@ryanatkn/belt/async.js', () => ({
 		// Mock implementation
 	}),
 }));
-
-// Import mocked functions for access
-import {spawn_out} from '@ryanatkn/belt/process.js';
-import {wait} from '@ryanatkn/belt/async.js';
-
-/**
- * Helper to create mock logger that tracks calls
- */
-const create_mock_logger = (): Logger & {
-	debug_calls: Array<string>;
-	info_calls: Array<string>;
-} => {
-	const debug_calls: Array<string> = [];
-	const info_calls: Array<string> = [];
-
-	return {
-		debug: vi.fn((msg: string) => debug_calls.push(msg)),
-		info: vi.fn((msg: string) => info_calls.push(msg)),
-		warn: vi.fn(),
-		error: vi.fn(),
-		debug_calls,
-		info_calls,
-	} as unknown as Logger & {debug_calls: Array<string>; info_calls: Array<string>};
-};
 
 describe('npm_registry', () => {
 	beforeEach(() => {

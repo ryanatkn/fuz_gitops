@@ -82,91 +82,122 @@ export const publish_repos = async (
 	const published: Map<string, Published_Version> = new Map();
 	const failed: Map<string, Error> = new Map();
 
-	// Phase 1: Publish each package and immediately update dependents
-	log?.info(st('cyan', `\n🚀 Publishing ${order.length} packages...\n`));
+	// Fixed-point iteration: keep publishing until no new changesets are created
+	// This handles transitive dependency updates (auto-generated changesets)
+	const MAX_ITERATIONS = 10;
+	let iteration = 0;
+	let converged = false;
 
-	for (const pkg_name of order) {
-		const repo = repos.find((r) => r.pkg.name === pkg_name);
-		if (!repo) continue;
+	while (!converged && iteration < MAX_ITERATIONS) {
+		iteration++;
+		log?.info(st('cyan', `\n🚀 Publishing iteration ${iteration}/${MAX_ITERATIONS}...\n`));
 
-		// Check for changesets (both dry and real runs)
-		const has = await ops.changeset.has_changesets(repo);
-		if (!has) {
-			// Skip packages without changesets
-			// In real publish: They might get auto-changesets during dependency updates
-			// In dry run: We can't simulate auto-changesets, so just skip
-			if (dry) {
-				// Silent skip in dry run - plan shows which packages get auto-changesets
-				continue;
-			} else {
-				log?.info(st('yellow', `  ⚠️  Skipping ${pkg_name} - no changesets`));
+		// Track if any packages were published in this iteration
+		let published_in_iteration = false;
+
+		// Phase 1: Publish each package and immediately update dependents
+		for (const pkg_name of order) {
+			const repo = repos.find((r) => r.pkg.name === pkg_name);
+			if (!repo) continue;
+
+			// Skip if already published in a previous iteration
+			if (published.has(pkg_name)) {
 				continue;
 			}
-		}
 
-		try {
-			// 1. Publish this package
-			log?.info(`Publishing ${pkg_name}...`);
-			const version = await publish_single_repo(repo, options, ops);
-			published.set(pkg_name, version);
-			log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
+			// Check for changesets (both dry and real runs)
+			const has = await ops.changeset.has_changesets(repo);
+			if (!has) {
+				// Skip packages without changesets
+				// In real publish: They might get auto-changesets during dependency updates
+				// In dry run: We can't simulate auto-changesets, so just skip
+				if (dry) {
+					// Silent skip in dry run - plan shows which packages get auto-changesets
+					continue;
+				} else {
+					log?.info(st('yellow', `  ⚠️  Skipping ${pkg_name} - no changesets`));
+					continue;
+				}
+			}
 
-			if (!dry) {
-				// 2. Wait for this package to be available on NPM
-				log?.info(`  ⏳ Waiting for ${pkg_name}@${version.new_version} on NPM...`);
-				await ops.npm.wait_for_package(
-					pkg_name,
-					version.new_version,
-					{
-						max_attempts: 30,
-						initial_delay: 1000,
-						max_delay: 60000,
-						timeout: options.max_wait || 300000,
-					},
-					log,
-				);
+			try {
+				// 1. Publish this package
+				log?.info(`Publishing ${pkg_name}...`);
+				const version = await publish_single_repo(repo, options, ops);
+				published.set(pkg_name, version);
+				published_in_iteration = true;
+				log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
 
-				// 3. Update all repos that have prod/peer deps on this package
-				if (update_deps) {
-					for (const dependent_repo of repos) {
-						const updates: Map<string, string> = new Map();
+				if (!dry) {
+					// 2. Wait for this package to be available on NPM
+					log?.info(`  ⏳ Waiting for ${pkg_name}@${version.new_version} on NPM...`);
+					await ops.npm.wait_for_package(
+						pkg_name,
+						version.new_version,
+						{
+							max_attempts: 30,
+							initial_delay: 1000,
+							max_delay: 60000,
+							timeout: options.max_wait || 600000, // 10 minutes default
+						},
+						log,
+					);
 
-						// Check prod dependencies
-						if (dependent_repo.dependencies?.has(pkg_name)) {
-							const current = dependent_repo.dependencies.get(pkg_name)!;
-							if (needs_update(current, version.new_version)) {
-								updates.set(pkg_name, version.new_version);
+					// 3. Update all repos that have prod/peer deps on this package
+					if (update_deps) {
+						for (const dependent_repo of repos) {
+							const updates: Map<string, string> = new Map();
+
+							// Check prod dependencies
+							if (dependent_repo.dependencies?.has(pkg_name)) {
+								const current = dependent_repo.dependencies.get(pkg_name)!;
+								if (needs_update(current, version.new_version)) {
+									updates.set(pkg_name, version.new_version);
+								}
 							}
-						}
 
-						// Check peer dependencies
-						if (dependent_repo.peer_dependencies?.has(pkg_name)) {
-							const current = dependent_repo.peer_dependencies.get(pkg_name)!;
-							if (needs_update(current, version.new_version)) {
-								updates.set(pkg_name, version.new_version);
+							// Check peer dependencies
+							if (dependent_repo.peer_dependencies?.has(pkg_name)) {
+								const current = dependent_repo.peer_dependencies.get(pkg_name)!;
+								if (needs_update(current, version.new_version)) {
+									updates.set(pkg_name, version.new_version);
+								}
 							}
-						}
 
-						// Apply updates if any
-						if (updates.size > 0) {
-							log?.info(`    Updating ${dependent_repo.pkg.name}'s dependency on ${pkg_name}`);
-							await update_package_json(
-								dependent_repo,
-								updates,
-								options.version_strategy || 'caret',
-								published, // Pass published versions for changeset generation
-								log,
-								ops.git,
-							);
+							// Apply updates if any
+							if (updates.size > 0) {
+								log?.info(`    Updating ${dependent_repo.pkg.name}'s dependency on ${pkg_name}`);
+								await update_package_json(
+									dependent_repo,
+									updates,
+									options.version_strategy || 'caret',
+									published, // Pass published versions for changeset generation
+									log,
+									ops.git,
+								);
+							}
 						}
 					}
 				}
+			} catch (error) {
+				const err = error instanceof Error ? error : new Error(String(error));
+				failed.set(pkg_name, err);
+				log?.error(st('red', `  ❌ Failed to publish ${pkg_name}: ${err.message}`));
+				break; // Always fail fast on error
 			}
-		} catch (error) {
-			const err = error instanceof Error ? error : new Error(String(error));
-			failed.set(pkg_name, err);
-			log?.error(st('red', `  ❌ Failed to publish ${pkg_name}: ${err.message}`));
-			break; // Always fail fast on error
+		}
+
+		// Check for convergence: no packages published in this iteration
+		if (!published_in_iteration) {
+			converged = true;
+			log?.info(st('green', `\n✓ Converged after ${iteration} iteration(s) - no new changesets\n`));
+		} else if (iteration === MAX_ITERATIONS) {
+			log?.warn(
+				st(
+					'yellow',
+					`\n⚠️  Reached maximum iterations (${MAX_ITERATIONS}) - you may need to run again\n`,
+				),
+			);
 		}
 	}
 

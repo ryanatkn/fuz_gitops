@@ -59,7 +59,7 @@ export const run_pre_flight_checks = async (
 
 	log?.info(st('cyan', '✅ Running pre-flight checks...'));
 
-	// 1. Check clean workspaces with detailed file analysis
+	// 1. Check clean workspaces - must be 100% clean before publishing
 	log?.info('  Checking workspace cleanliness...');
 	for (const repo of repos) {
 		const is_clean = await git_ops.check_clean_workspace(repo.repo_dir); // eslint-disable-line no-await-in-loop
@@ -67,21 +67,12 @@ export const run_pre_flight_checks = async (
 			// Get list of changed files for better error message
 			try {
 				const changed_files = await git_ops.get_changed_files(repo.repo_dir); // eslint-disable-line no-await-in-loop
-				const unexpected_files = changed_files.filter(
-					(file) =>
-						!file.startsWith('.changeset/') &&
-						file !== 'package.json' &&
-						file !== 'package-lock.json',
-				);
+				// No filtering - workspace must be 100% clean
+				const unexpected_files = changed_files;
 
 				if (unexpected_files.length > 0) {
 					errors.push(
 						`${repo.pkg.name} has uncommitted changes in: ${unexpected_files.slice(0, 3).join(', ')}${unexpected_files.length > 3 ? ` and ${unexpected_files.length - 3} more` : ''}`,
-					);
-				} else {
-					// Only changeset/package.json changes - this is expected
-					warnings.push(
-						`${repo.pkg.name} has uncommitted package.json or changeset changes (may be expected)`,
 					);
 				}
 			} catch {

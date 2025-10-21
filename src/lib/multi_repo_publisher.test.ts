@@ -10,6 +10,7 @@ import {
 	create_mock_git_ops,
 	create_preflight_mock,
 	create_populated_fs_ops,
+	create_mock_logger,
 } from '$lib/test_helpers.js';
 
 /* eslint-disable @typescript-eslint/require-await */
@@ -178,10 +179,6 @@ test('skips repos without changesets', async () => {
 	expect(result.published.length).toBe(1);
 	expect(result.published[0].name).toBe('pkg-a');
 });
-
-// ============================================================================
-// NEW COMPREHENSIVE INTEGRATION TESTS
-// ============================================================================
 
 test('publishes in dependency order', async () => {
 	const repos: Array<Local_Repo> = [
@@ -549,4 +546,43 @@ test('returns correct Published_Version metadata', async () => {
 	expect(published.bump_type).toBe('minor');
 	expect(published.breaking).toBe(true); // 0.x minor is breaking
 	expect(published.tag).toBe('v0.6.0');
+});
+
+test('converges early when no new packages publish', async () => {
+	// Test that iteration stops early when converged (not all 10 iterations)
+	const repos: Array<Local_Repo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
+
+	const mock_fs_ops = create_populated_fs_ops(repos);
+
+	const mock_ops = create_mock_gitops_ops({
+		preflight: create_preflight_mock(['pkg-a']),
+		fs: mock_fs_ops,
+	});
+
+	// Create a mock logger that tracks info and warn calls
+	const logger = create_mock_logger();
+
+	const result = await publish_repos(
+		repos,
+		{
+			dry: false,
+			update_deps: false,
+			log: logger,
+		},
+		mock_ops,
+	);
+
+	// Should succeed and publish once
+	expect(result.ok).toBe(true);
+	expect(result.published.length).toBe(1);
+
+	// Should log convergence message (iteration 2, since nothing publishes in iteration 2)
+	const convergence_msg = logger.info_calls.find((m) => m.includes('Converged after'));
+	expect(convergence_msg).toBeDefined();
+
+	// Should NOT warn about max iterations
+	const max_iteration_warning = logger.warn_calls.find((m) =>
+		m.includes('Reached maximum iterations'),
+	);
+	expect(max_iteration_warning).toBeUndefined();
 });

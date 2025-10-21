@@ -25,6 +25,41 @@ gitops.config.ts -> local repos -> GitHub API -> repos.ts -> UI components
 - `src/lib/fetch_repo_data.ts` - fetches remote repo metadata
 - `src/routes/repos.ts` - generated data file with all repo info
 
+## Patterns
+
+### Fixed-Point Iteration
+
+Publishing uses fixed-point iteration to handle transitive dependency updates:
+
+- Runs multiple passes (max 10 iterations) until convergence
+- Each pass publishes packages with changesets and creates auto-changesets for dependents
+- Stops when no new changesets are created (converged state)
+- Single `gro gitops_publish` command handles full dependency cascades
+
+### Dirty State on Failure (By Design)
+
+Publishing intentionally leaves the workspace dirty when failures occur:
+
+- Auto-changesets are created and committed DURING the publishing loop
+- If publishing fails mid-way, some packages are published, others are not
+- The dirty workspace state shows exactly what succeeded/failed
+- This enables **natural resumption**: just fix the issue and re-run the same command
+- Already-published packages have no changesets → skipped automatically
+- Failed packages still have changesets → retried automatically
+
+### No Rollback Support
+
+fuz_gitops does not support rollback of published packages:
+
+- NPM does not support reliable unpublishing of packages
+- Once a package is published to NPM, it cannot be easily reverted
+- If publishing fails, you must publish forward (fix the issue and continue)
+- The dirty workspace state shows exactly which packages succeeded
+
+### No Concurrent Publishing
+
+This tool is not designed for concurrent use. Running multiple `gro gitops_publish` commands simultaneously is not supported and will cause conflicts on git commits and changeset files.
+
 ## Configuration
 
 ```ts
@@ -66,11 +101,14 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 #### Publishing Workflow
 
 - `gro gitops_publish` - publishes repos in dependency order
+  - Uses fixed-point iteration to handle transitive dependency updates
+  - Converges after multiple passes (max 10 iterations)
+  - Creates auto-changesets for dependent packages during publishing
 - `gro gitops_plan` - generates a publishing plan (read-only prediction)
 - `gro gitops_analyze` - analyzes dependencies and changesets
 - `gro gitops_publish --dry` - simulates publishing without pre-flight checks or state persistence
 - Handles circular dev dependencies by excluding from topological sort
-- Waits for NPM propagation with exponential backoff
+- Waits for NPM propagation with exponential backoff (10 minute default timeout)
 - Updates cross-repo dependencies automatically
 - Pre-flight checks validate clean workspaces, branches, builds, and npm authentication (skipped for --dry runs)
 
@@ -93,12 +131,14 @@ This prevents the known issue in `gro publish` where build failures leave repos 
 **Plan vs Dry Run**
 
 `gro gitops_plan`:
+
 - **Read-only prediction** - Generates a publishing plan showing what would be published
 - Uses fixed-point iteration to resolve transitive cascades (max 10 iterations)
 - Shows all 4 publishing scenarios: explicit changesets, bump escalation, auto-generated changesets, and no changes
 - No side effects - does not modify any files or state
 
 `gro gitops_publish --dry`:
+
 - **Simulated execution** - Runs the same code path as real publishing
 - Skips pre-flight checks (workspace, branch, npm auth)
 - Only simulates packages with explicit changesets (can't auto-generate changesets without real publishes)
@@ -109,12 +149,14 @@ This prevents the known issue in `gro publish` where build failures leave repos 
 Packages can publish in four distinct scenarios:
 
 **1. Explicit Changesets (Normal Publishing)**
+
 - Package has `.changeset/*.md` files
 - Dependency updates don't require higher bump
 - Behavior: Published with version bump from changesets
 - Reported as: "Version Changes (from changesets)"
 
 **2. Explicit Changesets with Bump Escalation**
+
 - Package has `.changeset/*.md` files specifying bump type
 - BUT dependency updates require a HIGHER bump
 - Behavior: Published with escalated bump (e.g., `patch` → `minor` for breaking dep)
@@ -122,6 +164,7 @@ Packages can publish in four distinct scenarios:
 - Example: You write `patch` changeset, but `gro` (breaking) forces `minor`
 
 **3. Auto-Generated Changesets**
+
 - Package has NO `.changeset/*.md` files
 - BUT has production/peer dependency updates
 - Behavior: Changeset auto-generated, package republished
@@ -129,6 +172,7 @@ Packages can publish in four distinct scenarios:
 - Example: `gro` publishes → `fuz` depends on `gro` → auto-changeset for `fuz`
 
 **4. No Changes to Publish**
+
 - Package has NO `.changeset/*.md` files
 - Package has NO production/peer dependency updates
 - Behavior: Skipped (not published)
@@ -138,6 +182,7 @@ Packages can publish in four distinct scenarios:
 **Dependency Update Behavior**
 
 When a dependency is updated:
+
 - **Production/peer deps**: Package must republish (triggers auto-changeset if needed)
 - **Dev deps**: Package.json updated, NO republish (dev-only changes)
 
@@ -246,18 +291,22 @@ gro test src/fixtures/check     # validate command outputs match baselines
 Commands are categorized by their side effects:
 
 ### Read-Only Commands (Safe, No Side Effects)
+
 - `gro gitops_analyze` - Analyze dependency graph, detect cycles
 - `gro gitops_plan` - Generate publishing plan showing version changes and cascades
 - `gro gitops_validate` - Run all validation checks (analyze + plan + dry run)
 - `gro gitops_publish --dry` - Simulate publishing without pre-flight checks
 
 ### Data Sync Commands (Local Changes Only)
+
 - `gro gitops_sync` - Fetch repo metadata, generate src/routes/repos.ts (also ensures repos are cloned and ready)
 
 ### Publishing Commands (Git & NPM Side Effects)
+
 - `gro gitops_publish` - Publish packages, update dependencies, git commits
 
 **Command Workflow:**
+
 - `gitops_validate` runs: `gitops_analyze` + `gitops_plan` + `gitops_publish --dry`
 - `gitops_publish` runs: `gitops_plan` (with confirmation) + actual publish
 
@@ -289,10 +338,11 @@ This project uses **dependency injection** for all side effects, making it fully
 **How:** See `src/lib/operations.ts` - all external dependencies (git, npm, fs, process, build) are defined as interfaces. Tests provide mock implementations.
 
 **Example:**
+
 - Production: `multi_repo_publisher(repos, options, default_gitops_operations)`
 - Tests: `multi_repo_publisher(repos, options, mock_gitops_operations)`
 
-See `src/lib/default_operations.ts` for real implementations and test files for mock implementations.
+See `src/lib/operations_defaults.ts` for real implementations and test files for mock implementations.
 
 ## Testing
 
@@ -318,12 +368,14 @@ Core modules tested:
 The fixture system uses **generated git repositories** for isolated, reproducible integration tests:
 
 **Generated Test Repos:**
+
 - `src/fixtures/repos/` - Auto-generated from fixture data (gitignored)
 - `src/fixtures/repo_fixtures/*.ts` - Source of truth for test repo definitions
 - `src/fixtures/generate_repos.ts` - Idempotent repo generation logic
 - `src/fixtures/gitops.fixtures.config.ts` - Gitops config for test repos
 
 **Fixture Scenarios (9 total):**
+
 - `basic_publishing` - All 4 publishing scenarios (explicit, auto-generated, bump escalation, no changes)
 - `deep_cascade` - 4-level dependency chains with cascading breaking changes
 - `circular_dev_deps` - Dev dependency cycles (allowed, non-blocking)
@@ -335,6 +387,7 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 - `multiple_dep_types` - Packages with both peer and dev deps on same dependency
 
 **Baseline Validation:**
+
 - `src/fixtures/gitops_analyze_output.md` - Baseline for `gro gitops_analyze`
 - `src/fixtures/gitops_plan_output.md` - Baseline for `gro gitops_plan`
 - `src/fixtures/gitops_publish_dry_output.md` - Baseline for `gro gitops_publish --dry`
@@ -342,6 +395,7 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 - `src/fixtures/update.task.ts` - Regenerates baselines when needed
 
 **Workflow:**
+
 1. Define fixture data in `repo_fixtures/*.ts`
 2. Run `gro src/fixtures/generate_repos` to create test git repos
 3. Run `gro src/fixtures/update` to capture baseline outputs
@@ -452,6 +506,7 @@ gro gitops_publish
 **Error: "Pre-flight checks failed: workspace has uncommitted changes"**
 
 Solution: Commit or stash your changes before publishing
+
 ```bash
 git status
 git add .
@@ -461,6 +516,7 @@ git commit -m "prepare for publish"
 **Error: "Pre-flight checks failed: not on main branch"**
 
 Solution: Switch to main branch
+
 ```bash
 git checkout main
 git pull
@@ -469,6 +525,7 @@ git pull
 **Error: "npm authentication failed"**
 
 Solution: Log in to npm
+
 ```bash
 npm login
 npm whoami  # verify login
@@ -477,6 +534,7 @@ npm whoami  # verify login
 **Error: "Pre-flight checks failed: [package] failed to build"**
 
 Solution: Fix the build errors before publishing
+
 ```bash
 cd path/to/package
 gro build  # See the full build error
@@ -489,6 +547,7 @@ Build validation runs during pre-flight checks to prevent broken state. All pack
 **Warning: "Plan differs from actual publish"**
 
 This can happen if:
+
 - Another publish happened between plan generation and actual publish
 - NPM registry has not propagated yet
 
@@ -497,22 +556,26 @@ Solution: Run plan again, compare outputs
 **Error: "Circular dependency detected in production dependencies"**
 
 Solution: Production/peer circular dependencies block publishing. You must:
+
 1. Identify the cycle in `gro gitops_analyze` output
 2. Move one dependency to devDependencies
 3. Or restructure to remove the cycle
 
 Note: Dev dependency cycles are normal and allowed.
 
-**Error: "Failed to publish: package not found on NPM after 5 minutes"**
+**Error: "Failed to publish: package not found on NPM after 10 minutes"**
 
 Solution: NPM propagation can be slow. Either:
-- Wait longer and re-run `gro gitops_publish` (already-published packages will be skipped)
+
+- Increase timeout with `--max-wait` (default is 10 minutes / 600000ms)
 - Check NPM registry status
 - Verify package was actually published
+- If verified published, re-run `gro gitops_publish` to continue (already-published packages will be skipped)
 
 **Issue: "Auto-changeset generated when I didn't expect it"**
 
 This happens when:
+
 - A dependency was published with a new version
 - Your package has that dependency in dependencies or peerDependencies
 
@@ -521,6 +584,7 @@ This is correct behavior - packages must republish when their dependencies chang
 **Issue: "Package not publishing even though I have a changeset"**
 
 Check:
+
 1. Changeset file is in `.changeset/` directory
 2. Changeset file is not `README.md`
 3. Changeset references the correct package name
@@ -529,12 +593,16 @@ Check:
 **Issue: "How does resumption work after failures?"**
 
 Resumption is **automatic** and **natural**:
+
 1. When `gro publish` succeeds, it consumes changesets
-2. When you re-run `gro gitops_publish`, packages without changesets are skipped
-3. Failed packages still have changesets, so they're automatically retried
+2. Single `gro gitops_publish` run handles full dependency cascades via iteration (max 10 passes)
+3. If publishing fails mid-way, re-run `gro gitops_publish`:
+   - Already-published packages have no changesets → skipped automatically
+   - Failed packages still have changesets → retried automatically
 4. No flags needed, no state files, just re-run the same command!
 
 This is safer than explicit state tracking because:
+
 - No stale state files to confuse users
 - No need to remember `--resume` flag
 - Git workspace checks catch incomplete operations
@@ -543,11 +611,13 @@ This is safer than explicit state tracking because:
 ### Debugging Tips
 
 **View detailed dependency graph:**
+
 ```bash
 gro gitops_analyze --format markdown --outfile deps.md
 ```
 
 **Compare plan vs actual:**
+
 ```bash
 # Before publishing
 gro gitops_plan --format markdown --outfile plan.md
@@ -560,6 +630,7 @@ diff plan.md actual.md
 ```
 
 **Check what changed since last publish:**
+
 ```bash
 # In each repo
 git log --oneline
@@ -569,6 +640,7 @@ ls .changeset/
 ## Output Directory
 
 All gitops-generated files are stored in `.gro/fuz_gitops/`:
+
 - Temporary output files during command execution
 
 This directory should be gitignored (already in `.gitignore`).

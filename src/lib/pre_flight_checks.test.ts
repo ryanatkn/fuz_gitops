@@ -81,6 +81,72 @@ describe('pre_flight_checks', () => {
 			expect(result.ok).toBe(false);
 			expect(result.errors).toHaveLength(3);
 		});
+
+		it('fails when workspace has changeset files (no filtering)', async () => {
+			const repos = [create_mock_repo({name: 'package-a'})];
+
+			const git_ops = create_mock_git_ops({
+				check_clean_workspace: async () => false,
+				get_changed_files: async () => ['.changeset/my-change.md'],
+			});
+			const npm_ops = create_mock_npm_ops();
+
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
+
+			// Should fail - changeset files are no longer filtered
+			expect(result.ok).toBe(false);
+			expect(result.errors).toHaveLength(1);
+			expect(result.errors[0]).toContain('.changeset/my-change.md');
+		});
+
+		it('fails when workspace has package.json changes (no filtering)', async () => {
+			const repos = [create_mock_repo({name: 'package-a'})];
+
+			const git_ops = create_mock_git_ops({
+				check_clean_workspace: async () => false,
+				get_changed_files: async () => ['package.json'],
+			});
+			const npm_ops = create_mock_npm_ops();
+
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
+
+			// Should fail - package.json is no longer filtered
+			expect(result.ok).toBe(false);
+			expect(result.errors).toHaveLength(1);
+			expect(result.errors[0]).toContain('package.json');
+		});
+
+		it('fails when workspace has package-lock.json changes (no filtering)', async () => {
+			const repos = [create_mock_repo({name: 'package-a'})];
+
+			const git_ops = create_mock_git_ops({
+				check_clean_workspace: async () => false,
+				get_changed_files: async () => ['package-lock.json'],
+			});
+			const npm_ops = create_mock_npm_ops();
+
+			const result = await run_pre_flight_checks(
+				repos,
+				{skip_changesets: true, check_remote: false},
+				git_ops,
+				npm_ops,
+			);
+
+			// Should fail - package-lock.json is no longer filtered
+			expect(result.ok).toBe(false);
+			expect(result.errors).toHaveLength(1);
+			expect(result.errors[0]).toContain('package-lock.json');
+		});
 	});
 
 	describe('branch validation', () => {
