@@ -376,7 +376,7 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 - `src/fixtures/repos/` - Auto-generated from fixture data (gitignored)
 - `src/fixtures/repo_fixtures/*.ts` - Source of truth for test repo definitions
 - `src/fixtures/generate_repos.ts` - Idempotent repo generation logic
-- `src/fixtures/gitops.fixtures.config.ts` - Gitops config for test repos
+- `src/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
 
 **Fixture Scenarios (9 total):**
 

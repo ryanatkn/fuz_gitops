@@ -21,8 +21,8 @@ export const get_fixture_config_path = (fixture_name: string): string => {
 export const run_gitops_command_json = async (
 	command: 'gitops_analyze' | 'gitops_plan' | 'gitops_publish_dry',
 	args: Array<string> = [],
-	log?: Logger,
-	config_path: string = 'src/fixtures/gitops.fixtures.config.ts',
+	log: Logger | undefined,
+	config_path: string,
 ): Promise<any> => {
 	// Create output directory if it doesn't exist
 	if (!existsSync(GITOPS_OUTPUT_DIR)) {
@@ -48,16 +48,7 @@ export const run_gitops_command_json = async (
 			...args,
 		];
 	} else {
-		full_args = [
-			command,
-			'--format',
-			'json',
-			'--outfile',
-			outfile,
-			'--path',
-			config_path,
-			...args,
-		];
+		full_args = [command, '--format', 'json', '--outfile', outfile, '--path', config_path, ...args];
 	}
 
 	try {
@@ -95,10 +86,7 @@ export const run_gitops_command_json = async (
 /**
  * Assert that publishing order matches expected order.
  */
-export const assert_publishing_order = (
-	actual: Array<string>,
-	expected: Array<string>,
-): void => {
+export const assert_publishing_order = (actual: Array<string>, expected: Array<string>): void => {
 	if (actual.length !== expected.length) {
 		throw new Error(
 			`Publishing order length mismatch: expected ${expected.length} packages, got ${actual.length}.\n` +
