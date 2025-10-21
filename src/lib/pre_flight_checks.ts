@@ -1,4 +1,5 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
+import type {Result} from '@ryanatkn/belt/result.js';
 import {spawn_out} from '@ryanatkn/belt/process.js';
 import {styleText as st} from 'node:util';
 
@@ -162,7 +163,7 @@ export const run_pre_flight_checks = async (
 		// Only check first repo to avoid slowing down tests with multiple remote checks
 		const remote_result = await check_git_remote(repos[0].repo_dir);
 		if (!remote_result.ok) {
-			warnings.push(`git remote may not be reachable - ${remote_result.error}`);
+			warnings.push(`git remote may not be reachable - ${remote_result.message}`);
 		}
 	}
 
@@ -233,15 +234,15 @@ export const run_pre_flight_checks = async (
 /**
  * Checks if git remote is reachable.
  */
-const check_git_remote = async (cwd: string): Promise<{ok: boolean; error?: string}> => {
+const check_git_remote = async (cwd: string): Promise<Result<object, {message: string}>> => {
 	try {
 		// Try to fetch refs from remote without downloading objects
 		const result = await spawn_out('git', ['ls-remote', '--heads', 'origin'], {cwd});
 		if (result.stdout || result.stderr) {
 			return {ok: true};
 		}
-		return {ok: false, error: 'No response from git remote'};
+		return {ok: false, message: 'No response from git remote'};
 	} catch (error) {
-		return {ok: false, error: String(error)};
+		return {ok: false, message: String(error)};
 	}
 };

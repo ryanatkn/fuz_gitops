@@ -1,6 +1,7 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
+import type {Logger} from '@ryanatkn/belt/log.js';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {type Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
@@ -190,7 +191,7 @@ const format_stdout = (
 	graph: Dependency_Graph,
 	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
 	publishing_order: Array<string> | null,
-	log: import('@ryanatkn/belt/log.js').Logger,
+	log: Logger,
 ): void => {
 	log.info(st('cyan', `📊 Analyzing ${repos.length} repositories...`));
 
