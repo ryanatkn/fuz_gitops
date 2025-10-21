@@ -4,23 +4,35 @@
  * This is the core pattern enabling testability without mocks.
  * All side effects (git, npm, fs, process) are abstracted into interfaces.
  *
+ * **Design principles:**
+ * - All operations accept a single `options` object parameter
+ * - All fallible operations return `Result` from `@ryanatkn/belt`
+ * - Never throw `Error` in operations - return `Result` with `ok: false`
+ * - Use `null` for expected "not found" cases (not errors)
+ * - Include `log?: Logger` in options where logging is useful
+ *
  * **Production usage:**
  * ```typescript
- * import {default_gitops_operations} from '$lib/default_operations.js';
- * await publish_repos(repos, options, default_gitops_operations);
+ * import {default_gitops_operations} from '$lib/operations_defaults.js';
+ * const result = await ops.git.current_branch_name({cwd: '/path'});
+ * if (!result.ok) {
+ *   throw new Task_Error(result.message);
+ * }
+ * const branch = result.value;
  * ```
  *
  * **Test usage:**
  * ```typescript
- * import {mock_gitops_operations} from '$lib/fixtures/mock_operations.js';
- * const result = await publish_repos(repos, options, mock_gitops_operations);
+ * const mock_ops = create_mock_operations();
+ * const result = await publish_repos(repos, options, mock_ops);
  * // Assert on result without any real git/npm calls
  * ```
  *
- * See `default_operations.ts` for real implementations.
+ * See `operations_defaults.ts` for real implementations.
  * See test files (*.test.ts) for mock implementations.
  */
 
+import type {Result} from '@ryanatkn/belt/result.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import type {SpawnOptions} from 'node:child_process';
 import type {Local_Repo} from '$lib/local_repo.js';
@@ -32,77 +44,189 @@ import type {Pre_Flight_Options, Pre_Flight_Result} from '$lib/pre_flight_checks
  * Operations for working with changesets
  */
 export interface Changeset_Operations {
-	has_changesets: (repo: Local_Repo) => Promise<boolean>;
-	read_changesets: (repo: Local_Repo, log?: Logger) => Promise<Array<Changeset_Info>>;
-	predict_next_version: (
-		repo: Local_Repo,
-		log?: Logger,
-	) => Promise<{version: string; bump_type: Bump_Type} | null>;
+	/**
+	 * Checks if a repo has any changeset files.
+	 * Returns true if changesets exist, false if none found.
+	 */
+	has_changesets: (options: {
+		repo: Local_Repo;
+	}) => Promise<Result<{value: boolean}, {message: string}>>;
+
+	/**
+	 * Reads all changeset files from a repo.
+	 * Returns array of changeset info, or error if reading fails.
+	 */
+	read_changesets: (options: {
+		repo: Local_Repo;
+		log?: Logger;
+	}) => Promise<Result<{value: Array<Changeset_Info>}, {message: string}>>;
+
+	/**
+	 * Predicts the next version based on changesets.
+	 * Returns null if no changesets found (expected, not an error).
+	 * Returns error Result if changesets exist but can't be read/parsed.
+	 */
+	predict_next_version: (options: {
+		repo: Local_Repo;
+		log?: Logger;
+	}) => Promise<Result<{version: string; bump_type: Bump_Type}, {message: string}> | null>;
 }
 
 /**
  * Operations for git commands
  */
 export interface Git_Operations {
-	// Core git info
-	current_branch_name: (cwd?: string) => Promise<string>;
-	current_commit_hash: (branch?: string, cwd?: string) => Promise<string>;
-	check_clean_workspace: (cwd?: string) => Promise<boolean>;
+	/**
+	 * Gets the current branch name.
+	 */
+	current_branch_name: (options?: {
+		cwd?: string;
+	}) => Promise<Result<{value: string}, {message: string}>>;
 
-	// Branch operations
-	checkout: (branch: string, cwd?: string) => Promise<void>;
-	pull: (origin?: string, branch?: string, cwd?: string) => Promise<void>;
-	switch_branch: (branch: string, pull?: boolean, cwd?: string) => Promise<void>;
-	has_remote: (remote?: string, cwd?: string) => Promise<boolean>;
+	/**
+	 * Gets the current commit hash.
+	 */
+	current_commit_hash: (options?: {
+		branch?: string;
+		cwd?: string;
+	}) => Promise<Result<{value: string}, {message: string}>>;
 
-	// Staging and committing
-	add: (files: string | Array<string>, cwd?: string) => Promise<void>;
-	commit: (message: string, cwd?: string) => Promise<void>;
-	add_and_commit: (files: string | Array<string>, message: string, cwd?: string) => Promise<void>;
-	has_changes: (cwd?: string) => Promise<boolean>;
-	get_changed_files: (cwd?: string) => Promise<Array<string>>;
+	/**
+	 * Checks if the workspace is clean (no uncommitted changes).
+	 */
+	check_clean_workspace: (options?: {
+		cwd?: string;
+	}) => Promise<Result<{value: boolean}, {message: string}>>;
 
-	// Tagging
-	tag: (tag_name: string, message?: string, cwd?: string) => Promise<void>;
-	push_tag: (tag_name: string, origin?: string, cwd?: string) => Promise<void>;
+	/**
+	 * Checks out a branch.
+	 */
+	checkout: (options: {branch: string; cwd?: string}) => Promise<Result<object, {message: string}>>;
 
-	// Stashing
-	stash: (message?: string, cwd?: string) => Promise<void>;
-	stash_pop: (cwd?: string) => Promise<void>;
+	/**
+	 * Pulls changes from remote.
+	 */
+	pull: (options?: {
+		origin?: string;
+		branch?: string;
+		cwd?: string;
+	}) => Promise<Result<object, {message: string}>>;
 
-	// File change detection
+	/**
+	 * Switches to a branch, optionally pulling.
+	 */
+	switch_branch: (options: {
+		branch: string;
+		pull?: boolean;
+		cwd?: string;
+	}) => Promise<Result<object, {message: string}>>;
+
+	/**
+	 * Checks if a remote exists.
+	 */
+	has_remote: (options?: {
+		remote?: string;
+		cwd?: string;
+	}) => Promise<Result<{value: boolean}, {message: string}>>;
+
+	/**
+	 * Stages files for commit.
+	 */
+	add: (options: {
+		files: string | Array<string>;
+		cwd?: string;
+	}) => Promise<Result<object, {message: string}>>;
+
+	/**
+	 * Creates a commit.
+	 */
+	commit: (options: {message: string; cwd?: string}) => Promise<Result<object, {message: string}>>;
+
+	/**
+	 * Stages files and creates a commit.
+	 */
+	add_and_commit: (options: {
+		files: string | Array<string>;
+		message: string;
+		cwd?: string;
+	}) => Promise<Result<object, {message: string}>>;
+
+	/**
+	 * Checks if there are any uncommitted changes.
+	 */
+	has_changes: (options?: {cwd?: string}) => Promise<Result<{value: boolean}, {message: string}>>;
+
+	/**
+	 * Gets a list of changed files.
+	 */
+	get_changed_files: (options?: {
+		cwd?: string;
+	}) => Promise<Result<{value: Array<string>}, {message: string}>>;
+
+	/**
+	 * Creates a git tag.
+	 */
+	tag: (options: {
+		tag_name: string;
+		message?: string;
+		cwd?: string;
+	}) => Promise<Result<object, {message: string}>>;
+
+	/**
+	 * Pushes a tag to remote.
+	 */
+	push_tag: (options: {
+		tag_name: string;
+		origin?: string;
+		cwd?: string;
+	}) => Promise<Result<object, {message: string}>>;
+
+	/**
+	 * Stashes uncommitted changes.
+	 */
+	stash: (options?: {message?: string; cwd?: string}) => Promise<Result<object, {message: string}>>;
+
+	/**
+	 * Pops the most recent stash.
+	 */
+	stash_pop: (options?: {cwd?: string}) => Promise<Result<object, {message: string}>>;
+
 	/**
 	 * Checks if a specific file changed between two commits.
-	 * @param from_commit - Starting commit hash
-	 * @param to_commit - Ending commit hash
-	 * @param file_path - Path to file to check (relative to repo root)
-	 * @param cwd - Working directory (repo path)
-	 * @returns true if file changed between commits, false otherwise
 	 */
-	has_file_changed: (
-		from_commit: string,
-		to_commit: string,
-		file_path: string,
-		cwd?: string,
-	) => Promise<boolean>;
+	has_file_changed: (options: {
+		from_commit: string;
+		to_commit: string;
+		file_path: string;
+		cwd?: string;
+	}) => Promise<Result<{value: boolean}, {message: string}>>;
 }
 
 /**
  * Operations for spawning processes
  */
 export interface Process_Operations {
-	spawn: (
-		cmd: string,
-		args: Array<string>,
-		options?: SpawnOptions,
-	) => Promise<{ok: boolean; stdout?: string; stderr?: string}>;
+	/**
+	 * Spawns a child process and waits for completion.
+	 */
+	spawn: (options: {
+		cmd: string;
+		args: Array<string>;
+		spawn_options?: SpawnOptions;
+	}) => Promise<Result<{stdout?: string; stderr?: string}, {message: string; stderr?: string}>>;
 }
 
 /**
  * Operations for building packages
  */
 export interface Build_Operations {
-	build_package: (repo: Local_Repo, log?: Logger) => Promise<{ok: boolean; error?: string}>;
+	/**
+	 * Builds a package using gro build.
+	 */
+	build_package: (options: {
+		repo: Local_Repo;
+		log?: Logger;
+	}) => Promise<Result<object, {message: string; output?: string}>>;
 }
 
 /**
@@ -119,38 +243,80 @@ export interface Wait_Options {
  * Operations for NPM registry
  */
 export interface Npm_Operations {
-	wait_for_package: (
-		pkg: string,
-		version: string,
-		options?: Wait_Options,
-		log?: Logger,
-	) => Promise<void>;
-	check_package_available: (pkg: string, version: string, log?: Logger) => Promise<boolean>;
-	check_auth: () => Promise<{ok: boolean; username?: string; error?: string}>;
-	check_registry: () => Promise<{ok: boolean; error?: string}>;
-	install: (cwd?: string) => Promise<{ok: boolean; error?: string}>;
+	/**
+	 * Waits for a package version to be available on NPM.
+	 * Uses exponential backoff with configurable timeout.
+	 */
+	wait_for_package: (options: {
+		pkg: string;
+		version: string;
+		wait_options?: Wait_Options;
+		log?: Logger;
+	}) => Promise<Result<object, {message: string; timeout?: boolean}>>;
+
+	/**
+	 * Checks if a package version is available on NPM.
+	 */
+	check_package_available: (options: {
+		pkg: string;
+		version: string;
+		log?: Logger;
+	}) => Promise<Result<{value: boolean}, {message: string}>>;
+
+	/**
+	 * Checks npm authentication status.
+	 */
+	check_auth: () => Promise<Result<{username: string}, {message: string}>>;
+
+	/**
+	 * Checks if npm registry is reachable.
+	 */
+	check_registry: () => Promise<Result<object, {message: string}>>;
+
+	/**
+	 * Installs npm dependencies.
+	 */
+	install: (options?: {
+		cwd?: string;
+	}) => Promise<Result<object, {message: string; stderr?: string}>>;
 }
 
 /**
  * Operations for pre-flight checks
  */
 export interface Preflight_Operations {
-	run_pre_flight_checks: (
-		repos: Array<Local_Repo>,
-		options: Pre_Flight_Options,
-		git_ops?: Git_Operations,
-		npm_ops?: Npm_Operations,
-		build_ops?: Build_Operations,
-		changeset_ops?: Changeset_Operations,
-	) => Promise<Pre_Flight_Result>;
+	/**
+	 * Runs pre-flight validation checks before publishing.
+	 */
+	run_pre_flight_checks: (options: {
+		repos: Array<Local_Repo>;
+		pre_flight_options: Pre_Flight_Options;
+		git_ops?: Git_Operations;
+		npm_ops?: Npm_Operations;
+		build_ops?: Build_Operations;
+		changeset_ops?: Changeset_Operations;
+	}) => Promise<Pre_Flight_Result>;
 }
 
 /**
  * Operations for file system access
  */
 export interface Fs_Operations {
-	readFile: (path: string, encoding: BufferEncoding) => Promise<string>;
-	writeFile: (path: string, content: string) => Promise<void>;
+	/**
+	 * Reads a file from the file system.
+	 */
+	readFile: (options: {
+		path: string;
+		encoding: BufferEncoding;
+	}) => Promise<Result<{value: string}, {message: string}>>;
+
+	/**
+	 * Writes a file to the file system.
+	 */
+	writeFile: (options: {
+		path: string;
+		content: string;
+	}) => Promise<Result<object, {message: string}>>;
 }
 
 /**

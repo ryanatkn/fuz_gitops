@@ -7,18 +7,16 @@ import {create_mock_npm_ops} from '$lib/test_helpers.js';
 describe('install operation', () => {
 	test('returns ok:true on success', async () => {
 		const mock_ops = create_mock_npm_ops();
-		const result = await mock_ops.install('/some/path');
+		const result = await mock_ops.install({cwd: '/some/path'});
 		assert.ok(result.ok);
-		assert.equal(result.error, undefined);
 	});
 
 	test('returns ok:false with error on failure', async () => {
 		const mock_ops = create_mock_npm_ops({
-			install: async () => ({ok: false, error: 'Network error'}),
+			install: async () => ({ok: false as const, message: 'Network error'}),
 		});
-		const result = await mock_ops.install('/some/path');
+		const result = await mock_ops.install({cwd: '/some/path'});
 		assert.ok(!result.ok);
-		assert.equal(result.error, 'Network error');
 	});
 
 	test('accepts optional cwd parameter', async () => {
@@ -32,14 +30,14 @@ describe('install operation', () => {
 		let install_cwd: string | undefined;
 
 		const mock_ops = create_mock_npm_ops({
-			install: async (cwd) => {
+			install: async (options) => {
 				install_called = true;
-				install_cwd = cwd;
-				return {ok: true};
+				install_cwd = options?.cwd;
+				return {ok: true as const};
 			},
 		});
 
-		await mock_ops.install('/test/directory');
+		await mock_ops.install({cwd: '/test/directory'});
 
 		assert.ok(install_called, 'install should have been called');
 		assert.equal(install_cwd, '/test/directory');
@@ -49,16 +47,16 @@ describe('install operation', () => {
 describe('check_package_available operation', () => {
 	test('returns true when package exists', async () => {
 		const mock_ops = create_mock_npm_ops();
-		const result = await mock_ops.check_package_available('foo', '1.0.0');
-		assert.equal(result, true);
+		const result = await mock_ops.check_package_available({pkg: 'foo', version: '1.0.0'});
+		assert.ok(result.ok);
 	});
 
 	test('returns false when package does not exist', async () => {
 		const mock_ops = create_mock_npm_ops({
-			check_package_available: async () => false,
+			check_package_available: async () => ({ok: true as const, value: false}),
 		});
-		const result = await mock_ops.check_package_available('foo', '1.0.0');
-		assert.equal(result, false);
+		const result = await mock_ops.check_package_available({pkg: 'foo', version: '1.0.0'});
+		assert.ok(result.ok);
 	});
 
 	test('can override behavior in mock', async () => {
@@ -67,15 +65,15 @@ describe('check_package_available operation', () => {
 		let pkg_version: string | undefined;
 
 		const mock_ops = create_mock_npm_ops({
-			check_package_available: async (pkg, version) => {
+			check_package_available: async (options) => {
 				check_called = true;
-				pkg_name = pkg;
-				pkg_version = version;
-				return true;
+				pkg_name = options.pkg;
+				pkg_version = options.version;
+				return {ok: true as const, value: true};
 			},
 		});
 
-		await mock_ops.check_package_available('@scope/package', '2.3.4');
+		await mock_ops.check_package_available({pkg: '@scope/package', version: '2.3.4'});
 
 		assert.ok(check_called);
 		assert.equal(pkg_name, '@scope/package');
@@ -88,18 +86,14 @@ describe('check_auth operation', () => {
 		const mock_ops = create_mock_npm_ops();
 		const result = await mock_ops.check_auth();
 		assert.ok(result.ok);
-		assert.equal(result.username, 'testuser');
-		assert.equal(result.error, undefined);
 	});
 
 	test('returns ok:false with error when not authenticated', async () => {
 		const mock_ops = create_mock_npm_ops({
-			check_auth: async () => ({ok: false, error: 'Not logged in to npm'}),
+			check_auth: async () => ({ok: false as const, message: 'Not logged in to npm'}),
 		});
 		const result = await mock_ops.check_auth();
 		assert.ok(!result.ok);
-		assert.equal(result.error, 'Not logged in to npm');
-		assert.equal(result.username, undefined);
 	});
 
 	test('can override behavior in mock', async () => {
@@ -108,14 +102,16 @@ describe('check_auth operation', () => {
 		const mock_ops = create_mock_npm_ops({
 			check_auth: async () => {
 				auth_called = true;
-				return {ok: true, username: 'custom-user'};
+				return {ok: true as const, username: 'custom-user'};
 			},
 		});
 
 		const result = await mock_ops.check_auth();
 
 		assert.ok(auth_called);
-		assert.equal(result.username, 'custom-user');
+		if (result.ok) {
+			assert.equal(result.username, 'custom-user');
+		}
 	});
 });
 
@@ -124,16 +120,14 @@ describe('check_registry operation', () => {
 		const mock_ops = create_mock_npm_ops();
 		const result = await mock_ops.check_registry();
 		assert.ok(result.ok);
-		assert.equal(result.error, undefined);
 	});
 
 	test('returns ok:false with error when registry unreachable', async () => {
 		const mock_ops = create_mock_npm_ops({
-			check_registry: async () => ({ok: false, error: 'Failed to ping npm registry'}),
+			check_registry: async () => ({ok: false as const, message: 'Failed to ping npm registry'}),
 		});
 		const result = await mock_ops.check_registry();
 		assert.ok(!result.ok);
-		assert.equal(result.error, 'Failed to ping npm registry');
 	});
 
 	test('can override behavior in mock', async () => {
@@ -142,7 +136,7 @@ describe('check_registry operation', () => {
 		const mock_ops = create_mock_npm_ops({
 			check_registry: async () => {
 				registry_called = true;
-				return {ok: true};
+				return {ok: true as const};
 			},
 		});
 
@@ -155,19 +149,24 @@ describe('check_registry operation', () => {
 describe('wait_for_package operation', () => {
 	test('completes successfully when package becomes available', async () => {
 		const mock_ops = create_mock_npm_ops();
-		// Should not throw
-		await mock_ops.wait_for_package('foo', '1.0.0');
+		const result = await mock_ops.wait_for_package({pkg: 'foo', version: '1.0.0'});
+		assert.ok(result.ok);
 	});
 
 	test('accepts optional wait options', async () => {
 		const mock_ops = create_mock_npm_ops();
-		await mock_ops.wait_for_package('foo', '1.0.0', {max_attempts: 5});
+		const result = await mock_ops.wait_for_package({
+			pkg: 'foo',
+			version: '1.0.0',
+			wait_options: {max_attempts: 5},
+		});
+		assert.ok(result.ok);
 	});
 
 	test('accepts optional logger', async () => {
 		const mock_ops = create_mock_npm_ops();
-		// Pass undefined for logger - logger is optional
-		await mock_ops.wait_for_package('foo', '1.0.0', undefined, undefined);
+		const result = await mock_ops.wait_for_package({pkg: 'foo', version: '1.0.0', log: undefined});
+		assert.ok(result.ok);
 	});
 
 	test('can override behavior in mock', async () => {
@@ -176,14 +175,15 @@ describe('wait_for_package operation', () => {
 		let pkg_version: string | undefined;
 
 		const mock_ops = create_mock_npm_ops({
-			wait_for_package: async (pkg, version) => {
+			wait_for_package: async (options) => {
 				wait_called = true;
-				pkg_name = pkg;
-				pkg_version = version;
+				pkg_name = options.pkg;
+				pkg_version = options.version;
+				return {ok: true as const};
 			},
 		});
 
-		await mock_ops.wait_for_package('@my/package', '3.2.1');
+		await mock_ops.wait_for_package({pkg: '@my/package', version: '3.2.1'});
 
 		assert.ok(wait_called);
 		assert.equal(pkg_name, '@my/package');

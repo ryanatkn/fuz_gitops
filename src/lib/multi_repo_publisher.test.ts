@@ -24,12 +24,12 @@ test('dry run predicts versions without publishing', async () => {
 	// Create mock operations
 	const mock_ops = create_mock_gitops_ops({
 		changeset: {
-			predict_next_version: async (repo) => {
-				if (repo.pkg.name === 'pkg-a') {
-					return {version: '0.1.1', bump_type: 'patch'};
+			predict_next_version: async (options) => {
+				if (options.repo.pkg.name === 'pkg-a') {
+					return {ok: true as const, version: '0.1.1', bump_type: 'patch' as const};
 				}
-				if (repo.pkg.name === 'pkg-b') {
-					return {version: '0.2.1', bump_type: 'patch'};
+				if (options.repo.pkg.name === 'pkg-b') {
+					return {ok: true as const, version: '0.2.1', bump_type: 'patch' as const};
 				}
 				return null;
 			},
@@ -66,15 +66,15 @@ test('always fails fast on publish errors', async () => {
 	let publish_attempt = 0;
 	const mock_ops = create_mock_gitops_ops({
 		process: {
-			spawn: async (cmd, args) => {
-				if (cmd === 'gro' && args[0] === 'publish') {
+			spawn: async (options) => {
+				if (options.cmd === 'gro' && options.args[0] === 'publish') {
 					publish_attempt++;
 					// Make pkg-a fail
 					if (publish_attempt === 1) {
-						return {ok: false};
+						return {ok: false as const, message: 'Publish failed'};
 					}
 				}
-				return {ok: true};
+				return {ok: true as const};
 			},
 		},
 		preflight: create_preflight_mock(['pkg-a', 'pkg-b', 'pkg-c']),
@@ -106,17 +106,17 @@ test('handles breaking change cascades in dry run', async () => {
 
 	const mock_ops = create_mock_gitops_ops({
 		changeset: {
-			predict_next_version: async (repo) => {
+			predict_next_version: async (options) => {
 				// pkg-core has a breaking change (0.x minor bump)
-				if (repo.pkg.name === 'pkg-core') {
-					return {version: '0.6.0', bump_type: 'minor'};
+				if (options.repo.pkg.name === 'pkg-core') {
+					return {ok: true as const, version: '0.6.0', bump_type: 'minor' as const};
 				}
 				// Others have patch bumps
-				if (repo.pkg.name === 'pkg-mid') {
-					return {version: '0.3.1', bump_type: 'patch'};
+				if (options.repo.pkg.name === 'pkg-mid') {
+					return {ok: true as const, version: '0.3.1', bump_type: 'patch' as const};
 				}
-				if (repo.pkg.name === 'pkg-app') {
-					return {version: '0.2.1', bump_type: 'patch'};
+				if (options.repo.pkg.name === 'pkg-app') {
+					return {ok: true as const, version: '0.2.1', bump_type: 'patch' as const};
 				}
 				return null;
 			},
@@ -159,7 +159,10 @@ test('skips repos without changesets', async () => {
 	// Create mock operations where only pkg-a has changesets
 	const mock_ops = create_mock_gitops_ops({
 		changeset: {
-			has_changesets: async (repo) => repo.pkg.name === 'pkg-a',
+			has_changesets: async (options) => ({
+				ok: true as const,
+				value: options.repo.pkg.name === 'pkg-a',
+			}),
 		},
 		preflight: create_preflight_mock(['pkg-a'], ['pkg-b', 'pkg-c']),
 		fs: mock_fs_ops,
@@ -222,13 +225,14 @@ test('waits for npm propagation after each publish', async () => {
 	const mock_ops = create_mock_gitops_ops({
 		preflight: create_preflight_mock(['pkg-a', 'pkg-b']),
 		npm: {
-			wait_for_package: async (pkg, version) => {
-				wait_calls.push({pkg, version});
+			wait_for_package: async (options) => {
+				wait_calls.push({pkg: options.pkg, version: options.version});
+				return {ok: true as const};
 			},
-			check_package_available: async () => true,
-			check_auth: async () => ({ok: true, username: 'testuser'}),
-			check_registry: async () => ({ok: true}),
-			install: async () => ({ok: true}),
+			check_package_available: async () => ({ok: true as const, value: true}),
+			check_auth: async () => ({ok: true as const, username: 'testuser'}),
+			check_registry: async () => ({ok: true as const}),
+			install: async () => ({ok: true as const}),
 		},
 		fs: mock_fs_ops,
 	});
@@ -253,8 +257,9 @@ test('updates prod dependencies after publishing (Phase 1)', async () => {
 	const mock_ops = create_mock_gitops_ops({
 		preflight: create_preflight_mock(['lib'], ['app']),
 		git: create_mock_git_ops({
-			add_and_commit: async (_files, message, cwd) => {
-				git_commits.push({cwd: cwd || '', message});
+			add_and_commit: async (options) => {
+				git_commits.push({cwd: options.cwd || '', message: options.message});
+				return {ok: true as const};
 			},
 		}),
 		fs: mock_fs_ops,
@@ -278,8 +283,9 @@ test('updates dev dependencies (Phase 2)', async () => {
 	const mock_ops = create_mock_gitops_ops({
 		preflight: create_preflight_mock(['test-utils'], ['lib']),
 		git: create_mock_git_ops({
-			add_and_commit: async (_files, _message, _cwd) => {
+			add_and_commit: async () => {
 				// Mock commit
+				return {ok: true as const};
 			},
 		}),
 		fs: mock_fs_ops,
@@ -305,10 +311,11 @@ test('deploys all repos when deploy flag is set (Phase 3)', async () => {
 		preflight: create_preflight_mock(['pkg-a', 'pkg-b']),
 		process: process_ops,
 		fs: {
-			readFile: async (path) => mock_fs.get(path) || '{}',
-			writeFile: async (_path, _content) => {
-				// Mock writeFile
-			},
+			readFile: async (options) => ({
+				ok: true as const,
+				value: mock_fs.get(options.path) || '{}',
+			}),
+			writeFile: async () => ({ok: true as const}),
 		},
 	});
 
@@ -366,10 +373,11 @@ test('handles 4-level transitive dependency chain', async () => {
 		process: process_ops,
 		preflight: create_preflight_mock(['level-1', 'level-2', 'level-3', 'level-4']),
 		fs: {
-			readFile: async (path) => mock_fs.get(path) || '{}',
-			writeFile: async (_path, _content) => {
-				// Mock writeFile
-			},
+			readFile: async (options) => ({
+				ok: true as const,
+				value: mock_fs.get(options.path) || '{}',
+			}),
+			writeFile: async () => ({ok: true as const}),
 		},
 	});
 
@@ -453,10 +461,10 @@ test('handles npm propagation failure gracefully', async () => {
 			wait_for_package: async () => {
 				throw new Error('Timeout waiting for package');
 			},
-			check_package_available: async () => false,
-			check_auth: async () => ({ok: true, username: 'testuser'}),
-			check_registry: async () => ({ok: true}),
-			install: async () => ({ok: true}),
+			check_package_available: async () => ({ok: true as const, value: false}),
+			check_auth: async () => ({ok: true as const, username: 'testuser'}),
+			check_registry: async () => ({ok: true as const}),
+			install: async () => ({ok: true as const}),
 		},
 		fs: mock_fs_ops,
 	});
@@ -480,13 +488,13 @@ test('handles deploy failures without stopping', async () => {
 
 	// Override spawn to make pkg-a deploy fail
 	const original_spawn = process_ops.spawn;
-	process_ops.spawn = async (cmd, args, options) => {
-		const result = await original_spawn(cmd, args, options);
-		if (cmd === 'gro' && args[0] === 'deploy') {
-			const cwd = typeof options?.cwd === 'string' ? options.cwd : '';
+	process_ops.spawn = async (spawn_options) => {
+		const result = await original_spawn(spawn_options);
+		if (spawn_options.cmd === 'gro' && spawn_options.args[0] === 'deploy') {
+			const cwd = spawn_options.spawn_options?.cwd?.toString() || '';
 			// Make first deploy fail
 			if (cwd.includes('pkg-a')) {
-				return {ok: false};
+				return {ok: false as const, message: 'Deploy failed'};
 			}
 		}
 		return result;
@@ -496,10 +504,11 @@ test('handles deploy failures without stopping', async () => {
 		preflight: create_preflight_mock(['pkg-a', 'pkg-b']),
 		process: process_ops,
 		fs: {
-			readFile: async (path) => mock_fs.get(path) || '{}',
-			writeFile: async (_path, _content) => {
-				// Mock writeFile
-			},
+			readFile: async (options) => ({
+				ok: true as const,
+				value: mock_fs.get(options.path) || '{}',
+			}),
+			writeFile: async () => ({ok: true as const}),
 		},
 	});
 
@@ -525,13 +534,18 @@ test('returns correct Published_Version metadata', async () => {
 		preflight: create_preflight_mock(['pkg-a']),
 		changeset: {
 			...create_mock_gitops_ops().changeset,
-			predict_next_version: async () => ({version: '0.6.0', bump_type: 'minor'}),
+			predict_next_version: async () => ({
+				ok: true as const,
+				version: '0.6.0',
+				bump_type: 'minor' as const,
+			}),
 		},
 		fs: {
-			readFile: async (path) => mock_fs.get(path) || '{}',
-			writeFile: async (_path, _content) => {
-				// Mock writeFile
-			},
+			readFile: async (options) => ({
+				ok: true as const,
+				value: mock_fs.get(options.path) || '{}',
+			}),
+			writeFile: async () => ({ok: true as const}),
 		},
 	});
 

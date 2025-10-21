@@ -58,13 +58,14 @@ export const publish_repos = async (
 			required_branch: 'main',
 			log,
 		};
-		const pre_flight = await ops.preflight.run_pre_flight_checks(
+		const pre_flight = await ops.preflight.run_pre_flight_checks({
 			repos,
 			pre_flight_options,
-			ops.git,
-			ops.npm,
-			ops.build,
-		);
+			git_ops: ops.git,
+			npm_ops: ops.npm,
+			build_ops: ops.build,
+			changeset_ops: ops.changeset,
+		});
 
 		if (!pre_flight.ok) {
 			throw new Task_Error(`Pre-flight checks failed: ${pre_flight.errors.join(', ')}`);
@@ -108,8 +109,16 @@ export const publish_repos = async (
 			}
 
 			// Check for changesets (both dry and real runs)
-			const has = await ops.changeset.has_changesets(repo);
-			if (!has) {
+			const has_result = await ops.changeset.has_changesets({repo});
+			if (!has_result.ok) {
+				// Failed to check changesets
+				const err = new Error(`Failed to check changesets: ${has_result.message}`);
+				failed.set(pkg_name, err);
+				log?.error(st('red', `  ❌ ${err.message}`));
+				break;
+			}
+
+			if (!has_result.value) {
 				// Skip packages without changesets
 				// In real publish: They might get auto-changesets during dependency updates
 				// In dry run: We can't simulate auto-changesets, so just skip
@@ -134,17 +143,23 @@ export const publish_repos = async (
 				if (!dry) {
 					// 2. Wait for this package to be available on NPM
 					log?.info(`  ⏳ Waiting for ${pkg_name}@${version.new_version} on NPM...`);
-					await ops.npm.wait_for_package(
-						pkg_name,
-						version.new_version,
-						{
+					const wait_result = await ops.npm.wait_for_package({
+						pkg: pkg_name,
+						version: version.new_version,
+						wait_options: {
 							max_attempts: 30,
 							initial_delay: 1000,
 							max_delay: 60000,
 							timeout: options.max_wait || 600000, // 10 minutes default
 						},
 						log,
-					);
+					});
+
+					if (!wait_result.ok) {
+						throw new Error(
+							`Failed to wait for package: ${wait_result.message}${wait_result.timeout ? ' (timeout)' : ''}`,
+						);
+					}
 
 					// 3. Update all repos that have prod/peer deps on this package
 					if (update_deps) {
@@ -253,8 +268,10 @@ export const publish_repos = async (
 		for (const repo of repos) {
 			try {
 				log?.info(`  Deploying ${repo.pkg.name}...`);
-				const deploy_result = await ops.process.spawn('gro', ['deploy', '--no-build'], {
-					cwd: repo.repo_dir,
+				const deploy_result = await ops.process.spawn({
+					cmd: 'gro',
+					args: ['deploy', '--no-build'],
+					spawn_options: {cwd: repo.repo_dir},
 				});
 
 				if (deploy_result.ok) {
@@ -307,11 +324,16 @@ const publish_single_repo = async (
 
 	if (dry) {
 		// In dry run, predict version from changesets
-		const prediction = await ops.changeset.predict_next_version(repo, log);
+		const prediction = await ops.changeset.predict_next_version({repo, log});
 
 		if (!prediction) {
 			// No changesets found, skip this repo
 			throw new Error(`No changesets found for ${repo.pkg.name}`);
+		}
+
+		if (!prediction.ok) {
+			// Error reading changesets
+			throw new Error(`Failed to predict version: ${prediction.message}`);
 		}
 
 		const {version: new_version, bump_type} = prediction;
@@ -329,18 +351,25 @@ const publish_single_repo = async (
 	}
 
 	// Run gro publish with --no-build (builds were validated in pre-flight checks)
-	const publish_result = await ops.process.spawn('gro', ['publish', '--no-build'], {
-		cwd: repo.repo_dir,
+	const publish_result = await ops.process.spawn({
+		cmd: 'gro',
+		args: ['publish', '--no-build'],
+		spawn_options: {cwd: repo.repo_dir},
 	});
 
 	if (!publish_result.ok) {
-		throw new Error(`Failed to publish ${repo.pkg.name}`);
+		throw new Error(`Failed to publish ${repo.pkg.name}: ${publish_result.message}`);
 	}
 
 	// Read the new version from package.json after gro publish
 	const package_json_path = join(repo.repo_dir, 'package.json');
-	const content = await ops.fs.readFile(package_json_path, 'utf8');
-	const package_json = JSON.parse(content);
+	const content_result = await ops.fs.readFile({path: package_json_path, encoding: 'utf8'});
+
+	if (!content_result.ok) {
+		throw new Error(`Failed to read package.json: ${content_result.message}`);
+	}
+
+	const package_json = JSON.parse(content_result.value);
 	const new_version = package_json.version;
 
 	// Determine bump type and if it's breaking
@@ -348,7 +377,13 @@ const publish_single_repo = async (
 	const breaking = is_breaking_change(old_version, bump_type);
 
 	// Get actual commit hash
-	const commit = await ops.git.current_commit_hash(undefined, repo.repo_dir);
+	const commit_result = await ops.git.current_commit_hash({cwd: repo.repo_dir});
+
+	if (!commit_result.ok) {
+		throw new Error(`Failed to get commit hash: ${commit_result.message}`);
+	}
+
+	const commit = commit_result.value;
 
 	return {
 		name: repo.pkg.name,

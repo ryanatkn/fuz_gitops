@@ -53,52 +53,88 @@ export const load_local_repo = async (
 	const {repo_config, repo_dir} = resolved_local_repo;
 
 	// Record commit hash before any changes
-	const commit_before = await git_ops.current_commit_hash(undefined, repo_dir);
+	const commit_before_result = await git_ops.current_commit_hash({cwd: repo_dir});
+	if (!commit_before_result.ok) {
+		throw new Task_Error(`Failed to get commit hash: ${commit_before_result.message}`);
+	}
+	const commit_before = commit_before_result.value;
 
 	// Switch to target branch if needed
-	const branch = await git_ops.current_branch_name(repo_dir);
-	const switched_branches = branch !== repo_config.branch;
+	const branch_result = await git_ops.current_branch_name({cwd: repo_dir});
+	if (!branch_result.ok) {
+		throw new Task_Error(`Failed to get current branch: ${branch_result.message}`);
+	}
+
+	const switched_branches = branch_result.value !== repo_config.branch;
 	if (switched_branches) {
-		const is_clean = await git_ops.check_clean_workspace(repo_dir);
-		if (!is_clean) {
+		const clean_result = await git_ops.check_clean_workspace({cwd: repo_dir});
+		if (!clean_result.ok) {
+			throw new Task_Error(`Failed to check workspace: ${clean_result.message}`);
+		}
+
+		if (!clean_result.value) {
 			throw new Task_Error(
 				`Repo ${repo_dir} is not on branch "${repo_config.branch}" and the workspace is unclean, blocking switch`,
 			);
 		}
-		await git_ops.checkout(repo_config.branch, repo_dir);
+
+		const checkout_result = await git_ops.checkout({branch: repo_config.branch, cwd: repo_dir});
+		if (!checkout_result.ok) {
+			throw new Task_Error(`Failed to checkout branch: ${checkout_result.message}`);
+		}
 	}
 
 	// Only pull if remote exists (skip for local-only repos, test fixtures)
-	const has_origin = await git_ops.has_remote('origin', repo_dir);
-	if (has_origin) {
-		await git_ops.pull(undefined, undefined, repo_dir);
+	const origin_result = await git_ops.has_remote({remote: 'origin', cwd: repo_dir});
+	if (!origin_result.ok) {
+		throw new Task_Error(`Failed to check for remote: ${origin_result.message}`);
+	}
+
+	if (origin_result.value) {
+		const pull_result = await git_ops.pull({cwd: repo_dir});
+		if (!pull_result.ok) {
+			throw new Task_Error(`Failed to pull: ${pull_result.message}`);
+		}
 	}
 
 	// Check clean workspace after pull to ensure we're in a good state
-	const is_clean_after = await git_ops.check_clean_workspace(repo_dir);
-	if (!is_clean_after) {
+	const clean_after_result = await git_ops.check_clean_workspace({cwd: repo_dir});
+	if (!clean_after_result.ok) {
+		throw new Task_Error(`Failed to check workspace: ${clean_after_result.message}`);
+	}
+
+	if (!clean_after_result.value) {
 		throw new Task_Error(`Workspace is unclean after pulling branch "${repo_config.branch}"`);
 	}
 
 	// Record commit hash after pull
-	const commit_after = await git_ops.current_commit_hash(undefined, repo_dir);
+	const commit_after_result = await git_ops.current_commit_hash({cwd: repo_dir});
+	if (!commit_after_result.ok) {
+		throw new Task_Error(`Failed to get commit hash: ${commit_after_result.message}`);
+	}
+	const commit_after = commit_after_result.value;
 
 	// Track if we got new commits
 	const got_new_commits = commit_before !== commit_after;
 
 	// Only install if package.json changed
 	if (got_new_commits) {
-		const package_json_changed = await git_ops.has_file_changed(
-			commit_before,
-			commit_after,
-			'package.json',
-			repo_dir,
-		);
-		if (package_json_changed) {
-			const install_result = await npm_ops.install(resolved_local_repo.repo_dir);
+		const changed_result = await git_ops.has_file_changed({
+			from_commit: commit_before,
+			to_commit: commit_after,
+			file_path: 'package.json',
+			cwd: repo_dir,
+		});
+
+		if (!changed_result.ok) {
+			throw new Task_Error(`Failed to check if package.json changed: ${changed_result.message}`);
+		}
+
+		if (changed_result.value) {
+			const install_result = await npm_ops.install({cwd: resolved_local_repo.repo_dir});
 			if (!install_result.ok) {
 				throw new Task_Error(
-					`Failed to install dependencies in ${repo_dir}: ${install_result.error}`,
+					`Failed to install dependencies in ${repo_dir}: ${install_result.message}${install_result.stderr ? `\n${install_result.stderr}` : ''}`,
 				);
 			}
 		}
@@ -230,10 +266,10 @@ const download_repos = async (
 		}
 		// Always install dependencies after cloning
 		log?.info(`installing dependencies for newly cloned repo ${local_repo.repo_dir}`);
-		const install_result = await npm_ops.install(local_repo.repo_dir); // eslint-disable-line no-await-in-loop
+		const install_result = await npm_ops.install({cwd: local_repo.repo_dir}); // eslint-disable-line no-await-in-loop
 		if (!install_result.ok) {
 			throw new Task_Error(
-				`Failed to install dependencies in ${local_repo.repo_dir}: ${install_result.error}`,
+				`Failed to install dependencies in ${local_repo.repo_dir}: ${install_result.message}${install_result.stderr ? `\n${install_result.stderr}` : ''}`,
 			);
 		}
 		resolved.push(local_repo);

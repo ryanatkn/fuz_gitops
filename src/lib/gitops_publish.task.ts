@@ -1,7 +1,7 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
-import {writeFile} from 'node:fs/promises';
 import {createInterface} from 'node:readline/promises';
+import {styleText as st} from 'node:util';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {
@@ -10,7 +10,7 @@ import {
 	type Publishing_Result,
 } from '$lib/multi_repo_publisher.js';
 import {generate_publishing_plan, log_publishing_plan} from '$lib/publishing_plan.js';
-import {styleText as st} from 'node:util';
+import {format_and_output, type Output_Formatters} from '$lib/output_helpers.js';
 
 export const Args = z.strictObject({
 	path: z
@@ -110,25 +110,14 @@ export const task: Task<Args> = {
 		}
 
 		// Format and output result (always runs, even on fatal errors)
+		// Note: stdout format is handled by publish_repos function's logging
 		if (format !== 'stdout') {
-			const output = format_result(result, format, fatal_error);
-			const content = output.join('\n');
-
-			// Write to file if specified
-			if (outfile) {
-				await writeFile(outfile, content);
-				log.info(`Output written to ${outfile}`);
-			} else {
-				// Log line by line
-				for (const line of output) {
-					log.info(line);
-				}
-			}
-		} else if (outfile) {
-			// stdout format with outfile is not supported
-			throw new Error('--outfile is not supported with stdout format, use json or markdown');
+			await format_and_output({result, fatal_error}, create_publish_formatters(), {
+				format,
+				outfile,
+				log,
+			});
 		}
-		// stdout format is handled by the publish_repos function's logging
 
 		// Exit with error if failed
 		if (!result.ok || fatal_error) {
@@ -137,17 +126,31 @@ export const task: Task<Args> = {
 	},
 };
 
-// Format the publishing result for different output formats
-const format_result = (
-	result: Publishing_Result,
-	format: 'json' | 'markdown',
-	fatal_error?: Error | null,
-): Array<string> => {
-	if (format === 'json') {
-		return JSON.stringify(result, null, 2).split('\n');
-	}
+/**
+ * Data type for publishing result output
+ */
+interface Publish_Result_Data {
+	result: Publishing_Result;
+	fatal_error: Error | null;
+}
 
-	// Markdown format
+/**
+ * Create formatters for publishing result output
+ */
+const create_publish_formatters = (): Output_Formatters<Publish_Result_Data> => ({
+	json: (data) => JSON.stringify(data.result, null, 2),
+	markdown: (data) => format_result_markdown(data.result, data.fatal_error),
+	stdout: () => {
+		// stdout format is handled by publish_repos function's logging
+		// This should never be called due to early return in task
+	},
+});
+
+// Format the publishing result as markdown
+const format_result_markdown = (
+	result: Publishing_Result,
+	fatal_error: Error | null,
+): Array<string> => {
 	const lines: Array<string> = [];
 
 	lines.push('# Publishing Result');

@@ -10,10 +10,11 @@ import type {
 	Fs_Operations,
 	Npm_Operations,
 	Build_Operations,
+	Process_Operations,
 } from '$lib/operations.js';
 import type {Bump_Type} from '$lib/semver.js';
 
-/* eslint-disable @typescript-eslint/require-await,@typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/require-await */
 
 export interface Mock_Repo_Options {
 	name: string;
@@ -89,17 +90,18 @@ export const create_mock_gitops_ops = (
 	}> = {},
 ): Gitops_Operations => ({
 	changeset: {
-		has_changesets: async () => true,
-		read_changesets: async () => [],
-		predict_next_version: async (repo) => ({
-			version: incrementPatch(repo.pkg.package_json.version || '0.0.0'),
-			bump_type: 'patch',
+		has_changesets: async () => ({ok: true as const, value: true}),
+		read_changesets: async () => ({ok: true as const, value: []}),
+		predict_next_version: async (options) => ({
+			ok: true as const,
+			version: incrementPatch(options.repo.pkg.package_json.version || '0.0.0'),
+			bump_type: 'patch' as const,
 		}),
 		...overrides.changeset,
 	},
 	git: create_mock_git_ops(overrides.git),
 	process: {
-		spawn: async () => ({ok: true}),
+		spawn: async () => ({ok: true as const}),
 		...overrides.process,
 	},
 	npm: create_mock_npm_ops(overrides.npm),
@@ -114,8 +116,8 @@ export const create_mock_gitops_ops = (
 		...overrides.preflight,
 	},
 	fs: {
-		readFile: async () => '{}',
-		writeFile: async () => {},
+		readFile: async () => ({ok: true as const, value: '{}'}),
+		writeFile: async () => ({ok: true as const}),
 		...overrides.fs,
 	},
 	build: create_mock_build_ops(overrides.build),
@@ -176,10 +178,15 @@ export const create_mock_changeset_ops = (
 	versionPredictions: Map<string, {version: string; bump_type: Bump_Type}>,
 	reposWithChangesets: Set<string> = new Set(),
 ): Changeset_Operations => ({
-	has_changesets: async (repo) => reposWithChangesets.has(repo.pkg.name),
-	read_changesets: async () => [],
-	predict_next_version: async (repo) => {
-		return versionPredictions.get(repo.pkg.name) || null;
+	has_changesets: async (options) => ({
+		ok: true as const,
+		value: reposWithChangesets.has(options.repo.pkg.name),
+	}),
+	read_changesets: async () => ({ok: true as const, value: []}),
+	predict_next_version: async (options) => {
+		const prediction = versionPredictions.get(options.repo.pkg.name);
+		if (!prediction) return null;
+		return {ok: true as const, ...prediction};
 	},
 });
 
@@ -187,23 +194,23 @@ export const create_mock_changeset_ops = (
  * Creates mock Git_Operations for testing
  */
 export const create_mock_git_ops = (overrides: Partial<Git_Operations> = {}): Git_Operations => ({
-	current_branch_name: async () => 'main',
-	current_commit_hash: async () => 'abc123',
-	check_clean_workspace: async () => true,
-	checkout: async () => {},
-	pull: async () => {},
-	switch_branch: async () => {},
-	has_remote: async () => false,
-	add: async () => {},
-	commit: async () => {},
-	add_and_commit: async () => {},
-	has_changes: async () => false,
-	get_changed_files: async () => [],
-	tag: async () => {},
-	push_tag: async () => {},
-	stash: async () => {},
-	stash_pop: async () => {},
-	has_file_changed: async () => false,
+	current_branch_name: async () => ({ok: true as const, value: 'main'}),
+	current_commit_hash: async () => ({ok: true as const, value: 'abc123'}),
+	check_clean_workspace: async () => ({ok: true as const, value: true}),
+	checkout: async () => ({ok: true as const}),
+	pull: async () => ({ok: true as const}),
+	switch_branch: async () => ({ok: true as const}),
+	has_remote: async () => ({ok: true as const, value: false}),
+	add: async () => ({ok: true as const}),
+	commit: async () => ({ok: true as const}),
+	add_and_commit: async () => ({ok: true as const}),
+	has_changes: async () => ({ok: true as const, value: false}),
+	get_changed_files: async () => ({ok: true as const, value: []}),
+	tag: async () => ({ok: true as const}),
+	push_tag: async () => ({ok: true as const}),
+	stash: async () => ({ok: true as const}),
+	stash_pop: async () => ({ok: true as const}),
+	has_file_changed: async () => ({ok: true as const, value: false}),
 	...overrides,
 });
 
@@ -211,11 +218,11 @@ export const create_mock_git_ops = (overrides: Partial<Git_Operations> = {}): Gi
  * Creates mock Npm_Operations for testing
  */
 export const create_mock_npm_ops = (overrides: Partial<Npm_Operations> = {}): Npm_Operations => ({
-	wait_for_package: async () => {},
-	check_package_available: async () => true,
-	check_auth: async () => ({ok: true, username: 'testuser'}),
-	check_registry: async () => ({ok: true}),
-	install: async () => ({ok: true}),
+	wait_for_package: async () => ({ok: true as const}),
+	check_package_available: async () => ({ok: true as const, value: true}),
+	check_auth: async () => ({ok: true as const, username: 'testuser'}),
+	check_registry: async () => ({ok: true as const}),
+	install: async () => ({ok: true as const}),
 	...overrides,
 });
 
@@ -225,7 +232,7 @@ export const create_mock_npm_ops = (overrides: Partial<Npm_Operations> = {}): Np
 export const create_mock_build_ops = (
 	overrides: Partial<Build_Operations> = {},
 ): Build_Operations => ({
-	build_package: async () => ({ok: true}),
+	build_package: async () => ({ok: true as const}),
 	...overrides,
 });
 
@@ -263,15 +270,16 @@ export const create_mock_fs_ops = (): Fs_Operations & {
 	const files: Map<string, string> = new Map();
 
 	return {
-		readFile: async (path: string, _encoding: BufferEncoding): Promise<string> => {
-			const content = files.get(path);
+		readFile: async (options) => {
+			const content = files.get(options.path);
 			if (content === undefined) {
-				throw new Error(`File not found: ${path}`);
+				return {ok: false as const, message: `File not found: ${options.path}`};
 			}
-			return content;
+			return {ok: true as const, value: content};
 		},
-		writeFile: async (path: string, content: string): Promise<void> => {
-			files.set(path, content);
+		writeFile: async (options) => {
+			files.set(options.path, options.content);
+			return {ok: true as const};
 		},
 		get: (path: string): string | undefined => files.get(path),
 		set: (path: string, content: string): void => {
@@ -311,13 +319,7 @@ export interface Tracked_Command {
  * Creates process operations that track which commands were spawned
  */
 export const create_tracking_process_ops = (): {
-	ops: {
-		spawn: (
-			cmd: string,
-			args: Array<string>,
-			options?: {cwd?: string | URL},
-		) => Promise<{ok: boolean; stdout?: string; stderr?: string}>;
-	};
+	ops: Process_Operations;
 	get_spawned_commands: () => Array<Tracked_Command>;
 	get_commands_by_type: (cmd_name: string) => Array<Tracked_Command>;
 	get_package_names_from_cwd: (commands: Array<Tracked_Command>) => Array<string>;
@@ -326,17 +328,13 @@ export const create_tracking_process_ops = (): {
 
 	return {
 		ops: {
-			spawn: async (
-				cmd: string,
-				args: Array<string>,
-				options?: {cwd?: string | URL},
-			): Promise<{ok: boolean; stdout?: string; stderr?: string}> => {
+			spawn: async (options) => {
 				spawned_commands.push({
-					cmd,
-					args,
-					cwd: typeof options?.cwd === 'string' ? options.cwd : '',
+					cmd: options.cmd,
+					args: options.args,
+					cwd: options.spawn_options?.cwd?.toString() || '',
 				});
-				return {ok: true};
+				return {ok: true as const};
 			},
 		},
 		get_spawned_commands: () => spawned_commands,

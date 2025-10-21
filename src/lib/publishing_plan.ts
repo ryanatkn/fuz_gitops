@@ -242,13 +242,28 @@ export const generate_publishing_plan = async (
 		if (!repo) continue;
 
 		// Check for changesets
-		const has = await ops.has_changesets(repo); // eslint-disable-line no-await-in-loop
+		const has_result = await ops.has_changesets({repo}); // eslint-disable-line no-await-in-loop
 
-		if (has) {
+		if (!has_result.ok) {
+			errors.push(`Failed to check changesets for ${pkg_name}: ${has_result.message}`);
+			continue;
+		}
+
+		if (has_result.value) {
 			// Predict version from changesets
-			const prediction = await ops.predict_next_version(repo, log); // eslint-disable-line no-await-in-loop
+			const prediction = await ops.predict_next_version({repo, log}); // eslint-disable-line no-await-in-loop
 
-			if (prediction) {
+			if (!prediction) {
+				// No changesets found - this shouldn't happen since has_changesets returned true
+				continue;
+			}
+
+			if (!prediction.ok) {
+				errors.push(`Failed to predict version for ${pkg_name}: ${prediction.message}`);
+				continue;
+			}
+
+			{
 				const old_version = repo.pkg.package_json.version || '0.0.0';
 				const is_breaking = is_breaking_change(old_version, prediction.bump_type);
 
@@ -413,8 +428,8 @@ export const generate_publishing_plan = async (
 	for (const repo of repos) {
 		const has_version_change = version_changes.some((vc) => vc.package_name === repo.pkg.name);
 		if (!has_version_change) {
-			const has = await ops.has_changesets(repo); // eslint-disable-line no-await-in-loop
-			if (!has) {
+			const has_result = await ops.has_changesets({repo}); // eslint-disable-line no-await-in-loop
+			if (has_result.ok && !has_result.value) {
 				info.push(repo.pkg.name);
 			}
 		}

@@ -22,23 +22,26 @@ const create_trackable_git_ops = (): Git_Operations & {
 	const commits: Array<string> = [];
 
 	const git_ops = create_mock_git_ops({
-		add: async (files) => {
-			if (Array.isArray(files)) {
-				added_files.push(...files);
+		add: async (options) => {
+			if (Array.isArray(options.files)) {
+				added_files.push(...options.files);
 			} else {
-				added_files.push(files);
+				added_files.push(options.files);
 			}
+			return {ok: true as const};
 		},
-		commit: async (message) => {
-			commits.push(message);
+		commit: async (options) => {
+			commits.push(options.message);
+			return {ok: true as const};
 		},
-		add_and_commit: async (files, message) => {
-			if (Array.isArray(files)) {
-				added_files.push(...files);
+		add_and_commit: async (options) => {
+			if (Array.isArray(options.files)) {
+				added_files.push(...options.files);
 			} else {
-				added_files.push(files);
+				added_files.push(options.files);
 			}
-			commits.push(message);
+			commits.push(options.message);
+			return {ok: true as const};
 		},
 	});
 

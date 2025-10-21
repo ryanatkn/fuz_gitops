@@ -1,7 +1,6 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
-import {writeFile} from 'node:fs/promises';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {
@@ -9,6 +8,7 @@ import {
 	log_publishing_plan,
 	type Publishing_Plan,
 } from '$lib/publishing_plan.js';
+import {format_and_output, type Output_Formatters} from '$lib/output_helpers.js';
 
 export const Args = z.strictObject({
 	path: z
@@ -63,43 +63,8 @@ export const task: Task<Args> = {
 		// Generate publishing plan
 		const plan = await generate_publishing_plan(local_repos, log);
 
-		// Display the plan based on format
-		let content: string;
-		if (format === 'json') {
-			// Output as JSON
-			const output = {
-				publishing_order: plan.publishing_order,
-				version_changes: plan.version_changes,
-				dependency_updates: plan.dependency_updates,
-				breaking_cascades: Object.fromEntries(plan.breaking_cascades),
-				warnings: plan.warnings,
-				info: plan.info,
-				errors: plan.errors,
-			};
-			content = JSON.stringify(output, null, 2);
-		} else if (format === 'markdown') {
-			// Output as markdown
-			const lines = format_plan_as_markdown(plan);
-			content = lines.join('\n');
-		} else {
-			// Default stdout format - special handling since it uses log directly
-			if (outfile) {
-				throw new Error('--outfile is not supported with stdout format, use json or markdown');
-			}
-			log_publishing_plan(plan, log);
-			content = '';
-		}
-
-		// Output to file or log
-		if (content && outfile) {
-			await writeFile(outfile, content);
-			log.info(`Output written to ${outfile}`);
-		} else if (content) {
-			// Log line by line for json/markdown formats
-			for (const line of content.split('\n')) {
-				log.info(line);
-			}
-		}
+		// Format and output using output_helpers
+		await format_and_output(plan, create_plan_formatters(), {format, outfile, log});
 
 		// Exit with error if there are blocking issues
 		if (plan.errors.length > 0) {
@@ -107,6 +72,26 @@ export const task: Task<Args> = {
 		}
 	},
 };
+
+/**
+ * Create formatters for publishing plan output
+ */
+const create_plan_formatters = (): Output_Formatters<Publishing_Plan> => ({
+	json: (plan) => {
+		const output = {
+			publishing_order: plan.publishing_order,
+			version_changes: plan.version_changes,
+			dependency_updates: plan.dependency_updates,
+			breaking_cascades: Object.fromEntries(plan.breaking_cascades),
+			warnings: plan.warnings,
+			info: plan.info,
+			errors: plan.errors,
+		};
+		return JSON.stringify(output, null, 2);
+	},
+	markdown: (plan) => format_plan_as_markdown(plan),
+	stdout: (plan, log) => log_publishing_plan(plan, log),
+});
 
 /**
  * Format the publishing plan as markdown.

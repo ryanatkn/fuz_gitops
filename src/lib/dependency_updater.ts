@@ -30,8 +30,11 @@ export const update_package_json = async (
 	const package_json_path = join(repo.repo_dir, 'package.json');
 
 	// Read current package.json
-	const content = await fs_ops.readFile(package_json_path, 'utf8');
-	const package_json = JSON.parse(content);
+	const content_result = await fs_ops.readFile({path: package_json_path, encoding: 'utf8'});
+	if (!content_result.ok) {
+		throw new Error(`Failed to read package.json: ${content_result.message}`);
+	}
+	const package_json = JSON.parse(content_result.value);
 
 	// Apply version strategy
 	const prefix = strategy === 'exact' ? '' : strategy === 'caret' ? '^' : '~';
@@ -77,7 +80,13 @@ export const update_package_json = async (
 	if (!updated) return;
 
 	// Write updated package.json
-	await fs_ops.writeFile(package_json_path, JSON.stringify(package_json, null, '\t') + '\n');
+	const write_result = await fs_ops.writeFile({
+		path: package_json_path,
+		content: JSON.stringify(package_json, null, '\t') + '\n',
+	});
+	if (!write_result.ok) {
+		throw new Error(`Failed to write package.json: ${write_result.message}`);
+	}
 
 	// Create changeset if we have published version info
 	if (published_versions && published_versions.size > 0) {
@@ -117,13 +126,26 @@ export const update_package_json = async (
 			);
 
 			// Add changeset to git
-			await git_ops.add(changeset_path, repo.repo_dir);
+			const add_result = await git_ops.add({files: changeset_path, cwd: repo.repo_dir});
+			if (!add_result.ok) {
+				throw new Error(`Failed to stage changeset: ${add_result.message}`);
+			}
 		}
 	}
 
 	// Commit the changes (including both package.json and changeset)
-	await git_ops.add('package.json', repo.repo_dir);
-	await git_ops.commit(`update dependencies after publishing`, repo.repo_dir);
+	const add_pkg_result = await git_ops.add({files: 'package.json', cwd: repo.repo_dir});
+	if (!add_pkg_result.ok) {
+		throw new Error(`Failed to stage package.json: ${add_pkg_result.message}`);
+	}
+
+	const commit_result = await git_ops.commit({
+		message: `update dependencies after publishing`,
+		cwd: repo.repo_dir,
+	});
+	if (!commit_result.ok) {
+		throw new Error(`Failed to commit: ${commit_result.message}`);
+	}
 };
 
 /**

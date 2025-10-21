@@ -1,7 +1,6 @@
 import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
-import {writeFile} from 'node:fs/promises';
 
 import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 import {type Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
@@ -12,6 +11,7 @@ import {
 	format_dev_cycles,
 	format_production_cycles,
 } from '$lib/log_helpers.js';
+import {format_and_output, type Output_Formatters} from '$lib/output_helpers.js';
 
 export const Args = z.strictObject({
 	path: z
@@ -54,48 +54,33 @@ export const task: Task<Args> = {
 		// Publishing order (may be null if prod cycles exist)
 		const publishing_order = order.length > 0 ? order : null;
 
-		// Get formatted output
-		const output = get_output(format, {
+		// Format and output using output_helpers
+		const data = {
 			repos: local_repos,
 			graph,
 			analysis,
 			publishing_order,
-		});
+		};
 
-		// Output to file or log
-		const content = output.join('\n');
-		if (outfile) {
-			// Write clean output to file
-			await writeFile(outfile, content);
-			log.info(`Output written to ${outfile}`);
-		} else {
-			// Log to console as before
-			for (const line of output) {
-				log.info(line);
-			}
-		}
+		await format_and_output(data, create_formatters(), {format, outfile, log});
 	},
 };
 
-// Main output function that delegates to format-specific functions
-const get_output = (
-	format: 'json' | 'markdown' | 'stdout',
-	data: {
-		repos: Array<Local_Repo>;
-		graph: Dependency_Graph;
-		analysis: ReturnType<Dependency_Graph_Builder['analyze']>;
-		publishing_order: Array<string> | null;
-	},
-): Array<string> => {
-	switch (format) {
-		case 'json':
-			return format_json(data.graph, data.analysis, data.publishing_order);
-		case 'markdown':
-			return format_markdown(data.repos, data.graph, data.analysis, data.publishing_order);
-		default:
-			return format_stdout(data.repos, data.graph, data.analysis, data.publishing_order);
-	}
-};
+// Data type for analysis output
+interface Analysis_Data {
+	repos: Array<Local_Repo>;
+	graph: Dependency_Graph;
+	analysis: ReturnType<Dependency_Graph_Builder['analyze']>;
+	publishing_order: Array<string> | null;
+}
+
+// Create formatters for output_helpers
+const create_formatters = (): Output_Formatters<Analysis_Data> => ({
+	json: (data) => format_json(data.graph, data.analysis, data.publishing_order),
+	markdown: (data) => format_markdown(data.repos, data.graph, data.analysis, data.publishing_order),
+	stdout: (data, log) =>
+		format_stdout(data.repos, data.graph, data.analysis, data.publishing_order, log),
+});
 
 // Helper to calculate common statistics
 const calculate_stats = (graph: Dependency_Graph) => {
@@ -115,14 +100,13 @@ const format_json = (
 	graph: Dependency_Graph,
 	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
 	publishing_order: Array<string> | null,
-): Array<string> => {
+): string => {
 	const output = {
 		graph: graph.toJSON(),
 		analysis,
 		publishing_order,
 	};
-	// Split JSON into lines for consistent handling
-	return JSON.stringify(output, null, 2).split('\n');
+	return JSON.stringify(output, null, 2);
 };
 
 const format_markdown = (
@@ -206,66 +190,69 @@ const format_stdout = (
 	graph: Dependency_Graph,
 	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
 	publishing_order: Array<string> | null,
-): Array<string> => {
-	const lines: Array<string> = [];
-
-	lines.push(st('cyan', `📊 Analyzing ${repos.length} repositories...`));
+	log: import('@ryanatkn/belt/log.js').Logger,
+): void => {
+	log.info(st('cyan', `📊 Analyzing ${repos.length} repositories...`));
 
 	// Publishing order
 	if (publishing_order) {
-		lines.push(st('yellow', 'Publishing order:'));
+		log.info(st('yellow', 'Publishing order:'));
 		publishing_order.forEach((name, i) => {
 			const node = graph.get_node(name);
 			const version = node ? node.version : 'unknown';
-			lines.push(`  ${st('dim', `${i + 1}.`)} ${name} ${st('dim', `(${version})`)}`);
+			log.info(`  ${st('dim', `${i + 1}.`)} ${name} ${st('dim', `(${version})`)}`);
 		});
-		lines.push('');
+		log.info('');
 	}
 
 	// Dependencies summary
-	lines.push(st('yellow', 'Dependency relationships:'));
+	log.info(st('yellow', 'Dependency relationships:'));
 	for (const node of graph.nodes.values()) {
 		const internal_deps = Array.from(node.dependencies.entries()).filter(([name]) =>
 			graph.nodes.has(name),
 		);
 		if (internal_deps.length > 0) {
-			lines.push(`  ${st('cyan', node.name)}`);
+			log.info(`  ${st('cyan', node.name)}`);
 			for (const [dep_name, spec] of internal_deps) {
 				const type_color = spec.type === 'peer' ? 'magenta' : spec.type === 'dev' ? 'dim' : 'white';
-				lines.push(
+				log.info(
 					`    ${st(type_color, '→')} ${dep_name} ${st('dim', `(${spec.type}: ${spec.version})`)}`,
 				);
 			}
 		}
 	}
-	lines.push('');
+	log.info('');
 
 	// Dependency analysis
-	lines.push(...format_wildcard_dependencies(analysis));
-	lines.push(...format_production_cycles(analysis));
-	lines.push(...format_dev_cycles(analysis));
+	for (const line of format_wildcard_dependencies(analysis)) {
+		log.info(line);
+	}
+	for (const line of format_production_cycles(analysis)) {
+		log.info(line);
+	}
+	for (const line of format_dev_cycles(analysis)) {
+		log.info(line);
+	}
 
 	// Success message based on cycle detection
 	const has_prod_cycles = analysis.production_cycles.length > 0;
 	const has_dev_cycles = analysis.dev_cycles.length > 0;
 
 	if (!has_prod_cycles && !has_dev_cycles) {
-		lines.push(st('green', '✅ No circular dependencies detected'));
+		log.info(st('green', '✅ No circular dependencies detected'));
 	} else if (!has_prod_cycles) {
-		lines.push(st('green', '✓ Publishing order computed successfully (dev deps excluded)'));
+		log.info(st('green', '✓ Publishing order computed successfully (dev deps excluded)'));
 	}
 
 	// Summary
 	const {total_deps, internal_deps} = calculate_stats(graph);
 
-	lines.push('');
-	lines.push(st('cyan', 'Summary:'));
-	lines.push(`  Total packages: ${repos.length}`);
-	lines.push(`  Total dependencies: ${total_deps}`);
-	lines.push(`  Internal dependencies: ${internal_deps}`);
-	lines.push(`  Wildcard dependencies: ${analysis.wildcard_deps.length}`);
-	lines.push(`  Production/peer circular dependencies: ${analysis.production_cycles.length}`);
-	lines.push(`  Dev circular dependencies: ${analysis.dev_cycles.length}`);
-
-	return lines;
+	log.info('');
+	log.info(st('cyan', 'Summary:'));
+	log.info(`  Total packages: ${repos.length}`);
+	log.info(`  Total dependencies: ${total_deps}`);
+	log.info(`  Internal dependencies: ${internal_deps}`);
+	log.info(`  Wildcard dependencies: ${analysis.wildcard_deps.length}`);
+	log.info(`  Production/peer circular dependencies: ${analysis.production_cycles.length}`);
+	log.info(`  Dev circular dependencies: ${analysis.dev_cycles.length}`);
 };

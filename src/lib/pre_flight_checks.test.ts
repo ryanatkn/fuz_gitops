@@ -17,7 +17,7 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'}), create_mock_repo({name: 'package-b'})];
 
 			const git_ops = create_mock_git_ops({
-				check_clean_workspace: async () => true,
+				check_clean_workspace: async () => ({ok: true as const, value: true}),
 			});
 			const npm_ops = create_mock_npm_ops();
 
@@ -39,9 +39,9 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops({
 				check_clean_workspace: async () => {
 					call_count++;
-					return call_count !== 2; // Second repo fails
+					return {ok: true as const, value: call_count !== 2}; // Second repo fails
 				},
-				get_changed_files: async () => ['src/main.ts'], // Simulate changed files
+				get_changed_files: async () => ({ok: true as const, value: ['src/main.ts']}), // Simulate changed files
 			});
 			const npm_ops = create_mock_npm_ops();
 
@@ -66,8 +66,8 @@ describe('pre_flight_checks', () => {
 			];
 
 			const git_ops = create_mock_git_ops({
-				check_clean_workspace: async () => false, // All dirty
-				get_changed_files: async () => ['src/file.ts'], // Simulate changed files
+				check_clean_workspace: async () => ({ok: true as const, value: false}), // All dirty
+				get_changed_files: async () => ({ok: true as const, value: ['src/file.ts']}), // Simulate changed files
 			});
 			const npm_ops = create_mock_npm_ops();
 
@@ -86,8 +86,8 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'})];
 
 			const git_ops = create_mock_git_ops({
-				check_clean_workspace: async () => false,
-				get_changed_files: async () => ['.changeset/my-change.md'],
+				check_clean_workspace: async () => ({ok: true as const, value: false}),
+				get_changed_files: async () => ({ok: true as const, value: ['.changeset/my-change.md']}),
 			});
 			const npm_ops = create_mock_npm_ops();
 
@@ -108,8 +108,8 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'})];
 
 			const git_ops = create_mock_git_ops({
-				check_clean_workspace: async () => false,
-				get_changed_files: async () => ['package.json'],
+				check_clean_workspace: async () => ({ok: true as const, value: false}),
+				get_changed_files: async () => ({ok: true as const, value: ['package.json']}),
 			});
 			const npm_ops = create_mock_npm_ops();
 
@@ -130,8 +130,8 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'})];
 
 			const git_ops = create_mock_git_ops({
-				check_clean_workspace: async () => false,
-				get_changed_files: async () => ['package-lock.json'],
+				check_clean_workspace: async () => ({ok: true as const, value: false}),
+				get_changed_files: async () => ({ok: true as const, value: ['package-lock.json']}),
 			});
 			const npm_ops = create_mock_npm_ops();
 
@@ -154,7 +154,7 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'}), create_mock_repo({name: 'package-b'})];
 
 			const git_ops = create_mock_git_ops({
-				current_branch_name: async () => 'main',
+				current_branch_name: async () => ({ok: true as const, value: 'main'}),
 			});
 			const npm_ops = create_mock_npm_ops();
 
@@ -176,7 +176,7 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops({
 				current_branch_name: async () => {
 					call_count++;
-					return call_count === 1 ? 'main' : 'develop';
+					return {ok: true as const, value: call_count === 1 ? 'main' : 'develop'};
 				},
 			});
 			const npm_ops = create_mock_npm_ops();
@@ -199,7 +199,7 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'})];
 
 			const git_ops = create_mock_git_ops({
-				current_branch_name: async () => 'release',
+				current_branch_name: async () => ({ok: true as const, value: 'release'}),
 			});
 			const npm_ops = create_mock_npm_ops();
 
@@ -217,7 +217,7 @@ describe('pre_flight_checks', () => {
 			const repos = [create_mock_repo({name: 'package-a'})];
 
 			const git_ops = create_mock_git_ops({
-				current_branch_name: async () => 'develop',
+				current_branch_name: async () => ({ok: true as const, value: 'develop'}),
 			});
 
 			const npm_ops = create_mock_npm_ops();
@@ -320,12 +320,12 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops({
 				check_clean_workspace: async () => {
 					clean_call++;
-					return clean_call !== 1; // First repo is dirty
+					return {ok: true as const, value: clean_call !== 1}; // First repo is dirty
 				},
-				get_changed_files: async () => ['src/main.ts'], // Simulate changed files
+				get_changed_files: async () => ({ok: true as const, value: ['src/main.ts']}), // Simulate changed files
 				current_branch_name: async () => {
 					branch_call++;
-					return 'develop'; // Both on wrong branch
+					return {ok: true as const, value: 'develop'}; // Both on wrong branch
 				},
 			});
 			const npm_ops = create_mock_npm_ops();
@@ -424,10 +424,10 @@ describe('pre_flight_checks', () => {
 			let build_count = 0;
 			const built_packages: Array<string> = [];
 			const build_ops = create_mock_build_ops({
-				build_package: async (repo) => {
+				build_package: async (options) => {
 					build_count++;
-					built_packages.push(repo.pkg.name);
-					return {ok: true};
+					built_packages.push(options.repo.pkg.name);
+					return {ok: true as const};
 				},
 			});
 
@@ -455,12 +455,12 @@ describe('pre_flight_checks', () => {
 
 			let call_count = 0;
 			const build_ops = create_mock_build_ops({
-				build_package: async (repo) => {
+				build_package: async (options) => {
 					call_count++;
-					if (repo.pkg.name === 'package-b') {
-						return {ok: false, error: 'TypeScript compilation error'};
+					if (options.repo.pkg.name === 'package-b') {
+						return {ok: false as const, message: 'TypeScript compilation error'};
 					}
-					return {ok: true};
+					return {ok: true as const};
 				},
 			});
 
@@ -485,19 +485,21 @@ describe('pre_flight_checks', () => {
 
 			// Mock build ops where package-b fails
 			const build_ops = create_mock_build_ops({
-				build_package: async (repo) => {
-					if (repo.pkg.name === 'package-b') {
-						return {ok: false, error: 'Build failed: syntax error'};
+				build_package: async (options) => {
+					if (options.repo.pkg.name === 'package-b') {
+						return {ok: false as const, message: 'Build failed: syntax error'};
 					}
-					return {ok: true};
+					return {ok: true as const};
 				},
 			});
 
 			// Mock changeset ops where only package-a and package-b have changesets
 			const changeset_ops = {
-				has_changesets: async (repo: Local_Repo) =>
-					repo.pkg.name === 'package-a' || repo.pkg.name === 'package-b',
-				read_changesets: async () => [],
+				has_changesets: async (options: {repo: Local_Repo}) => ({
+					ok: true as const,
+					value: options.repo.pkg.name === 'package-a' || options.repo.pkg.name === 'package-b',
+				}),
+				read_changesets: async () => ({ok: true as const, value: []}),
 				predict_next_version: async () => null,
 			};
 
@@ -523,15 +525,18 @@ describe('pre_flight_checks', () => {
 			const npm_ops = create_mock_npm_ops();
 			const build_ops = create_mock_build_ops({
 				build_package: async () => ({
-					ok: false,
-					error: 'Syntax error in src/main.ts:42',
+					ok: false as const,
+					message: 'Syntax error in src/main.ts:42',
 				}),
 			});
 
 			// Mock changeset ops where failing-package has changesets
 			const changeset_ops = {
-				has_changesets: async (repo: Local_Repo) => repo.pkg.name === 'failing-package',
-				read_changesets: async () => [],
+				has_changesets: async (options: {repo: Local_Repo}) => ({
+					ok: true as const,
+					value: options.repo.pkg.name === 'failing-package',
+				}),
+				read_changesets: async () => ({ok: true as const, value: []}),
 				predict_next_version: async () => null,
 			};
 
@@ -563,9 +568,9 @@ describe('pre_flight_checks', () => {
 
 			const built_packages: Array<string> = [];
 			const build_ops = create_mock_build_ops({
-				build_package: async (repo) => {
-					built_packages.push(repo.pkg.name);
-					return {ok: true};
+				build_package: async (options) => {
+					built_packages.push(options.repo.pkg.name);
+					return {ok: true as const};
 				},
 			});
 
@@ -593,20 +598,20 @@ describe('pre_flight_checks', () => {
 
 			const built_packages: Array<string> = [];
 			const build_ops = create_mock_build_ops({
-				build_package: async (repo) => {
-					built_packages.push(repo.pkg.name);
+				build_package: async (options) => {
+					built_packages.push(options.repo.pkg.name);
 					// Fail on package-a and package-c
-					if (repo.pkg.name === 'package-a' || repo.pkg.name === 'package-c') {
-						return {ok: false, error: 'Build error'};
+					if (options.repo.pkg.name === 'package-a' || options.repo.pkg.name === 'package-c') {
+						return {ok: false as const, message: 'Build error'};
 					}
-					return {ok: true};
+					return {ok: true as const};
 				},
 			});
 
 			// Mock changeset ops where all packages have changesets
 			const changeset_ops = {
-				has_changesets: async () => true,
-				read_changesets: async () => [],
+				has_changesets: async () => ({ok: true as const, value: true}),
+				read_changesets: async () => ({ok: true as const, value: []}),
 				predict_next_version: async () => null,
 			};
 

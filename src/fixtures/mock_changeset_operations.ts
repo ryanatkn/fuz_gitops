@@ -16,15 +16,18 @@ export const create_mock_changeset_ops = (fixture: Repo_Fixture_Set): Changeset_
 	const repos_by_name = new Map(fixture.repos.map((repo) => [repo.package_json.name, repo]));
 
 	return {
-		has_changesets: async (repo: Local_Repo): Promise<boolean> => {
+		has_changesets: async (options: {repo: Local_Repo}) => {
+			const {repo} = options;
 			const fixture_repo = repos_by_name.get(repo.pkg.name);
-			return !!(fixture_repo?.changesets && fixture_repo.changesets.length > 0);
+			const value = !!(fixture_repo?.changesets && fixture_repo.changesets.length > 0);
+			return {ok: true as const, value};
 		},
 
-		read_changesets: async (repo: Local_Repo, _log?: Logger): Promise<Array<Changeset_Info>> => {
+		read_changesets: async (options: {repo: Local_Repo; log?: Logger}) => {
+			const {repo} = options;
 			const fixture_repo = repos_by_name.get(repo.pkg.name);
 			if (!fixture_repo?.changesets) {
-				return [];
+				return {ok: true as const, value: []};
 			}
 
 			const changesets: Array<Changeset_Info> = [];
@@ -35,13 +38,11 @@ export const create_mock_changeset_ops = (fixture: Repo_Fixture_Set): Changeset_
 				}
 			}
 
-			return changesets;
+			return {ok: true as const, value: changesets};
 		},
 
-		predict_next_version: async (
-			repo: Local_Repo,
-			log?: Logger,
-		): Promise<{version: string; bump_type: Bump_Type} | null> => {
+		predict_next_version: async (options: {repo: Local_Repo; log?: Logger}) => {
+			const {repo} = options;
 			const fixture_repo = repos_by_name.get(repo.pkg.name);
 			if (!fixture_repo?.changesets || fixture_repo.changesets.length === 0) {
 				return null;
@@ -68,15 +69,10 @@ export const create_mock_changeset_ops = (fixture: Repo_Fixture_Set): Changeset_
 				return null;
 			}
 
-			const current_version = repo.pkg.package_json.version || '0.0.0';
-			const next_version = calculate_next_version(current_version, highest_bump);
+			const current_version = fixture_repo.package_json.version;
+			const new_version = calculate_next_version(current_version, highest_bump);
 
-			log?.info(`  Predicted version for ${repo.pkg.name}: ${current_version} → ${next_version}`);
-
-			return {
-				version: next_version,
-				bump_type: highest_bump,
-			};
+			return {ok: true as const, version: new_version, bump_type: highest_bump};
 		},
 	};
 };

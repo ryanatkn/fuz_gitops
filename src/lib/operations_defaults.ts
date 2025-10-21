@@ -4,7 +4,7 @@
 
 import {spawn, spawn_out} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
-import {git_checkout, git_pull, type Git_Branch, type Git_Origin} from '@ryanatkn/belt/git.js';
+import {git_checkout, type Git_Branch, type Git_Origin} from '@ryanatkn/belt/git.js';
 
 import {has_changesets, read_changesets, predict_next_version} from '$lib/changeset_reader.js';
 import {wait_for_package, check_package_available} from '$lib/npm_registry.js';
@@ -41,9 +41,39 @@ import type {
  * Default changeset operations using actual file system
  */
 export const default_changeset_operations: Changeset_Operations = {
-	has_changesets,
-	read_changesets,
-	predict_next_version,
+	has_changesets: async (options) => {
+		const {repo} = options;
+		try {
+			const value = await has_changesets(repo);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	read_changesets: async (options) => {
+		const {repo, log} = options;
+		try {
+			const value = await read_changesets(repo, log);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	predict_next_version: async (options) => {
+		const {repo, log} = options;
+		try {
+			const result = await predict_next_version(repo, log);
+			if (result === null) {
+				return null;
+			}
+			// predict_next_version returns {version, bump_type}, we need to wrap it in OK
+			return {ok: true as const, ...result};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 };
 
 /**
@@ -51,100 +81,276 @@ export const default_changeset_operations: Changeset_Operations = {
  */
 export const default_git_operations: Git_Operations = {
 	// Core git info
-	current_branch_name: async (cwd?: string) =>
-		git_current_branch_name_required(cwd ? {cwd} : undefined),
-	current_commit_hash: async (branch?: string, cwd?: string) =>
-		git_current_commit_hash_required(branch, cwd ? {cwd} : undefined),
-	check_clean_workspace: async (cwd?: string) =>
-		git_check_clean_workspace_as_boolean(cwd ? {cwd} : undefined),
+	current_branch_name: async (options) => {
+		const {cwd} = options ?? {};
+		try {
+			const value = await git_current_branch_name_required(cwd ? {cwd} : undefined);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	current_commit_hash: async (options) => {
+		const {branch, cwd} = options ?? {};
+		try {
+			const value = await git_current_commit_hash_required(branch, cwd ? {cwd} : undefined);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	check_clean_workspace: async (options) => {
+		const {cwd} = options ?? {};
+		try {
+			const value = await git_check_clean_workspace_as_boolean(cwd ? {cwd} : undefined);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 
 	// Branch operations
-	checkout: async (branch: string, cwd?: string) => {
-		await git_checkout(branch, cwd ? {cwd} : undefined); // TODO probably change the upstream type
+	checkout: async (options) => {
+		const {branch, cwd} = options;
+		try {
+			await git_checkout(branch, cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
 	},
-	pull: async (origin?: string, branch?: string, cwd?: string) =>
-		git_pull(origin, branch, cwd ? {cwd} : undefined),
-	switch_branch: async (branch: string, pull?: boolean, cwd?: string) =>
-		git_switch_branch(branch as Git_Branch, pull, cwd ? {cwd} : undefined),
-	has_remote: async (remote?: string, cwd?: string) =>
-		git_has_remote(remote, cwd ? {cwd} : undefined),
+
+	pull: async (options) => {
+		const {origin, branch, cwd} = options ?? {};
+		try {
+			await spawn('git', ['pull', origin || 'origin', branch || ''], cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	switch_branch: async (options) => {
+		const {branch, pull, cwd} = options;
+		try {
+			await git_switch_branch(branch as Git_Branch, pull, cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	has_remote: async (options) => {
+		const {remote, cwd} = options ?? {};
+		try {
+			const value = await git_has_remote(remote, cwd ? {cwd} : undefined);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 
 	// Staging and committing
-	add: async (files: string | Array<string>, cwd?: string) =>
-		git_add(files, cwd ? {cwd} : undefined),
-	commit: async (message: string, cwd?: string) => git_commit(message, cwd ? {cwd} : undefined),
-	add_and_commit: async (files: string | Array<string>, message: string, cwd?: string) =>
-		git_add_and_commit(files, message, cwd ? {cwd} : undefined),
-	has_changes: async (cwd?: string) => git_has_changes(cwd ? {cwd} : undefined),
-	get_changed_files: async (cwd?: string) => git_get_changed_files(cwd ? {cwd} : undefined),
+	add: async (options) => {
+		const {files, cwd} = options;
+		try {
+			await git_add(files, cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	commit: async (options) => {
+		const {message, cwd} = options;
+		try {
+			await git_commit(message, cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	add_and_commit: async (options) => {
+		const {files, message, cwd} = options;
+		try {
+			await git_add_and_commit(files, message, cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	has_changes: async (options) => {
+		const {cwd} = options ?? {};
+		try {
+			const value = await git_has_changes(cwd ? {cwd} : undefined);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	get_changed_files: async (options) => {
+		const {cwd} = options ?? {};
+		try {
+			const value = await git_get_changed_files(cwd ? {cwd} : undefined);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 
 	// Tagging
-	tag: async (tag_name: string, message?: string, cwd?: string) =>
-		git_tag(tag_name, message, cwd ? {cwd} : undefined),
-	push_tag: async (tag_name: string, origin?: string, cwd?: string) =>
-		git_push_tag(tag_name, origin as Git_Origin, cwd ? {cwd} : undefined),
+	tag: async (options) => {
+		const {tag_name, message, cwd} = options;
+		try {
+			await git_tag(tag_name, message, cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	push_tag: async (options) => {
+		const {tag_name, origin, cwd} = options;
+		try {
+			await git_push_tag(tag_name, origin as Git_Origin, cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 
 	// Stashing
-	stash: async (message?: string, cwd?: string) => git_stash(message, cwd ? {cwd} : undefined),
-	stash_pop: async (cwd?: string) => git_stash_pop(cwd ? {cwd} : undefined),
+	stash: async (options) => {
+		const {message, cwd} = options ?? {};
+		try {
+			await git_stash(message, cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	stash_pop: async (options) => {
+		const {cwd} = options ?? {};
+		try {
+			await git_stash_pop(cwd ? {cwd} : undefined);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 
 	// File change detection
-	has_file_changed: async (
-		from_commit: string,
-		to_commit: string,
-		file_path: string,
-		cwd?: string,
-	) => git_has_file_changed(from_commit, to_commit, file_path, cwd ? {cwd} : undefined),
+	has_file_changed: async (options) => {
+		const {from_commit, to_commit, file_path, cwd} = options;
+		try {
+			const value = await git_has_file_changed(
+				from_commit,
+				to_commit,
+				file_path,
+				cwd ? {cwd} : undefined,
+			);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 };
 
 /**
  * Default process operations using actual spawn
  */
 export const default_process_operations: Process_Operations = {
-	spawn,
+	spawn: async (options) => {
+		const {cmd, args, spawn_options} = options;
+		try {
+			const spawned = await spawn_out(cmd, args, spawn_options);
+			if (spawned.result.ok) {
+				return {
+					ok: true,
+					stdout: spawned.stdout || undefined,
+					stderr: spawned.stderr || undefined,
+				};
+			} else {
+				return {
+					ok: false,
+					message: 'Command failed',
+					stderr: spawned.stderr || undefined,
+				};
+			}
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 };
 
 /**
  * Default NPM operations using actual registry
  */
 export const default_npm_operations: Npm_Operations = {
-	wait_for_package,
-	check_package_available,
+	wait_for_package: async (options) => {
+		const {pkg, version, wait_options, log} = options;
+		try {
+			await wait_for_package(pkg, version, wait_options, log);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error), timeout: true};
+		}
+	},
+
+	check_package_available: async (options) => {
+		const {pkg, version, log} = options;
+		try {
+			const value = await check_package_available(pkg, version, log);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
 	check_auth: async () => {
 		try {
 			const result = await spawn_out('npm', ['whoami']);
 			if (result.stdout) {
 				const username = result.stdout.trim();
 				if (username) {
-					return {ok: true, username};
+					return {ok: true as const, username};
 				}
 			}
-			return {ok: false, error: 'Not logged in to npm'};
+			return {ok: false as const, message: 'Not logged in to npm'};
 		} catch (error) {
-			return {ok: false, error: String(error)};
+			return {ok: false as const, message: String(error)};
 		}
 	},
+
 	check_registry: async () => {
 		try {
 			const result = await spawn_out('npm', ['ping']);
 			if (result.stdout) {
-				return {ok: true};
+				return {ok: true as const};
 			}
-			return {ok: false, error: 'Failed to ping npm registry'};
+			return {ok: false as const, message: 'Failed to ping npm registry'};
 		} catch (error) {
-			return {ok: false, error: String(error)};
+			return {ok: false as const, message: String(error)};
 		}
 	},
-	install: async (cwd?: string) => {
+
+	install: async (options) => {
+		const {cwd} = options ?? {};
 		try {
-			const result = await spawn('npm', ['install'], cwd ? {cwd} : undefined);
-			if (result.ok) {
-				return {ok: true};
+			const spawned = await spawn_out('npm', ['install'], cwd ? {cwd} : undefined);
+			if (spawned.result.ok) {
+				return {ok: true as const};
 			} else {
-				return {ok: false, error: 'Install failed'};
+				return {ok: false as const, message: 'Install failed', stderr: spawned.stderr || undefined};
 			}
 		} catch (error) {
-			return {ok: false, error: String(error)};
+			return {ok: false as const, message: String(error)};
 		}
 	},
 };
@@ -153,40 +359,64 @@ export const default_npm_operations: Npm_Operations = {
  * Default pre-flight operations
  */
 export const default_preflight_operations: Preflight_Operations = {
-	run_pre_flight_checks: async (repos, options, git_ops, npm_ops, build_ops, changeset_ops) =>
-		run_pre_flight_checks(
+	run_pre_flight_checks: async (options) => {
+		const {repos, pre_flight_options, git_ops, npm_ops, build_ops, changeset_ops} = options;
+		return run_pre_flight_checks(
 			repos,
-			options,
+			pre_flight_options,
 			git_ops || default_git_operations,
 			npm_ops || default_npm_operations,
 			build_ops || default_build_operations,
 			changeset_ops || default_changeset_operations,
-		),
+		);
+	},
 };
 
 /**
  * Default file system operations using Node's fs
  */
 export const default_fs_operations: Fs_Operations = {
-	readFile,
-	writeFile,
+	readFile: async (options) => {
+		const {path, encoding} = options;
+		try {
+			const value = await readFile(path, encoding);
+			return {ok: true as const, value};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
+
+	writeFile: async (options) => {
+		const {path, content} = options;
+		try {
+			await writeFile(path, content);
+			return {ok: true as const};
+		} catch (error) {
+			return {ok: false as const, message: String(error)};
+		}
+	},
 };
 
 /**
  * Default build operations using gro build
  */
 export const default_build_operations: Build_Operations = {
-	build_package: async (repo, log) => {
+	build_package: async (options) => {
+		const {repo, log} = options;
 		try {
 			log?.info(`  Building ${repo.pkg.name}...`);
 			const spawned = await spawn_out('gro', ['build'], {cwd: repo.repo_dir});
 			if (spawned.result.ok) {
-				return {ok: true};
+				return {ok: true as const};
 			} else {
-				return {ok: false, error: spawned.stderr || spawned.stdout || 'Build failed'};
+				return {
+					ok: false,
+					message: 'Build failed',
+					output: spawned.stderr || spawned.stdout || 'Build failed',
+				};
 			}
 		} catch (error) {
-			return {ok: false, error: String(error)};
+			return {ok: false as const, message: String(error)};
 		}
 	},
 };
