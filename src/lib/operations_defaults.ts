@@ -153,13 +153,14 @@ export const default_npm_operations: Npm_Operations = {
  * Default pre-flight operations
  */
 export const default_preflight_operations: Preflight_Operations = {
-	run_pre_flight_checks: async (repos, options, git_ops, npm_ops, build_ops) =>
+	run_pre_flight_checks: async (repos, options, git_ops, npm_ops, build_ops, changeset_ops) =>
 		run_pre_flight_checks(
 			repos,
 			options,
 			git_ops || default_git_operations,
 			npm_ops || default_npm_operations,
 			build_ops || default_build_operations,
+			changeset_ops || default_changeset_operations,
 		),
 };
 

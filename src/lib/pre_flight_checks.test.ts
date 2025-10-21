@@ -475,8 +475,48 @@ describe('pre_flight_checks', () => {
 			// Since mock repos don't have changesets, no builds run
 			expect(result.ok).toBe(true);
 			expect(call_count).toBe(0);
+		});
 
-			// TODO: Add proper test with mocked has_changesets to test actual build failure path
+		it('fails pre-flight when build fails for package with changesets', async () => {
+			const repos = [
+				create_mock_repo({name: 'package-a'}),
+				create_mock_repo({name: 'package-b'}),
+			];
+
+			const git_ops = create_mock_git_ops();
+			const npm_ops = create_mock_npm_ops();
+
+			// Mock build ops where package-b fails
+			const build_ops = create_mock_build_ops({
+				build_package: async (repo) => {
+					if (repo.pkg.name === 'package-b') {
+						return {ok: false, error: 'Build failed: syntax error'};
+					}
+					return {ok: true};
+				},
+			});
+
+			// Mock changeset ops where only package-a and package-b have changesets
+			const changeset_ops = {
+				has_changesets: async (repo: Local_Repo) =>
+					repo.pkg.name === 'package-a' || repo.pkg.name === 'package-b',
+				read_changesets: async () => [],
+				predict_next_version: async () => null,
+			};
+
+			const result = await run_pre_flight_checks(
+				repos,
+				{check_remote: false, skip_changesets: false},
+				git_ops,
+				npm_ops,
+				build_ops,
+				changeset_ops,
+			);
+
+			// Should fail due to build error
+			expect(result.ok).toBe(false);
+			expect(result.errors.some((e) => e.includes('package-b failed to build'))).toBe(true);
+			expect(result.errors.some((e) => e.includes('syntax error'))).toBe(true);
 		});
 
 		it('reports build failures with error details', async () => {
@@ -491,18 +531,26 @@ describe('pre_flight_checks', () => {
 				}),
 			});
 
+			// Mock changeset ops where failing-package has changesets
+			const changeset_ops = {
+				has_changesets: async (repo: Local_Repo) => repo.pkg.name === 'failing-package',
+				read_changesets: async () => [],
+				predict_next_version: async () => null,
+			};
+
 			const result = await run_pre_flight_checks(
 				repos,
 				{check_remote: false, skip_changesets: false},
 				git_ops,
 				npm_ops,
 				build_ops,
+				changeset_ops,
 			);
 
-			// Since mock repo has no changesets, build validation won't run
-			expect(result.ok).toBe(true);
-
-			// TODO: Add proper test with mocked has_changesets to test error reporting
+			// Should fail with detailed error message
+			expect(result.ok).toBe(false);
+			expect(result.errors.length).toBe(1);
+			expect(result.errors[0]).toBe('failing-package failed to build: Syntax error in src/main.ts:42');
 		});
 
 		it('validates builds only for packages with changesets', async () => {
@@ -556,19 +604,33 @@ describe('pre_flight_checks', () => {
 				},
 			});
 
+			// Mock changeset ops where all packages have changesets
+			const changeset_ops = {
+				has_changesets: async () => true,
+				read_changesets: async () => [],
+				predict_next_version: async () => null,
+			};
+
 			const result = await run_pre_flight_checks(
 				repos,
 				{check_remote: false, skip_changesets: false},
 				git_ops,
 				npm_ops,
 				build_ops,
+				changeset_ops,
 			);
 
-			// No changesets in mock repos means no builds
-			expect(result.ok).toBe(true);
-			expect(built_packages).toHaveLength(0);
+			// Should fail but continue to build all packages
+			expect(result.ok).toBe(false);
+			expect(built_packages).toHaveLength(3); // All 3 packages were attempted
+			expect(built_packages).toContain('package-a');
+			expect(built_packages).toContain('package-b');
+			expect(built_packages).toContain('package-c');
 
-			// TODO: Add proper test with mocked has_changesets to test multiple build failures
+			// Should report both failures
+			expect(result.errors.length).toBe(2);
+			expect(result.errors.some((e) => e.includes('package-a failed to build'))).toBe(true);
+			expect(result.errors.some((e) => e.includes('package-c failed to build'))).toBe(true);
 		});
 	});
 });

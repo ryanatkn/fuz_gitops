@@ -35,6 +35,7 @@ Publishing uses fixed-point iteration to handle transitive dependency updates:
 - Each pass publishes packages with changesets and creates auto-changesets for dependents
 - Stops when no new changesets are created (converged state)
 - Single `gro gitops_publish` command handles full dependency cascades
+- If MAX_ITERATIONS reached without convergence, warns with pending package count and estimated iterations needed
 
 ### Dirty State on Failure (By Design)
 
@@ -186,6 +187,8 @@ When a dependency is updated:
 - **Production/peer deps**: Package must republish (triggers auto-changeset if needed)
 - **Dev deps**: Package.json updated, NO republish (dev-only changes)
 
+When a package appears in both production/peer and dev dependencies, production/peer takes priority for dependency graph calculations.
+
 #### Key Publishing Modules
 
 - `multi_repo_publisher.ts` - Main publishing orchestration
@@ -231,7 +234,9 @@ The system uses topological sort with dev dependency exclusion:
   - Topological sort excludes dev deps (`exclude_dev=true`) to break these cycles
 - **Publishing order**: Computed via topological sort on prod/peer deps only
   - Ensures dependencies publish before dependents
+  - Deterministic and reproducible (alphabetically sorted within dependency tiers)
   - Dev dependencies updated in separate phase after all publishing completes
+- **Dependency priority**: When a package appears in multiple dependency types, production/peer takes priority over dev
 
 This strategy enables practical multi-repo patterns (e.g., shared test utilities) while preventing runtime dependency issues.
 
@@ -322,7 +327,7 @@ Commands are categorized by their side effects:
 
 - Uses Gro's well-known package.json patterns for metadata
 - Generates static JSON for fast client-side rendering
-- Caches API responses with 15-minute TTL
+- Caches API responses to minimize API calls
 - Atomic file updates with format checking
 - Supports both relative and absolute repo paths
 - Functional programming patterns (arrow functions, pure functions)

@@ -3,12 +3,17 @@ import {spawn_out} from '@ryanatkn/belt/process.js';
 import {styleText as st} from 'node:util';
 
 import type {Local_Repo} from '$lib/local_repo.js';
-import {has_changesets} from '$lib/changeset_reader.js';
-import type {Git_Operations, Npm_Operations, Build_Operations} from '$lib/operations.js';
+import type {
+	Git_Operations,
+	Npm_Operations,
+	Build_Operations,
+	Changeset_Operations,
+} from '$lib/operations.js';
 import {
 	default_git_operations,
 	default_npm_operations,
 	default_build_operations,
+	default_changeset_operations,
 } from '$lib/operations_defaults.js';
 
 export interface Pre_Flight_Options {
@@ -40,6 +45,7 @@ export const run_pre_flight_checks = async (
 	git_ops: Git_Operations = default_git_operations,
 	npm_ops: Npm_Operations = default_npm_operations,
 	build_ops: Build_Operations = default_build_operations,
+	changeset_ops: Changeset_Operations = default_changeset_operations,
 ): Promise<Pre_Flight_Result> => {
 	const {
 		skip_changesets = false,
@@ -94,7 +100,7 @@ export const run_pre_flight_checks = async (
 	if (!skip_changesets) {
 		log?.info('  Checking for changesets...');
 		for (const repo of repos) {
-			const has = await has_changesets(repo); // eslint-disable-line no-await-in-loop
+			const has = await changeset_ops.has_changesets(repo); // eslint-disable-line no-await-in-loop
 			if (has) {
 				repos_with_changesets.add(repo.pkg.name);
 			} else {

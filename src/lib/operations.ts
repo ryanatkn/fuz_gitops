@@ -141,6 +141,7 @@ export interface Preflight_Operations {
 		git_ops?: Git_Operations,
 		npm_ops?: Npm_Operations,
 		build_ops?: Build_Operations,
+		changeset_ops?: Changeset_Operations,
 	) => Promise<Pre_Flight_Result>;
 }
 

@@ -45,14 +45,19 @@ export class Dependency_Graph {
 			const devDeps = pkg.package_json.devDependencies || {};
 			const peerDeps = pkg.package_json.peerDependencies || {};
 
+			// Add dependencies, prioritizing prod/peer over dev
+			// (if a package appears in multiple dep types, use the stronger constraint)
 			for (const [name, version] of Object.entries(deps)) {
 				node.dependencies.set(name, {type: DEPENDENCY_TYPE.PROD, version});
 			}
-			for (const [name, version] of Object.entries(devDeps)) {
-				node.dependencies.set(name, {type: DEPENDENCY_TYPE.DEV, version});
-			}
 			for (const [name, version] of Object.entries(peerDeps)) {
 				node.dependencies.set(name, {type: DEPENDENCY_TYPE.PEER, version});
+			}
+			for (const [name, version] of Object.entries(devDeps)) {
+				// Only add dev deps if not already present as prod/peer
+				if (!node.dependencies.has(name)) {
+					node.dependencies.set(name, {type: DEPENDENCY_TYPE.DEV, version});
+				}
 			}
 
 			this.nodes.set(pkg.name, node);
@@ -118,6 +123,9 @@ export class Dependency_Graph {
 			}
 		}
 
+		// Sort initial queue alphabetically for deterministic ordering within tier
+		queue.sort();
+
 		// Process nodes
 		while (queue.length > 0) {
 			const name = queue.shift()!;
@@ -128,7 +136,11 @@ export class Dependency_Graph {
 			const node = this.nodes.get(name);
 			if (node) {
 				// Find packages that depend on this one
-				for (const other_node of this.nodes.values()) {
+				// Sort nodes to ensure deterministic iteration order
+				const sorted_nodes = Array.from(this.nodes.values()).sort((a, b) =>
+					a.name.localeCompare(b.name),
+				);
+				for (const other_node of sorted_nodes) {
 					for (const [dep_name, spec] of other_node.dependencies) {
 						// Skip dev dependencies if requested
 						if (exclude_dev && spec.type === DEPENDENCY_TYPE.DEV) continue;

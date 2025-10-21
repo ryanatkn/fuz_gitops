@@ -10,6 +10,7 @@ import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
 import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
 import type {Gitops_Operations} from '$lib/operations.js';
 import {default_gitops_operations} from '$lib/operations_defaults.js';
+import {MAX_ITERATIONS} from '$lib/constants.js';
 
 /* eslint-disable no-await-in-loop */
 
@@ -84,7 +85,6 @@ export const publish_repos = async (
 
 	// Fixed-point iteration: keep publishing until no new changesets are created
 	// This handles transitive dependency updates (auto-generated changesets)
-	const MAX_ITERATIONS = 10;
 	let iteration = 0;
 	let converged = false;
 
@@ -192,10 +192,16 @@ export const publish_repos = async (
 			converged = true;
 			log?.info(st('green', `\n✓ Converged after ${iteration} iteration(s) - no new changesets\n`));
 		} else if (iteration === MAX_ITERATIONS) {
+			// Count packages that still have changesets (not yet published)
+			const pending_count = order.length - published.size;
+			const estimated_iterations = Math.ceil(pending_count / 2); // Rough estimate
+
 			log?.warn(
 				st(
 					'yellow',
-					`\n⚠️  Reached maximum iterations (${MAX_ITERATIONS}) - you may need to run again\n`,
+					`\n⚠️  Reached maximum iterations (${MAX_ITERATIONS}) without full convergence\n` +
+					`    ${pending_count} package(s) may still have changesets to process\n` +
+					`    Estimated ${estimated_iterations} more iteration(s) needed - run 'gro gitops_publish' again\n`,
 				),
 			);
 		}

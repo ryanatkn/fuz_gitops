@@ -106,11 +106,12 @@ Small fix (will escalate to major due to dependencies)`,
 	],
 
 	expected_outcomes: {
+		// Alphabetical order within dependency tiers
 		publishing_order: [
-			'@test/unstable',
 			'@test/stable',
-			'@test/app_using_unstable',
+			'@test/unstable',
 			'@test/app_using_stable',
+			'@test/app_using_unstable',
 			'@test/complex_app',
 		],
 

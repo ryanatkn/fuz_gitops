@@ -586,3 +586,7 @@ test('converges early when no new packages publish', async () => {
 	);
 	expect(max_iteration_warning).toBeUndefined();
 });
+
+// NOTE: MAX_ITERATIONS warning test for multi_repo_publisher is complex to simulate
+// because it requires stateful mocking across iterations. The core warning logic is
+// already tested in publishing_plan.test.ts. See TODO.md for details.

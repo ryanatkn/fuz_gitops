@@ -143,3 +143,52 @@ test('detects production circular dependencies', async () => {
 	// Should not compute publishing order
 	expect(plan.publishing_order.length).toBe(0);
 });
+
+test('warns when MAX_ITERATIONS reached without convergence', async () => {
+	// Create a very deep dependency chain (12 levels) with breaking changes
+	// This will require more than 10 iterations to fully propagate
+	const repos: Array<Local_Repo> = [
+		create_mock_repo({name: 'level-1', version: '0.1.0'}),
+		create_mock_repo({name: 'level-2', version: '0.1.0', deps: {'level-1': '^0.1.0'}}),
+		create_mock_repo({name: 'level-3', version: '0.1.0', deps: {'level-2': '^0.1.0'}}),
+		create_mock_repo({name: 'level-4', version: '0.1.0', deps: {'level-3': '^0.1.0'}}),
+		create_mock_repo({name: 'level-5', version: '0.1.0', deps: {'level-4': '^0.1.0'}}),
+		create_mock_repo({name: 'level-6', version: '0.1.0', deps: {'level-5': '^0.1.0'}}),
+		create_mock_repo({name: 'level-7', version: '0.1.0', deps: {'level-6': '^0.1.0'}}),
+		create_mock_repo({name: 'level-8', version: '0.1.0', deps: {'level-7': '^0.1.0'}}),
+		create_mock_repo({name: 'level-9', version: '0.1.0', deps: {'level-8': '^0.1.0'}}),
+		create_mock_repo({name: 'level-10', version: '0.1.0', deps: {'level-9': '^0.1.0'}}),
+		create_mock_repo({name: 'level-11', version: '0.1.0', deps: {'level-10': '^0.1.0'}}),
+		create_mock_repo({name: 'level-12', version: '0.1.0', deps: {'level-11': '^0.1.0'}}),
+	];
+
+	// Mock operations: only level-1 has a changeset with breaking change
+	const mock_ops: Changeset_Operations = {
+		has_changesets: async (repo) => repo.pkg.name === 'level-1',
+		read_changesets: async () => [],
+		predict_next_version: async (repo) => {
+			if (repo.pkg.name === 'level-1') {
+				// Breaking change in 0.x (minor bump)
+				return {version: '0.2.0', bump_type: 'minor'};
+			}
+			return null;
+		},
+	};
+
+	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
+
+	// Should have a warning about MAX_ITERATIONS
+	const convergence_warning = plan.warnings.find((w) =>
+		w.includes('Reached maximum iterations'),
+	);
+	expect(convergence_warning).toBeDefined();
+
+	// Warning should include diagnostics
+	expect(convergence_warning).toContain('package(s) may still need processing');
+	expect(convergence_warning).toContain('Estimated');
+	expect(convergence_warning).toContain('iteration(s) needed');
+
+	// Should still have produced some version changes (just not all of them)
+	expect(plan.version_changes.length).toBeGreaterThan(0);
+	expect(plan.version_changes.length).toBeLessThan(repos.length); // Not all processed
+});

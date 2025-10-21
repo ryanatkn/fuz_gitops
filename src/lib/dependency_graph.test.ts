@@ -101,6 +101,58 @@ describe('Dependency_Graph', () => {
 			expect(pkg_node.dependencies.has('internal-dep')).toBe(true);
 			expect(pkg_node.dependencies.has('external-dep')).toBe(true);
 		});
+
+		it('prioritizes prod/peer deps over dev deps for same package', () => {
+			// Test for bug fix: When same package appears in multiple dep types,
+			// prod/peer should take priority (not be overwritten by dev)
+			const repos = [
+				create_mock_repo({name: 'core', version: '1.0.0'}),
+				create_mock_repo({
+					name: 'plugin',
+					version: '1.0.0',
+					deps: {'core': '^1.0.0'}, // Prod dependency
+					devDeps: {'core': '^1.0.0'}, // Dev dependency on SAME package
+				}),
+			];
+
+			const graph = new Dependency_Graph();
+			graph.init_from_repos(repos);
+
+			const plugin_node = graph.get_node('plugin')!;
+
+			// Should use PROD type, not DEV (prod takes priority)
+			expect(plugin_node.dependencies.get('core')).toEqual({
+				type: 'prod',
+				version: '^1.0.0',
+			});
+
+			// Verify topological sort correctly orders core before plugin
+			const order = graph.topological_sort(true); // exclude_dev=true
+			expect(order.indexOf('core')).toBeLessThan(order.indexOf('plugin'));
+		});
+
+		it('prioritizes peer deps over dev deps for same package', () => {
+			const repos = [
+				create_mock_repo({name: 'lib', version: '1.0.0'}),
+				create_mock_repo({
+					name: 'adapter',
+					version: '1.0.0',
+					peerDeps: {'lib': '^1.0.0'}, // Peer dependency
+					devDeps: {'lib': '^1.0.0'}, // Dev dependency on SAME package
+				}),
+			];
+
+			const graph = new Dependency_Graph();
+			graph.init_from_repos(repos);
+
+			const adapter_node = graph.get_node('adapter')!;
+
+			// Should use PEER type, not DEV (peer takes priority)
+			expect(adapter_node.dependencies.get('lib')).toEqual({
+				type: 'peer',
+				version: '^1.0.0',
+			});
+		});
 	});
 
 	describe('topological_sort', () => {
@@ -225,6 +277,33 @@ describe('Dependency_Graph', () => {
 			expect(order).toHaveLength(2);
 			expect(order).toContain('pkg-a');
 			expect(order).toContain('pkg-b');
+		});
+
+		it('produces deterministic ordering across multiple runs', () => {
+			// Test for deterministic sorting: Same input should always produce same output
+			const repos = [
+				create_mock_repo({name: 'zebra', version: '1.0.0'}),
+				create_mock_repo({name: 'alpha', version: '1.0.0'}),
+				create_mock_repo({name: 'beta', version: '1.0.0'}),
+				create_mock_repo({name: 'gamma', version: '1.0.0', deps: {alpha: '^1.0.0'}}),
+			];
+
+			// Run topological sort multiple times
+			const orders = [];
+			for (let i = 0; i < 10; i++) {
+				const graph = new Dependency_Graph();
+				graph.init_from_repos(repos);
+				orders.push(graph.topological_sort(true));
+			}
+
+			// All orders should be identical (deterministic)
+			const first_order = JSON.stringify(orders[0]);
+			for (const order of orders) {
+				expect(JSON.stringify(order)).toBe(first_order);
+			}
+
+			// Verify alpha comes before gamma (dependency constraint)
+			expect(orders[0].indexOf('alpha')).toBeLessThan(orders[0].indexOf('gamma'));
 		});
 	});
 

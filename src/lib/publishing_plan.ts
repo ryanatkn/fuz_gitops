@@ -13,6 +13,7 @@ import {
 import type {Changeset_Operations} from '$lib/operations.js';
 import {default_changeset_operations} from '$lib/operations_defaults.js';
 import {log_list} from '$lib/log_helpers.js';
+import {MAX_ITERATIONS} from '$lib/constants.js';
 
 export interface Version_Change {
 	package_name: string;
@@ -271,7 +272,6 @@ export const generate_publishing_plan = async (
 
 	// Fixed-point iteration to resolve transitive cascades
 	// Loop until no new version changes are discovered
-	const MAX_ITERATIONS = 10;
 	let iteration = 0;
 	let changed = true;
 
@@ -357,6 +357,47 @@ export const generate_publishing_plan = async (
 				}
 			}
 		}
+	}
+
+	// Check if we hit iteration limit without convergence
+	if (iteration === MAX_ITERATIONS && changed) {
+		// Calculate how many packages still need processing
+		const pending_packages: Array<string> = [];
+
+		// Recalculate one more time to see what's pending
+		const {dependency_updates: pending_updates} = calculate_dependency_updates(
+			repos,
+			predicted_versions,
+			breaking_packages,
+		);
+
+		for (const repo of repos) {
+			const pkg_name = repo.pkg.name;
+			const required_bump = get_required_bump_for_dependencies(
+				repo,
+				pending_updates,
+				breaking_packages,
+			);
+
+			// Check if this package would need processing
+			const existing_entry = version_changes.find((vc) => vc.package_name === pkg_name);
+			const needs_escalation = existing_entry && required_bump &&
+				compare_bump_types(required_bump, existing_entry.bump_type) > 0;
+			const needs_auto_changeset = !existing_entry && required_bump;
+
+			if (needs_escalation || needs_auto_changeset) {
+				pending_packages.push(pkg_name);
+			}
+		}
+
+		// Add warning with diagnostics
+		const pending_count = pending_packages.length;
+		const estimated_iterations = Math.ceil(pending_count / 2); // Rough estimate
+		warnings.push(
+			`Reached maximum iterations (${MAX_ITERATIONS}) without full convergence - ` +
+			`${pending_count} package(s) may still need processing: ${pending_packages.join(', ')}. ` +
+			`Estimated ${estimated_iterations} more iteration(s) needed.`,
+		);
 	}
 
 	// Final dependency updates calculation after convergence
