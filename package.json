@@ -23,8 +23,7 @@
     "check": "gro check",
     "test": "gro test",
     "preview": "vite preview",
-    "deploy": "gro deploy",
-    "update-generated-fixtures": "gro src/fixtures/update"
+    "deploy": "gro deploy"
   },
   "type": "module",
   "engines": {

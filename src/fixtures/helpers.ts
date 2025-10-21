@@ -1,42 +1,36 @@
 import {spawn_out} from '@ryanatkn/belt/process.js';
-import {readFileSync, existsSync, unlinkSync, mkdirSync} from 'node:fs';
+import {existsSync, unlinkSync, mkdirSync, readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Logger} from '@ryanatkn/belt/log.js';
+import type {Version_Change} from '$lib/publishing_plan.js';
+import type {Repo_Fixture_Expected_Version_Change} from './repo_fixture_types.js';
 
 const GITOPS_OUTPUT_DIR = join('.gro', 'fuz_gitops');
 
-export interface Command_Output {
-	stdout: string;
-	stderr: string;
-	success: boolean;
-	command: string;
-	args: Array<string>;
-}
-
-export interface Fixture_Comparison {
-	expected: string;
-	actual: string;
-	matches: boolean;
-	differences: Array<string>;
-}
+/**
+ * Get the gitops config path for a specific fixture.
+ */
+export const get_fixture_config_path = (fixture_name: string): string => {
+	return `src/fixtures/configs/${fixture_name}.config.ts`;
+};
 
 /**
- * Execute a gitops command and capture its output.
- * Defaults to using the fixture config for isolated testing.
+ * Execute a gitops command and return parsed JSON result.
+ * Uses --format json for structured output.
  */
-export const run_gitops_command = async (
+export const run_gitops_command_json = async (
 	command: 'gitops_analyze' | 'gitops_plan' | 'gitops_publish_dry',
 	args: Array<string> = [],
 	log?: Logger,
 	config_path: string = 'src/fixtures/gitops.fixtures.config.ts',
-): Promise<Command_Output> => {
+): Promise<any> => {
 	// Create output directory if it doesn't exist
 	if (!existsSync(GITOPS_OUTPUT_DIR)) {
 		mkdirSync(GITOPS_OUTPUT_DIR, {recursive: true});
 	}
 
 	// Use a file in .gro directory for clean output
-	const outfile = join(GITOPS_OUTPUT_DIR, `${command}_output_${Date.now()}.md`);
+	const outfile = join(GITOPS_OUTPUT_DIR, `${command}_output_${Date.now()}.json`);
 
 	// Build command args - handle gitops_publish_dry specially
 	let full_args: Array<string>;
@@ -46,7 +40,7 @@ export const run_gitops_command = async (
 			'--dry',
 			'--no-plan',
 			'--format',
-			'markdown',
+			'json',
 			'--outfile',
 			outfile,
 			'--path',
@@ -57,7 +51,7 @@ export const run_gitops_command = async (
 		full_args = [
 			command,
 			'--format',
-			'markdown',
+			'json',
 			'--outfile',
 			outfile,
 			'--path',
@@ -68,32 +62,24 @@ export const run_gitops_command = async (
 
 	try {
 		log?.info(`Running: gro ${full_args.join(' ')}`);
-		const result = await spawn_out('gro', full_args, {
+		await spawn_out('gro', full_args, {
 			cwd: process.cwd(),
 		});
 
-		// Read the output from the file if it exists
+		// Read the JSON output from the file if it exists
 		if (existsSync(outfile)) {
 			const content = readFileSync(outfile, 'utf-8');
 			// Clean up the temp file
 			unlinkSync(outfile);
 
-			return {
-				stdout: content,
-				stderr: result.stderr || '',
-				success: true,
-				command: 'gro',
-				args: full_args,
-			};
+			try {
+				return JSON.parse(content);
+			} catch (error) {
+				throw new Error(`Failed to parse JSON output: ${error}`);
+			}
 		} else {
 			// If no outfile was created, something went wrong
-			return {
-				stdout: result.stdout || '',
-				stderr: result.stderr || 'Output file not created',
-				success: false,
-				command: 'gro',
-				args: full_args,
-			};
+			throw new Error('Output file not created');
 		}
 	} catch (error) {
 		// Clean up temp file if it exists
@@ -102,92 +88,141 @@ export const run_gitops_command = async (
 		}
 
 		log?.error(`Failed to run command: ${error}`);
-		return {
-			stdout: '',
-			stderr: String(error),
-			success: false,
-			command: 'gro',
-			args: full_args,
-		};
+		throw error;
 	}
 };
 
 /**
- * Normalize command output for comparison by removing dynamic elements
+ * Assert that publishing order matches expected order.
  */
-export const normalize_output = (output: string): string => {
-	return (
-		output
-			// Remove any timestamps or dates
-			.replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/g, 'TIMESTAMP')
-			// Remove any specific file paths that might be dynamic
-			.replace(/\/[^\s]+\/dev\/[^\s]*/g, '/path/to/repo')
-			// Normalize line endings
-			.replace(/\r\n/g, '\n')
-			// Remove trailing whitespace from lines
-			.replace(/[ \t]+$/gm, '')
-			// Normalize multiple consecutive empty lines to single
-			.replace(/\n{3,}/g, '\n\n')
-			// Trim overall content
-			.trim()
-	);
+export const assert_publishing_order = (
+	actual: Array<string>,
+	expected: Array<string>,
+): void => {
+	if (actual.length !== expected.length) {
+		throw new Error(
+			`Publishing order length mismatch: expected ${expected.length} packages, got ${actual.length}.\n` +
+				`Expected: ${expected.join(', ')}\n` +
+				`Actual: ${actual.join(', ')}`,
+		);
+	}
+
+	for (let i = 0; i < expected.length; i++) {
+		if (actual[i] !== expected[i]) {
+			throw new Error(
+				`Publishing order mismatch at position ${i + 1}:\n` +
+					`Expected: ${expected[i]}\n` +
+					`Actual: ${actual[i]}\n` +
+					`Full expected: ${expected.join(', ')}\n` +
+					`Full actual: ${actual.join(', ')}`,
+			);
+		}
+	}
 };
 
 /**
- * Compare predicted vs actual output and generate detailed differences
+ * Assert that version changes match expected changes.
+ * Matches by package name, from/to versions, and scenario.
  */
-export const compare_outputs = (predicted: string, actual: string): Fixture_Comparison => {
-	const normalized_predicted = normalize_output(predicted);
-	const normalized_actual = normalize_output(actual);
+export const assert_version_changes = (
+	actual: Array<Version_Change>,
+	expected: Array<Repo_Fixture_Expected_Version_Change>,
+): void => {
+	// Create maps for easy lookup
+	const actual_by_pkg = new Map(actual.map((vc) => [vc.package_name, vc]));
+	const expected_by_pkg = new Map(expected.map((vc) => [vc.package_name, vc]));
 
-	const matches = normalized_predicted === normalized_actual;
-	const differences: Array<string> = [];
+	// Check that all expected version changes exist
+	for (const [pkg_name, expected_change] of expected_by_pkg) {
+		const actual_change = actual_by_pkg.get(pkg_name);
 
-	if (!matches) {
-		// Split into lines for detailed comparison
-		const predicted_lines = normalized_predicted.split('\n');
-		const actual_lines = normalized_actual.split('\n');
-
-		const max_lines = Math.max(predicted_lines.length, actual_lines.length);
-
-		for (let i = 0; i < max_lines; i++) {
-			const predicted_line = predicted_lines[i] || '';
-			const actual_line = actual_lines[i] || '';
-
-			if (predicted_line !== actual_line) {
-				differences.push(
-					`Line ${i + 1}:\n` +
-						`  Expected: ${JSON.stringify(predicted_line)}\n` +
-						`  Actual:   ${JSON.stringify(actual_line)}`,
-				);
-			}
+		if (!actual_change) {
+			throw new Error(
+				`Expected version change for package '${pkg_name}' not found.\n` +
+					`Expected: ${expected_change.from} → ${expected_change.to} (${expected_change.scenario})`,
+			);
 		}
 
-		// Add summary difference if lines differ significantly
-		if (Math.abs(predicted_lines.length - actual_lines.length) > 0) {
-			differences.push(
-				`Line count differs: expected ${predicted_lines.length}, actual ${actual_lines.length}`,
+		// Verify from/to versions
+		if (actual_change.from !== expected_change.from) {
+			throw new Error(
+				`Version mismatch for package '${pkg_name}':\n` +
+					`Expected from version: ${expected_change.from}\n` +
+					`Actual from version: ${actual_change.from}`,
+			);
+		}
+
+		if (actual_change.to !== expected_change.to) {
+			throw new Error(
+				`Version mismatch for package '${pkg_name}':\n` +
+					`Expected to version: ${expected_change.to}\n` +
+					`Actual to version: ${actual_change.to}`,
+			);
+		}
+
+		// Verify scenario
+		const actual_scenario = get_version_change_scenario(actual_change);
+		if (actual_scenario !== expected_change.scenario) {
+			throw new Error(
+				`Scenario mismatch for package '${pkg_name}':\n` +
+					`Expected scenario: ${expected_change.scenario}\n` +
+					`Actual scenario: ${actual_scenario}`,
 			);
 		}
 	}
 
-	return {
-		expected: normalized_predicted,
-		actual: normalized_actual,
-		matches,
-		differences,
-	};
+	// Check for unexpected version changes
+	for (const [pkg_name] of actual_by_pkg) {
+		if (!expected_by_pkg.has(pkg_name)) {
+			throw new Error(
+				`Unexpected version change for package '${pkg_name}' not in expected outcomes`,
+			);
+		}
+	}
 };
 
 /**
- * Load a fixture file from the fixtures directory
+ * Determine the scenario for a version change based on flags.
+ *
+ * Scenarios are determined by whether the package has explicit changesets:
+ * - auto_generated: No explicit changesets, will auto-generate due to dependency updates
+ * - bump_escalation: Has explicit changesets, but dependencies require higher bump
+ * - explicit_changeset: Has explicit changesets, normal bump
  */
-export const load_fixture = (filename: string): string => {
-	const fixture_path = join('src/fixtures', filename);
-
-	if (!existsSync(fixture_path)) {
-		throw new Error(`Fixture file not found: ${fixture_path}`);
+const get_version_change_scenario = (
+	vc: Version_Change,
+): 'explicit_changeset' | 'bump_escalation' | 'auto_generated' => {
+	// Check has_changesets first - this is the primary discriminator
+	if (!vc.has_changesets) {
+		// No explicit changesets = auto-generated (even if escalation also needed)
+		return 'auto_generated';
 	}
+	// Has explicit changesets - check if escalation needed
+	if (vc.needs_bump_escalation) {
+		return 'bump_escalation';
+	}
+	// Has explicit changesets, normal bump
+	return 'explicit_changeset';
+};
 
-	return readFileSync(fixture_path, 'utf-8');
+/**
+ * Assert that warnings/errors/info contain expected messages.
+ * Checks that all expected messages are present (allows additional ones).
+ */
+export const assert_messages = (
+	actual: Array<string>,
+	expected: Array<string>,
+	message_type: 'warnings' | 'errors' | 'info',
+): void => {
+	for (const expected_msg of expected) {
+		const found = actual.some((actual_msg) => actual_msg.includes(expected_msg));
+
+		if (!found) {
+			throw new Error(
+				`Expected ${message_type} message not found:\n` +
+					`Expected (substring): ${expected_msg}\n` +
+					`Actual ${message_type}: ${actual.join(', ')}`,
+			);
+		}
+	}
 };

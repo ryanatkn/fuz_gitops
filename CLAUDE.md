@@ -287,8 +287,7 @@ gro deploy              # deploy to GitHub Pages
 
 # Fixture Management
 gro src/fixtures/generate_repos # generate test git repos from fixture data
-gro src/fixtures/update         # regenerate baseline outputs for gitops commands
-gro test src/fixtures/check     # validate command outputs match baselines
+gro test src/fixtures/check     # validate gitops commands against fixture expectations
 ```
 
 ## Commands Reference
@@ -391,20 +390,23 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 - `isolated_packages` - Independent packages with no internal dependencies
 - `multiple_dep_types` - Packages with both peer and dev deps on same dependency
 
-**Baseline Validation:**
+**Structured Validation:**
 
-- `src/fixtures/gitops_analyze_output.md` - Baseline for `gro gitops_analyze`
-- `src/fixtures/gitops_plan_output.md` - Baseline for `gro gitops_plan`
-- `src/fixtures/gitops_publish_dry_output.md` - Baseline for `gro gitops_publish --dry`
-- `src/fixtures/check.test.ts` - Compares live output against baselines
-- `src/fixtures/update.task.ts` - Regenerates baselines when needed
+- `src/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
+- `src/fixtures/check.test.ts` - Validates JSON output against fixture `expected_outcomes`
+- `src/fixtures/helpers.ts` - JSON command runner and assertion helpers
 
 **Workflow:**
 
-1. Define fixture data in `repo_fixtures/*.ts`
+1. Define fixture data with expected outcomes in `repo_fixtures/*.ts`
 2. Run `gro src/fixtures/generate_repos` to create test git repos
-3. Run `gro src/fixtures/update` to capture baseline outputs
-4. Run `gro test src/fixtures/check` to validate outputs match baselines
+3. Run `gro test src/fixtures/check` to validate commands against expected outcomes
+
+Each fixture runs in isolation with its own config, validating:
+- Publishing order (topological sort correctness)
+- Version changes (explicit, auto-generated, bump escalation scenarios)
+- Breaking change cascades
+- Warnings, errors, and info messages
 
 Test repos are isolated from real workspace repos and can run in CI without cloning.
 
