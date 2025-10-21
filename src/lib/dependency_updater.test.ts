@@ -28,11 +28,11 @@ const create_trackable_git_ops = (): Git_Operations & {
 			} else {
 				added_files.push(options.files);
 			}
-			return {ok: true as const};
+			return {ok: true};
 		},
 		commit: async (options) => {
 			commits.push(options.message);
-			return {ok: true as const};
+			return {ok: true};
 		},
 		add_and_commit: async (options) => {
 			if (Array.isArray(options.files)) {
@@ -41,7 +41,7 @@ const create_trackable_git_ops = (): Git_Operations & {
 				added_files.push(options.files);
 			}
 			commits.push(options.message);
-			return {ok: true as const};
+			return {ok: true};
 		},
 	});
 

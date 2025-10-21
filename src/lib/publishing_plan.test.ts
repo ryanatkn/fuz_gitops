@@ -17,14 +17,14 @@ test('detects breaking change cascades', async () => {
 	// Mock changeset operations to simulate breaking changes
 	const mock_ops: Changeset_Operations = {
 		has_changesets: async (options) => ({
-			ok: true as const,
+			ok: true,
 			value: options.repo.pkg.name === 'pkg-a',
 		}),
-		read_changesets: async () => ({ok: true as const, value: []}),
+		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
 			if (options.repo.pkg.name === 'pkg-a') {
 				// Simulate a breaking change for pkg-a
-				return {ok: true as const, version: '0.2.0', bump_type: 'minor' as const};
+				return {ok: true, version: '0.2.0', bump_type: 'minor' as const};
 			}
 			return null;
 		},
@@ -48,14 +48,14 @@ test('handles bump escalation', async () => {
 
 	// Mock operations where pkg-a has breaking change and pkg-b has patch
 	const mock_ops: Changeset_Operations = {
-		has_changesets: async () => ({ok: true as const, value: true}),
-		read_changesets: async () => ({ok: true as const, value: []}),
+		has_changesets: async () => ({ok: true, value: true}),
+		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
 			if (options.repo.pkg.name === 'pkg-a') {
-				return {ok: true as const, version: '0.2.0', bump_type: 'minor' as const}; // breaking
+				return {ok: true, version: '0.2.0', bump_type: 'minor' as const}; // breaking
 			}
 			if (options.repo.pkg.name === 'pkg-b') {
-				return {ok: true as const, version: '0.2.1', bump_type: 'patch' as const}; // non-breaking
+				return {ok: true, version: '0.2.1', bump_type: 'patch' as const}; // non-breaking
 			}
 			return null;
 		},
@@ -79,13 +79,13 @@ test('generates auto-changesets for dependency updates', async () => {
 	// Mock operations where only pkg-a has changesets
 	const mock_ops: Changeset_Operations = {
 		has_changesets: async (options) => ({
-			ok: true as const,
+			ok: true,
 			value: options.repo.pkg.name === 'pkg-a',
 		}),
-		read_changesets: async () => ({ok: true as const, value: []}),
+		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
 			if (options.repo.pkg.name === 'pkg-a') {
-				return {ok: true as const, version: '0.1.1', bump_type: 'patch' as const};
+				return {ok: true, version: '0.1.1', bump_type: 'patch' as const};
 			}
 			return null;
 		},
@@ -111,8 +111,8 @@ test('handles circular dev dependencies', async () => {
 
 	// Mock operations with no changesets
 	const mock_ops: Changeset_Operations = {
-		has_changesets: async () => ({ok: true as const, value: false}),
-		read_changesets: async () => ({ok: true as const, value: []}),
+		has_changesets: async () => ({ok: true, value: false}),
+		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async () => null,
 	};
 
@@ -136,8 +136,8 @@ test('detects production circular dependencies', async () => {
 
 	// Mock operations with no changesets
 	const mock_ops: Changeset_Operations = {
-		has_changesets: async () => ({ok: true as const, value: false}),
-		read_changesets: async () => ({ok: true as const, value: []}),
+		has_changesets: async () => ({ok: true, value: false}),
+		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async () => null,
 	};
 
@@ -171,14 +171,14 @@ test('warns when MAX_ITERATIONS reached without convergence', async () => {
 	// Mock operations: only level-1 has a changeset with breaking change
 	const mock_ops: Changeset_Operations = {
 		has_changesets: async (options) => ({
-			ok: true as const,
+			ok: true,
 			value: options.repo.pkg.name === 'level-1',
 		}),
-		read_changesets: async () => ({ok: true as const, value: []}),
+		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
 			if (options.repo.pkg.name === 'level-1') {
 				// Breaking change in 0.x (minor bump)
-				return {ok: true as const, version: '0.2.0', bump_type: 'minor' as const};
+				return {ok: true, version: '0.2.0', bump_type: 'minor' as const};
 			}
 			return null;
 		},

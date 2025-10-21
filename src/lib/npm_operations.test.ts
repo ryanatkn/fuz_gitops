@@ -13,7 +13,7 @@ describe('install operation', () => {
 
 	test('returns ok:false with error on failure', async () => {
 		const mock_ops = create_mock_npm_ops({
-			install: async () => ({ok: false as const, message: 'Network error'}),
+			install: async () => ({ok: false, message: 'Network error'}),
 		});
 		const result = await mock_ops.install({cwd: '/some/path'});
 		assert.ok(!result.ok);
@@ -33,7 +33,7 @@ describe('install operation', () => {
 			install: async (options) => {
 				install_called = true;
 				install_cwd = options?.cwd;
-				return {ok: true as const};
+				return {ok: true};
 			},
 		});
 
@@ -53,7 +53,7 @@ describe('check_package_available operation', () => {
 
 	test('returns false when package does not exist', async () => {
 		const mock_ops = create_mock_npm_ops({
-			check_package_available: async () => ({ok: true as const, value: false}),
+			check_package_available: async () => ({ok: true, value: false}),
 		});
 		const result = await mock_ops.check_package_available({pkg: 'foo', version: '1.0.0'});
 		assert.ok(result.ok);
@@ -69,7 +69,7 @@ describe('check_package_available operation', () => {
 				check_called = true;
 				pkg_name = options.pkg;
 				pkg_version = options.version;
-				return {ok: true as const, value: true};
+				return {ok: true, value: true};
 			},
 		});
 
@@ -90,7 +90,7 @@ describe('check_auth operation', () => {
 
 	test('returns ok:false with error when not authenticated', async () => {
 		const mock_ops = create_mock_npm_ops({
-			check_auth: async () => ({ok: false as const, message: 'Not logged in to npm'}),
+			check_auth: async () => ({ok: false, message: 'Not logged in to npm'}),
 		});
 		const result = await mock_ops.check_auth();
 		assert.ok(!result.ok);
@@ -102,7 +102,7 @@ describe('check_auth operation', () => {
 		const mock_ops = create_mock_npm_ops({
 			check_auth: async () => {
 				auth_called = true;
-				return {ok: true as const, username: 'custom-user'};
+				return {ok: true, username: 'custom-user'};
 			},
 		});
 
@@ -124,7 +124,7 @@ describe('check_registry operation', () => {
 
 	test('returns ok:false with error when registry unreachable', async () => {
 		const mock_ops = create_mock_npm_ops({
-			check_registry: async () => ({ok: false as const, message: 'Failed to ping npm registry'}),
+			check_registry: async () => ({ok: false, message: 'Failed to ping npm registry'}),
 		});
 		const result = await mock_ops.check_registry();
 		assert.ok(!result.ok);
@@ -136,7 +136,7 @@ describe('check_registry operation', () => {
 		const mock_ops = create_mock_npm_ops({
 			check_registry: async () => {
 				registry_called = true;
-				return {ok: true as const};
+				return {ok: true};
 			},
 		});
 
@@ -179,7 +179,7 @@ describe('wait_for_package operation', () => {
 				wait_called = true;
 				pkg_name = options.pkg;
 				pkg_version = options.version;
-				return {ok: true as const};
+				return {ok: true};
 			},
 		});
 

@@ -26,10 +26,10 @@ test('dry run predicts versions without publishing', async () => {
 		changeset: {
 			predict_next_version: async (options) => {
 				if (options.repo.pkg.name === 'pkg-a') {
-					return {ok: true as const, version: '0.1.1', bump_type: 'patch' as const};
+					return {ok: true, version: '0.1.1', bump_type: 'patch' as const};
 				}
 				if (options.repo.pkg.name === 'pkg-b') {
-					return {ok: true as const, version: '0.2.1', bump_type: 'patch' as const};
+					return {ok: true, version: '0.2.1', bump_type: 'patch' as const};
 				}
 				return null;
 			},
@@ -71,10 +71,10 @@ test('always fails fast on publish errors', async () => {
 					publish_attempt++;
 					// Make pkg-a fail
 					if (publish_attempt === 1) {
-						return {ok: false as const, message: 'Publish failed'};
+						return {ok: false, message: 'Publish failed'};
 					}
 				}
-				return {ok: true as const};
+				return {ok: true};
 			},
 		},
 		preflight: create_preflight_mock(['pkg-a', 'pkg-b', 'pkg-c']),
@@ -109,14 +109,14 @@ test('handles breaking change cascades in dry run', async () => {
 			predict_next_version: async (options) => {
 				// pkg-core has a breaking change (0.x minor bump)
 				if (options.repo.pkg.name === 'pkg-core') {
-					return {ok: true as const, version: '0.6.0', bump_type: 'minor' as const};
+					return {ok: true, version: '0.6.0', bump_type: 'minor' as const};
 				}
 				// Others have patch bumps
 				if (options.repo.pkg.name === 'pkg-mid') {
-					return {ok: true as const, version: '0.3.1', bump_type: 'patch' as const};
+					return {ok: true, version: '0.3.1', bump_type: 'patch' as const};
 				}
 				if (options.repo.pkg.name === 'pkg-app') {
-					return {ok: true as const, version: '0.2.1', bump_type: 'patch' as const};
+					return {ok: true, version: '0.2.1', bump_type: 'patch' as const};
 				}
 				return null;
 			},
@@ -160,7 +160,7 @@ test('skips repos without changesets', async () => {
 	const mock_ops = create_mock_gitops_ops({
 		changeset: {
 			has_changesets: async (options) => ({
-				ok: true as const,
+				ok: true,
 				value: options.repo.pkg.name === 'pkg-a',
 			}),
 		},
@@ -227,12 +227,12 @@ test('waits for npm propagation after each publish', async () => {
 		npm: {
 			wait_for_package: async (options) => {
 				wait_calls.push({pkg: options.pkg, version: options.version});
-				return {ok: true as const};
+				return {ok: true};
 			},
-			check_package_available: async () => ({ok: true as const, value: true}),
-			check_auth: async () => ({ok: true as const, username: 'testuser'}),
-			check_registry: async () => ({ok: true as const}),
-			install: async () => ({ok: true as const}),
+			check_package_available: async () => ({ok: true, value: true}),
+			check_auth: async () => ({ok: true, username: 'testuser'}),
+			check_registry: async () => ({ok: true}),
+			install: async () => ({ok: true}),
 		},
 		fs: mock_fs_ops,
 	});
@@ -259,7 +259,7 @@ test('updates prod dependencies after publishing (Phase 1)', async () => {
 		git: create_mock_git_ops({
 			add_and_commit: async (options) => {
 				git_commits.push({cwd: options.cwd || '', message: options.message});
-				return {ok: true as const};
+				return {ok: true};
 			},
 		}),
 		fs: mock_fs_ops,
@@ -285,7 +285,7 @@ test('updates dev dependencies (Phase 2)', async () => {
 		git: create_mock_git_ops({
 			add_and_commit: async () => {
 				// Mock commit
-				return {ok: true as const};
+				return {ok: true};
 			},
 		}),
 		fs: mock_fs_ops,
@@ -312,10 +312,10 @@ test('deploys all repos when deploy flag is set (Phase 3)', async () => {
 		process: process_ops,
 		fs: {
 			readFile: async (options) => ({
-				ok: true as const,
+				ok: true,
 				value: mock_fs.get(options.path) || '{}',
 			}),
-			writeFile: async () => ({ok: true as const}),
+			writeFile: async () => ({ok: true}),
 		},
 	});
 
@@ -374,10 +374,10 @@ test('handles 4-level transitive dependency chain', async () => {
 		preflight: create_preflight_mock(['level-1', 'level-2', 'level-3', 'level-4']),
 		fs: {
 			readFile: async (options) => ({
-				ok: true as const,
+				ok: true,
 				value: mock_fs.get(options.path) || '{}',
 			}),
-			writeFile: async () => ({ok: true as const}),
+			writeFile: async () => ({ok: true}),
 		},
 	});
 
@@ -461,10 +461,10 @@ test('handles npm propagation failure gracefully', async () => {
 			wait_for_package: async () => {
 				throw new Error('Timeout waiting for package');
 			},
-			check_package_available: async () => ({ok: true as const, value: false}),
-			check_auth: async () => ({ok: true as const, username: 'testuser'}),
-			check_registry: async () => ({ok: true as const}),
-			install: async () => ({ok: true as const}),
+			check_package_available: async () => ({ok: true, value: false}),
+			check_auth: async () => ({ok: true, username: 'testuser'}),
+			check_registry: async () => ({ok: true}),
+			install: async () => ({ok: true}),
 		},
 		fs: mock_fs_ops,
 	});
@@ -494,7 +494,7 @@ test('handles deploy failures without stopping', async () => {
 			const cwd = spawn_options.spawn_options?.cwd?.toString() || '';
 			// Make first deploy fail
 			if (cwd.includes('pkg-a')) {
-				return {ok: false as const, message: 'Deploy failed'};
+				return {ok: false, message: 'Deploy failed'};
 			}
 		}
 		return result;
@@ -505,10 +505,10 @@ test('handles deploy failures without stopping', async () => {
 		process: process_ops,
 		fs: {
 			readFile: async (options) => ({
-				ok: true as const,
+				ok: true,
 				value: mock_fs.get(options.path) || '{}',
 			}),
-			writeFile: async () => ({ok: true as const}),
+			writeFile: async () => ({ok: true}),
 		},
 	});
 
@@ -535,17 +535,17 @@ test('returns correct Published_Version metadata', async () => {
 		changeset: {
 			...create_mock_gitops_ops().changeset,
 			predict_next_version: async () => ({
-				ok: true as const,
+				ok: true,
 				version: '0.6.0',
 				bump_type: 'minor' as const,
 			}),
 		},
 		fs: {
 			readFile: async (options) => ({
-				ok: true as const,
+				ok: true,
 				value: mock_fs.get(options.path) || '{}',
 			}),
-			writeFile: async () => ({ok: true as const}),
+			writeFile: async () => ({ok: true}),
 		},
 	});
 

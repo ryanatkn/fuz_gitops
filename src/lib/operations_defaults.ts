@@ -45,9 +45,9 @@ export const default_changeset_operations: Changeset_Operations = {
 		const {repo} = options;
 		try {
 			const value = await has_changesets(repo);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -55,9 +55,9 @@ export const default_changeset_operations: Changeset_Operations = {
 		const {repo, log} = options;
 		try {
 			const value = await read_changesets(repo, log);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -69,9 +69,9 @@ export const default_changeset_operations: Changeset_Operations = {
 				return null;
 			}
 			// predict_next_version returns {version, bump_type}, we need to wrap it in OK
-			return {ok: true as const, ...result};
+			return {ok: true, ...result};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 };
@@ -85,9 +85,9 @@ export const default_git_operations: Git_Operations = {
 		const {cwd} = options ?? {};
 		try {
 			const value = await git_current_branch_name_required(cwd ? {cwd} : undefined);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -95,9 +95,9 @@ export const default_git_operations: Git_Operations = {
 		const {branch, cwd} = options ?? {};
 		try {
 			const value = await git_current_commit_hash_required(branch, cwd ? {cwd} : undefined);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -105,9 +105,9 @@ export const default_git_operations: Git_Operations = {
 		const {cwd} = options ?? {};
 		try {
 			const value = await git_check_clean_workspace_as_boolean(cwd ? {cwd} : undefined);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -116,9 +116,9 @@ export const default_git_operations: Git_Operations = {
 		const {branch, cwd} = options;
 		try {
 			await git_checkout(branch, cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -126,9 +126,9 @@ export const default_git_operations: Git_Operations = {
 		const {origin, branch, cwd} = options ?? {};
 		try {
 			await spawn('git', ['pull', origin || 'origin', branch || ''], cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -136,9 +136,9 @@ export const default_git_operations: Git_Operations = {
 		const {branch, pull, cwd} = options;
 		try {
 			await git_switch_branch(branch as Git_Branch, pull, cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -146,9 +146,9 @@ export const default_git_operations: Git_Operations = {
 		const {remote, cwd} = options ?? {};
 		try {
 			const value = await git_has_remote(remote, cwd ? {cwd} : undefined);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -157,9 +157,9 @@ export const default_git_operations: Git_Operations = {
 		const {files, cwd} = options;
 		try {
 			await git_add(files, cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -167,9 +167,9 @@ export const default_git_operations: Git_Operations = {
 		const {message, cwd} = options;
 		try {
 			await git_commit(message, cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -177,9 +177,9 @@ export const default_git_operations: Git_Operations = {
 		const {files, message, cwd} = options;
 		try {
 			await git_add_and_commit(files, message, cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -187,9 +187,9 @@ export const default_git_operations: Git_Operations = {
 		const {cwd} = options ?? {};
 		try {
 			const value = await git_has_changes(cwd ? {cwd} : undefined);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -197,9 +197,9 @@ export const default_git_operations: Git_Operations = {
 		const {cwd} = options ?? {};
 		try {
 			const value = await git_get_changed_files(cwd ? {cwd} : undefined);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -208,9 +208,9 @@ export const default_git_operations: Git_Operations = {
 		const {tag_name, message, cwd} = options;
 		try {
 			await git_tag(tag_name, message, cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -218,9 +218,9 @@ export const default_git_operations: Git_Operations = {
 		const {tag_name, origin, cwd} = options;
 		try {
 			await git_push_tag(tag_name, origin as Git_Origin, cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -229,9 +229,9 @@ export const default_git_operations: Git_Operations = {
 		const {message, cwd} = options ?? {};
 		try {
 			await git_stash(message, cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -239,9 +239,9 @@ export const default_git_operations: Git_Operations = {
 		const {cwd} = options ?? {};
 		try {
 			await git_stash_pop(cwd ? {cwd} : undefined);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -255,9 +255,9 @@ export const default_git_operations: Git_Operations = {
 				file_path,
 				cwd ? {cwd} : undefined,
 			);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 };
@@ -284,7 +284,7 @@ export const default_process_operations: Process_Operations = {
 				};
 			}
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 };
@@ -297,9 +297,9 @@ export const default_npm_operations: Npm_Operations = {
 		const {pkg, version, wait_options, log} = options;
 		try {
 			await wait_for_package(pkg, version, wait_options, log);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error), timeout: true};
+			return {ok: false, message: String(error), timeout: true};
 		}
 	},
 
@@ -307,9 +307,9 @@ export const default_npm_operations: Npm_Operations = {
 		const {pkg, version, log} = options;
 		try {
 			const value = await check_package_available(pkg, version, log);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -319,12 +319,12 @@ export const default_npm_operations: Npm_Operations = {
 			if (result.stdout) {
 				const username = result.stdout.trim();
 				if (username) {
-					return {ok: true as const, username};
+					return {ok: true, username};
 				}
 			}
-			return {ok: false as const, message: 'Not logged in to npm'};
+			return {ok: false, message: 'Not logged in to npm'};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -332,11 +332,11 @@ export const default_npm_operations: Npm_Operations = {
 		try {
 			const result = await spawn_out('npm', ['ping']);
 			if (result.stdout) {
-				return {ok: true as const};
+				return {ok: true};
 			}
-			return {ok: false as const, message: 'Failed to ping npm registry'};
+			return {ok: false, message: 'Failed to ping npm registry'};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -345,12 +345,12 @@ export const default_npm_operations: Npm_Operations = {
 		try {
 			const spawned = await spawn_out('npm', ['install'], cwd ? {cwd} : undefined);
 			if (spawned.result.ok) {
-				return {ok: true as const};
+				return {ok: true};
 			} else {
-				return {ok: false as const, message: 'Install failed', stderr: spawned.stderr || undefined};
+				return {ok: false, message: 'Install failed', stderr: spawned.stderr || undefined};
 			}
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 };
@@ -380,9 +380,9 @@ export const default_fs_operations: Fs_Operations = {
 		const {path, encoding} = options;
 		try {
 			const value = await readFile(path, encoding);
-			return {ok: true as const, value};
+			return {ok: true, value};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 
@@ -390,9 +390,9 @@ export const default_fs_operations: Fs_Operations = {
 		const {path, content} = options;
 		try {
 			await writeFile(path, content);
-			return {ok: true as const};
+			return {ok: true};
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 };
@@ -407,7 +407,7 @@ export const default_build_operations: Build_Operations = {
 			log?.info(`  Building ${repo.pkg.name}...`);
 			const spawned = await spawn_out('gro', ['build'], {cwd: repo.repo_dir});
 			if (spawned.result.ok) {
-				return {ok: true as const};
+				return {ok: true};
 			} else {
 				return {
 					ok: false,
@@ -416,7 +416,7 @@ export const default_build_operations: Build_Operations = {
 				};
 			}
 		} catch (error) {
-			return {ok: false as const, message: String(error)};
+			return {ok: false, message: String(error)};
 		}
 	},
 };
