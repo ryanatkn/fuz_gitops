@@ -76,8 +76,8 @@ export const wait_for_package = async (
 		}
 
 		// Log progress occasionally
-		if (attempt % 5 === 0) {
-			log?.debug(`    Still waiting for ${pkg}@${version} (attempt ${attempt}/${max_attempts})`);
+		if (attempt > 0 && attempt % 5 === 0) {
+			log?.info(st('dim', `    Still waiting... (attempt ${attempt}/${max_attempts})`));
 		}
 
 		// Wait with exponential backoff + jitter

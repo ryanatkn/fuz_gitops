@@ -277,7 +277,7 @@ describe('npm_registry', () => {
 			await wait_for_package('test-pkg', '1.0.0', options, logger);
 
 			// Should log at attempts 5 and 10
-			const progress_logs = logger.debug_calls.filter((log) => log.includes('Still waiting'));
+			const progress_logs = logger.info_calls.filter((log) => log.includes('Still waiting'));
 			expect(progress_logs.length).toBe(2);
 			expect(progress_logs[0]).toContain('attempt 5/30');
 			expect(progress_logs[1]).toContain('attempt 10/30');

@@ -94,9 +94,11 @@ export const publish_repos = async (
 
 		// Track if any packages were published in this iteration
 		let published_in_iteration = false;
+		let published_count = 0;
 
 		// Phase 1: Publish each package and immediately update dependents
-		for (const pkg_name of order) {
+		for (let i = 0; i < order.length; i++) {
+			const pkg_name = order[i];
 			const repo = repos.find((r) => r.pkg.name === pkg_name);
 			if (!repo) continue;
 
@@ -122,10 +124,11 @@ export const publish_repos = async (
 
 			try {
 				// 1. Publish this package
-				log?.info(`Publishing ${pkg_name}...`);
+				log?.info(st('dim', `  [${i + 1}/${order.length}] Publishing ${pkg_name}...`));
 				const version = await publish_single_repo(repo, options, ops);
 				published.set(pkg_name, version);
 				published_in_iteration = true;
+				published_count++;
 				log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
 
 				if (!dry) {
@@ -185,6 +188,11 @@ export const publish_repos = async (
 				log?.error(st('red', `  ❌ Failed to publish ${pkg_name}: ${err.message}`));
 				break; // Always fail fast on error
 			}
+		}
+
+		// Log iteration summary
+		if (published_count > 0) {
+			log?.info(st('dim', `\nIteration ${iteration}: ${published_count} package(s) published\n`));
 		}
 
 		// Check for convergence: no packages published in this iteration

@@ -119,7 +119,9 @@ export const run_pre_flight_checks = async (
 		log?.info(st('cyan', `  Validating builds for ${repos_with_changesets.size} package(s)...`));
 		const repos_to_build = repos.filter((repo) => repos_with_changesets.has(repo.pkg.name));
 
-		for (const repo of repos_to_build) {
+		for (let i = 0; i < repos_to_build.length; i++) {
+			const repo = repos_to_build[i];
+			log?.info(st('dim', `    [${i + 1}/${repos_to_build.length}] Building ${repo.pkg.name}...`));
 			const build_result = await build_ops.build_package(repo, log); // eslint-disable-line no-await-in-loop
 			if (!build_result.ok) {
 				errors.push(`${repo.pkg.name} failed to build: ${build_result.error || 'unknown error'}`);
