@@ -51,7 +51,7 @@ const get_output_path = (
 
 /**
  * Minimal test suite that compares command output against baseline files.
- * Run `npm run update:fixtures` to generate/update baseline files.
+ * Run `npm run update-generated-fixtures` to generate/update baseline files.
  */
 describe('gitops commands match baseline outputs', () => {
 	describe('gitops_analyze', () => {
@@ -63,7 +63,7 @@ describe('gitops commands match baseline outputs', () => {
 			const output_path = get_output_path('gitops_analyze');
 			assert.ok(
 				existsSync(`src/fixtures/${output_path}`),
-				`Baseline file missing: src/fixtures/${output_path}. Run 'npm run update:fixtures' to generate.`,
+				`Baseline file missing: src/fixtures/${output_path}. Run 'npm run update-generated-fixtures' to generate.`,
 			);
 			baseline_content = load_fixture(output_path);
 
@@ -82,7 +82,7 @@ describe('gitops commands match baseline outputs', () => {
 			const comparison = compare_outputs(baseline_content, formatted_output);
 			assert.ok(
 				comparison.matches,
-				`Output differs from baseline (${comparison.differences.length} differences). Run 'npm run update:fixtures' to update baseline.`,
+				`Output differs from baseline (${comparison.differences.length} differences). Run 'npm run update-generated-fixtures' to update baseline.`,
 			);
 		});
 	});
@@ -96,7 +96,7 @@ describe('gitops commands match baseline outputs', () => {
 			const output_path = get_output_path('gitops_plan');
 			assert.ok(
 				existsSync(`src/fixtures/${output_path}`),
-				`Baseline file missing: src/fixtures/${output_path}. Run 'npm run update:fixtures' to generate.`,
+				`Baseline file missing: src/fixtures/${output_path}. Run 'npm run update-generated-fixtures' to generate.`,
 			);
 			baseline_content = load_fixture(output_path);
 
@@ -115,7 +115,7 @@ describe('gitops commands match baseline outputs', () => {
 			const comparison = compare_outputs(baseline_content, formatted_output);
 			assert.ok(
 				comparison.matches,
-				`Output differs from baseline (${comparison.differences.length} differences). Run 'npm run update:fixtures' to update baseline.`,
+				`Output differs from baseline (${comparison.differences.length} differences). Run 'npm run update-generated-fixtures' to update baseline.`,
 			);
 		});
 	});
@@ -129,7 +129,7 @@ describe('gitops commands match baseline outputs', () => {
 			const output_path = get_output_path('gitops_publish_dry');
 			assert.ok(
 				existsSync(`src/fixtures/${output_path}`),
-				`Baseline file missing: src/fixtures/${output_path}. Run 'npm run update:fixtures' to generate.`,
+				`Baseline file missing: src/fixtures/${output_path}. Run 'npm run update-generated-fixtures' to generate.`,
 			);
 			baseline_content = load_fixture(output_path);
 
@@ -148,7 +148,7 @@ describe('gitops commands match baseline outputs', () => {
 			const comparison = compare_outputs(baseline_content, formatted_output);
 			assert.ok(
 				comparison.matches,
-				`Output differs from baseline (${comparison.differences.length} differences). Run 'npm run update:fixtures' to update baseline.`,
+				`Output differs from baseline (${comparison.differences.length} differences). Run 'npm run update-generated-fixtures' to update baseline.`,
 			);
 		});
 	});
