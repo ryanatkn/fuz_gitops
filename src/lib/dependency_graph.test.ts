@@ -110,8 +110,8 @@ describe('Dependency_Graph', () => {
 				create_mock_repo({
 					name: 'plugin',
 					version: '1.0.0',
-					deps: {'core': '^1.0.0'}, // Prod dependency
-					devDeps: {'core': '^1.0.0'}, // Dev dependency on SAME package
+					deps: {core: '^1.0.0'}, // Prod dependency
+					devDeps: {core: '^1.0.0'}, // Dev dependency on SAME package
 				}),
 			];
 
@@ -137,8 +137,8 @@ describe('Dependency_Graph', () => {
 				create_mock_repo({
 					name: 'adapter',
 					version: '1.0.0',
-					peerDeps: {'lib': '^1.0.0'}, // Peer dependency
-					devDeps: {'lib': '^1.0.0'}, // Dev dependency on SAME package
+					peerDeps: {lib: '^1.0.0'}, // Peer dependency
+					devDeps: {lib: '^1.0.0'}, // Dev dependency on SAME package
 				}),
 			];
 

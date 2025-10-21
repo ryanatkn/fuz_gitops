@@ -208,8 +208,8 @@ export const publish_repos = async (
 				st(
 					'yellow',
 					`\n⚠️  Reached maximum iterations (${MAX_ITERATIONS}) without full convergence\n` +
-					`    ${pending_count} package(s) may still have changesets to process\n` +
-					`    Estimated ${estimated_iterations} more iteration(s) needed - run 'gro gitops_publish' again\n`,
+						`    ${pending_count} package(s) may still have changesets to process\n` +
+						`    Estimated ${estimated_iterations} more iteration(s) needed - run 'gro gitops_publish' again\n`,
 				),
 			);
 		}

@@ -478,10 +478,7 @@ describe('pre_flight_checks', () => {
 		});
 
 		it('fails pre-flight when build fails for package with changesets', async () => {
-			const repos = [
-				create_mock_repo({name: 'package-a'}),
-				create_mock_repo({name: 'package-b'}),
-			];
+			const repos = [create_mock_repo({name: 'package-a'}), create_mock_repo({name: 'package-b'})];
 
 			const git_ops = create_mock_git_ops();
 			const npm_ops = create_mock_npm_ops();
@@ -550,7 +547,9 @@ describe('pre_flight_checks', () => {
 			// Should fail with detailed error message
 			expect(result.ok).toBe(false);
 			expect(result.errors.length).toBe(1);
-			expect(result.errors[0]).toBe('failing-package failed to build: Syntax error in src/main.ts:42');
+			expect(result.errors[0]).toBe(
+				'failing-package failed to build: Syntax error in src/main.ts:42',
+			);
 		});
 
 		it('validates builds only for packages with changesets', async () => {

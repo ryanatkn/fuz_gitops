@@ -381,7 +381,9 @@ export const generate_publishing_plan = async (
 
 			// Check if this package would need processing
 			const existing_entry = version_changes.find((vc) => vc.package_name === pkg_name);
-			const needs_escalation = existing_entry && required_bump &&
+			const needs_escalation =
+				existing_entry &&
+				required_bump &&
 				compare_bump_types(required_bump, existing_entry.bump_type) > 0;
 			const needs_auto_changeset = !existing_entry && required_bump;
 
@@ -395,8 +397,8 @@ export const generate_publishing_plan = async (
 		const estimated_iterations = Math.ceil(pending_count / 2); // Rough estimate
 		warnings.push(
 			`Reached maximum iterations (${MAX_ITERATIONS}) without full convergence - ` +
-			`${pending_count} package(s) may still need processing: ${pending_packages.join(', ')}. ` +
-			`Estimated ${estimated_iterations} more iteration(s) needed.`,
+				`${pending_count} package(s) may still need processing: ${pending_packages.join(', ')}. ` +
+				`Estimated ${estimated_iterations} more iteration(s) needed.`,
 		);
 	}
 

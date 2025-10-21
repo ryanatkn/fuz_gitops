@@ -178,9 +178,7 @@ test('warns when MAX_ITERATIONS reached without convergence', async () => {
 	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
 
 	// Should have a warning about MAX_ITERATIONS
-	const convergence_warning = plan.warnings.find((w) =>
-		w.includes('Reached maximum iterations'),
-	);
+	const convergence_warning = plan.warnings.find((w) => w.includes('Reached maximum iterations'));
 	expect(convergence_warning).toBeDefined();
 
 	// Warning should include diagnostics
