@@ -161,7 +161,7 @@ export const has_changesets = async (repo: Local_Repo): Promise<boolean> => {
 
 /**
  * Predicts the next version for a repo based on its changesets.
- * This enables accurate dry run mode.
+ * This enables accurate dry_run mode.
  */
 export const predict_next_version = async (
 	repo: Local_Repo,

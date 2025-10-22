@@ -14,16 +14,21 @@ export const get_fixture_config_path = (fixture_name: string): string => {
 	return `src/fixtures/configs/${fixture_name}.config.ts`;
 };
 
+export interface Run_Gitops_Command_Options {
+	command: 'gitops_analyze' | 'gitops_plan' | 'gitops_publish_dry';
+	args?: Array<string>;
+	log?: Logger;
+	config_path: string;
+}
+
 /**
  * Execute a gitops command and return parsed JSON result.
  * Uses --format json for structured output.
  */
 export const run_gitops_command_json = async (
-	command: 'gitops_analyze' | 'gitops_plan' | 'gitops_publish_dry',
-	args: Array<string> = [],
-	log: Logger | undefined,
-	config_path: string,
+	options: Run_Gitops_Command_Options,
 ): Promise<any> => {
+	const {command, args = [], log, config_path} = options;
 	// Create output directory if it doesn't exist
 	if (!existsSync(GITOPS_OUTPUT_DIR)) {
 		mkdirSync(GITOPS_OUTPUT_DIR, {recursive: true});
@@ -37,7 +42,7 @@ export const run_gitops_command_json = async (
 	if (command === 'gitops_publish_dry') {
 		full_args = [
 			'gitops_publish',
-			'--dry',
+			'--dry_run',
 			'--no-plan',
 			'--format',
 			'json',

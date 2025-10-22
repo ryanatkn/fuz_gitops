@@ -15,7 +15,7 @@ import {
 
 /* eslint-disable @typescript-eslint/require-await */
 
-test('dry run predicts versions without publishing', async () => {
+test('dry_run predicts versions without publishing', async () => {
 	const repos: Array<Local_Repo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
@@ -40,7 +40,7 @@ test('dry run predicts versions without publishing', async () => {
 	const result = await publish_repos(
 		repos,
 		{
-			dry: true,
+			dry_run: true,
 			update_deps: false,
 		},
 		mock_ops,
@@ -84,7 +84,7 @@ test('always fails fast on publish errors', async () => {
 	const result = await publish_repos(
 		repos,
 		{
-			dry: false,
+			dry_run: false,
 			update_deps: false,
 		},
 		mock_ops,
@@ -97,7 +97,7 @@ test('always fails fast on publish errors', async () => {
 	expect(result.published.length).toBe(0); // No packages published after failure
 });
 
-test('handles breaking change cascades in dry run', async () => {
+test('handles breaking change cascades in dry_run', async () => {
 	const repos: Array<Local_Repo> = [
 		create_mock_repo({name: 'pkg-core', version: '0.5.0'}),
 		create_mock_repo({name: 'pkg-mid', version: '0.3.0', deps: {'pkg-core': '^0.5.0'}}),
@@ -127,7 +127,7 @@ test('handles breaking change cascades in dry run', async () => {
 	const result = await publish_repos(
 		repos,
 		{
-			dry: true,
+			dry_run: true,
 			update_deps: false,
 		},
 		mock_ops,
@@ -171,7 +171,7 @@ test('skips repos without changesets', async () => {
 	const result = await publish_repos(
 		repos,
 		{
-			dry: false,
+			dry_run: false,
 			update_deps: false,
 		},
 		mock_ops,
@@ -204,7 +204,7 @@ test('publishes in dependency order', async () => {
 		fs: mock_fs_ops,
 	});
 
-	await publish_repos(repos, {dry: false, update_deps: false}, mock_ops);
+	await publish_repos(repos, {dry_run: false, update_deps: false}, mock_ops);
 
 	// Should publish in dependency order: lib → middleware → app
 	const publish_commands = get_commands_by_type('publish');
@@ -237,7 +237,7 @@ test('waits for npm propagation after each publish', async () => {
 		fs: mock_fs_ops,
 	});
 
-	await publish_repos(repos, {dry: false, update_deps: true}, mock_ops);
+	await publish_repos(repos, {dry_run: false, update_deps: true}, mock_ops);
 
 	// Should wait for both packages
 	expect(wait_calls.length).toBe(2);
@@ -265,7 +265,7 @@ test('updates prod dependencies after publishing (Phase 1)', async () => {
 		fs: mock_fs_ops,
 	});
 
-	await publish_repos(repos, {dry: false, update_deps: true}, mock_ops);
+	await publish_repos(repos, {dry_run: false, update_deps: true}, mock_ops);
 
 	// With update_deps enabled and lib having changesets, dependency updates should occur
 	// (Actual behavior depends on implementation - tests document expected outcome)
@@ -292,7 +292,7 @@ test('updates dev dependencies (Phase 2)', async () => {
 	});
 
 	// Don't use update_deps to avoid file not found errors in this test
-	const result = await publish_repos(repos, {dry: false, update_deps: false}, mock_ops);
+	const result = await publish_repos(repos, {dry_run: false, update_deps: false}, mock_ops);
 
 	// Test succeeds if publishing completes
 	expect(result.ok).toBe(true);
@@ -319,7 +319,7 @@ test('deploys all repos when deploy flag is set (Phase 3)', async () => {
 		},
 	});
 
-	await publish_repos(repos, {dry: false, update_deps: false, deploy: true}, mock_ops);
+	await publish_repos(repos, {dry_run: false, update_deps: false, deploy: true}, mock_ops);
 
 	// Should deploy both repos
 	const deploy_commands = get_commands_by_type('deploy');
@@ -346,7 +346,7 @@ test('applies version strategy (caret vs tilde vs exact)', async () => {
 	// Don't use update_deps to avoid file not found errors in this test
 	const result = await publish_repos(
 		repos,
-		{dry: false, update_deps: false, version_strategy: 'exact'},
+		{dry_run: false, update_deps: false, version_strategy: 'exact'},
 		mock_ops,
 	);
 
@@ -381,7 +381,7 @@ test('handles 4-level transitive dependency chain', async () => {
 		},
 	});
 
-	await publish_repos(repos, {dry: false, update_deps: false}, mock_ops);
+	await publish_repos(repos, {dry_run: false, update_deps: false}, mock_ops);
 
 	// Should publish bottom-up
 	const publish_commands = get_commands_by_type('publish');
@@ -408,7 +408,7 @@ test('handles mixed prod and dev deps on same package', async () => {
 	});
 
 	// Don't use update_deps to avoid file not found errors in this test
-	const result = await publish_repos(repos, {dry: false, update_deps: false}, mock_ops);
+	const result = await publish_repos(repos, {dry_run: false, update_deps: false}, mock_ops);
 
 	// Test succeeds if publishing completes
 	expect(result.ok).toBe(true);
@@ -424,13 +424,13 @@ test('reports correct duration in result', async () => {
 		fs: mock_fs_ops,
 	});
 
-	const result = await publish_repos(repos, {dry: false, update_deps: false}, mock_ops);
+	const result = await publish_repos(repos, {dry_run: false, update_deps: false}, mock_ops);
 
 	expect(result.duration).toBeGreaterThanOrEqual(0);
 	expect(typeof result.duration).toBe('number');
 });
 
-test('dry run skips pre-flight checks', async () => {
+test('dry_run skips pre-flight checks', async () => {
 	const repos: Array<Local_Repo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
 
 	let preflight_called = false;
@@ -444,9 +444,9 @@ test('dry run skips pre-flight checks', async () => {
 		},
 	});
 
-	await publish_repos(repos, {dry: true, update_deps: false}, mock_ops);
+	await publish_repos(repos, {dry_run: true, update_deps: false}, mock_ops);
 
-	// Dry run should skip pre-flight checks
+	// Dry_run should skip pre-flight checks
 	expect(preflight_called).toBe(false);
 });
 
@@ -469,7 +469,7 @@ test('handles npm propagation failure gracefully', async () => {
 		fs: mock_fs_ops,
 	});
 
-	const result = await publish_repos(repos, {dry: false, update_deps: true}, mock_ops);
+	const result = await publish_repos(repos, {dry_run: false, update_deps: true}, mock_ops);
 
 	// Should fail due to npm propagation timeout
 	expect(result.ok).toBe(false);
@@ -514,7 +514,7 @@ test('handles deploy failures without stopping', async () => {
 
 	const result = await publish_repos(
 		repos,
-		{dry: false, update_deps: false, deploy: true},
+		{dry_run: false, update_deps: false, deploy: true},
 		mock_ops,
 	);
 
@@ -549,7 +549,7 @@ test('returns correct Published_Version metadata', async () => {
 		},
 	});
 
-	const result = await publish_repos(repos, {dry: true, update_deps: false}, mock_ops);
+	const result = await publish_repos(repos, {dry_run: true, update_deps: false}, mock_ops);
 
 	expect(result.published.length).toBe(1);
 	const published = result.published[0];
@@ -579,7 +579,7 @@ test('converges early when no new packages publish', async () => {
 	const result = await publish_repos(
 		repos,
 		{
-			dry: false,
+			dry_run: false,
 			update_deps: false,
 			log: logger,
 		},

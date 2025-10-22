@@ -66,7 +66,7 @@ gro gitops_sync --download    # clone missing repos first
 gro gitops_validate      # run all validation checks (analyze + plan + dry run)
 gro gitops_analyze       # analyze dependency graph and detect cycles
 gro gitops_plan          # generate publishing plan showing version changes and cascades
-gro gitops_publish --dry # simulate publishing without side effects
+gro gitops_publish --dry_run # simulate publishing without side effects
 ```
 
 ### Publishing packages

@@ -10,29 +10,31 @@ import {resolve_gitops_config} from '$lib/resolved_gitops_config.js';
 import {DEFAULT_REPOS_DIR} from '$lib/paths.js';
 import {default_git_operations, default_npm_operations} from '$lib/operations_defaults.js';
 
+export interface Get_Gitops_Ready_Options {
+	path: string;
+	dir?: string;
+	download: boolean;
+	log?: Logger;
+}
+
 /**
  * Readies the workspace for all gitops repos.
- * @param path - path to the gitops config
- * @param dir - path to the repos dir
- * @param log
- * @param download - if repos are not available locally, should they be downloaded?
  */
 export const get_gitops_ready = async (
-	path: string,
-	dir: string | undefined,
-	download: boolean,
-	log?: Logger,
+	options: Get_Gitops_Ready_Options,
 ): Promise<{
 	config_path: string;
 	repos_dir: string;
 	gitops_config: Gitops_Config;
 	local_repos: Array<Local_Repo>;
 }> => {
+	const {path, dir, download, log} = options;
 	const config_path = resolve(path);
 	const gitops_config = await import_gitops_config(config_path);
 
 	// Priority: explicit dir arg → config repos_dir → default (two dirs up from config)
-	const repos_dir = resolve_gitops_paths(path, dir, gitops_config.repos_dir).repos_dir;
+	const repos_dir = resolve_gitops_paths({path, dir, config_repos_dir: gitops_config.repos_dir})
+		.repos_dir;
 
 	log?.info(
 		`resolving gitops configs on the filesystem in ${repos_dir}`,
@@ -58,11 +60,16 @@ export const get_gitops_ready = async (
 	return {config_path, repos_dir, gitops_config, local_repos};
 };
 
+export interface Resolve_Gitops_Paths_Options {
+	path: string;
+	dir?: string;
+	config_repos_dir?: string;
+}
+
 export const resolve_gitops_paths = (
-	path: string,
-	dir: string | undefined,
-	config_repos_dir: string | undefined,
+	options: Resolve_Gitops_Paths_Options,
 ): {config_path: string; repos_dir: string} => {
+	const {path, dir, config_repos_dir} = options;
 	const config_path = resolve(path);
 	const config_dir = dirname(config_path);
 

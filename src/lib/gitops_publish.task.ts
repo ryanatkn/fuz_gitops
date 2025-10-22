@@ -25,7 +25,7 @@ export const Args = z.strictObject({
 		.enum(['exact', 'caret', 'tilde'])
 		.meta({description: 'version strategy for peer dependencies'})
 		.default('caret' as const),
-	dry: z
+	dry_run: z
 		.boolean()
 		.meta({description: 'perform a dry run without actually publishing'})
 		.default(false),
@@ -51,18 +51,18 @@ export const task: Task<Args> = {
 	summary: 'publish all repos in dependency order',
 	Args,
 	run: async ({args, log}): Promise<void> => {
-		const {path, dir, peer_strategy, dry, format, deploy, plan, max_wait, outfile} = args;
+		const {path, dir, peer_strategy, dry_run, format, deploy, plan, max_wait, outfile} = args;
 
 		// Load repos
-		const {local_repos: repos} = await get_gitops_ready(
+		const {local_repos: repos} = await get_gitops_ready({
 			path,
 			dir,
-			false, // Don't download if missing
+			download: false, // Don't download if missing
 			log,
-		);
+		});
 
 		// Show plan if requested (skip for dry runs)
-		if (plan && !dry) {
+		if (plan && !dry_run) {
 			log.info(st('cyan', 'Publishing Plan'));
 			const plan_result = await generate_publishing_plan(repos, log);
 			log_publishing_plan(plan_result, log);
@@ -83,7 +83,7 @@ export const task: Task<Args> = {
 
 		// Publishing options
 		const options: Publishing_Options = {
-			dry,
+			dry_run,
 			update_deps: true, // Always update dependencies
 			version_strategy: peer_strategy,
 			deploy,

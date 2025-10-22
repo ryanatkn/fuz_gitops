@@ -15,7 +15,7 @@ import {MAX_ITERATIONS} from '$lib/constants.js';
 /* eslint-disable no-await-in-loop */
 
 export interface Publishing_Options {
-	dry: boolean;
+	dry_run: boolean;
 	update_deps: boolean;
 	version_strategy?: Version_Strategy;
 	deploy?: boolean;
@@ -49,10 +49,10 @@ export const publish_repos = async (
 	ops: Gitops_Operations = default_gitops_operations,
 ): Promise<Publishing_Result> => {
 	const start_time = Date.now();
-	const {dry, update_deps, log} = options;
+	const {dry_run, update_deps, log} = options;
 
 	// Pre-flight checks (skip for dry runs since we're not actually publishing)
-	if (!dry) {
+	if (!dry_run) {
 		const pre_flight_options: Pre_Flight_Options = {
 			skip_changesets: false, // Always check for changesets
 			required_branch: 'main',
@@ -122,7 +122,7 @@ export const publish_repos = async (
 				// Skip packages without changesets
 				// In real publish: They might get auto-changesets during dependency updates
 				// In dry run: We can't simulate auto-changesets, so just skip
-				if (dry) {
+				if (dry_run) {
 					// Silent skip in dry run - plan shows which packages get auto-changesets
 					continue;
 				} else {
@@ -140,7 +140,7 @@ export const publish_repos = async (
 				published_count++;
 				log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
 
-				if (!dry) {
+				if (!dry_run) {
 					// 2. Wait for this package to be available on NPM
 					log?.info(`  ⏳ Waiting for ${pkg_name}@${version.new_version} on NPM...`);
 					const wait_result = await ops.npm.wait_for_package({
@@ -231,7 +231,7 @@ export const publish_repos = async (
 	}
 
 	// Phase 2: Update all dev dependencies (can have cycles)
-	if (update_deps && published.size > 0 && !dry) {
+	if (update_deps && published.size > 0 && !dry_run) {
 		log?.info(st('cyan', '\n🔄 Updating dev dependencies...\n'));
 
 		for (const repo of repos) {
@@ -262,7 +262,7 @@ export const publish_repos = async (
 	}
 
 	// Phase 3: Deploy all repos (optional)
-	if (options.deploy && !dry) {
+	if (options.deploy && !dry_run) {
 		log?.info(st('cyan', '\n🚢 Deploying all repos...\n'));
 
 		for (const repo of repos) {
@@ -318,11 +318,11 @@ const publish_single_repo = async (
 	options: Publishing_Options,
 	ops: Gitops_Operations = default_gitops_operations,
 ): Promise<Published_Version> => {
-	const {dry, log} = options;
+	const {dry_run, log} = options;
 
 	const old_version = repo.pkg.package_json.version || '0.0.0';
 
-	if (dry) {
+	if (dry_run) {
 		// In dry run, predict version from changesets
 		const prediction = await ops.changeset.predict_next_version({repo, log});
 
@@ -345,7 +345,7 @@ const publish_single_repo = async (
 			new_version,
 			bump_type,
 			breaking,
-			commit: 'dry-run',
+			commit: 'dry_run',
 			tag: `v${new_version}`,
 		};
 	}

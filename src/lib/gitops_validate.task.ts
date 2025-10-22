@@ -47,7 +47,7 @@ export const task: Task<Args> = {
 
 		// Load repos once (shared by all commands)
 		log.info(st('dim', 'Loading repositories...'));
-		const {local_repos} = await get_gitops_ready(path, dir, false, log);
+		const {local_repos} = await get_gitops_ready({path, dir, download: false, log});
 		log.info(st('dim', `   Found ${local_repos.length} local repos`));
 
 		// 1. Run gitops_analyze
@@ -147,12 +147,12 @@ export const task: Task<Args> = {
 			log.error(st('red', `  ✗ gitops_plan failed: ${error}`));
 		}
 
-		// 3. Run gitops_publish --dry
-		log.info(st('yellow', 'Running gitops_publish --dry...'));
+		// 3. Run gitops_publish --dry_run
+		log.info(st('yellow', 'Running gitops_publish --dry_run...'));
 		const dry_start = Date.now();
 		try {
 			const options: Publishing_Options = {
-				dry: true,
+				dry_run: true,
 				update_deps: true,
 				log: undefined, // Silent for validation
 			};
@@ -165,27 +165,27 @@ export const task: Task<Args> = {
 			const errors = result.ok ? 0 : result.failed.length;
 
 			results.push({
-				command: 'gitops_publish --dry',
+				command: 'gitops_publish --dry_run',
 				success: result.ok,
 				warnings: 0,
 				errors,
 				duration: dry_duration,
 			});
 
-			log.info(st('green', `  ✓ gitops_publish --dry completed in ${dry_duration}ms`));
+			log.info(st('green', `  ✓ gitops_publish --dry_run completed in ${dry_duration}ms`));
 			if (errors > 0) {
 				log.error(st('red', `  ❌ Found ${errors} error(s)`));
 			}
 		} catch (error) {
 			const dry_duration = Date.now() - dry_start;
 			results.push({
-				command: 'gitops_publish --dry',
+				command: 'gitops_publish --dry_run',
 				success: false,
 				warnings: 0,
 				errors: 1,
 				duration: dry_duration,
 			});
-			log.error(st('red', `  ✗ gitops_publish --dry failed: ${error}`));
+			log.error(st('red', `  ✗ gitops_publish --dry_run failed: ${error}`));
 		}
 
 		// Summary

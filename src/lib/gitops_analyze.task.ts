@@ -39,7 +39,7 @@ export const task: Task<Args> = {
 		const {path, dir, format, outfile} = args;
 
 		// Get repos ready (without downloading)
-		const {local_repos} = await get_gitops_ready(path, dir, false, log);
+		const {local_repos} = await get_gitops_ready({path, dir, download: false, log});
 
 		// Build dependency graph and validate (but don't throw on cycles for analyze)
 		const {graph, publishing_order: order} = validate_dependency_graph(local_repos, log, {

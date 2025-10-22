@@ -45,7 +45,7 @@ export const task: Task<Args> = {
 	run: async ({args, log, svelte_config, invoke_task}) => {
 		const {path, dir, outdir = svelte_config.routes_path, download, check} = args;
 
-		const {local_repos} = await get_gitops_ready(path, dir, download, log);
+		const {local_repos} = await get_gitops_ready({path, dir, download, log});
 
 		const outfile = resolve(outdir, 'repos.ts');
 

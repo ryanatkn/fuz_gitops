@@ -63,22 +63,18 @@ for (const fixture of FIXTURES) {
 					if (has_errors) {
 						// For fixtures with errors, the command might fail or return null publishing_order
 						// Just verify the command runs and returns a result
-						const result = await run_gitops_command_json(
-							'gitops_analyze',
-							[],
-							undefined,
+						const result = await run_gitops_command_json({
+							command: 'gitops_analyze',
 							config_path,
-						);
+						});
 						assert.ok(result, 'Should return a result even with errors');
 						return;
 					}
 
-					const result = await run_gitops_command_json(
-						'gitops_analyze',
-						[],
-						undefined,
+					const result = await run_gitops_command_json({
+						command: 'gitops_analyze',
 						config_path,
-					);
+					});
 					assert.ok(result.publishing_order, 'Should have publishing_order');
 					assert_publishing_order(
 						result.publishing_order,
@@ -96,7 +92,7 @@ for (const fixture of FIXTURES) {
 					if (has_errors) {
 						// Errors block planning - verify errors are reported
 						try {
-							await run_gitops_command_json('gitops_plan', [], undefined, config_path);
+							await run_gitops_command_json({command: 'gitops_plan', config_path});
 							// If we get here without error, check that errors are in the result
 						} catch (_error) {
 							// Command failed as expected for error fixtures
@@ -105,7 +101,7 @@ for (const fixture of FIXTURES) {
 						return;
 					}
 
-					const result = await run_gitops_command_json('gitops_plan', [], undefined, config_path);
+					const result = await run_gitops_command_json({command: 'gitops_plan', config_path});
 
 					// Verify version changes
 					if (fixture.expected_outcomes.version_changes.length > 0) {
@@ -125,7 +121,7 @@ for (const fixture of FIXTURES) {
 				async () => {
 					if (has_errors) return; // Skip for error fixtures
 
-					const result = await run_gitops_command_json('gitops_plan', [], undefined, config_path);
+					const result = await run_gitops_command_json({command: 'gitops_plan', config_path});
 
 					// Publishing order should match for fixtures with version changes
 					if (fixture.expected_outcomes.version_changes.length > 0) {
@@ -143,7 +139,7 @@ for (const fixture of FIXTURES) {
 				async () => {
 					if (has_errors || !fixture.expected_outcomes.breaking_cascades) return;
 
-					const result = await run_gitops_command_json('gitops_plan', [], undefined, config_path);
+					const result = await run_gitops_command_json({command: 'gitops_plan', config_path});
 
 					// Verify breaking cascades exist
 					for (const [pkg, expected_affected] of Object.entries(
@@ -173,7 +169,7 @@ for (const fixture of FIXTURES) {
 					)
 						return;
 
-					const result = await run_gitops_command_json('gitops_plan', [], undefined, config_path);
+					const result = await run_gitops_command_json({command: 'gitops_plan', config_path});
 					assert_messages(result.warnings, fixture.expected_outcomes.warnings, 'warnings');
 				},
 				COMMAND_TIMEOUT,
@@ -186,7 +182,7 @@ for (const fixture of FIXTURES) {
 						return;
 
 					try {
-						const result = await run_gitops_command_json('gitops_plan', [], undefined, config_path);
+						const result = await run_gitops_command_json({command: 'gitops_plan', config_path});
 						// If command succeeded, errors should be in result
 						assert_messages(result.errors, fixture.expected_outcomes.errors, 'errors');
 					} catch (_error) {
@@ -207,7 +203,7 @@ for (const fixture of FIXTURES) {
 					)
 						return;
 
-					const result = await run_gitops_command_json('gitops_plan', [], undefined, config_path);
+					const result = await run_gitops_command_json({command: 'gitops_plan', config_path});
 
 					// Check that expected packages are in info
 					for (const pkg of fixture.expected_outcomes.info) {
@@ -234,23 +230,21 @@ for (const fixture of FIXTURES) {
 				async () => {
 					if (has_errors) return; // Skip for error fixtures
 
-					const result = await run_gitops_command_json(
-						'gitops_publish_dry',
-						[],
-						undefined,
+					const result = await run_gitops_command_json({
+						command: 'gitops_publish_dry',
 						config_path,
-					);
+					});
 
 					// Dry runs can ONLY publish packages with explicit changesets
-					// Auto-generated changesets require filesystem writes (not possible in dry run)
-					// Bump escalation requires iteration to see new versions (limited in dry run)
+					// Auto-generated changesets require filesystem writes (not possible in dry_run)
+					// Bump escalation requires iteration to see new versions (limited in dry_run)
 					const packages_with_explicit_changesets =
 						fixture.expected_outcomes.version_changes.filter(
 							(vc) => vc.scenario === 'explicit_changeset' || vc.scenario === 'bump_escalation',
 						);
 
 					if (packages_with_explicit_changesets.length > 0) {
-						// Dry run should publish packages with explicit changesets
+						// Dry_run should publish packages with explicit changesets
 						// Note: May not match exact versions due to limited iteration (escalation may not work fully)
 						assert.ok(
 							result.published.length > 0,
@@ -266,11 +260,11 @@ for (const fixture of FIXTURES) {
 								expected_change,
 								`Published package ${published.name} should be in expected changes`,
 							);
-							// Note: Version might not match exactly due to escalation limitations in dry run
+							// Note: Version might not match exactly due to escalation limitations in dry_run
 							// We just verify the package was attempted to be published
 						}
 					} else {
-						// No packages with explicit changesets - dry run should publish nothing
+						// No packages with explicit changesets - dry_run should publish nothing
 						assert.equal(result.published.length, 0, 'Should not publish any packages');
 					}
 				},
@@ -282,12 +276,10 @@ for (const fixture of FIXTURES) {
 				async () => {
 					if (has_errors) return; // Skip for error fixtures
 
-					const result = await run_gitops_command_json(
-						'gitops_publish_dry',
-						[],
-						undefined,
+					const result = await run_gitops_command_json({
+						command: 'gitops_publish_dry',
 						config_path,
-					);
+					});
 
 					// Should report success for valid fixtures
 					assert.ok(result.ok === true, 'Should report success');

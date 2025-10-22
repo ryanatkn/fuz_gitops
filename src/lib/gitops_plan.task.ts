@@ -46,12 +46,12 @@ export const task: Task<Args> = {
 		log.info(st('cyan', 'Generating multi-repo publishing plan...'));
 
 		// Load local repos
-		const {local_repos} = await get_gitops_ready(
+		const {local_repos} = await get_gitops_ready({
 			path,
 			dir,
-			false, // Don't download if missing
+			download: false, // Don't download if missing
 			log,
-		);
+		});
 
 		if (local_repos.length === 0) {
 			log.error('No local repos found');

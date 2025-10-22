@@ -107,11 +107,11 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
   - Creates auto-changesets for dependent packages during publishing
 - `gro gitops_plan` - generates a publishing plan (read-only prediction)
 - `gro gitops_analyze` - analyzes dependencies and changesets
-- `gro gitops_publish --dry` - simulates publishing without pre-flight checks or state persistence
+- `gro gitops_publish --dry_run` - simulates publishing without pre-flight checks or state persistence
 - Handles circular dev dependencies by excluding from topological sort
 - Waits for NPM propagation with exponential backoff (10 minute default timeout)
 - Updates cross-repo dependencies automatically
-- Pre-flight checks validate clean workspaces, branches, builds, and npm authentication (skipped for --dry runs)
+- Pre-flight checks validate clean workspaces, branches, builds, and npm authentication (skipped for --dry_run runs)
 
 **Build Validation (Fail-Fast Safety)**
 
@@ -138,7 +138,7 @@ This prevents the known issue in `gro publish` where build failures leave repos 
 - Shows all 4 publishing scenarios: explicit changesets, bump escalation, auto-generated changesets, and no changes
 - No side effects - does not modify any files or state
 
-`gro gitops_publish --dry`:
+`gro gitops_publish --dry_run`:
 
 - **Simulated execution** - Runs the same code path as real publishing
 - Skips pre-flight checks (workspace, branch, npm auth)
@@ -277,7 +277,7 @@ gro gitops_validate      # validate configuration (runs analyze, plan, and dry r
 gro gitops_analyze       # analyze dependencies and changesets
 gro gitops_plan          # generate publishing plan
 gro gitops_publish       # publish repos in dependency order
-gro gitops_publish --dry # dry run without pre-flight checks
+gro gitops_publish --dry_run # dry run without pre-flight checks
 gro gitops_publish --no-plan # skip plan confirmation before publishing
 
 # Development
@@ -299,7 +299,7 @@ Commands are categorized by their side effects:
 - `gro gitops_analyze` - Analyze dependency graph, detect cycles
 - `gro gitops_plan` - Generate publishing plan showing version changes and cascades
 - `gro gitops_validate` - Run all validation checks (analyze + plan + dry run)
-- `gro gitops_publish --dry` - Simulate publishing without pre-flight checks
+- `gro gitops_publish --dry_run` - Simulate publishing without pre-flight checks
 
 ### Data Sync Commands (Local Changes Only)
 
@@ -311,7 +311,7 @@ Commands are categorized by their side effects:
 
 **Command Workflow:**
 
-- `gitops_validate` runs: `gitops_analyze` + `gitops_plan` + `gitops_publish --dry`
+- `gitops_validate` runs: `gitops_analyze` + `gitops_plan` + `gitops_publish --dry_run`
 - `gitops_publish` runs: `gitops_plan` (with confirmation) + actual publish
 
 ## Dependencies
@@ -428,7 +428,7 @@ gro gitops_analyze
 gro gitops_plan
 
 # 4. Test with dry run
-gro gitops_publish --dry
+gro gitops_publish --dry_run
 
 # 5. If everything looks good, publish
 gro gitops_publish
@@ -631,7 +631,7 @@ gro gitops_analyze --format markdown --outfile deps.md
 gro gitops_plan --format markdown --outfile plan.md
 
 # After publishing (dry run)
-gro gitops_publish --dry --format markdown --outfile actual.md
+gro gitops_publish --dry_run --format markdown --outfile actual.md
 
 # Compare files
 diff plan.md actual.md
