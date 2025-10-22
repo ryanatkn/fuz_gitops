@@ -21,15 +21,10 @@ const SEMVER_REGEX =
 	/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
 /**
- * Validates if a string is a valid semver.
- */
-export const semver_validate = (version: string): boolean => SEMVER_REGEX.test(version);
-
-/**
  * Parses a semver version string.
  * Accepts optional 'v' prefix for convenience.
  */
-export const semver_parse = (version: string): Semver => {
+const semver_parse = (version: string): Semver => {
 	// Remove leading 'v' if present (common in git tags)
 	const clean = version.replace(/^v/, '');
 
@@ -51,7 +46,7 @@ export const semver_parse = (version: string): Semver => {
 /**
  * Converts a semver object back to string.
  */
-export const semver_to_string = (semver: Semver): string => {
+const semver_to_string = (semver: Semver): string => {
 	let version = `${semver.major}.${semver.minor}.${semver.patch}`;
 	if (semver.prerelease) {
 		version += `-${semver.prerelease}`;
@@ -171,158 +166,4 @@ export const semver_bump_version = (version: string, type: Bump_Type): string =>
 	semver.build = undefined;
 
 	return semver_to_string(semver);
-};
-
-/**
- * Checks if a version satisfies a range constraint.
- */
-export const semver_satisfies_range = (version: string, range: string): boolean => {
-	// Handle wildcards
-	if (range === '*' || range === 'latest') return true;
-
-	// Handle exact version (with optional = or v prefix)
-	const clean_range = range.replace(/^[=v]/, '');
-	if (/^\d+\.\d+\.\d+/.test(clean_range)) {
-		return version === clean_range;
-	}
-
-	const v = semver_parse(version);
-
-	// Handle caret (^) - compatible with version
-	if (range.startsWith('^')) {
-		const base = semver_parse(range.substring(1));
-		if (v.major !== base.major) return false;
-		if (v.major === 0) {
-			if (v.minor !== base.minor) return false;
-			if (base.minor === 0) {
-				// 0.0.x - only exact patch matches
-				return v.patch === base.patch;
-			}
-			// 0.x.y where x > 0 - patch can be greater
-			return v.patch >= base.patch;
-		}
-		// Major > 0 - minor and patch can be greater
-		return v.minor > base.minor || (v.minor === base.minor && v.patch >= base.patch);
-	}
-
-	// Handle tilde (~) - patch-level changes
-	if (range.startsWith('~')) {
-		const base = semver_parse(range.substring(1));
-		return v.major === base.major && v.minor === base.minor && v.patch >= base.patch;
-	}
-
-	// Handle greater than or equal (>=)
-	if (range.startsWith('>=')) {
-		return semver_compare_versions(version, range.substring(2)) >= 0;
-	}
-
-	// Handle greater than (>)
-	if (range.startsWith('>')) {
-		return semver_compare_versions(version, range.substring(1)) > 0;
-	}
-
-	// Handle less than or equal (<=)
-	if (range.startsWith('<=')) {
-		return semver_compare_versions(version, range.substring(2)) <= 0;
-	}
-
-	// Handle less than (<)
-	if (range.startsWith('<')) {
-		return semver_compare_versions(version, range.substring(1)) < 0;
-	}
-
-	// Default to false for unrecognized ranges
-	return false;
-};
-
-/**
- * Resolves a version range to the best matching version from available versions.
- */
-export const semver_resolve_version_range = (
-	range: string,
-	available: Array<string>,
-): string | null => {
-	if (!available.length) return null;
-
-	// Sort versions in descending order
-	const sorted = [...available].sort((a, b) => semver_compare_versions(b, a));
-
-	// Handle wildcards
-	if (range === '*' || range === 'latest') {
-		return sorted[0];
-	}
-
-	// Handle exact version (with optional = or v prefix)
-	const clean_range = range.replace(/^[=v]/, '');
-	if (/^\d+\.\d+\.\d+/.test(clean_range)) {
-		return available.includes(clean_range) ? clean_range : null;
-	}
-
-	// Find best matching version
-	for (const version of sorted) {
-		if (semver_satisfies_range(version, range)) {
-			return version;
-		}
-	}
-
-	// No matching version found
-	return null;
-};
-
-/**
- * Gets the maximum satisfying version for a range.
- * Similar to resolve_version_range but guarantees the highest matching version.
- */
-export const semver_max_satisfying = (versions: Array<string>, range: string): string | null => {
-	const satisfying = versions.filter((v) => semver_satisfies_range(v, range));
-	if (satisfying.length === 0) return null;
-	return satisfying.sort((a, b) => semver_compare_versions(b, a))[0];
-};
-
-/**
- * Checks if version is greater than another.
- */
-export const semver_gt = (v1: string, v2: string): boolean => semver_compare_versions(v1, v2) > 0;
-
-/**
- * Checks if version is greater than or equal to another.
- */
-export const semver_gte = (v1: string, v2: string): boolean => semver_compare_versions(v1, v2) >= 0;
-
-/**
- * Checks if version is less than another.
- */
-export const semver_lt = (v1: string, v2: string): boolean => semver_compare_versions(v1, v2) < 0;
-
-/**
- * Checks if version is less than or equal to another.
- */
-export const semver_lte = (v1: string, v2: string): boolean => semver_compare_versions(v1, v2) <= 0;
-
-/**
- * Checks if two versions are equal (ignoring build metadata).
- */
-export const semver_eq = (v1: string, v2: string): boolean => semver_compare_versions(v1, v2) === 0;
-
-/**
- * Sorts an array of versions in ascending order.
- */
-export const semver_sort_versions = (versions: Array<string>): Array<string> => {
-	return [...versions].sort(semver_compare_versions);
-};
-
-/**
- * Gets the minimum version from an array.
- */
-export const semver_min_version = (versions: Array<string>): string | null => {
-	if (versions.length === 0) return null;
-	return semver_sort_versions(versions)[0];
-};
-
-/**
- * Gets the maximum version from an array.
- */
-export const semver_max_version = (versions: Array<string>): string | null => {
-	if (versions.length === 0) return null;
-	return semver_sort_versions(versions)[versions.length - 1];
 };
