@@ -8,10 +8,33 @@ import type {Repo_Fixture_Set, Repo_Fixture_Data} from './repo_fixture_types.js'
 const FIXTURES_BASE_DIR = 'src/fixtures/repos';
 
 /**
+ * Generate all repositories for multiple fixture sets.
+ */
+export const generate_all_fixtures = async (
+	fixtures: Array<Repo_Fixture_Set>,
+	log?: Logger,
+): Promise<void> => {
+	log?.info(`Generating ${fixtures.length} fixture sets...\n`);
+
+	for (const fixture of fixtures) {
+		await generate_fixture_set(fixture, log); // eslint-disable-line no-await-in-loop
+		log?.info(''); // blank line between fixtures
+	}
+
+	log?.info(`✅ Generated all fixtures in ${FIXTURES_BASE_DIR}`);
+};
+
+/**
+ * Check if fixture repos have been generated.
+ */
+export const fixtures_exist = (fixture_name: string): boolean =>
+	existsSync(join(FIXTURES_BASE_DIR, fixture_name));
+
+/**
  * Generate a single git repository from fixture data.
  * Creates directory structure, package.json, changesets, and initializes git.
  */
-export const generate_fixture_repo = async (
+const generate_fixture_repo = async (
 	repo_data: Repo_Fixture_Data,
 	fixture_name: string,
 	log?: Logger,
@@ -97,10 +120,7 @@ export default config;
  * Generate all repositories for a fixture set.
  * Idempotent: removes existing fixture directory before generating.
  */
-export const generate_fixture_set = async (
-	fixture: Repo_Fixture_Set,
-	log?: Logger,
-): Promise<void> => {
+const generate_fixture_set = async (fixture: Repo_Fixture_Set, log?: Logger): Promise<void> => {
 	const fixture_dir = join(FIXTURES_BASE_DIR, fixture.name);
 
 	log?.info(`Generating fixture set: ${fixture.name}`);
@@ -120,35 +140,4 @@ export const generate_fixture_set = async (
 	}
 
 	log?.info(`✓ Generated ${fixture.repos.length} repos for ${fixture.name}`);
-};
-
-/**
- * Generate all repositories for multiple fixture sets.
- */
-export const generate_all_fixtures = async (
-	fixtures: Array<Repo_Fixture_Set>,
-	log?: Logger,
-): Promise<void> => {
-	log?.info(`Generating ${fixtures.length} fixture sets...\n`);
-
-	for (const fixture of fixtures) {
-		await generate_fixture_set(fixture, log); // eslint-disable-line no-await-in-loop
-		log?.info(''); // blank line between fixtures
-	}
-
-	log?.info(`✅ Generated all fixtures in ${FIXTURES_BASE_DIR}`);
-};
-
-/**
- * Get the path to a generated fixture repo.
- */
-export const get_fixture_repo_path = (fixture_name: string, repo_name: string): string => {
-	return join(FIXTURES_BASE_DIR, fixture_name, repo_name);
-};
-
-/**
- * Check if fixture repos have been generated.
- */
-export const fixtures_exist = (fixture_name: string): boolean => {
-	return existsSync(join(FIXTURES_BASE_DIR, fixture_name));
 };
