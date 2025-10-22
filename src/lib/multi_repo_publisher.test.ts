@@ -328,6 +328,106 @@ test('deploys all repos when deploy flag is set (Phase 3)', async () => {
 	expect(deploy_commands.some((c) => c.cwd.includes('pkg-b'))).toBe(true);
 });
 
+test('deploys only repos with changes (skips unchanged repos)', async () => {
+	// This test covers selective deployment including dev dep changes
+	// Full integration coverage in fixture tests (src/fixtures/check.test.ts)
+	const repos: Array<Local_Repo> = [
+		create_mock_repo({name: 'lib', version: '1.0.0'}),
+		create_mock_repo({name: 'app-with-dep', version: '1.0.0', deps: {lib: '^1.0.0'}}),
+		create_mock_repo({name: 'app-no-dep', version: '1.0.0'}),
+		create_mock_repo({name: 'util-isolated', version: '1.0.0'}),
+	];
+
+	const mock_fs = create_mock_package_json_files(repos);
+	const {ops: process_ops, get_commands_by_type} = create_tracking_process_ops();
+
+	const mock_ops = create_mock_gitops_ops({
+		preflight: create_preflight_mock(['lib'], ['app-with-dep', 'app-no-dep', 'util-isolated']),
+		changeset: {
+			has_changesets: async (options) => ({
+				ok: true,
+				value: options.repo.pkg.name === 'lib', // Only lib has changesets
+			}),
+		},
+		process: process_ops,
+		fs: {
+			readFile: async (options) => ({
+				ok: true,
+				value: mock_fs.get(options.path) || '{}',
+			}),
+			writeFile: async () => ({ok: true}),
+		},
+	});
+
+	await publish_repos(repos, {dry_run: false, update_deps: true, deploy: true}, mock_ops);
+
+	// Should deploy only lib (published) and app-with-dep (dep updated)
+	const deploy_commands = get_commands_by_type('deploy');
+	expect(deploy_commands.length).toBe(2);
+	expect(deploy_commands.some((c) => c.cwd.includes('lib'))).toBe(true);
+	expect(deploy_commands.some((c) => c.cwd.includes('app-with-dep'))).toBe(true);
+	expect(deploy_commands.some((c) => c.cwd.includes('app-no-dep'))).toBe(false);
+	expect(deploy_commands.some((c) => c.cwd.includes('util-isolated'))).toBe(false);
+});
+
+test('dry run skips deployment even with deploy flag', async () => {
+	const repos: Array<Local_Repo> = [
+		create_mock_repo({name: 'pkg-a', version: '1.0.0'}),
+		create_mock_repo({name: 'pkg-b', version: '1.0.0'}),
+	];
+
+	const {ops: process_ops, get_commands_by_type} = create_tracking_process_ops();
+
+	const mock_ops = create_mock_gitops_ops({
+		changeset: {
+			predict_next_version: async () => ({
+				ok: true,
+				version: '1.1.0',
+				bump_type: 'minor' as const,
+			}),
+		},
+		process: process_ops,
+	});
+
+	await publish_repos(repos, {dry_run: true, update_deps: false, deploy: true}, mock_ops);
+
+	// Dry run should skip deployment entirely
+	const deploy_commands = get_commands_by_type('deploy');
+	expect(deploy_commands.length).toBe(0);
+});
+
+test('no changes results in no deployment', async () => {
+	const repos: Array<Local_Repo> = [
+		create_mock_repo({name: 'pkg-a', version: '1.0.0'}),
+		create_mock_repo({name: 'pkg-b', version: '1.0.0'}),
+		create_mock_repo({name: 'pkg-c', version: '1.0.0'}),
+	];
+
+	const mock_fs = create_mock_package_json_files(repos);
+	const {ops: process_ops, get_commands_by_type} = create_tracking_process_ops();
+
+	const mock_ops = create_mock_gitops_ops({
+		preflight: create_preflight_mock([], ['pkg-a', 'pkg-b', 'pkg-c']), // No changesets
+		changeset: {
+			has_changesets: async () => ({ok: true, value: false}), // No changesets
+		},
+		process: process_ops,
+		fs: {
+			readFile: async (options) => ({
+				ok: true,
+				value: mock_fs.get(options.path) || '{}',
+			}),
+			writeFile: async () => ({ok: true}),
+		},
+	});
+
+	await publish_repos(repos, {dry_run: false, update_deps: true, deploy: true}, mock_ops);
+
+	// No changes = no deployment
+	const deploy_commands = get_commands_by_type('deploy');
+	expect(deploy_commands.length).toBe(0);
+});
+
 test('applies version strategy (caret vs tilde vs exact)', async () => {
 	const repos: Array<Local_Repo> = [
 		create_mock_repo({name: 'lib', version: '1.0.0'}),

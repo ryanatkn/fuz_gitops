@@ -83,6 +83,7 @@ export const publish_repos = async (
 
 	const published: Map<string, Published_Version> = new Map();
 	const failed: Map<string, Error> = new Map();
+	const changed_repos: Set<string> = new Set(); // Track repos with any changes for selective deployment
 
 	// Fixed-point iteration: keep publishing until no new changesets are created
 	// This handles transitive dependency updates (auto-generated changesets)
@@ -136,6 +137,7 @@ export const publish_repos = async (
 				log?.info(st('dim', `  [${i + 1}/${order.length}] Publishing ${pkg_name}...`));
 				const version = await publish_single_repo(repo, options, ops);
 				published.set(pkg_name, version);
+				changed_repos.add(pkg_name); // Mark as changed for deployment
 				published_in_iteration = true;
 				published_count++;
 				log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
@@ -185,6 +187,7 @@ export const publish_repos = async (
 							// Apply updates if any
 							if (updates.size > 0) {
 								log?.info(`    Updating ${dependent_repo.pkg.name}'s dependency on ${pkg_name}`);
+								changed_repos.add(dependent_repo.pkg.name); // Mark as changed for deployment
 								await update_package_json(
 									dependent_repo,
 									updates,
@@ -231,6 +234,7 @@ export const publish_repos = async (
 	}
 
 	// Phase 2: Update all dev dependencies (can have cycles)
+	// Dev dep changes require deployment even without version bumps (rebuild needed)
 	if (update_deps && published.size > 0 && !dry_run) {
 		log?.info(st('cyan', '\n🔄 Updating dev dependencies...\n'));
 
@@ -249,6 +253,7 @@ export const publish_repos = async (
 
 			if (dev_updates.size > 0) {
 				log?.info(`  Updating ${dev_updates.size} dev dependencies in ${repo.pkg.name}`);
+				changed_repos.add(repo.pkg.name); // Mark as changed for deployment
 				await update_package_json(
 					repo,
 					dev_updates,
@@ -261,11 +266,18 @@ export const publish_repos = async (
 		}
 	}
 
-	// Phase 3: Deploy all repos (optional)
+	// Phase 3: Deploy repos with changes (optional)
+	// Deploys only repos that were: published, had prod/peer deps updated, or had dev deps updated
 	if (options.deploy && !dry_run) {
-		log?.info(st('cyan', '\n🚢 Deploying all repos...\n'));
+		const repos_to_deploy = repos.filter((r) => changed_repos.has(r.pkg.name));
+		log?.info(
+			st(
+				'cyan',
+				`\n🚢 Deploying ${repos_to_deploy.length}/${repos.length} repos with changes...\n`,
+			),
+		);
 
-		for (const repo of repos) {
+		for (const repo of repos_to_deploy) {
 			try {
 				log?.info(`  Deploying ${repo.pkg.name}...`);
 				const deploy_result = await ops.process.spawn({

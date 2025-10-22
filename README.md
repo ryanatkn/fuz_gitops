@@ -72,10 +72,11 @@ gro gitops_publish --dry_run # simulate publishing without side effects
 ### Publishing packages
 
 ```bash
-gro gitops_publish  # publish all repos with changesets
+gro gitops_publish  # publish all repos with changesets (interactive y/n prompt)
+gro gitops_publish --no-plan  # skip plan confirmation
 ```
 
-**Note:** If publishing fails, simply re-run the same command. Already-published packages will be automatically skipped (their changesets have been consumed), and failed packages will be retried naturally.
+**Note:** If publishing fails, simply re-run the same command. Already-published packages are automatically skipped (changesets consumed), failed packages retried naturally.
 
 **See [CLAUDE.md](CLAUDE.md) for comprehensive documentation:**
 

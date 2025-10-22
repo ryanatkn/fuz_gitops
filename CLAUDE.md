@@ -125,7 +125,7 @@ The publishing workflow includes build validation in preflight checks to prevent
 2. **Publishing phase** (after validation):
    - Runs `gro publish --no-build` for each package
    - Builds already validated, so no risk of build failures mid-publish
-   - Also runs `gro deploy --no-build` if `--deploy` flag used
+   - Optionally deploys repos with changes if `--deploy` flag used (published or any dep updates)
 
 This prevents the known issue in `gro publish` where build failures leave repos in broken state (version bumped but not published).
 
@@ -188,6 +188,15 @@ When a dependency is updated:
 - **Dev deps**: Package.json updated, NO republish (dev-only changes)
 
 When a package appears in both production/peer and dev dependencies, production/peer takes priority for dependency graph calculations.
+
+#### Private Packages
+
+Packages with `"private": true` in package.json are excluded from publishing:
+
+- Marked as `publishable: false` in dependency graph
+- Not included in publishing order
+- Dependents can still publish normally
+- Use for internal tools, test utilities, dev-only packages
 
 #### Key Publishing Modules
 
@@ -276,9 +285,13 @@ gro gitops_sync --download    # clone missing repos
 gro gitops_validate      # validate configuration (runs analyze, plan, and dry run)
 gro gitops_analyze       # analyze dependencies and changesets
 gro gitops_plan          # generate publishing plan
-gro gitops_publish       # publish repos in dependency order
+gro gitops_publish       # publish repos in dependency order (interactive y/n prompt)
 gro gitops_publish --dry_run # dry run without preflight checks
-gro gitops_publish --no-plan # skip plan confirmation before publishing
+gro gitops_publish --no-plan # skip interactive plan confirmation
+
+# Output formats (analyze, plan, publish)
+gro gitops_analyze --format json --outfile analysis.json
+gro gitops_plan --format markdown --outfile plan.md
 
 # Development
 gro dev                  # start dev server
@@ -303,7 +316,10 @@ Commands are categorized by their side effects:
 
 ### Data Sync Commands (Local Changes Only)
 
-- `gro gitops_sync` - Fetch repo metadata, generate src/routes/repos.ts (also ensures repos are cloned and ready)
+- `gro gitops_sync` - Fetch repo metadata, generate src/routes/repos.ts
+  - Clones missing repos (with `--download`)
+  - Switches branches and pulls latest changes
+  - Installs dependencies if package.json changed
 
 ### Publishing Commands (Git & NPM Side Effects)
 
@@ -589,6 +605,16 @@ This happens when:
 - Your package has that dependency in dependencies or peerDependencies
 
 This is correct behavior - packages must republish when their dependencies change.
+
+**Issue: "Why was my package deployed when it didn't publish?"**
+
+Deployment occurs for packages with ANY changes (not just published packages):
+
+- Published in this run
+- Production/peer dependencies updated
+- Dev dependencies updated (requires rebuild/deploy)
+
+This is correct behavior - dev dep changes require redeployment even without version bumps.
 
 **Issue: "Package not publishing even though I have a changeset"**
 
