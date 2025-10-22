@@ -19,7 +19,9 @@ export const resolve_gitops_config = (
 	gitops_config: Gitops_Config,
 	repos_dir: string,
 ): Resolved_Gitops_Config => {
-	const local_repos = gitops_config.repos.map((r) => resolve_local_repo(r, repos_dir));
+	const local_repos = gitops_config.repos.map((r) =>
+		resolve_local_repo({repo_config: r, repos_dir}),
+	);
 
 	const resolved_local_repos = local_repos.filter((r) => r.type === 'resolved_local_repo');
 	const unresolved_local_repos = local_repos.filter((r) => r.type === 'unresolved_local_repo');

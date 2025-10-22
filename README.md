@@ -18,11 +18,7 @@ With fuz_gitops you can:
 - publish a generated docs website for your collections of repos
 - import its components to view and interact with repo collection metadata
 - publish metadata about your collections of repos to the web for other users and tools
-
-planned additions:
-
-- run updating operations and other workflows from the frontend in dev mode
-  (ultimately, an `update all` button)
+- publish multiple interdependent packages in dependency order with automatic dependency updates
 
 ## Usage
 
@@ -39,20 +35,65 @@ npm i -D @ryanatkn/fuz_gitops
   in either `process.env`, a project-local `.env`, or the parent directory at `../.env`
   (currently optional to read public repos, but it's recommended regardless,
   and you'll need to select options to support private repos)
-- re-export the `gro gitops` task by creating `$lib/gitops.task.ts` with
-  the contents `export * from '@ryanatkn/fuz_gitops/gitops.task.js';`
-- run `gro gitops` to update the local data
+- re-export the `gro gitops_sync` task by creating `$lib/gitops_sync.task.ts` with
+  the contents `export * from '@ryanatkn/fuz_gitops/gitops_sync.task.js';`
+- run `gro gitops_sync` to sync repos and update the local data
+
+## Architecture
+
+```
+gitops.config.ts → local repos → GitHub API → repos.ts → UI components
+```
+
+- **Operations pattern**: Dependency injection for all side effects (git, npm, fs)
+- **Fixture testing**: Generated git repos for isolated tests
+- **Changeset-driven**: Automatic version bumps and dependency updates
+
+See [CLAUDE.md](CLAUDE.md#architecture) for detailed documentation.
+
+## Quick Start
+
+### Syncing repo metadata
+
+```bash
+gro gitops_sync               # sync repos and generate UI data
+gro gitops_sync --download    # clone missing repos first
+```
+
+### Diagnostic commands (read-only)
+
+```bash
+gro gitops_validate      # run all validation checks (analyze + plan + dry run)
+gro gitops_analyze       # analyze dependency graph and detect cycles
+gro gitops_plan          # generate publishing plan showing version changes and cascades
+gro gitops_publish --dry_run # simulate publishing without side effects
+```
+
+### Publishing packages
+
+```bash
+gro gitops_publish  # publish all repos with changesets (interactive y/n prompt)
+gro gitops_publish --no-plan  # skip plan confirmation
+```
+
+**Note:** If publishing fails, simply re-run the same command. Already-published packages are automatically skipped (changesets consumed), failed packages retried naturally.
+
+**See [CLAUDE.md](CLAUDE.md) for comprehensive documentation:**
+
+- Command reference (read-only vs side effects)
+- Publishing workflows and examples
+- Troubleshooting guide
+- Architecture and testing patterns
 
 Getting started as a dev? Start with [Gro](https://github.com/grogarden/gro)
 and the [Fuz template](https://github.com/fuz-dev/fuz_template).
 
 TODO
 
-- figure out better automation than manually running `gro gitops`
+- figure out better automation than manually running `gro gitops_sync`
 - show the rate limit info
-- think about how fuz_gitops could better leverage both GitHub Actions and
+- think about how fuz_gitops could use both GitHub Actions and
   [Forgejo Actions](https://forgejo.org/docs/v1.20/user/actions/)
-  without unwieldy compat
 
 ## License [🐦](https://wikipedia.org/wiki/Free_and_open-source_software)
 

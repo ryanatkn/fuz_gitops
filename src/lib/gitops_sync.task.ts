@@ -1,4 +1,4 @@
-import type {Task} from '@ryanatkn/gro';
+import {Task_Error, type Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {readFile, writeFile} from 'node:fs/promises';
 import {format_file} from '@ryanatkn/gro/format_file.js';
@@ -15,27 +15,25 @@ import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
-// TODO maybe support `--check` for CI
-export const Args = z
-	.object({
-		path: z
-			.string()
-			.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
-			.default('gitops.config.ts'),
-		dir: z
-			.string()
-			.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
-			.optional(),
-		outdir: z
-			.string()
-			.meta({description: 'path to the directory for the generated files, defaults to $routes/'})
-			.optional(),
-		download: z.boolean().meta({description: 'download all missing local repos'}).default(false),
-		install: z.boolean().meta({description: 'opt into installing packages'}).default(false),
-		sync: z.boolean().meta({description: 'dual of no-sync'}).default(true),
-		'no-sync': z.boolean().meta({description: 'opt out of gro sync'}).default(false),
-	})
-	.strict();
+export const Args = z.strictObject({
+	path: z
+		.string()
+		.meta({description: 'path to the gitops config file, absolute or relative to the cwd'})
+		.default('gitops.config.ts'),
+	dir: z
+		.string()
+		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
+		.optional(),
+	outdir: z
+		.string()
+		.meta({description: 'path to the directory for the generated files, defaults to $routes/'})
+		.optional(),
+	download: z.boolean().meta({description: 'download all missing local repos'}).default(false),
+	check: z
+		.boolean()
+		.meta({description: 'check repos are ready without fetching remote data'})
+		.default(false),
+});
 export type Args = z.infer<typeof Args>;
 
 /**
@@ -43,27 +41,27 @@ export type Args = z.infer<typeof Args>;
  */
 export const task: Task<Args> = {
 	Args,
-	summary: 'gets gitops ready and runs scripts',
+	summary: 'syncs local repos and generates UI data from repo metadata',
 	run: async ({args, log, svelte_config, invoke_task}) => {
-		const {path, dir, outdir = svelte_config.routes_path, download, install, sync} = args;
+		const {path, dir, outdir = svelte_config.routes_path, download, check} = args;
 
-		if (sync) {
-			await invoke_task('sync', {install});
-		}
-
-		const {local_repos} = await get_gitops_ready(path, dir, download, install, log);
+		const {local_repos} = await get_gitops_ready({path, dir, download, log});
 
 		const outfile = resolve(outdir, 'repos.ts');
-
-		const cache = await create_fs_fetch_value_cache('repos');
 
 		// This searches the parent directory for the env var, so we don't use SvelteKit's $env imports
 		const token = load_from_env('SECRET_GITHUB_API_TOKEN');
 		if (!token) {
-			log.warn(
-				'the env var SECRET_GITHUB_API_TOKEN was not found, so API calls with be unauthorized',
-			);
+			throw new Task_Error('the env var SECRET_GITHUB_API_TOKEN was not found');
 		}
+
+		// Exit early if only checking repo readiness
+		if (check) {
+			log.info('repos are ready');
+			return;
+		}
+
+		const cache = await create_fs_fetch_value_cache('repos');
 
 		log.info('fetching remote repo data');
 		const repos = await fetch_repo_data(local_repos, token, cache.data, log);
