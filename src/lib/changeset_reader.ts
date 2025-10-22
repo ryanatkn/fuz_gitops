@@ -142,7 +142,7 @@ export const determine_bump_from_changesets = (
 
 /**
  * Detects if a repo has changesets.
- * Used by pre-flight checks and publishing to determine if a repo needs publishing.
+ * Used by preflight checks and publishing to determine if a repo needs publishing.
  */
 export const has_changesets = async (repo: Local_Repo): Promise<boolean> => {
 	const changesets_dir = join(repo.repo_dir, '.changeset');

@@ -38,7 +38,7 @@ import type {SpawnOptions} from 'node:child_process';
 import type {Local_Repo} from '$lib/local_repo.js';
 import type {Changeset_Info} from '$lib/changeset_reader.js';
 import type {Bump_Type} from '$lib/semver.js';
-import type {Pre_Flight_Options, Pre_Flight_Result} from '$lib/pre_flight_checks.js';
+import type {Preflight_Options, Preflight_Result} from '$lib/preflight_checks.js';
 
 /**
  * Operations for working with changesets
@@ -282,20 +282,20 @@ export interface Npm_Operations {
 }
 
 /**
- * Operations for pre-flight checks
+ * Operations for preflight checks
  */
 export interface Preflight_Operations {
 	/**
-	 * Runs pre-flight validation checks before publishing.
+	 * Runs preflight validation checks before publishing.
 	 */
-	run_pre_flight_checks: (options: {
+	run_preflight_checks: (options: {
 		repos: Array<Local_Repo>;
-		pre_flight_options: Pre_Flight_Options;
+		preflight_options: Preflight_Options;
 		git_ops?: Git_Operations;
 		npm_ops?: Npm_Operations;
 		build_ops?: Build_Operations;
 		changeset_ops?: Changeset_Operations;
-	}) => Promise<Pre_Flight_Result>;
+	}) => Promise<Preflight_Result>;
 }
 
 /**

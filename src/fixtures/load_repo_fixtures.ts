@@ -48,7 +48,7 @@ export const fixture_repo_to_local_repo = (repo_data: Repo_Fixture_Data): Local_
 		repo_config: {
 			repo_url,
 			repo_dir: null,
-			branch: 'main' as any, // Git_Branch type
+			branch: 'main',
 		},
 		pkg,
 	};

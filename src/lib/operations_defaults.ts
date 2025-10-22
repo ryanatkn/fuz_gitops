@@ -5,10 +5,11 @@
 import {spawn, spawn_out} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
 import {git_checkout, type Git_Branch, type Git_Origin} from '@ryanatkn/belt/git.js';
+import {EMPTY_OBJECT} from '@ryanatkn/belt/object.js';
 
 import {has_changesets, read_changesets, predict_next_version} from '$lib/changeset_reader.js';
 import {wait_for_package, check_package_available} from '$lib/npm_registry.js';
-import {run_pre_flight_checks} from '$lib/pre_flight_checks.js';
+import {run_preflight_checks} from '$lib/preflight_checks.js';
 import {
 	git_add,
 	git_commit,
@@ -38,7 +39,7 @@ import type {
 } from '$lib/operations.js';
 
 /**
- * Default changeset operations using actual file system
+ * Default changeset operations using actual file system.
  */
 export const default_changeset_operations: Changeset_Operations = {
 	has_changesets: async (options) => {
@@ -77,12 +78,12 @@ export const default_changeset_operations: Changeset_Operations = {
 };
 
 /**
- * Default git operations using actual git commands
+ * Default git operations using actual git commands.
  */
 export const default_git_operations: Git_Operations = {
 	// Core git info
 	current_branch_name: async (options) => {
-		const {cwd} = options ?? {};
+		const {cwd} = options ?? EMPTY_OBJECT;
 		try {
 			const value = await git_current_branch_name_required(cwd ? {cwd} : undefined);
 			return {ok: true, value};
@@ -92,7 +93,7 @@ export const default_git_operations: Git_Operations = {
 	},
 
 	current_commit_hash: async (options) => {
-		const {branch, cwd} = options ?? {};
+		const {branch, cwd} = options ?? EMPTY_OBJECT;
 		try {
 			const value = await git_current_commit_hash_required(branch, cwd ? {cwd} : undefined);
 			return {ok: true, value};
@@ -102,7 +103,7 @@ export const default_git_operations: Git_Operations = {
 	},
 
 	check_clean_workspace: async (options) => {
-		const {cwd} = options ?? {};
+		const {cwd} = options ?? EMPTY_OBJECT;
 		try {
 			const value = await git_check_clean_workspace_as_boolean(cwd ? {cwd} : undefined);
 			return {ok: true, value};
@@ -123,7 +124,7 @@ export const default_git_operations: Git_Operations = {
 	},
 
 	pull: async (options) => {
-		const {origin, branch, cwd} = options ?? {};
+		const {origin, branch, cwd} = options ?? EMPTY_OBJECT;
 		try {
 			await spawn('git', ['pull', origin || 'origin', branch || ''], cwd ? {cwd} : undefined);
 			return {ok: true};
@@ -143,7 +144,7 @@ export const default_git_operations: Git_Operations = {
 	},
 
 	has_remote: async (options) => {
-		const {remote, cwd} = options ?? {};
+		const {remote, cwd} = options ?? EMPTY_OBJECT;
 		try {
 			const value = await git_has_remote(remote, cwd ? {cwd} : undefined);
 			return {ok: true, value};
@@ -184,7 +185,7 @@ export const default_git_operations: Git_Operations = {
 	},
 
 	has_changes: async (options) => {
-		const {cwd} = options ?? {};
+		const {cwd} = options ?? EMPTY_OBJECT;
 		try {
 			const value = await git_has_changes(cwd ? {cwd} : undefined);
 			return {ok: true, value};
@@ -194,7 +195,7 @@ export const default_git_operations: Git_Operations = {
 	},
 
 	get_changed_files: async (options) => {
-		const {cwd} = options ?? {};
+		const {cwd} = options ?? EMPTY_OBJECT;
 		try {
 			const value = await git_get_changed_files(cwd ? {cwd} : undefined);
 			return {ok: true, value};
@@ -226,7 +227,7 @@ export const default_git_operations: Git_Operations = {
 
 	// Stashing
 	stash: async (options) => {
-		const {message, cwd} = options ?? {};
+		const {message, cwd} = options ?? EMPTY_OBJECT;
 		try {
 			await git_stash(message, cwd ? {cwd} : undefined);
 			return {ok: true};
@@ -236,7 +237,7 @@ export const default_git_operations: Git_Operations = {
 	},
 
 	stash_pop: async (options) => {
-		const {cwd} = options ?? {};
+		const {cwd} = options ?? EMPTY_OBJECT;
 		try {
 			await git_stash_pop(cwd ? {cwd} : undefined);
 			return {ok: true};
@@ -263,7 +264,7 @@ export const default_git_operations: Git_Operations = {
 };
 
 /**
- * Default process operations using actual spawn
+ * Default process operations using actual spawn.
  */
 export const default_process_operations: Process_Operations = {
 	spawn: async (options) => {
@@ -290,7 +291,7 @@ export const default_process_operations: Process_Operations = {
 };
 
 /**
- * Default NPM operations using actual registry
+ * Default NPM operations using actual registry.
  */
 export const default_npm_operations: Npm_Operations = {
 	wait_for_package: async (options) => {
@@ -341,7 +342,7 @@ export const default_npm_operations: Npm_Operations = {
 	},
 
 	install: async (options) => {
-		const {cwd} = options ?? {};
+		const {cwd} = options ?? EMPTY_OBJECT;
 		try {
 			const spawned = await spawn_out('npm', ['install'], cwd ? {cwd} : undefined);
 			if (spawned.result.ok) {
@@ -356,14 +357,14 @@ export const default_npm_operations: Npm_Operations = {
 };
 
 /**
- * Default pre-flight operations
+ * Default preflight operations.
  */
 export const default_preflight_operations: Preflight_Operations = {
-	run_pre_flight_checks: async (options) => {
-		const {repos, pre_flight_options, git_ops, npm_ops, build_ops, changeset_ops} = options;
-		return run_pre_flight_checks(
+	run_preflight_checks: async (options) => {
+		const {repos, preflight_options, git_ops, npm_ops, build_ops, changeset_ops} = options;
+		return run_preflight_checks(
 			repos,
-			pre_flight_options,
+			preflight_options,
 			git_ops || default_git_operations,
 			npm_ops || default_npm_operations,
 			build_ops || default_build_operations,
@@ -373,7 +374,7 @@ export const default_preflight_operations: Preflight_Operations = {
 };
 
 /**
- * Default file system operations using Node's fs
+ * Default file system operations using Node's fs.
  */
 export const default_fs_operations: Fs_Operations = {
 	readFile: async (options) => {
@@ -398,7 +399,7 @@ export const default_fs_operations: Fs_Operations = {
 };
 
 /**
- * Default build operations using gro build
+ * Default build operations using gro build.
  */
 export const default_build_operations: Build_Operations = {
 	build_package: async (options) => {
@@ -422,7 +423,7 @@ export const default_build_operations: Build_Operations = {
 };
 
 /**
- * Combined default operations for all gitops functionality
+ * Combined default operations for all gitops functionality.
  */
 export const default_gitops_operations: Gitops_Operations = {
 	changeset: default_changeset_operations,

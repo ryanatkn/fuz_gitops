@@ -275,7 +275,7 @@ test('updates prod dependencies after publishing (Phase 1)', async () => {
 test('updates dev dependencies (Phase 2)', async () => {
 	const repos: Array<Local_Repo> = [
 		create_mock_repo({name: 'test-utils', version: '1.0.0'}),
-		create_mock_repo({name: 'lib', version: '1.0.0', devDeps: {'test-utils': '^1.0.0'}}),
+		create_mock_repo({name: 'lib', version: '1.0.0', dev_deps: {'test-utils': '^1.0.0'}}),
 	];
 
 	const mock_fs_ops = create_populated_fs_ops(repos);
@@ -396,7 +396,7 @@ test('handles mixed prod and dev deps on same package', async () => {
 			name: 'app',
 			version: '1.0.0',
 			deps: {shared: '^1.0.0'},
-			devDeps: {shared: '^1.0.0'}, // Also in dev deps
+			dev_deps: {shared: '^1.0.0'}, // Also in dev deps
 		}),
 	];
 
@@ -430,23 +430,23 @@ test('reports correct duration in result', async () => {
 	expect(typeof result.duration).toBe('number');
 });
 
-test('dry_run skips pre-flight checks', async () => {
+test('dry_run skips preflight checks', async () => {
 	const repos: Array<Local_Repo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
 
 	let preflight_called = false;
 
 	const mock_ops = create_mock_gitops_ops({
 		preflight: {
-			run_pre_flight_checks: async () => {
+			run_preflight_checks: async () => {
 				preflight_called = true;
-				return create_preflight_mock(['pkg-a']).run_pre_flight_checks();
+				return create_preflight_mock(['pkg-a']).run_preflight_checks();
 			},
 		},
 	});
 
 	await publish_repos(repos, {dry_run: true, update_deps: false}, mock_ops);
 
-	// Dry_run should skip pre-flight checks
+	// Dry_run should skip preflight checks
 	expect(preflight_called).toBe(false);
 });
 

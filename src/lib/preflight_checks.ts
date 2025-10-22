@@ -17,7 +17,7 @@ import {
 	default_changeset_operations,
 } from '$lib/operations_defaults.js';
 
-export interface Pre_Flight_Options {
+export interface Preflight_Options {
 	skip_changesets?: boolean;
 	skip_build_validation?: boolean; // Skip build validation (useful for tests)
 	required_branch?: string;
@@ -26,7 +26,7 @@ export interface Pre_Flight_Options {
 	log?: Logger;
 }
 
-export interface Pre_Flight_Result {
+export interface Preflight_Result {
 	ok: boolean;
 	warnings: Array<string>;
 	errors: Array<string>;
@@ -37,17 +37,17 @@ export interface Pre_Flight_Result {
 }
 
 /**
- * Runs pre-flight checks for all repos before publishing.
+ * Runs preflight checks for all repos before publishing.
  * Validates workspaces, branches, changesets, builds, and npm auth.
  */
-export const run_pre_flight_checks = async (
+export const run_preflight_checks = async (
 	repos: Array<Local_Repo>,
-	options: Pre_Flight_Options = {},
+	options: Preflight_Options = {},
 	git_ops: Git_Operations = default_git_operations,
 	npm_ops: Npm_Operations = default_npm_operations,
 	build_ops: Build_Operations = default_build_operations,
 	changeset_ops: Changeset_Operations = default_changeset_operations,
-): Promise<Pre_Flight_Result> => {
+): Promise<Preflight_Result> => {
 	const {
 		skip_changesets = false,
 		skip_build_validation = false,
@@ -64,7 +64,7 @@ export const run_pre_flight_checks = async (
 	let npm_username: string | undefined;
 	let estimated_duration: number | undefined;
 
-	log?.info(st('cyan', '✅ Running pre-flight checks...'));
+	log?.info(st('cyan', '✅ Running preflight checks...'));
 
 	// 1. Check clean workspaces - must be 100% clean before publishing
 	log?.info('  Checking workspace cleanliness...');
@@ -203,21 +203,21 @@ export const run_pre_flight_checks = async (
 	const ok = errors.length === 0;
 
 	if (errors.length > 0) {
-		log?.error(st('red', `\n❌ Pre-flight checks failed with ${errors.length} errors:`));
+		log?.error(st('red', `\n❌ Preflight checks failed with ${errors.length} errors:`));
 		for (const error of errors) {
 			log?.error(`  - ${error}`);
 		}
 	}
 
 	if (warnings.length > 0) {
-		log?.warn(st('yellow', `\n⚠️  Pre-flight checks found ${warnings.length} warnings:`));
+		log?.warn(st('yellow', `\n⚠️  Preflight checks found ${warnings.length} warnings:`));
 		for (const warning of warnings) {
 			log?.warn(`  - ${warning}`);
 		}
 	}
 
 	if (ok) {
-		log?.info(st('green', '\n✨ All pre-flight checks passed!'));
+		log?.info(st('green', '\n✨ All preflight checks passed!'));
 	}
 
 	return {

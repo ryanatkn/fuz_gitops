@@ -20,9 +20,9 @@ export interface Mock_Repo_Options {
 	name: string;
 	version?: string;
 	deps?: Record<string, string>;
-	devDeps?: Record<string, string>;
-	peerDeps?: Record<string, string>;
-	isPrivate?: boolean;
+	dev_deps?: Record<string, string>;
+	peer_deps?: Record<string, string>;
+	is_private?: boolean;
 }
 
 /**
@@ -33,9 +33,9 @@ export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
 		name,
 		version = '1.0.0',
 		deps = {},
-		devDeps = {},
-		peerDeps = {},
-		isPrivate = false,
+		dev_deps = {},
+		peer_deps = {},
+		is_private = false,
 	} = options;
 	return {
 		type: 'resolved_local_repo' as const,
@@ -64,14 +64,14 @@ export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
 				name,
 				version,
 				dependencies: deps,
-				devDependencies: devDeps,
-				peerDependencies: peerDeps,
-				private: isPrivate,
+				devDependencies: dev_deps,
+				peerDependencies: peer_deps,
+				private: is_private,
 			},
 		},
 		dependencies: new Map(Object.entries(deps)),
-		dev_dependencies: new Map(Object.entries(devDeps)),
-		peer_dependencies: new Map(Object.entries(peerDeps)),
+		dev_dependencies: new Map(Object.entries(dev_deps)),
+		peer_dependencies: new Map(Object.entries(peer_deps)),
 	};
 };
 
@@ -106,7 +106,7 @@ export const create_mock_gitops_ops = (
 	},
 	npm: create_mock_npm_ops(overrides.npm),
 	preflight: {
-		run_pre_flight_checks: async () => ({
+		run_preflight_checks: async () => ({
 			ok: true,
 			warnings: [],
 			errors: [],
@@ -237,13 +237,13 @@ export const create_mock_build_ops = (
 });
 
 /**
- * Creates a successful pre-flight mock with specified repos
+ * Creates a successful preflight mock with specified repos
  */
 export const create_preflight_mock = (
 	repos_with_changesets: Array<string> = [],
 	repos_without_changesets: Array<string> = [],
 ): {
-	run_pre_flight_checks: () => Promise<{
+	run_preflight_checks: () => Promise<{
 		ok: boolean;
 		warnings: Array<string>;
 		errors: Array<string>;
@@ -251,7 +251,7 @@ export const create_preflight_mock = (
 		repos_without_changesets: Set<string>;
 	}>;
 } => ({
-	run_pre_flight_checks: async () => ({
+	run_preflight_checks: async () => ({
 		ok: true,
 		warnings: [],
 		errors: [],

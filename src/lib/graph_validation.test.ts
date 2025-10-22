@@ -81,8 +81,8 @@ describe('validate_dependency_graph', () => {
 
 		it('throws on peer dependency cycle', () => {
 			const repos = [
-				create_mock_repo({name: 'pkg-a', version: '1.0.0', peerDeps: {'pkg-b': '^1.0.0'}}),
-				create_mock_repo({name: 'pkg-b', version: '1.0.0', peerDeps: {'pkg-a': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-a', version: '1.0.0', peer_deps: {'pkg-b': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', peer_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
 			expect(() =>
@@ -93,7 +93,7 @@ describe('validate_dependency_graph', () => {
 		it('throws on mixed prod/peer cycle', () => {
 			const repos = [
 				create_mock_repo({name: 'pkg-a', version: '1.0.0', deps: {'pkg-b': '^1.0.0'}}),
-				create_mock_repo({name: 'pkg-b', version: '1.0.0', peerDeps: {'pkg-a': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', peer_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
 			expect(() =>
@@ -150,8 +150,8 @@ describe('validate_dependency_graph', () => {
 
 		it('returns cycle info for peer dependency cycle', () => {
 			const repos = [
-				create_mock_repo({name: 'plugin-a', version: '1.0.0', peerDeps: {'plugin-b': '^1.0.0'}}),
-				create_mock_repo({name: 'plugin-b', version: '1.0.0', peerDeps: {'plugin-a': '^1.0.0'}}),
+				create_mock_repo({name: 'plugin-a', version: '1.0.0', peer_deps: {'plugin-b': '^1.0.0'}}),
+				create_mock_repo({name: 'plugin-b', version: '1.0.0', peer_deps: {'plugin-a': '^1.0.0'}}),
 			];
 
 			const result = validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: false});
@@ -165,8 +165,8 @@ describe('validate_dependency_graph', () => {
 	describe('dev cycles', () => {
 		it('returns valid order with dev cycle present', () => {
 			const repos = [
-				create_mock_repo({name: 'pkg-a', version: '1.0.0', devDeps: {'pkg-b': '^1.0.0'}}),
-				create_mock_repo({name: 'pkg-b', version: '1.0.0', devDeps: {'pkg-a': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-a', version: '1.0.0', dev_deps: {'pkg-b': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', dev_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
 			const result = validate_dependency_graph(repos);
@@ -183,11 +183,11 @@ describe('validate_dependency_graph', () => {
 		it('handles multiple dev cycles', () => {
 			const repos = [
 				// Dev cycle 1
-				create_mock_repo({name: 'test-a', version: '1.0.0', devDeps: {'test-b': '^1.0.0'}}),
-				create_mock_repo({name: 'test-b', version: '1.0.0', devDeps: {'test-a': '^1.0.0'}}),
+				create_mock_repo({name: 'test-a', version: '1.0.0', dev_deps: {'test-b': '^1.0.0'}}),
+				create_mock_repo({name: 'test-b', version: '1.0.0', dev_deps: {'test-a': '^1.0.0'}}),
 				// Dev cycle 2
-				create_mock_repo({name: 'tool-a', version: '1.0.0', devDeps: {'tool-b': '^1.0.0'}}),
-				create_mock_repo({name: 'tool-b', version: '1.0.0', devDeps: {'tool-a': '^1.0.0'}}),
+				create_mock_repo({name: 'tool-a', version: '1.0.0', dev_deps: {'tool-b': '^1.0.0'}}),
+				create_mock_repo({name: 'tool-b', version: '1.0.0', dev_deps: {'tool-a': '^1.0.0'}}),
 			];
 
 			const result = validate_dependency_graph(repos);
@@ -204,7 +204,7 @@ describe('validate_dependency_graph', () => {
 					name: 'app',
 					version: '1.0.0',
 					deps: {lib: '^1.0.0'}, // prod dep
-					devDeps: {lib: '^1.0.0'}, // also dev dep (redundant but valid)
+					dev_deps: {lib: '^1.0.0'}, // also dev dep (redundant but valid)
 				}),
 			];
 
@@ -222,8 +222,8 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'prod-a', version: '1.0.0', deps: {'prod-b': '^1.0.0'}}),
 				create_mock_repo({name: 'prod-b', version: '1.0.0', deps: {'prod-a': '^1.0.0'}}),
 				// Dev cycle
-				create_mock_repo({name: 'dev-a', version: '1.0.0', devDeps: {'dev-b': '^1.0.0'}}),
-				create_mock_repo({name: 'dev-b', version: '1.0.0', devDeps: {'dev-a': '^1.0.0'}}),
+				create_mock_repo({name: 'dev-a', version: '1.0.0', dev_deps: {'dev-b': '^1.0.0'}}),
+				create_mock_repo({name: 'dev-b', version: '1.0.0', dev_deps: {'dev-a': '^1.0.0'}}),
 			];
 
 			const result = validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: false});
@@ -238,7 +238,7 @@ describe('validate_dependency_graph', () => {
 			// a -> b (prod), b -> a (dev) - NOT a cycle in either analysis
 			const repos = [
 				create_mock_repo({name: 'pkg-a', version: '1.0.0', deps: {'pkg-b': '^1.0.0'}}),
-				create_mock_repo({name: 'pkg-b', version: '1.0.0', devDeps: {'pkg-a': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', dev_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
 			const result = validate_dependency_graph(repos);
@@ -280,8 +280,8 @@ describe('validate_dependency_graph', () => {
 
 		it('works with all logging disabled', () => {
 			const repos = [
-				create_mock_repo({name: 'pkg-a', version: '1.0.0', devDeps: {'pkg-b': '^1.0.0'}}),
-				create_mock_repo({name: 'pkg-b', version: '1.0.0', devDeps: {'pkg-a': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-a', version: '1.0.0', dev_deps: {'pkg-b': '^1.0.0'}}),
+				create_mock_repo({name: 'pkg-b', version: '1.0.0', dev_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
 			const result = validate_dependency_graph(repos, undefined, {
@@ -335,7 +335,7 @@ describe('validate_dependency_graph', () => {
 
 		it('handles private packages', () => {
 			const repos = [
-				create_mock_repo({name: 'private', version: '1.0.0', isPrivate: true}),
+				create_mock_repo({name: 'private', version: '1.0.0', is_private: true}),
 				create_mock_repo({name: 'public', version: '1.0.0', deps: {private: '^1.0.0'}}),
 			];
 

@@ -107,17 +107,17 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
   - Creates auto-changesets for dependent packages during publishing
 - `gro gitops_plan` - generates a publishing plan (read-only prediction)
 - `gro gitops_analyze` - analyzes dependencies and changesets
-- `gro gitops_publish --dry_run` - simulates publishing without pre-flight checks or state persistence
+- `gro gitops_publish --dry_run` - simulates publishing without preflight checks or state persistence
 - Handles circular dev dependencies by excluding from topological sort
 - Waits for NPM propagation with exponential backoff (10 minute default timeout)
 - Updates cross-repo dependencies automatically
-- Pre-flight checks validate clean workspaces, branches, builds, and npm authentication (skipped for --dry_run runs)
+- Preflight checks validate clean workspaces, branches, builds, and npm authentication (skipped for --dry_run runs)
 
 **Build Validation (Fail-Fast Safety)**
 
-The publishing workflow includes build validation in pre-flight checks to prevent broken state:
+The publishing workflow includes build validation in preflight checks to prevent broken state:
 
-1. **Pre-flight phase** (before any publishing):
+1. **Preflight phase** (before any publishing):
    - Runs `gro build` on all packages with changesets
    - Validates builds using current versions (no side effects)
    - Fails fast if ANY build fails
@@ -141,7 +141,7 @@ This prevents the known issue in `gro publish` where build failures leave repos 
 `gro gitops_publish --dry_run`:
 
 - **Simulated execution** - Runs the same code path as real publishing
-- Skips pre-flight checks (workspace, branch, npm auth)
+- Skips preflight checks (workspace, branch, npm auth)
 - Only simulates packages with explicit changesets (can't auto-generate changesets without real publishes)
 - Use plan for comprehensive "what would happen" analysis; use dry run to test execution flow
 
@@ -200,7 +200,7 @@ When a package appears in both production/peer and dev dependencies, production/
 - `version_utils.ts` - Version comparison and bump type detection
 - `npm_registry.ts` - NPM availability checks with retry
 - `dependency_updater.ts` - Package.json updates with changesets
-- `pre_flight_checks.ts` - Pre-publish validation including build checks
+- `preflight_checks.ts` - Pre-publish validation including build checks
 - `operations.ts` - Dependency injection interfaces for testability (including build operations)
 
 #### Publishing Algorithms
@@ -277,7 +277,7 @@ gro gitops_validate      # validate configuration (runs analyze, plan, and dry r
 gro gitops_analyze       # analyze dependencies and changesets
 gro gitops_plan          # generate publishing plan
 gro gitops_publish       # publish repos in dependency order
-gro gitops_publish --dry_run # dry run without pre-flight checks
+gro gitops_publish --dry_run # dry run without preflight checks
 gro gitops_publish --no-plan # skip plan confirmation before publishing
 
 # Development
@@ -299,7 +299,7 @@ Commands are categorized by their side effects:
 - `gro gitops_analyze` - Analyze dependency graph, detect cycles
 - `gro gitops_plan` - Generate publishing plan showing version changes and cascades
 - `gro gitops_validate` - Run all validation checks (analyze + plan + dry run)
-- `gro gitops_publish --dry_run` - Simulate publishing without pre-flight checks
+- `gro gitops_publish --dry_run` - Simulate publishing without preflight checks
 
 ### Data Sync Commands (Local Changes Only)
 
@@ -364,7 +364,7 @@ Core modules tested:
 - `changeset_reader.test.ts` - Changeset parsing and version prediction
 - `dependency_graph.test.ts` - Topological sorting and cycle detection
 - `changeset_generator.test.ts` - Auto-changeset content generation
-- `pre_flight_checks.test.ts` - Workspace, branch, and npm validation
+- `preflight_checks.test.ts` - Workspace, branch, and npm validation
 - `dependency_updater.test.ts` - Package.json updates and git commits
 
 ### Fixture Testing
@@ -404,6 +404,7 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 Fixture repos are auto-generated on first test run if missing. To manually regenerate: `gro src/fixtures/generate_repos`
 
 Each fixture runs in isolation with its own config, validating:
+
 - Publishing order (topological sort correctness)
 - Version changes (explicit, auto-generated, bump escalation scenarios)
 - Breaking change cascades
@@ -511,7 +512,7 @@ gro gitops_publish
 
 ### Common Errors and Solutions
 
-**Error: "Pre-flight checks failed: workspace has uncommitted changes"**
+**Error: "Preflight checks failed: workspace has uncommitted changes"**
 
 Solution: Commit or stash your changes before publishing
 
@@ -521,7 +522,7 @@ git add .
 git commit -m "prepare for publish"
 ```
 
-**Error: "Pre-flight checks failed: not on main branch"**
+**Error: "Preflight checks failed: not on main branch"**
 
 Solution: Switch to main branch
 
@@ -539,7 +540,7 @@ npm login
 npm whoami  # verify login
 ```
 
-**Error: "Pre-flight checks failed: [package] failed to build"**
+**Error: "Preflight checks failed: [package] failed to build"**
 
 Solution: Fix the build errors before publishing
 
@@ -550,7 +551,7 @@ gro build  # See the full build error
 gro build  # Verify it works
 ```
 
-Build validation runs during pre-flight checks to prevent broken state. All packages must build successfully before any publishing begins.
+Build validation runs during preflight checks to prevent broken state. All packages must build successfully before any publishing begins.
 
 **Warning: "Plan differs from actual publish"**
 

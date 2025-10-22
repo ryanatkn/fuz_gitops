@@ -98,7 +98,7 @@ describe('dependency_updater', () => {
 			const fs = create_mock_fs_ops();
 			const repo = create_mock_repo({
 				name: 'test-pkg',
-				devDeps: {
+				dev_deps: {
 					'dev-a': '^1.0.0',
 				},
 			});
@@ -133,7 +133,7 @@ describe('dependency_updater', () => {
 			const fs = create_mock_fs_ops();
 			const repo = create_mock_repo({
 				name: 'test-pkg',
-				peerDeps: {
+				peer_deps: {
 					'peer-a': '^3.0.0',
 				},
 			});
@@ -242,7 +242,7 @@ describe('dependency_updater', () => {
 					'dep-a': '^1.0.0',
 					'dep-b': '^2.0.0',
 				},
-				devDeps: {
+				dev_deps: {
 					'dev-a': '^3.0.0',
 				},
 			});
@@ -418,7 +418,7 @@ describe('dependency_updater', () => {
 		it('identifies devDependencies needing updates', () => {
 			const repo = create_mock_repo({
 				name: 'test-pkg',
-				devDeps: {
+				dev_deps: {
 					'dev-a': '^3.0.0',
 				},
 			});
@@ -438,7 +438,7 @@ describe('dependency_updater', () => {
 		it('identifies peerDependencies needing updates', () => {
 			const repo = create_mock_repo({
 				name: 'test-pkg',
-				peerDeps: {
+				peer_deps: {
 					'peer-a': '^4.0.0',
 				},
 			});
@@ -474,8 +474,8 @@ describe('dependency_updater', () => {
 			const repo = create_mock_repo({
 				name: 'test-pkg',
 				deps: {'dep-a': '^1.0.0'},
-				devDeps: {'dev-a': '^2.0.0'},
-				peerDeps: {'peer-a': '^3.0.0'},
+				dev_deps: {'dev-a': '^2.0.0'},
+				peer_deps: {'peer-a': '^3.0.0'},
 			});
 
 			const published = new Map([

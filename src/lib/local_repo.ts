@@ -171,6 +171,7 @@ export const resolve_local_repos = async (
 	gitops_config: Gitops_Config,
 	download: boolean,
 	log?: Logger,
+	npm_ops: Npm_Operations = default_npm_operations,
 ): Promise<Array<Resolved_Local_Repo>> => {
 	let resolved_local_repos: Array<Resolved_Local_Repo> | null = null;
 
@@ -182,7 +183,7 @@ export const resolve_local_repos = async (
 				repos_dir,
 				resolved_config.unresolved_local_repos,
 				log,
-				default_npm_operations,
+				npm_ops,
 			);
 			resolved_local_repos = (resolved_config.resolved_local_repos ?? [])
 				.concat(downloaded)
@@ -275,21 +276,4 @@ const download_repos = async (
 		resolved.push(local_repo);
 	}
 	return resolved;
-};
-
-/**
- * Extracts all dependencies from a local repo.
- */
-export const extract_dependencies = (
-	repo: Local_Repo,
-): {
-	dependencies: Map<string, string>;
-	dev_dependencies: Map<string, string>;
-	peer_dependencies: Map<string, string>;
-} => {
-	return {
-		dependencies: repo.dependencies || new Map(),
-		dev_dependencies: repo.dev_dependencies || new Map(),
-		peer_dependencies: repo.peer_dependencies || new Map(),
-	};
 };

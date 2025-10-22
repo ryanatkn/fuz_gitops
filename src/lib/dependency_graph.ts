@@ -4,6 +4,7 @@ import {
 	type Dependency_Spec,
 	type Dependency_Graph_Json,
 } from '$lib/dependency_types.js';
+import {EMPTY_OBJECT} from '@ryanatkn/belt/object.js';
 
 export interface Dependency_Node {
 	name: string;
@@ -41,19 +42,20 @@ export class Dependency_Graph {
 			};
 
 			// Extract dependencies
-			const deps = pkg.package_json.dependencies || {};
-			const devDeps = pkg.package_json.devDependencies || {};
-			const peerDeps = pkg.package_json.peerDependencies || {};
+			const deps = pkg.package_json.dependencies || (EMPTY_OBJECT as Record<string, string>);
+			const dev_deps = pkg.package_json.devDependencies || (EMPTY_OBJECT as Record<string, string>);
+			const peer_deps =
+				pkg.package_json.peerDependencies || (EMPTY_OBJECT as Record<string, string>);
 
 			// Add dependencies, prioritizing prod/peer over dev
 			// (if a package appears in multiple dep types, use the stronger constraint)
 			for (const [name, version] of Object.entries(deps)) {
 				node.dependencies.set(name, {type: DEPENDENCY_TYPE.PROD, version});
 			}
-			for (const [name, version] of Object.entries(peerDeps)) {
+			for (const [name, version] of Object.entries(peer_deps)) {
 				node.dependencies.set(name, {type: DEPENDENCY_TYPE.PEER, version});
 			}
-			for (const [name, version] of Object.entries(devDeps)) {
+			for (const [name, version] of Object.entries(dev_deps)) {
 				// Only add dev deps if not already present as prod/peer
 				if (!node.dependencies.has(name)) {
 					node.dependencies.set(name, {type: DEPENDENCY_TYPE.DEV, version});

@@ -73,7 +73,7 @@ test('generates auto-changesets for dependency updates', async () => {
 	const repos: Array<Local_Repo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
-		create_mock_repo({name: 'pkg-c', version: '0.3.0', devDeps: {'pkg-a': '0.1.0'}}), // devDep only
+		create_mock_repo({name: 'pkg-c', version: '0.3.0', dev_deps: {'pkg-a': '0.1.0'}}), // devDep only
 	];
 
 	// Mock operations where only pkg-a has changesets
@@ -105,8 +105,8 @@ test('generates auto-changesets for dependency updates', async () => {
 
 test('handles circular dev dependencies', async () => {
 	const repos: Array<Local_Repo> = [
-		create_mock_repo({name: 'pkg-a', version: '0.1.0', devDeps: {'pkg-b': '0.2.0'}}),
-		create_mock_repo({name: 'pkg-b', version: '0.2.0', devDeps: {'pkg-a': '0.1.0'}}),
+		create_mock_repo({name: 'pkg-a', version: '0.1.0', dev_deps: {'pkg-b': '0.2.0'}}),
+		create_mock_repo({name: 'pkg-b', version: '0.2.0', dev_deps: {'pkg-a': '0.1.0'}}),
 	];
 
 	// Mock operations with no changesets

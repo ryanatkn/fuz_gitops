@@ -6,7 +6,7 @@ import {styleText as st} from 'node:util';
 import type {Local_Repo} from '$lib/local_repo.js';
 import {update_package_json, type Version_Strategy} from '$lib/dependency_updater.js';
 import {validate_dependency_graph} from '$lib/graph_validation.js';
-import {type Pre_Flight_Options} from '$lib/pre_flight_checks.js';
+import {type Preflight_Options} from '$lib/preflight_checks.js';
 import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
 import type {Gitops_Operations} from '$lib/operations.js';
 import {default_gitops_operations} from '$lib/operations_defaults.js';
@@ -51,27 +51,27 @@ export const publish_repos = async (
 	const start_time = Date.now();
 	const {dry_run, update_deps, log} = options;
 
-	// Pre-flight checks (skip for dry runs since we're not actually publishing)
+	// Preflight checks (skip for dry runs since we're not actually publishing)
 	if (!dry_run) {
-		const pre_flight_options: Pre_Flight_Options = {
+		const preflight_options: Preflight_Options = {
 			skip_changesets: false, // Always check for changesets
 			required_branch: 'main',
 			log,
 		};
-		const pre_flight = await ops.preflight.run_pre_flight_checks({
+		const preflight = await ops.preflight.run_preflight_checks({
 			repos,
-			pre_flight_options,
+			preflight_options,
 			git_ops: ops.git,
 			npm_ops: ops.npm,
 			build_ops: ops.build,
 			changeset_ops: ops.changeset,
 		});
 
-		if (!pre_flight.ok) {
-			throw new Task_Error(`Pre-flight checks failed: ${pre_flight.errors.join(', ')}`);
+		if (!preflight.ok) {
+			throw new Task_Error(`Preflight checks failed: ${preflight.errors.join(', ')}`);
 		}
 	} else {
-		log?.info('⏭️  Skipping pre-flight checks for dry run');
+		log?.info('⏭️  Skipping preflight checks for dry run');
 	}
 
 	// Build dependency graph and validate
@@ -350,7 +350,7 @@ const publish_single_repo = async (
 		};
 	}
 
-	// Run gro publish with --no-build (builds were validated in pre-flight checks)
+	// Run gro publish with --no-build (builds were validated in preflight checks)
 	const publish_result = await ops.process.spawn({
 		cmd: 'gro',
 		args: ['publish', '--no-build'],

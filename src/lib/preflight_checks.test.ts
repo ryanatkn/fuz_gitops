@@ -1,6 +1,6 @@
 import {describe, it, expect} from 'vitest';
 
-import {run_pre_flight_checks} from '$lib/pre_flight_checks.js';
+import {run_preflight_checks} from '$lib/preflight_checks.js';
 import {
 	create_mock_repo,
 	create_mock_git_ops,
@@ -11,7 +11,7 @@ import type {Local_Repo} from '$lib/local_repo.js';
 
 /* eslint-disable @typescript-eslint/require-await */
 
-describe('pre_flight_checks', () => {
+describe('preflight_checks', () => {
 	describe('workspace cleanliness', () => {
 		it('passes when all workspaces are clean', async () => {
 			const repos = [create_mock_repo({name: 'package-a'}), create_mock_repo({name: 'package-b'})];
@@ -21,7 +21,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -45,7 +45,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -71,7 +71,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -91,7 +91,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -113,7 +113,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -135,7 +135,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -158,7 +158,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
@@ -181,7 +181,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
@@ -203,7 +203,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, required_branch: 'release', check_remote: false},
 				git_ops,
@@ -221,7 +221,7 @@ describe('pre_flight_checks', () => {
 			});
 
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -240,7 +240,7 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops();
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(repos, {check_remote: false}, git_ops, npm_ops);
+			const result = await run_preflight_checks(repos, {check_remote: false}, git_ops, npm_ops);
 
 			// Without actual changesets, all should be marked as without
 			expect(result.repos_without_changesets.size).toBe(2);
@@ -253,7 +253,7 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops();
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(repos, {check_remote: false}, git_ops, npm_ops);
+			const result = await run_preflight_checks(repos, {check_remote: false}, git_ops, npm_ops);
 
 			// Filter for changeset-related warnings (may also have npm warnings)
 			const changeset_warnings = result.warnings.filter((w) => w.includes('no changesets'));
@@ -266,7 +266,7 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops();
 
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -293,7 +293,7 @@ describe('pre_flight_checks', () => {
 			// This test depends on actual npm being logged in
 			// In a real test, we'd mock spawn_out
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -330,7 +330,7 @@ describe('pre_flight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
@@ -350,7 +350,7 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops();
 
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -369,7 +369,7 @@ describe('pre_flight_checks', () => {
 			const git_ops = create_mock_git_ops();
 
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{skip_changesets: true, check_remote: false},
 				git_ops,
@@ -403,7 +403,7 @@ describe('pre_flight_checks', () => {
 				},
 			});
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{check_remote: false, skip_build_validation: true},
 				git_ops,
@@ -434,7 +434,7 @@ describe('pre_flight_checks', () => {
 			// Note: In the real implementation, has_changesets is imported from changeset_reader
 			// For proper testing, we'd need to mock that module, but for now these tests
 			// document the expected behavior
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{check_remote: false, skip_changesets: false},
 				git_ops,
@@ -464,7 +464,7 @@ describe('pre_flight_checks', () => {
 				},
 			});
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{check_remote: false, skip_changesets: false},
 				git_ops,
@@ -477,7 +477,7 @@ describe('pre_flight_checks', () => {
 			expect(call_count).toBe(0);
 		});
 
-		it('fails pre-flight when build fails for package with changesets', async () => {
+		it('fails preflight when build fails for package with changesets', async () => {
 			const repos = [create_mock_repo({name: 'package-a'}), create_mock_repo({name: 'package-b'})];
 
 			const git_ops = create_mock_git_ops();
@@ -503,7 +503,7 @@ describe('pre_flight_checks', () => {
 				predict_next_version: async () => null,
 			};
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{check_remote: false, skip_changesets: false},
 				git_ops,
@@ -540,7 +540,7 @@ describe('pre_flight_checks', () => {
 				predict_next_version: async () => null,
 			};
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{check_remote: false, skip_changesets: false},
 				git_ops,
@@ -574,7 +574,7 @@ describe('pre_flight_checks', () => {
 				},
 			});
 
-			await run_pre_flight_checks(
+			await run_preflight_checks(
 				repos,
 				{check_remote: false, skip_changesets: true},
 				git_ops,
@@ -615,7 +615,7 @@ describe('pre_flight_checks', () => {
 				predict_next_version: async () => null,
 			};
 
-			const result = await run_pre_flight_checks(
+			const result = await run_preflight_checks(
 				repos,
 				{check_remote: false, skip_changesets: false},
 				git_ops,
