@@ -8,7 +8,6 @@ import {load_gitops_config, type Gitops_Config} from '$lib/gitops_config.js';
 import {load_local_repos, resolve_local_repos, type Local_Repo} from '$lib/local_repo.js';
 import {resolve_gitops_config} from '$lib/resolved_gitops_config.js';
 import {DEFAULT_REPOS_DIR} from '$lib/paths.js';
-import {default_git_operations, default_npm_operations} from '$lib/operations_defaults.js';
 import type {Git_Operations, Npm_Operations} from '$lib/operations.js';
 
 export interface Get_Gitops_Ready_Options {
@@ -48,21 +47,16 @@ export const get_gitops_ready = async (
 	);
 	const resolved_config = resolve_gitops_config(gitops_config, repos_dir);
 
-	const resolved_local_repos = await resolve_local_repos(
+	const resolved_local_repos = await resolve_local_repos({
 		resolved_config,
 		repos_dir,
 		gitops_config,
 		download,
 		log,
 		npm_ops,
-	);
+	});
 
-	const local_repos = await load_local_repos(
-		resolved_local_repos,
-		log,
-		git_ops || default_git_operations,
-		npm_ops || default_npm_operations,
-	);
+	const local_repos = await load_local_repos({resolved_local_repos, log, git_ops, npm_ops});
 
 	return {config_path, repos_dir, gitops_config, local_repos};
 };

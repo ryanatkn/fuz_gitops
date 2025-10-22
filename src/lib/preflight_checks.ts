@@ -36,18 +36,27 @@ export interface Preflight_Result {
 	npm_username?: string;
 }
 
+export interface Run_Preflight_Checks_Options {
+	repos: Array<Local_Repo>;
+	preflight_options?: Preflight_Options;
+	git_ops?: Git_Operations;
+	npm_ops?: Npm_Operations;
+	build_ops?: Build_Operations;
+	changeset_ops?: Changeset_Operations;
+}
+
 /**
  * Runs preflight checks for all repos before publishing.
  * Validates workspaces, branches, changesets, builds, and npm auth.
  */
-export const run_preflight_checks = async (
-	repos: Array<Local_Repo>,
-	options: Preflight_Options = {},
-	git_ops: Git_Operations = default_git_operations,
-	npm_ops: Npm_Operations = default_npm_operations,
-	build_ops: Build_Operations = default_build_operations,
-	changeset_ops: Changeset_Operations = default_changeset_operations,
-): Promise<Preflight_Result> => {
+export const run_preflight_checks = async ({
+	repos,
+	preflight_options = {},
+	git_ops = default_git_operations,
+	npm_ops = default_npm_operations,
+	build_ops = default_build_operations,
+	changeset_ops = default_changeset_operations,
+}: Run_Preflight_Checks_Options): Promise<Preflight_Result> => {
 	const {
 		skip_changesets = false,
 		skip_build_validation = false,
@@ -55,7 +64,7 @@ export const run_preflight_checks = async (
 		check_remote = true,
 		estimate_time = true,
 		log,
-	} = options;
+	} = preflight_options;
 
 	const warnings: Array<string> = [];
 	const errors: Array<string> = [];

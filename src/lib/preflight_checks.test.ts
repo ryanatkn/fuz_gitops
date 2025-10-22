@@ -21,12 +21,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(true);
 			expect(result.errors).toHaveLength(0);
@@ -45,12 +45,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(false);
 			expect(result.errors).toHaveLength(1);
@@ -71,12 +71,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(false);
 			expect(result.errors).toHaveLength(3);
@@ -91,12 +91,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			// Should fail - changeset files are no longer filtered
 			expect(result.ok).toBe(false);
@@ -113,12 +113,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			// Should fail - package.json is no longer filtered
 			expect(result.ok).toBe(false);
@@ -135,12 +135,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			// Should fail - package-lock.json is no longer filtered
 			expect(result.ok).toBe(false);
@@ -158,12 +158,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, required_branch: 'main', check_remote: false},
+				preflight_options: {skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(true);
 			expect(result.errors).toHaveLength(0);
@@ -181,12 +181,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, required_branch: 'main', check_remote: false},
+				preflight_options: {skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(false);
 			expect(result.errors).toHaveLength(1);
@@ -203,12 +203,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, required_branch: 'release', check_remote: false},
+				preflight_options: {skip_changesets: true, required_branch: 'release', check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(true);
 		});
@@ -221,12 +221,12 @@ describe('preflight_checks', () => {
 			});
 
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(false);
 			expect(result.errors[0]).toContain("expected 'main'");
@@ -240,7 +240,12 @@ describe('preflight_checks', () => {
 			const git_ops = create_mock_git_ops();
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(repos, {check_remote: false}, git_ops, npm_ops);
+			const result = await run_preflight_checks({
+				repos,
+				preflight_options: {check_remote: false},
+				git_ops,
+				npm_ops,
+			});
 
 			// Without actual changesets, all should be marked as without
 			expect(result.repos_without_changesets.size).toBe(2);
@@ -253,7 +258,12 @@ describe('preflight_checks', () => {
 			const git_ops = create_mock_git_ops();
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(repos, {check_remote: false}, git_ops, npm_ops);
+			const result = await run_preflight_checks({
+				repos,
+				preflight_options: {check_remote: false},
+				git_ops,
+				npm_ops,
+			});
 
 			// Filter for changeset-related warnings (may also have npm warnings)
 			const changeset_warnings = result.warnings.filter((w) => w.includes('no changesets'));
@@ -266,12 +276,12 @@ describe('preflight_checks', () => {
 			const git_ops = create_mock_git_ops();
 
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.repos_with_changesets.size).toBe(0);
 			expect(result.repos_without_changesets.size).toBe(0);
@@ -293,12 +303,12 @@ describe('preflight_checks', () => {
 			// This test depends on actual npm being logged in
 			// In a real test, we'd mock spawn_out
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			// We can't assert npm auth result without mocking spawn
 			// but we can check the structure
@@ -330,12 +340,12 @@ describe('preflight_checks', () => {
 			});
 			const npm_ops = create_mock_npm_ops();
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, required_branch: 'main', check_remote: false},
+				preflight_options: {skip_changesets: true, required_branch: 'main', check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(false);
 			expect(result.errors.length).toBe(3); // 1 dirty + 2 wrong branches
@@ -350,12 +360,12 @@ describe('preflight_checks', () => {
 			const git_ops = create_mock_git_ops();
 
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result.ok).toBe(true);
 			expect(result.errors).toHaveLength(0);
@@ -369,12 +379,12 @@ describe('preflight_checks', () => {
 			const git_ops = create_mock_git_ops();
 
 			const npm_ops = create_mock_npm_ops();
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{skip_changesets: true, check_remote: false},
+				preflight_options: {skip_changesets: true, check_remote: false},
 				git_ops,
 				npm_ops,
-			);
+			});
 
 			expect(result).toHaveProperty('ok');
 			expect(result).toHaveProperty('warnings');
@@ -403,13 +413,13 @@ describe('preflight_checks', () => {
 				},
 			});
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{check_remote: false, skip_build_validation: true},
+				preflight_options: {check_remote: false, skip_build_validation: true},
 				git_ops,
 				npm_ops,
 				build_ops,
-			);
+			});
 
 			expect(result.ok).toBe(true);
 			expect(build_called).toBe(false);
@@ -434,13 +444,13 @@ describe('preflight_checks', () => {
 			// Note: In the real implementation, has_changesets is imported from changeset_reader
 			// For proper testing, we'd need to mock that module, but for now these tests
 			// document the expected behavior
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{check_remote: false, skip_changesets: false},
+				preflight_options: {check_remote: false, skip_changesets: false},
 				git_ops,
 				npm_ops,
 				build_ops,
-			);
+			});
 
 			// Since mock repos don't have actual .changeset/ directories, build count is 0
 			expect(result.ok).toBe(true);
@@ -464,13 +474,13 @@ describe('preflight_checks', () => {
 				},
 			});
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{check_remote: false, skip_changesets: false},
+				preflight_options: {check_remote: false, skip_changesets: false},
 				git_ops,
 				npm_ops,
 				build_ops,
-			);
+			});
 
 			// Since mock repos don't have changesets, no builds run
 			expect(result.ok).toBe(true);
@@ -503,14 +513,14 @@ describe('preflight_checks', () => {
 				predict_next_version: async () => null,
 			};
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{check_remote: false, skip_changesets: false},
+				preflight_options: {check_remote: false, skip_changesets: false},
 				git_ops,
 				npm_ops,
 				build_ops,
 				changeset_ops,
-			);
+			});
 
 			// Should fail due to build error
 			expect(result.ok).toBe(false);
@@ -540,14 +550,14 @@ describe('preflight_checks', () => {
 				predict_next_version: async () => null,
 			};
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{check_remote: false, skip_changesets: false},
+				preflight_options: {check_remote: false, skip_changesets: false},
 				git_ops,
 				npm_ops,
 				build_ops,
 				changeset_ops,
-			);
+			});
 
 			// Should fail with detailed error message
 			expect(result.ok).toBe(false);
@@ -574,13 +584,13 @@ describe('preflight_checks', () => {
 				},
 			});
 
-			await run_preflight_checks(
+			await run_preflight_checks({
 				repos,
-				{check_remote: false, skip_changesets: true},
+				preflight_options: {check_remote: false, skip_changesets: true},
 				git_ops,
 				npm_ops,
 				build_ops,
-			);
+			});
 
 			// With skip_changesets, no builds should run
 			expect(built_packages).toHaveLength(0);
@@ -615,14 +625,14 @@ describe('preflight_checks', () => {
 				predict_next_version: async () => null,
 			};
 
-			const result = await run_preflight_checks(
+			const result = await run_preflight_checks({
 				repos,
-				{check_remote: false, skip_changesets: false},
+				preflight_options: {check_remote: false, skip_changesets: false},
 				git_ops,
 				npm_ops,
 				build_ops,
 				changeset_ops,
-			);
+			});
 
 			// Should fail but continue to build all packages
 			expect(result.ok).toBe(false);

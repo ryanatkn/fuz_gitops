@@ -44,12 +44,17 @@ export interface Unresolved_Local_Repo {
  * Loads the data for a resolved local repo, switching branches if needed and pulling latest changes.
  * Automatically installs dependencies if package.json changed during pull.
  */
-export const load_local_repo = async (
-	resolved_local_repo: Resolved_Local_Repo,
-	_log?: Logger,
-	git_ops: Git_Operations = default_git_operations,
-	npm_ops: Npm_Operations = default_npm_operations,
-): Promise<Local_Repo> => {
+export const load_local_repo = async ({
+	resolved_local_repo,
+	log: _log,
+	git_ops = default_git_operations,
+	npm_ops = default_npm_operations,
+}: {
+	resolved_local_repo: Resolved_Local_Repo;
+	log?: Logger;
+	git_ops?: Git_Operations;
+	npm_ops?: Npm_Operations;
+}): Promise<Local_Repo> => {
 	const {repo_config, repo_dir} = resolved_local_repo;
 
 	// Record commit hash before any changes
@@ -131,7 +136,7 @@ export const load_local_repo = async (
 		}
 
 		if (changed_result.value) {
-			const install_result = await npm_ops.install({cwd: resolved_local_repo.repo_dir});
+			const install_result = await npm_ops.install({cwd: repo_dir});
 			if (!install_result.ok) {
 				throw new Task_Error(
 					`Failed to install dependencies in ${repo_dir}: ${install_result.message}${install_result.stderr ? `\n${install_result.stderr}` : ''}`,
@@ -165,26 +170,33 @@ export const load_local_repo = async (
 	return local_repo;
 };
 
-export const resolve_local_repos = async (
-	resolved_config: Resolved_Gitops_Config,
-	repos_dir: string,
-	gitops_config: Gitops_Config,
-	download: boolean,
-	log?: Logger,
-	npm_ops: Npm_Operations = default_npm_operations,
-): Promise<Array<Resolved_Local_Repo>> => {
+export const resolve_local_repos = async ({
+	resolved_config,
+	repos_dir,
+	gitops_config,
+	download,
+	log,
+	npm_ops = default_npm_operations,
+}: {
+	resolved_config: Resolved_Gitops_Config;
+	repos_dir: string;
+	gitops_config: Gitops_Config;
+	download: boolean;
+	log?: Logger;
+	npm_ops?: Npm_Operations;
+}): Promise<Array<Resolved_Local_Repo>> => {
 	let resolved_local_repos: Array<Resolved_Local_Repo> | null = null;
 
 	if (!resolved_config.unresolved_local_repos) {
 		resolved_local_repos = resolved_config.resolved_local_repos;
 	} else {
 		if (download) {
-			const downloaded = await download_repos(
+			const downloaded = await download_repos({
 				repos_dir,
-				resolved_config.unresolved_local_repos,
+				unresolved_local_repos: resolved_config.unresolved_local_repos,
 				log,
 				npm_ops,
-			);
+			});
 			resolved_local_repos = (resolved_config.resolved_local_repos ?? [])
 				.concat(downloaded)
 				.sort(
@@ -208,23 +220,31 @@ export const resolve_local_repos = async (
 	return resolved_local_repos;
 };
 
-export const load_local_repos = async (
-	resolved_local_repos: Array<Resolved_Local_Repo>,
-	log?: Logger,
-	git_ops: Git_Operations = default_git_operations,
-	npm_ops: Npm_Operations = default_npm_operations,
-): Promise<Array<Local_Repo>> => {
+export const load_local_repos = async ({
+	resolved_local_repos,
+	log,
+	git_ops = default_git_operations,
+	npm_ops = default_npm_operations,
+}: {
+	resolved_local_repos: Array<Resolved_Local_Repo>;
+	log?: Logger;
+	git_ops?: Git_Operations;
+	npm_ops?: Npm_Operations;
+}): Promise<Array<Local_Repo>> => {
 	const loaded: Array<Local_Repo> = [];
 	for (const resolved_local_repo of resolved_local_repos) {
-		loaded.push(await load_local_repo(resolved_local_repo, log, git_ops, npm_ops)); // eslint-disable-line no-await-in-loop
+		loaded.push(await load_local_repo({resolved_local_repo, log, git_ops, npm_ops})); // eslint-disable-line no-await-in-loop
 	}
 	return loaded;
 };
 
-export const resolve_local_repo = (
-	repo_config: Gitops_Repo_Config,
-	repos_dir: string,
-): Maybe_Local_Repo => {
+export const resolve_local_repo = ({
+	repo_config,
+	repos_dir,
+}: {
+	repo_config: Gitops_Repo_Config;
+	repos_dir: string;
+}): Maybe_Local_Repo => {
 	const {repo_url} = repo_config;
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);
 	if (!repo_name) throw Error('Invalid `repo_config.repo_url` ' + repo_url);
@@ -251,17 +271,22 @@ const to_repo_git_ssh_url = (repo_url: string): string => {
 	return `git@${url.hostname}:${url.pathname.substring(1)}`;
 };
 
-const download_repos = async (
-	repos_dir: string,
-	unresolved_local_repos: Array<Unresolved_Local_Repo>,
-	log: Logger | undefined,
-	npm_ops: Npm_Operations = default_npm_operations,
-): Promise<Array<Resolved_Local_Repo>> => {
+const download_repos = async ({
+	repos_dir,
+	unresolved_local_repos,
+	log,
+	npm_ops = default_npm_operations,
+}: {
+	repos_dir: string;
+	unresolved_local_repos: Array<Unresolved_Local_Repo>;
+	log?: Logger;
+	npm_ops?: Npm_Operations;
+}): Promise<Array<Resolved_Local_Repo>> => {
 	const resolved: Array<Resolved_Local_Repo> = [];
 	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
 		log?.info(`cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
 		await spawn('git', ['clone', repo_git_ssh_url], {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
-		const local_repo = resolve_local_repo(repo_config, repos_dir);
+		const local_repo = resolve_local_repo({repo_config, repos_dir});
 		if (local_repo.type === 'unresolved_local_repo') {
 			throw new Task_Error(`Failed to clone repo ${repo_git_ssh_url} to ${repos_dir}`);
 		}

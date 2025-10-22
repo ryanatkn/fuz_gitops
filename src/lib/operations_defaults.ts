@@ -361,15 +361,7 @@ export const default_npm_operations: Npm_Operations = {
  */
 export const default_preflight_operations: Preflight_Operations = {
 	run_preflight_checks: async (options) => {
-		const {repos, preflight_options, git_ops, npm_ops, build_ops, changeset_ops} = options;
-		return run_preflight_checks(
-			repos,
-			preflight_options,
-			git_ops || default_git_operations,
-			npm_ops || default_npm_operations,
-			build_ops || default_build_operations,
-			changeset_ops || default_changeset_operations,
-		);
+		return run_preflight_checks(options);
 	},
 };
 
