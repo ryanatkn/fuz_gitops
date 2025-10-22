@@ -1,5 +1,14 @@
 # @ryanatkn/fuz_gitops
 
+## 0.51.0
+
+### Minor Changes
+
+- reorder args of `get_gitops_ready` ([#33](https://github.com/ryanatkn/fuz_gitops/pull/33))
+- sync git with remote in `load_local_repo` ([#33](https://github.com/ryanatkn/fuz_gitops/pull/33))
+- add publishing support ([#36](https://github.com/ryanatkn/fuz_gitops/pull/36))
+- update peer deps ([#36](https://github.com/ryanatkn/fuz_gitops/pull/36))
+
 ## 0.50.1
 
 ### Patch Changes
