@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.50.1",
+  "version": "0.51.0",
   "description": "a tool for managing many repos",
   "glyph": "🪄",
   "logo": "logo.svg",
@@ -30,10 +30,10 @@
     "node": ">=22.15"
   },
   "peerDependencies": {
-    "@ryanatkn/belt": "*",
-    "@ryanatkn/fuz": "*",
-    "@ryanatkn/gro": "*",
-    "@ryanatkn/moss": "*",
+    "@ryanatkn/belt": "^0.35.1",
+    "@ryanatkn/fuz": "^0.147.0",
+    "@ryanatkn/gro": "^0.169.1",
+    "@ryanatkn/moss": "^0.36.2",
     "@sveltejs/kit": "^2",
     "svelte": "^5",
     "zod": "^4.1.5"
@@ -44,7 +44,7 @@
     "@ryanatkn/eslint-config": "^0.8.0",
     "@ryanatkn/fuz": "^0.147.0",
     "@ryanatkn/gro": "^0.169.1",
-    "@ryanatkn/moss": "^0.36.0",
+    "@ryanatkn/moss": "^0.36.2",
     "@sveltejs/adapter-static": "^3.0.9",
     "@sveltejs/kit": "^2.37.1",
     "@sveltejs/package": "^2.5.0",

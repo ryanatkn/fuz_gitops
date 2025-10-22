@@ -1,20 +1,129 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.50.1",
+  "version": "0.51.0",
   "modules": {
+    "./changeset_generator.js": {
+      "path": "changeset_generator.ts",
+      "declarations": [
+        {
+          "name": "Dependency_Update",
+          "kind": "type"
+        },
+        {
+          "name": "create_changeset_for_dependency_updates",
+          "kind": "function"
+        },
+        {
+          "name": "generate_changeset_content",
+          "kind": "function"
+        },
+        {
+          "name": "create_dependency_updates",
+          "kind": "function"
+        }
+      ]
+    },
+    "./changeset_reader.js": {
+      "path": "changeset_reader.ts",
+      "declarations": [
+        {
+          "name": "Changeset_Info",
+          "kind": "type"
+        },
+        {
+          "name": "parse_changeset_content",
+          "kind": "function"
+        },
+        {
+          "name": "parse_changeset_file",
+          "kind": "function"
+        },
+        {
+          "name": "read_changesets",
+          "kind": "function"
+        },
+        {
+          "name": "determine_bump_from_changesets",
+          "kind": "function"
+        },
+        {
+          "name": "has_changesets",
+          "kind": "function"
+        },
+        {
+          "name": "predict_next_version",
+          "kind": "function"
+        }
+      ]
+    },
+    "./constants.js": {
+      "path": "constants.ts",
+      "declarations": [
+        {
+          "name": "MAX_ITERATIONS",
+          "kind": "variable"
+        }
+      ]
+    },
+    "./dependency_graph.js": {
+      "path": "dependency_graph.ts",
+      "declarations": [
+        {
+          "name": "DEPENDENCY_TYPE",
+          "kind": "variable"
+        },
+        {
+          "name": "Dependency_Type",
+          "kind": "type"
+        },
+        {
+          "name": "Dependency_Spec",
+          "kind": "type"
+        },
+        {
+          "name": "Dependency_Graph_Json",
+          "kind": "type"
+        },
+        {
+          "name": "Dependency_Node",
+          "kind": "type"
+        },
+        {
+          "name": "Dependency_Graph",
+          "kind": "class"
+        },
+        {
+          "name": "Dependency_Graph_Builder",
+          "kind": "class"
+        }
+      ]
+    },
+    "./dependency_updater.js": {
+      "path": "dependency_updater.ts",
+      "declarations": [
+        {
+          "name": "Version_Strategy",
+          "kind": "type"
+        },
+        {
+          "name": "update_package_json",
+          "kind": "function"
+        },
+        {
+          "name": "update_all_repos",
+          "kind": "function"
+        },
+        {
+          "name": "find_updates_needed",
+          "kind": "function"
+        }
+      ]
+    },
     "./fetch_repo_data.js": {
       "path": "fetch_repo_data.ts",
       "declarations": [
         {
           "name": "fetch_repo_data",
-          "kind": "function"
-        },
-        {
-          "name": "fetch_package_json",
-          "kind": "function"
-        },
-        {
-          "name": "fetch_src_json",
           "kind": "function"
         }
       ]
@@ -28,6 +137,71 @@
         },
         {
           "name": "create_fs_fetch_value_cache",
+          "kind": "function"
+        }
+      ]
+    },
+    "./git_operations.js": {
+      "path": "git_operations.ts",
+      "declarations": [
+        {
+          "name": "git_add",
+          "kind": "function"
+        },
+        {
+          "name": "git_commit",
+          "kind": "function"
+        },
+        {
+          "name": "git_add_and_commit",
+          "kind": "function"
+        },
+        {
+          "name": "git_tag",
+          "kind": "function"
+        },
+        {
+          "name": "git_push_tag",
+          "kind": "function"
+        },
+        {
+          "name": "git_has_changes",
+          "kind": "function"
+        },
+        {
+          "name": "git_get_changed_files",
+          "kind": "function"
+        },
+        {
+          "name": "git_has_file_changed",
+          "kind": "function"
+        },
+        {
+          "name": "git_stash",
+          "kind": "function"
+        },
+        {
+          "name": "git_stash_pop",
+          "kind": "function"
+        },
+        {
+          "name": "git_switch_branch",
+          "kind": "function"
+        },
+        {
+          "name": "git_current_branch_name_required",
+          "kind": "function"
+        },
+        {
+          "name": "git_current_commit_hash_required",
+          "kind": "function"
+        },
+        {
+          "name": "git_check_clean_workspace_as_boolean",
+          "kind": "function"
+        },
+        {
+          "name": "git_has_remote",
           "kind": "function"
         }
       ]
@@ -82,6 +256,19 @@
         }
       ]
     },
+    "./gitops_analyze.task.js": {
+      "path": "gitops_analyze.task.ts",
+      "declarations": [
+        {
+          "name": "Args",
+          "kind": "variable"
+        },
+        {
+          "name": "task",
+          "kind": "variable"
+        }
+      ]
+    },
     "./gitops_config.js": {
       "path": "gitops_config.ts",
       "declarations": [
@@ -127,8 +314,34 @@
         }
       ]
     },
-    "./gitops_ready.task.js": {
-      "path": "gitops_ready.task.ts",
+    "./gitops_plan.task.js": {
+      "path": "gitops_plan.task.ts",
+      "declarations": [
+        {
+          "name": "Args",
+          "kind": "variable"
+        },
+        {
+          "name": "task",
+          "kind": "variable"
+        }
+      ]
+    },
+    "./gitops_publish.task.js": {
+      "path": "gitops_publish.task.ts",
+      "declarations": [
+        {
+          "name": "Args",
+          "kind": "variable"
+        },
+        {
+          "name": "task",
+          "kind": "variable"
+        }
+      ]
+    },
+    "./gitops_sync.task.js": {
+      "path": "gitops_sync.task.ts",
       "declarations": [
         {
           "name": "Args",
@@ -144,8 +357,16 @@
       "path": "gitops_task_helpers.ts",
       "declarations": [
         {
+          "name": "Get_Gitops_Ready_Options",
+          "kind": "type"
+        },
+        {
           "name": "get_gitops_ready",
           "kind": "function"
+        },
+        {
+          "name": "Resolve_Gitops_Paths_Options",
+          "kind": "type"
         },
         {
           "name": "resolve_gitops_paths",
@@ -157,8 +378,8 @@
         }
       ]
     },
-    "./gitops.task.js": {
-      "path": "gitops.task.ts",
+    "./gitops_validate.task.js": {
+      "path": "gitops_validate.task.ts",
       "declarations": [
         {
           "name": "Args",
@@ -167,6 +388,19 @@
         {
           "name": "task",
           "kind": "variable"
+        }
+      ]
+    },
+    "./graph_validation.js": {
+      "path": "graph_validation.ts",
+      "declarations": [
+        {
+          "name": "Graph_Validation_Result",
+          "kind": "type"
+        },
+        {
+          "name": "validate_dependency_graph",
+          "kind": "function"
         }
       ]
     },
@@ -207,6 +441,251 @@
         }
       ]
     },
+    "./log_helpers.js": {
+      "path": "log_helpers.ts",
+      "declarations": [
+        {
+          "name": "format_wildcard_dependencies",
+          "kind": "function"
+        },
+        {
+          "name": "format_dev_cycles",
+          "kind": "function"
+        },
+        {
+          "name": "format_production_cycles",
+          "kind": "function"
+        },
+        {
+          "name": "log_wildcard_dependencies",
+          "kind": "function"
+        },
+        {
+          "name": "log_dev_cycles",
+          "kind": "function"
+        },
+        {
+          "name": "log_production_cycles",
+          "kind": "function"
+        },
+        {
+          "name": "log_dependency_analysis",
+          "kind": "function"
+        },
+        {
+          "name": "log_list",
+          "kind": "function"
+        }
+      ]
+    },
+    "./multi_repo_publisher.js": {
+      "path": "multi_repo_publisher.ts",
+      "declarations": [
+        {
+          "name": "Publishing_Options",
+          "kind": "type"
+        },
+        {
+          "name": "Published_Version",
+          "kind": "type"
+        },
+        {
+          "name": "Publishing_Result",
+          "kind": "type"
+        },
+        {
+          "name": "publish_repos",
+          "kind": "function"
+        }
+      ]
+    },
+    "./npm_registry.js": {
+      "path": "npm_registry.ts",
+      "declarations": [
+        {
+          "name": "Wait_Options",
+          "kind": "type"
+        },
+        {
+          "name": "Package_Info",
+          "kind": "type"
+        },
+        {
+          "name": "check_package_available",
+          "kind": "function"
+        },
+        {
+          "name": "wait_for_package",
+          "kind": "function"
+        },
+        {
+          "name": "get_package_info",
+          "kind": "function"
+        },
+        {
+          "name": "package_exists",
+          "kind": "function"
+        }
+      ]
+    },
+    "./operations_defaults.js": {
+      "path": "operations_defaults.ts",
+      "declarations": [
+        {
+          "name": "default_changeset_operations",
+          "kind": "variable"
+        },
+        {
+          "name": "default_git_operations",
+          "kind": "variable"
+        },
+        {
+          "name": "default_process_operations",
+          "kind": "variable"
+        },
+        {
+          "name": "default_npm_operations",
+          "kind": "variable"
+        },
+        {
+          "name": "default_preflight_operations",
+          "kind": "variable"
+        },
+        {
+          "name": "default_fs_operations",
+          "kind": "variable"
+        },
+        {
+          "name": "default_build_operations",
+          "kind": "variable"
+        },
+        {
+          "name": "default_gitops_operations",
+          "kind": "variable"
+        }
+      ]
+    },
+    "./operations.js": {
+      "path": "operations.ts",
+      "declarations": [
+        {
+          "name": "Changeset_Operations",
+          "kind": "type"
+        },
+        {
+          "name": "Git_Operations",
+          "kind": "type"
+        },
+        {
+          "name": "Process_Operations",
+          "kind": "type"
+        },
+        {
+          "name": "Build_Operations",
+          "kind": "type"
+        },
+        {
+          "name": "Wait_Options",
+          "kind": "type"
+        },
+        {
+          "name": "Npm_Operations",
+          "kind": "type"
+        },
+        {
+          "name": "Preflight_Operations",
+          "kind": "type"
+        },
+        {
+          "name": "Fs_Operations",
+          "kind": "type"
+        },
+        {
+          "name": "Gitops_Operations",
+          "kind": "type"
+        }
+      ]
+    },
+    "./output_helpers.js": {
+      "path": "output_helpers.ts",
+      "declarations": [
+        {
+          "name": "Output_Format",
+          "kind": "type"
+        },
+        {
+          "name": "Output_Options",
+          "kind": "type"
+        },
+        {
+          "name": "Output_Formatters",
+          "kind": "type"
+        },
+        {
+          "name": "format_and_output",
+          "kind": "function"
+        }
+      ]
+    },
+    "./paths.js": {
+      "path": "paths.ts",
+      "declarations": [
+        {
+          "name": "GITOPS_OUTPUT_DIR",
+          "kind": "variable"
+        },
+        {
+          "name": "DEFAULT_REPOS_DIR",
+          "kind": "variable"
+        }
+      ]
+    },
+    "./preflight_checks.js": {
+      "path": "preflight_checks.ts",
+      "declarations": [
+        {
+          "name": "Preflight_Options",
+          "kind": "type"
+        },
+        {
+          "name": "Preflight_Result",
+          "kind": "type"
+        },
+        {
+          "name": "Run_Preflight_Checks_Options",
+          "kind": "type"
+        },
+        {
+          "name": "run_preflight_checks",
+          "kind": "function"
+        }
+      ]
+    },
+    "./publishing_plan.js": {
+      "path": "publishing_plan.ts",
+      "declarations": [
+        {
+          "name": "Version_Change",
+          "kind": "type"
+        },
+        {
+          "name": "Dependency_Update",
+          "kind": "type"
+        },
+        {
+          "name": "Publishing_Plan",
+          "kind": "type"
+        },
+        {
+          "name": "generate_publishing_plan",
+          "kind": "function"
+        },
+        {
+          "name": "log_publishing_plan",
+          "kind": "function"
+        }
+      ]
+    },
     "./repo.js": {
       "path": "repo.ts",
       "declarations": [
@@ -237,6 +716,158 @@
         },
         {
           "name": "resolve_gitops_config",
+          "kind": "function"
+        }
+      ]
+    },
+    "./semver.js": {
+      "path": "semver.ts",
+      "declarations": [
+        {
+          "name": "Bump_Type",
+          "kind": "type"
+        },
+        {
+          "name": "Semver",
+          "kind": "type"
+        },
+        {
+          "name": "semver_compare_versions",
+          "kind": "function"
+        },
+        {
+          "name": "semver_bump_version",
+          "kind": "function"
+        }
+      ]
+    },
+    "./serialization_types.js": {
+      "path": "serialization_types.ts",
+      "declarations": [
+        {
+          "name": "Serialized_Node",
+          "kind": "type"
+        },
+        {
+          "name": "Serialized_Graph",
+          "kind": "type"
+        },
+        {
+          "name": "Serialized_Publishing_Plan",
+          "kind": "type"
+        },
+        {
+          "name": "serialize_graph",
+          "kind": "function"
+        }
+      ]
+    },
+    "./test_helpers.js": {
+      "path": "test_helpers.ts",
+      "declarations": [
+        {
+          "name": "Mock_Repo_Options",
+          "kind": "type"
+        },
+        {
+          "name": "create_mock_repo",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_gitops_ops",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_package_json_files",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_repo_with_changesets",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_changeset_ops",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_git_ops",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_npm_ops",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_build_ops",
+          "kind": "function"
+        },
+        {
+          "name": "create_preflight_mock",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_fs_ops",
+          "kind": "function"
+        },
+        {
+          "name": "create_populated_fs_ops",
+          "kind": "function"
+        },
+        {
+          "name": "Tracked_Command",
+          "kind": "type"
+        },
+        {
+          "name": "create_tracking_process_ops",
+          "kind": "function"
+        },
+        {
+          "name": "create_mock_logger",
+          "kind": "function"
+        }
+      ]
+    },
+    "./version_utils.js": {
+      "path": "version_utils.ts",
+      "declarations": [
+        {
+          "name": "is_wildcard",
+          "kind": "function"
+        },
+        {
+          "name": "strip_version_prefix",
+          "kind": "function"
+        },
+        {
+          "name": "get_version_prefix",
+          "kind": "function"
+        },
+        {
+          "name": "normalize_version_for_comparison",
+          "kind": "function"
+        },
+        {
+          "name": "needs_update",
+          "kind": "function"
+        },
+        {
+          "name": "get_update_prefix",
+          "kind": "function"
+        },
+        {
+          "name": "is_breaking_change",
+          "kind": "function"
+        },
+        {
+          "name": "detect_bump_type",
+          "kind": "function"
+        },
+        {
+          "name": "compare_bump_types",
+          "kind": "function"
+        },
+        {
+          "name": "calculate_next_version",
           "kind": "function"
         }
       ]
