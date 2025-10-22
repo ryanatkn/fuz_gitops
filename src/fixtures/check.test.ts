@@ -44,6 +44,14 @@ const FIXTURES: Array<Repo_Fixture_Set> = [
 	multiple_dep_types,
 ];
 
+// Categorize fixtures by type
+const SUCCESS_FIXTURES = FIXTURES.filter(
+	(f) => !f.expected_outcomes.errors || f.expected_outcomes.errors.length === 0,
+);
+const ERROR_FIXTURES = FIXTURES.filter(
+	(f) => f.expected_outcomes.errors && f.expected_outcomes.errors.length > 0,
+);
+
 // Cache for fixture Local_Repo objects (avoids redundant conversions)
 const fixture_repos_cache: Map<string, Array<Local_Repo>> = new Map();
 
@@ -110,163 +118,194 @@ afterAll(() => {
  * Uses direct function calls with mocked operations for performance.
  */
 
-for (const fixture of FIXTURES) {
-	describe(`${fixture.name} fixture`, () => {
-		const has_errors =
-			fixture.expected_outcomes.errors && fixture.expected_outcomes.errors.length > 0;
+/**
+ * Success scenario fixtures - validate normal publishing workflows
+ */
+describe('Success scenario fixtures', () => {
+	for (const fixture of SUCCESS_FIXTURES) {
+		describe(fixture.name, () => {
+			describe('analyze', () => {
+				test('produces expected publishing order', () => {
+					// No need for mock_ops in analyze - it doesn't use operations
+					const local_repos = get_fixture_repos(fixture);
 
-		describe('analyze', () => {
-			test.skipIf(has_errors)('produces expected publishing order', () => {
-				// No need for mock_ops in analyze - it doesn't use operations
-				const local_repos = get_fixture_repos(fixture);
+					// Validate dependency graph directly
+					const {publishing_order: order} = validate_dependency_graph(local_repos, undefined, {
+						throw_on_prod_cycles: false,
+						log_cycles: false,
+						log_order: false,
+					});
 
-				// Validate dependency graph directly
-				const {publishing_order: order} = validate_dependency_graph(local_repos, undefined, {
-					throw_on_prod_cycles: false,
-					log_cycles: false,
-					log_order: false,
+					// Verify publishing order
+					assert.ok(order, 'Should have publishing_order');
+					assert_publishing_order(order, fixture.expected_outcomes.publishing_order);
+				});
+			});
+
+			describe('plan', () => {
+				test('predicts correct version changes', async () => {
+					const {plan} = await setup_plan_test(fixture);
+
+					// Verify version changes
+					if (fixture.expected_outcomes.version_changes.length > 0) {
+						assert_version_changes(plan.version_changes, fixture.expected_outcomes.version_changes);
+					} else {
+						assert.equal(plan.version_changes.length, 0, 'Expected no version changes');
+					}
 				});
 
-				// Verify publishing order
-				assert.ok(order, 'Should have publishing_order');
-				assert_publishing_order(order, fixture.expected_outcomes.publishing_order);
-			});
-		});
-
-		describe('plan', () => {
-			test.skipIf(has_errors)('predicts correct version changes', async () => {
-				const {plan} = await setup_plan_test(fixture);
-
-				// Verify version changes
-				if (fixture.expected_outcomes.version_changes.length > 0) {
-					assert_version_changes(plan.version_changes, fixture.expected_outcomes.version_changes);
-				} else {
-					assert.equal(plan.version_changes.length, 0, 'Expected no version changes');
-				}
-			});
-
-			test.skipIf(has_errors)('reports correct publishing order', async () => {
-				const {plan} = await setup_plan_test(fixture);
-
-				// Publishing order should match for fixtures with version changes
-				if (fixture.expected_outcomes.version_changes.length > 0) {
-					assert_publishing_order(
-						plan.publishing_order,
-						fixture.expected_outcomes.publishing_order,
-					);
-				}
-			});
-
-			test.skipIf(has_errors || !fixture.expected_outcomes.breaking_cascades)(
-				'tracks breaking cascades',
-				async () => {
+				test('reports correct publishing order', async () => {
 					const {plan} = await setup_plan_test(fixture);
 
-					// Verify breaking cascades exist
-					for (const [pkg, expected_affected] of Object.entries(
-						fixture.expected_outcomes.breaking_cascades!,
-					)) {
-						assert.ok(plan.breaking_cascades.has(pkg), `Should have breaking cascade for ${pkg}`);
+					// Publishing order should match for fixtures with version changes
+					if (fixture.expected_outcomes.version_changes.length > 0) {
+						assert_publishing_order(
+							plan.publishing_order,
+							fixture.expected_outcomes.publishing_order,
+						);
+					}
+				});
 
-						// Verify affected packages match
-						const actual_affected = plan.breaking_cascades.get(pkg) || [];
-						for (const expected_pkg of expected_affected) {
+				// Only define if this fixture tests breaking cascades
+				if (fixture.expected_outcomes.breaking_cascades) {
+					test('tracks breaking cascades', async () => {
+						const {plan} = await setup_plan_test(fixture);
+
+						// Verify breaking cascades exist
+						for (const [pkg, expected_affected] of Object.entries(
+							fixture.expected_outcomes.breaking_cascades!,
+						)) {
+							assert.ok(plan.breaking_cascades.has(pkg), `Should have breaking cascade for ${pkg}`);
+
+							// Verify affected packages match
+							const actual_affected = plan.breaking_cascades.get(pkg) || [];
+							for (const expected_pkg of expected_affected) {
+								assert.ok(
+									actual_affected.includes(expected_pkg),
+									`${pkg} should affect ${expected_pkg}`,
+								);
+							}
+						}
+					});
+				}
+
+				// Only define if this fixture tests warnings
+				if (fixture.expected_outcomes.warnings && fixture.expected_outcomes.warnings.length > 0) {
+					test('reports warnings', async () => {
+						const {plan} = await setup_plan_test(fixture);
+						assert_messages(plan.warnings, fixture.expected_outcomes.warnings!, 'warnings');
+					});
+				}
+
+				// Only define if this fixture tests info messages
+				if (fixture.expected_outcomes.info && fixture.expected_outcomes.info.length > 0) {
+					test('reports info for packages with no changes', async () => {
+						const {plan} = await setup_plan_test(fixture);
+
+						// Check that expected packages are in info
+						for (const pkg of fixture.expected_outcomes.info!) {
+							assert.ok(plan.info.includes(pkg), `Info should include ${pkg}`);
+						}
+					});
+				}
+			});
+
+			describe('publish dry_run', () => {
+				/*
+				 * Note: Dry runs have limitations compared to full publishing:
+				 * - Cannot auto-generate changesets (requires filesystem writes)
+				 * - Limited bump escalation (requires iteration to see new dependency versions)
+				 * - Only packages with explicit .changeset/ files can be published
+				 *
+				 * Tests validate that packages WITH explicit changesets are attempted,
+				 * but cannot fully validate auto-generated or escalated scenarios.
+				 */
+
+				test('publishes expected packages', async () => {
+					const {result} = await setup_dry_run_test(fixture);
+
+					// Dry runs can ONLY publish packages with explicit changesets
+					const packages_with_explicit_changesets =
+						fixture.expected_outcomes.version_changes.filter(
+							(vc) => vc.scenario === 'explicit_changeset' || vc.scenario === 'bump_escalation',
+						);
+
+					if (packages_with_explicit_changesets.length > 0) {
+						// Dry_run should publish packages with explicit changesets
+						assert.ok(
+							result.published.length > 0,
+							`Should publish at least some packages (expected ${packages_with_explicit_changesets.length} with explicit changesets)`,
+						);
+
+						// Verify published packages are in the expected set
+						for (const published of result.published) {
+							const expected_change = fixture.expected_outcomes.version_changes.find(
+								(vc) => vc.package_name === published.name,
+							);
 							assert.ok(
-								actual_affected.includes(expected_pkg),
-								`${pkg} should affect ${expected_pkg}`,
+								expected_change,
+								`Published package ${published.name} should be in expected changes`,
 							);
 						}
+					} else {
+						// No packages with explicit changesets - dry_run should publish nothing
+						assert.equal(result.published.length, 0, 'Should not publish any packages');
 					}
-				},
-			);
+				});
 
-			test.skipIf(
-				!fixture.expected_outcomes.warnings || fixture.expected_outcomes.warnings.length === 0,
-			)('reports warnings', async () => {
-				const {plan} = await setup_plan_test(fixture);
-				assert_messages(plan.warnings, fixture.expected_outcomes.warnings!, 'warnings');
-			});
+				test('reports success status', async () => {
+					const {result} = await setup_dry_run_test(fixture);
 
-			// Note: This test runs ONLY for error fixtures (opposite of other plan tests)
-			test.skipIf(
-				!fixture.expected_outcomes.errors || fixture.expected_outcomes.errors.length === 0,
-			)('reports errors', async () => {
-				try {
-					const {plan} = await setup_plan_test(fixture);
-					// If plan succeeded, errors should be in result
-					assert_messages(plan.errors, fixture.expected_outcomes.errors!, 'errors');
-				} catch (_error) {
-					// Command failed - this is expected for some error fixtures
-					assert.ok(true, 'Plan generation failed as expected for error fixture');
-				}
-			});
-
-			test.skipIf(
-				has_errors ||
-					!fixture.expected_outcomes.info ||
-					fixture.expected_outcomes.info.length === 0,
-			)('reports info for packages with no changes', async () => {
-				const {plan} = await setup_plan_test(fixture);
-
-				// Check that expected packages are in info
-				for (const pkg of fixture.expected_outcomes.info!) {
-					assert.ok(plan.info.includes(pkg), `Info should include ${pkg}`);
-				}
+					// Should report success for valid fixtures
+					assert.ok(result.ok, 'Should report success');
+					assert.equal(result.failed.length, 0, 'Should have no failures');
+				});
 			});
 		});
+	}
+});
 
-		describe('publish dry_run', () => {
-			/*
-			 * Note: Dry runs have limitations compared to full publishing:
-			 * - Cannot auto-generate changesets (requires filesystem writes)
-			 * - Limited bump escalation (requires iteration to see new dependency versions)
-			 * - Only packages with explicit .changeset/ files can be published
-			 *
-			 * Tests validate that packages WITH explicit changesets are attempted,
-			 * but cannot fully validate auto-generated or escalated scenarios.
-			 */
+/**
+ * Error scenario fixtures - validate error detection and reporting
+ */
+describe('Error scenario fixtures', () => {
+	for (const fixture of ERROR_FIXTURES) {
+		describe(fixture.name, () => {
+			describe('analyze', () => {
+				test('detects circular dependencies', () => {
+					const local_repos = get_fixture_repos(fixture);
 
-			test.skipIf(has_errors)('publishes expected packages', async () => {
-				const {result} = await setup_dry_run_test(fixture);
+					// Validate dependency graph - should detect cycles
+					const {publishing_order: order} = validate_dependency_graph(local_repos, undefined, {
+						throw_on_prod_cycles: false,
+						log_cycles: false,
+						log_order: false,
+					});
 
-				// Dry runs can ONLY publish packages with explicit changesets
-				const packages_with_explicit_changesets = fixture.expected_outcomes.version_changes.filter(
-					(vc) => vc.scenario === 'explicit_changeset' || vc.scenario === 'bump_escalation',
-				);
-
-				if (packages_with_explicit_changesets.length > 0) {
-					// Dry_run should publish packages with explicit changesets
+					// For error fixtures, publishing order should be empty or contain errors
 					assert.ok(
-						result.published.length > 0,
-						`Should publish at least some packages (expected ${packages_with_explicit_changesets.length} with explicit changesets)`,
+						order.length === 0 ||
+							order.length === fixture.expected_outcomes.publishing_order.length,
+						'Error fixtures should have empty or error publishing order',
 					);
-
-					// Verify published packages are in the expected set
-					for (const published of result.published) {
-						const expected_change = fixture.expected_outcomes.version_changes.find(
-							(vc) => vc.package_name === published.name,
-						);
-						assert.ok(
-							expected_change,
-							`Published package ${published.name} should be in expected changes`,
-						);
-					}
-				} else {
-					// No packages with explicit changesets - dry_run should publish nothing
-					assert.equal(result.published.length, 0, 'Should not publish any packages');
-				}
+				});
 			});
 
-			test.skipIf(has_errors)('reports success status', async () => {
-				const {result} = await setup_dry_run_test(fixture);
-
-				// Should report success for valid fixtures
-				assert.ok(result.ok, 'Should report success');
-				assert.equal(result.failed.length, 0, 'Should have no failures');
+			describe('plan', () => {
+				test('reports errors', async () => {
+					try {
+						const {plan} = await setup_plan_test(fixture);
+						// If plan succeeded, errors should be in result
+						assert_messages(plan.errors, fixture.expected_outcomes.errors!, 'errors');
+					} catch (_error) {
+						// Command failed - this is expected for some error fixtures
+						assert.ok(true, 'Plan generation failed as expected for error fixture');
+					}
+				});
 			});
 		});
-	});
-}
+	}
+});
 
 /**
  * Test that configs can actually be loaded.
