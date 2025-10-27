@@ -18,7 +18,7 @@
 	// TODO gray out the latest of each version for deps, but only if the max is knowable via a local dep, don't assume for externals
 
 	// TODO hacky, handle regular deps too
-	const lookup_dep_version = (repo: Repo, dep: string): string | null => {
+	const lookup_dep_version = (repo: Repo, dep: string): string | undefined => {
 		for (const key in repo.package_json.dependencies) {
 			if (key === dep) {
 				return repo.package_json.dependencies[key];
@@ -29,7 +29,7 @@
 				return repo.package_json.devDependencies[key];
 			}
 		}
-		return null;
+		return undefined;
 	};
 
 	const latest_version_by_dep = $derived(
@@ -42,8 +42,8 @@
 		),
 	);
 
-	const format_version = (version: string | null): string =>
-		version === null ? '' : version.replace(/^(\^|>=)\s*/, '');
+	const format_version = (version: string | null | undefined): string =>
+		version == null ? '' : version.replace(/^(\^|>=)\s*/, '');
 
 	const lookup_pull_requests = (repos: Array<Repo> | null, repo: Repo) => {
 		const found = repos?.find((p) => p.repo_url === repo.repo_url);

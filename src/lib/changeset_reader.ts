@@ -33,8 +33,8 @@ export const parse_changeset_content = (
 		return null;
 	}
 
-	const frontmatter = frontmatter_match[1];
-	const summary = frontmatter_match[2].trim();
+	const frontmatter = frontmatter_match[1]!;
+	const summary = frontmatter_match[2]!.trim();
 
 	// Parse package entries
 	const packages: Array<{name: string; bump_type: Bump_Type}> = [];
@@ -47,8 +47,8 @@ export const parse_changeset_content = (
 
 	while ((match = package_regex.exec(frontmatter)) !== null) {
 		packages.push({
-			name: match[1],
-			bump_type: match[2] as Bump_Type,
+			name: match[1]!,
+			bump_type: match[2]! as Bump_Type,
 		});
 	}
 

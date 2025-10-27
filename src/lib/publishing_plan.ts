@@ -564,6 +564,9 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 		for (const [pkg, deps_map] of updates_by_package) {
 			log.info(`  ${pkg}:`);
 			for (const [dep_name, updates] of deps_map) {
+				// Guard against empty updates array
+				if (updates.length === 0) continue;
+
 				// Collect all dependency types for this dependency
 				const types: Array<string> = [];
 				let causes_republish = false;
@@ -582,7 +585,7 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 				// Format output
 				const type_list = types.join(', ');
 				const republish = needs_auto_changeset ? ' (triggers auto-changeset)' : '';
-				log.info(`    ${dep_name} → ${updates[0].new_version} [${type_list}]${republish}`);
+				log.info(`    ${dep_name} → ${updates[0]!.new_version} [${type_list}]${republish}`);
 			}
 		}
 	}
