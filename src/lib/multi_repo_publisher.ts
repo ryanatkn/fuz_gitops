@@ -105,7 +105,7 @@ export const publish_repos = async (
 
 		// Phase 1: Publish each package and immediately update dependents
 		for (let i = 0; i < order.length; i++) {
-			const pkg_name = order[i];
+			const pkg_name = order[i]!;
 			const repo = repos.find((r) => r.pkg.name === pkg_name);
 			if (!repo) continue;
 

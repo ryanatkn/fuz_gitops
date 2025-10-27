@@ -48,10 +48,10 @@ test('dry_run predicts versions without publishing', async () => {
 
 	expect(result.ok).toBe(true);
 	expect(result.published.length).toBe(2);
-	expect(result.published[0].name).toBe('pkg-a');
-	expect(result.published[0].new_version).toBe('0.1.1');
-	expect(result.published[1].name).toBe('pkg-b');
-	expect(result.published[1].new_version).toBe('0.2.1');
+	expect(result.published[0]!.name).toBe('pkg-a');
+	expect(result.published[0]!.new_version).toBe('0.1.1');
+	expect(result.published[1]!.name).toBe('pkg-b');
+	expect(result.published[1]!.new_version).toBe('0.2.1');
 });
 
 test('always fails fast on publish errors', async () => {
@@ -93,7 +93,7 @@ test('always fails fast on publish errors', async () => {
 	// With fail-fast behavior: only pkg-a fails, no other packages are attempted
 	expect(result.ok).toBe(false);
 	expect(result.failed.length).toBe(1);
-	expect(result.failed[0].name).toBe('pkg-a');
+	expect(result.failed[0]!.name).toBe('pkg-a');
 	expect(result.published.length).toBe(0); // No packages published after failure
 });
 
@@ -180,7 +180,7 @@ test('skips repos without changesets', async () => {
 	// Only pkg-a should be published
 	expect(result.ok).toBe(true);
 	expect(result.published.length).toBe(1);
-	expect(result.published[0].name).toBe('pkg-a');
+	expect(result.published[0]!.name).toBe('pkg-a');
 });
 
 test('publishes in dependency order', async () => {
@@ -241,8 +241,8 @@ test('waits for npm propagation after each publish', async () => {
 
 	// Should wait for both packages
 	expect(wait_calls.length).toBe(2);
-	expect(wait_calls[0].pkg).toBe('pkg-a');
-	expect(wait_calls[1].pkg).toBe('pkg-b');
+	expect(wait_calls[0]!.pkg).toBe('pkg-a');
+	expect(wait_calls[1]!.pkg).toBe('pkg-b');
 });
 
 test('updates prod dependencies after publishing (Phase 1)', async () => {
@@ -574,7 +574,7 @@ test('handles npm propagation failure gracefully', async () => {
 	// Should fail due to npm propagation timeout
 	expect(result.ok).toBe(false);
 	expect(result.failed.length).toBe(1);
-	expect(result.failed[0].error.message).toContain('Timeout waiting for package');
+	expect(result.failed[0]!.error.message).toContain('Timeout waiting for package');
 });
 
 test('handles deploy failures without stopping', async () => {
@@ -652,7 +652,7 @@ test('returns correct Published_Version metadata', async () => {
 	const result = await publish_repos(repos, {dry_run: true, update_deps: false}, mock_ops);
 
 	expect(result.published.length).toBe(1);
-	const published = result.published[0];
+	const published = result.published[0]!;
 
 	expect(published.name).toBe('pkg-a');
 	expect(published.old_version).toBe('0.5.0');

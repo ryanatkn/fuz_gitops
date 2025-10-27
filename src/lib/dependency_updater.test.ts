@@ -573,8 +573,8 @@ describe('dependency_updater', () => {
 
 			expect(result.updated).toBe(0);
 			expect(result.failed).toHaveLength(1);
-			expect(result.failed[0].repo).toBe('pkg-a');
-			expect(result.failed[0].error).toBeInstanceOf(Error);
+			expect(result.failed[0]!.repo).toBe('pkg-a');
+			expect(result.failed[0]!.error).toBeInstanceOf(Error);
 		});
 	});
 });

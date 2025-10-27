@@ -206,7 +206,7 @@ describe('changeset_generator', () => {
 			const updates = create_dependency_updates(dependencies, published_versions);
 
 			expect(updates).toHaveLength(1);
-			expect(updates[0].breaking).toBe(true);
+			expect(updates[0]!.breaking).toBe(true);
 		});
 
 		it('strips version prefixes from current versions', () => {
