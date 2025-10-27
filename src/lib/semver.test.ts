@@ -42,8 +42,8 @@ describe('semver_compare_versions', () => {
 			];
 
 			for (let i = 0; i < ordered.length - 1; i++) {
-				expect(semver_compare_versions(ordered[i], ordered[i + 1])).toBe(-1);
-				expect(semver_compare_versions(ordered[i + 1], ordered[i])).toBe(1);
+				expect(semver_compare_versions(ordered[i]!, ordered[i + 1]!)).toBe(-1);
+				expect(semver_compare_versions(ordered[i + 1]!, ordered[i]!)).toBe(1);
 			}
 		});
 

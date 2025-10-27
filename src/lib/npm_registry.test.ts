@@ -167,16 +167,16 @@ describe('npm_registry', () => {
 			expect(wait_calls.length).toBe(3);
 
 			// First delay: ~100ms (+ jitter)
-			expect(wait_calls[0][0]).toBeGreaterThanOrEqual(100);
-			expect(wait_calls[0][0]).toBeLessThan(120);
+			expect(wait_calls[0]![0]).toBeGreaterThanOrEqual(100);
+			expect(wait_calls[0]![0]).toBeLessThan(120);
 
 			// Second delay: ~150ms (100 * 1.5 + jitter)
-			expect(wait_calls[1][0]).toBeGreaterThanOrEqual(150);
-			expect(wait_calls[1][0]).toBeLessThan(180);
+			expect(wait_calls[1]![0]).toBeGreaterThanOrEqual(150);
+			expect(wait_calls[1]![0]).toBeLessThan(180);
 
 			// Third delay: ~225ms (150 * 1.5 + jitter)
-			expect(wait_calls[2][0]).toBeGreaterThanOrEqual(225);
-			expect(wait_calls[2][0]).toBeLessThan(270);
+			expect(wait_calls[2]![0]).toBeGreaterThanOrEqual(225);
+			expect(wait_calls[2]![0]).toBeLessThan(270);
 		});
 
 		it('respects max_delay cap', async () => {

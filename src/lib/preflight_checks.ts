@@ -147,7 +147,7 @@ export const run_preflight_checks = async ({
 		const repos_to_build = repos.filter((repo) => repos_with_changesets.has(repo.pkg.name));
 
 		for (let i = 0; i < repos_to_build.length; i++) {
-			const repo = repos_to_build[i];
+			const repo = repos_to_build[i]!;
 			log?.info(st('dim', `    [${i + 1}/${repos_to_build.length}] Building ${repo.pkg.name}...`));
 			const build_result = await build_ops.build_package({repo, log}); // eslint-disable-line no-await-in-loop
 			if (!build_result.ok) {
@@ -170,7 +170,7 @@ export const run_preflight_checks = async ({
 	if (check_remote && repos.length > 0) {
 		log?.info('  Checking git remote connectivity...');
 		// Only check first repo to avoid slowing down tests with multiple remote checks
-		const remote_result = await check_git_remote(repos[0].repo_dir);
+		const remote_result = await check_git_remote(repos[0]!.repo_dir);
 		if (!remote_result.ok) {
 			warnings.push(`git remote may not be reachable - ${remote_result.message}`);
 		}

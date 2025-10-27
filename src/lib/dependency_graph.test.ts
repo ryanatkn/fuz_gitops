@@ -303,7 +303,7 @@ describe('Dependency_Graph', () => {
 			}
 
 			// Verify alpha comes before gamma (dependency constraint)
-			expect(orders[0].indexOf('alpha')).toBeLessThan(orders[0].indexOf('gamma'));
+			expect(orders[0]!.indexOf('alpha')).toBeLessThan(orders[0]!.indexOf('gamma'));
 		});
 	});
 

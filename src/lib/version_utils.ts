@@ -89,7 +89,7 @@ export const is_breaking_change = (
 	bump_type: 'major' | 'minor' | 'patch',
 ): boolean => {
 	const [major] = old_version.split('.').map(Number);
-	const is_pre_1_0 = major === 0;
+	const is_pre_1_0 = major! === 0;
 
 	if (is_pre_1_0) {
 		// In 0.x.x, minor bumps are breaking changes
@@ -110,8 +110,8 @@ export const detect_bump_type = (
 	const old_parts = old_version.split('.').map(Number);
 	const new_parts = new_version.split('.').map(Number);
 
-	if (new_parts[0] > old_parts[0]) return 'major';
-	if (new_parts[1] > old_parts[1]) return 'minor';
+	if (new_parts[0]! > old_parts[0]!) return 'major';
+	if (new_parts[1]! > old_parts[1]!) return 'minor';
 	return 'patch';
 };
 
@@ -140,11 +140,11 @@ export const calculate_next_version = (current_version: string, bump_type: Bump_
 
 	switch (bump_type) {
 		case 'major':
-			return `${major + 1}.0.0`;
+			return `${major! + 1}.0.0`;
 		case 'minor':
-			return `${major}.${minor + 1}.0`;
+			return `${major!}.${minor! + 1}.0`;
 		case 'patch':
-			return `${major}.${minor}.${patch + 1}`;
+			return `${major!}.${minor!}.${patch! + 1}`;
 		default:
 			throw new Error(`Invalid bump type: ${bump_type}`);
 	}

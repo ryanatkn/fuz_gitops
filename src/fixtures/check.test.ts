@@ -369,7 +369,7 @@ describe('Error condition tests', () => {
 
 	test('build failure mock returns expected values', async () => {
 		const build_ops = create_failing_build_ops();
-		const mock_repo = fixture_to_local_repos(basic_publishing)[0];
+		const mock_repo = fixture_to_local_repos(basic_publishing)[0]!;
 		const result = await build_ops.build_package({repo: mock_repo});
 		assert.equal(result.ok, false, 'Should fail build');
 	});
@@ -396,7 +396,7 @@ describe('JSON output format tests', () => {
 
 		// Verify version change structure
 		if (plan.version_changes.length > 0) {
-			const change = plan.version_changes[0];
+			const change = plan.version_changes[0]!;
 			assert.ok('package_name' in change, 'Version change should have package_name');
 			assert.ok('from' in change, 'Version change should have from version');
 			assert.ok('to' in change, 'Version change should have to version');

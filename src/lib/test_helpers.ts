@@ -128,7 +128,7 @@ export const create_mock_gitops_ops = (
  */
 const incrementPatch = (version: string): string => {
 	const [major, minor, patch] = version.split('.').map(Number);
-	return `${major}.${minor}.${patch + 1}`;
+	return `${major!}.${minor!}.${patch! + 1}`;
 };
 
 /**
