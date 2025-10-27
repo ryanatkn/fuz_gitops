@@ -35,9 +35,9 @@ const semver_parse = (version: string): Semver => {
 
 	const match = SEMVER_REGEX.exec(clean)!;
 	return {
-		major: parseInt(match[1], 10),
-		minor: parseInt(match[2], 10),
-		patch: parseInt(match[3], 10),
+		major: parseInt(match[1]!, 10),
+		minor: parseInt(match[2]!, 10),
+		patch: parseInt(match[3]!, 10),
 		prerelease: match[4],
 		build: match[5],
 	};
@@ -74,8 +74,8 @@ const semver_compare_prerelease = (a: string | undefined, b: string | undefined)
 	// Compare each identifier
 	const min_length = Math.min(a_parts.length, b_parts.length);
 	for (let i = 0; i < min_length; i++) {
-		const a_part = a_parts[i];
-		const b_part = b_parts[i];
+		const a_part = a_parts[i]!;
+		const b_part = b_parts[i]!;
 
 		// Check if numeric
 		const a_is_numeric = /^\d+$/.test(a_part);
