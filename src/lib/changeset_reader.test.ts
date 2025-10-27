@@ -54,7 +54,7 @@ BREAKING: Complete API redesign.`;
 
 			const result = parse_changeset_content(content);
 
-			expect(result?.packages[0]!).toEqual({
+			expect(result?.packages[0]).toEqual({
 				name: 'api-package',
 				bump_type: 'major',
 			});

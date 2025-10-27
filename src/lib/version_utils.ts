@@ -89,7 +89,7 @@ export const is_breaking_change = (
 	bump_type: 'major' | 'minor' | 'patch',
 ): boolean => {
 	const [major] = old_version.split('.').map(Number);
-	const is_pre_1_0 = major! === 0;
+	const is_pre_1_0 = major === 0;
 
 	if (is_pre_1_0) {
 		// In 0.x.x, minor bumps are breaking changes
