@@ -1,6 +1,6 @@
 import {describe, it, expect} from 'vitest';
 import {Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
-import {create_mock_repo} from '$lib/test_helpers.js';
+import {create_mock_repo} from './test_helpers.js';
 
 describe('Dependency_Graph', () => {
 	describe('basic functionality', () => {

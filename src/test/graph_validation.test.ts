@@ -2,7 +2,7 @@ import {describe, it, expect} from 'vitest';
 import {Task_Error} from '@ryanatkn/gro';
 
 import {validate_dependency_graph} from '$lib/graph_validation.js';
-import {create_mock_repo} from '$lib/test_helpers.js';
+import {create_mock_repo} from './test_helpers.js';
 
 describe('validate_dependency_graph', () => {
 	describe('basic functionality', () => {

@@ -3,7 +3,7 @@ import {test, expect} from 'vitest';
 import type {Local_Repo} from '$lib/local_repo.js';
 import {generate_publishing_plan} from '$lib/publishing_plan.js';
 import type {Changeset_Operations} from '$lib/operations.js';
-import {create_mock_repo} from '$lib/test_helpers.js';
+import {create_mock_repo} from './test_helpers.js';
 
 /* eslint-disable @typescript-eslint/require-await */
 
