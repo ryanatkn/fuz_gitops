@@ -6,7 +6,7 @@ import {
 	create_mock_git_ops,
 	create_mock_npm_ops,
 	create_mock_build_ops,
-} from '$lib/test_helpers.js';
+} from './test_helpers.js';
 import type {Local_Repo} from '$lib/local_repo.js';
 
 /* eslint-disable @typescript-eslint/require-await */
