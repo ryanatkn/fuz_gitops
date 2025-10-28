@@ -21,6 +21,7 @@ import type {Local_Repo} from '$lib/local_repo.js';
 import {basic_publishing} from './repo_fixtures/basic_publishing.js';
 import {deep_cascade} from './repo_fixtures/deep_cascade.js';
 import {circular_dev_deps} from './repo_fixtures/circular_dev_deps.js';
+import {three_way_dev_cycle} from './repo_fixtures/three_way_dev_cycle.js';
 import {private_packages} from './repo_fixtures/private_packages.js';
 import {major_bumps} from './repo_fixtures/major_bumps.js';
 import {peer_deps_only} from './repo_fixtures/peer_deps_only.js';
@@ -36,6 +37,7 @@ const FIXTURES: Array<Repo_Fixture_Set> = [
 	basic_publishing,
 	deep_cascade,
 	circular_dev_deps,
+	three_way_dev_cycle,
 	private_packages,
 	major_bumps,
 	peer_deps_only,
