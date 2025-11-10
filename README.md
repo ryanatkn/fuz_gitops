@@ -13,6 +13,7 @@ fuz_gitops is alternative to the monorepo pattern that more loosely couples repo
 
 With fuz_gitops you can:
 
+- dynamically compose repos
 - fetch metadata about collections of repos and import it as typesafe JSON (using
   [Gro's public package patterns](https://github.com/ryanatkn/gro/blob/main/src/docs/gro_plugin_sveltekit_app.md#well_known_package_json))
 - publish a generated docs website for your collections of repos
