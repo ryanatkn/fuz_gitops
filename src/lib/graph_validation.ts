@@ -17,14 +17,11 @@ export interface Graph_Validation_Result {
  * Shared utility for building dependency graph, detecting cycles, and computing publishing order.
  * This centralizes logic that was duplicated across multi_repo_publisher, publishing_plan, and gitops_analyze.
  *
- * @param repos - Array of local repositories to analyze
- * @param log - Optional logger for output
- * @param options - Configuration options
- * @param options.throw_on_prod_cycles - Whether to throw an error if production cycles are detected (default: true)
- * @param options.log_cycles - Whether to log cycle information (default: true)
- * @param options.log_order - Whether to log publishing order (default: true)
- * @returns Graph validation result with graph, publishing order, and detected cycles
- * @throws {Task_Error} If production cycles detected and throw_on_prod_cycles is true
+ * @param options.throw_on_prod_cycles whether to throw an error if production cycles are detected (default: true)
+ * @param options.log_cycles whether to log cycle information (default: true)
+ * @param options.log_order whether to log publishing order (default: true)
+ * @returns graph validation result with graph, publishing order, and detected cycles
+ * @throws {Task_Error} if production cycles detected and throw_on_prod_cycles is true
  */
 export const validate_dependency_graph = (
 	repos: Array<Local_Repo>,

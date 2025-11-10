@@ -63,9 +63,6 @@ export const parse_changeset_content = (
 	};
 };
 
-/**
- * Parses a changeset file's frontmatter using regexps.
- */
 export const parse_changeset_file = async (
 	filepath: string,
 	log?: Logger,
@@ -87,9 +84,6 @@ export const parse_changeset_file = async (
 	}
 };
 
-/**
- * Reads all changesets for a repo.
- */
 export const read_changesets = async (
 	repo: Local_Repo,
 	log?: Logger,
@@ -118,8 +112,7 @@ export const read_changesets = async (
 };
 
 /**
- * Determines the next version bump type based on changesets.
- * Returns the highest bump type found (major > minor > patch).
+ * Returns the highest bump type found across all changesets (major > minor > patch).
  */
 export const determine_bump_from_changesets = (
 	changesets: Array<Changeset_Info>,

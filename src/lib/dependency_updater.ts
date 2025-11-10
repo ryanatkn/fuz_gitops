@@ -13,9 +13,6 @@ import {default_git_operations, default_fs_operations} from '$lib/operations_def
 
 export type Version_Strategy = 'exact' | 'caret' | 'tilde';
 
-/**
- * Updates dependencies in a repo's package.json file and creates a changeset.
- */
 export const update_package_json = async (
 	repo: Local_Repo,
 	updates: Map<string, string>,
@@ -148,9 +145,6 @@ export const update_package_json = async (
 	}
 };
 
-/**
- * Updates all dependencies across multiple repos.
- */
 export const update_all_repos = async (
 	repos: Array<Local_Repo>,
 	published: Map<string, string>,
@@ -209,9 +203,6 @@ export const update_all_repos = async (
 	return {updated: updated_count, failed};
 };
 
-/**
- * Gets dependencies that need updating for a repo.
- */
 export const find_updates_needed = (
 	repo: Local_Repo,
 	published: Map<string, string>,

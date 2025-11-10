@@ -15,9 +15,6 @@ export interface Package_Info {
 	version: string;
 }
 
-/**
- * Checks if a specific package version is available on NPM.
- */
 export const check_package_available = async (
 	pkg: string,
 	version: string,
@@ -114,9 +111,6 @@ export const get_package_info = async (pkg: string, log?: Logger): Promise<Packa
 	}
 };
 
-/**
- * Checks if a package exists on NPM.
- */
 export const package_exists = async (pkg: string, log?: Logger): Promise<boolean> => {
 	const info = await get_package_info(pkg, log);
 	return info !== null;

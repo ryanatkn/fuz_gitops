@@ -76,9 +76,6 @@ export const git_push_tag = async (
 	}
 };
 
-/**
- * Returns true if there are any uncommitted changes.
- */
 export const git_has_changes = async (options?: SpawnOptions): Promise<boolean> => {
 	const {stdout} = await spawn_out('git', ['status', '--porcelain'], options);
 	return stdout ? stdout.trim().length > 0 : false;
@@ -97,9 +94,6 @@ export const git_get_changed_files = async (options?: SpawnOptions): Promise<Arr
 		.filter(Boolean);
 };
 
-/**
- * Checks if a specific file changed between two commits.
- */
 export const git_has_file_changed = async (
 	from_commit: string,
 	to_commit: string,
@@ -200,9 +194,6 @@ export const git_check_clean_workspace_as_boolean = async (
 	return error === null;
 };
 
-/**
- * Checks if a git remote exists.
- */
 export const git_has_remote = async (
 	remote: string = 'origin',
 	options?: SpawnOptions,

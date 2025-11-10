@@ -40,9 +40,6 @@ export interface Publishing_Result {
 	duration: number;
 }
 
-/**
- * Publishes multiple repositories in dependency order.
- */
 export const publish_repos = async (
 	repos: Array<Local_Repo>,
 	options: Publishing_Options,
@@ -322,9 +319,6 @@ export const publish_repos = async (
 	};
 };
 
-/**
- * Publishes a single repository.
- */
 const publish_single_repo = async (
 	repo: Local_Repo,
 	options: Publishing_Options,

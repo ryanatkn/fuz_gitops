@@ -1,8 +1,4 @@
 /**
- * Shared constants for gitops publishing.
- */
-
-/**
  * Maximum number of iterations for fixed-point iteration during publishing.
  * Used in both plan generation and actual publishing to resolve transitive dependency cascades.
  *
