@@ -11,7 +11,7 @@ export interface Fetch_Cache {
 	name: string;
 	data: Fetch_Value_Cache; // TODO probably expose an API for this instead of passing the map directly
 	/**
-	 * @returns a boolean indicating if anything changed, returns `false` if it was a no-op
+	 * @returns true if anything changed, false if no-op
 	 */
 	save: () => Promise<boolean>;
 }

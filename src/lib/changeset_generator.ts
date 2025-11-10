@@ -76,9 +76,6 @@ const calculate_required_bump = (
 	return 'patch';
 };
 
-/**
- * Generates the content of a changeset file.
- */
 export const generate_changeset_content = (
 	package_name: string,
 	updates: Array<Dependency_Update>,
@@ -123,9 +120,6 @@ export const generate_changeset_content = (
 	return lines.join('\n');
 };
 
-/**
- * Creates Dependency_Update objects from published versions.
- */
 export const create_dependency_updates = (
 	dependencies: Map<string, string>,
 	published_versions: Map<string, Published_Version>,

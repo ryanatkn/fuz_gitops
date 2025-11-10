@@ -1,10 +1,6 @@
 import type {Local_Repo} from '$lib/local_repo.js';
 import {EMPTY_OBJECT} from '@ryanatkn/belt/object.js';
 
-/**
- * Shared types and constants for dependency management
- */
-
 export const DEPENDENCY_TYPE = {
 	PROD: 'prod',
 	PEER: 'peer',
@@ -48,10 +44,6 @@ export class Dependency_Graph {
 		this.edges = new Map();
 	}
 
-	/**
-	 * Initializes the graph from a list of repos.
-	 * This is now a public method to be called by the builder.
-	 */
 	public init_from_repos(repos: Array<Local_Repo>): void {
 		// First pass: create nodes
 		for (const repo of repos) {
@@ -117,9 +109,7 @@ export class Dependency_Graph {
 	}
 
 	/**
-	 * Performs topological sort to determine publishing order.
-	 * Returns array of package names in the order they should be published.
-	 * @param exclude_dev - If true, excludes dev dependencies from the sort
+	 * @param exclude_dev if true, excludes dev dependencies from the sort
 	 */
 	topological_sort(exclude_dev = false): Array<string> {
 		const visited: Set<string> = new Set();
@@ -192,10 +182,6 @@ export class Dependency_Graph {
 		return result;
 	}
 
-	/**
-	 * Detects cycles in the dependency graph.
-	 * Returns array of cycles, where each cycle is an array of package names.
-	 */
 	detect_cycles(): Array<Array<string>> {
 		const cycles: Array<Array<string>> = [];
 		const visited: Set<string> = new Set();
@@ -356,7 +342,6 @@ export class Dependency_Graph {
 
 /**
  * Builder for creating and analyzing dependency graphs.
- * This is now the single entry point for building graphs.
  */
 export class Dependency_Graph_Builder {
 	build_from_repos(repos: Array<Local_Repo>): Dependency_Graph {
@@ -373,9 +358,6 @@ export class Dependency_Graph_Builder {
 		return graph.topological_sort(true); // Exclude dev dependencies
 	}
 
-	/**
-	 * Analyzes the graph for potential issues.
-	 */
 	analyze(graph: Dependency_Graph): {
 		production_cycles: Array<Array<string>>;
 		dev_cycles: Array<Array<string>>;

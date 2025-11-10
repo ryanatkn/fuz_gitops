@@ -8,9 +8,6 @@ import type {Local_Repo} from '$lib/local_repo.js';
 
 /* eslint-disable no-await-in-loop */
 
-/**
- * Fetches repo data from the web.
- */
 export const fetch_repo_data = async (
 	resolved_repos: Array<Local_Repo>,
 	token?: string,

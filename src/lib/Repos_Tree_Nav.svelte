@@ -6,9 +6,6 @@
 
 	interface Props {
 		repos: Array<Repo>;
-		/**
-		 * The selected package, if any.
-		 */
 		selected_repo?: Repo;
 		children: Snippet;
 	}

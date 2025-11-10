@@ -43,9 +43,6 @@ const semver_parse = (version: string): Semver => {
 	};
 };
 
-/**
- * Converts a semver object back to string.
- */
 const semver_to_string = (semver: Semver): string => {
 	let version = `${semver.major}.${semver.minor}.${semver.patch}`;
 	if (semver.prerelease) {
