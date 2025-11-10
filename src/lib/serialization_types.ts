@@ -1,3 +1,15 @@
+/**
+ * JSON-serializable types for command output formats.
+ *
+ * Gitops commands support `--format json` and `--format markdown` output modes
+ * in addition to styled terminal output. These types define the JSON schema for:
+ * - Dependency graph structures (`Serialized_Graph`)
+ * - Publishing plan predictions (`Serialized_Publishing_Plan`)
+ *
+ * Used by `gitops_analyze`, `gitops_plan`, and `gitops_publish --dry_run` when
+ * `--format json` or `--outfile` is specified.
+ */
+
 import type {Dependency_Graph} from '$lib/dependency_graph.js';
 
 export interface Serialized_Node {

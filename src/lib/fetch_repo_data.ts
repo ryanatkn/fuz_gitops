@@ -8,6 +8,19 @@ import type {Local_Repo} from '$lib/local_repo.js';
 
 /* eslint-disable no-await-in-loop */
 
+/**
+ * Fetches GitHub metadata (CI status, PRs) for all repos.
+ *
+ * Fetches sequentially with delay between requests to respect GitHub API rate limits.
+ * Uses `await_in_loop` intentionally to avoid parallel requests overwhelming the API.
+ *
+ * Error handling: Logs fetch failures but continues processing remaining repos.
+ * Repos with failed fetches will have `null` for check_runs or pull_requests.
+ *
+ * @param delay milliseconds between API requests (default: 33ms)
+ * @param cache optional cache from belt's fetch.js for response memoization
+ * @returns array of Repo objects with GitHub metadata attached
+ */
 export const fetch_repo_data = async (
 	resolved_repos: Array<Local_Repo>,
 	token?: string,

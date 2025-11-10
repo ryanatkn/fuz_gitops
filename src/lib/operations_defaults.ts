@@ -1,3 +1,10 @@
+/**
+ * Production implementations of operations interfaces.
+ *
+ * Provides real git, npm, fs, and build operations for production use.
+ * For interface definitions and dependency injection pattern, see `operations.ts`.
+ */
+
 import {spawn, spawn_out} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
 import {git_checkout, type Git_Branch, type Git_Origin} from '@ryanatkn/belt/git.js';

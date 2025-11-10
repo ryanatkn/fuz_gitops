@@ -1,3 +1,10 @@
+/**
+ * Changeset parsing and version prediction from `.changeset/*.md` files.
+ *
+ * Reads changesets to determine which packages need publishing and their version bumps.
+ * For auto-generating changesets during publishing, see `changeset_generator.ts`.
+ */
+
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {existsSync} from 'node:fs';
 import {readdir, readFile} from 'node:fs/promises';
