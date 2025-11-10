@@ -1,7 +1,3 @@
-/**
- * Default implementations of operations interfaces
- */
-
 import {spawn, spawn_out} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
 import {git_checkout, type Git_Branch, type Git_Origin} from '@ryanatkn/belt/git.js';
@@ -38,9 +34,6 @@ import type {
 	Gitops_Operations,
 } from '$lib/operations.js';
 
-/**
- * Default changeset operations using actual file system.
- */
 export const default_changeset_operations: Changeset_Operations = {
 	has_changesets: async (options) => {
 		const {repo} = options;
@@ -77,9 +70,6 @@ export const default_changeset_operations: Changeset_Operations = {
 	},
 };
 
-/**
- * Default git operations using actual git commands.
- */
 export const default_git_operations: Git_Operations = {
 	// Core git info
 	current_branch_name: async (options) => {
@@ -263,9 +253,6 @@ export const default_git_operations: Git_Operations = {
 	},
 };
 
-/**
- * Default process operations using actual spawn.
- */
 export const default_process_operations: Process_Operations = {
 	spawn: async (options) => {
 		const {cmd, args, spawn_options} = options;
@@ -290,9 +277,6 @@ export const default_process_operations: Process_Operations = {
 	},
 };
 
-/**
- * Default NPM operations using actual registry.
- */
 export const default_npm_operations: Npm_Operations = {
 	wait_for_package: async (options) => {
 		const {pkg, version, wait_options, log} = options;
@@ -369,18 +353,12 @@ export const default_npm_operations: Npm_Operations = {
 	},
 };
 
-/**
- * Default preflight operations.
- */
 export const default_preflight_operations: Preflight_Operations = {
 	run_preflight_checks: async (options) => {
 		return run_preflight_checks(options);
 	},
 };
 
-/**
- * Default file system operations using Node's fs.
- */
 export const default_fs_operations: Fs_Operations = {
 	readFile: async (options) => {
 		const {path, encoding} = options;
@@ -403,9 +381,6 @@ export const default_fs_operations: Fs_Operations = {
 	},
 };
 
-/**
- * Default build operations using gro build.
- */
 export const default_build_operations: Build_Operations = {
 	build_package: async (options) => {
 		const {repo, log} = options;

@@ -240,9 +240,6 @@ export const run_preflight_checks = async ({
 	};
 };
 
-/**
- * Checks if git remote is reachable.
- */
 const check_git_remote = async (cwd: string): Promise<Result<object, {message: string}>> => {
 	try {
 		// Try to fetch refs from remote without downloading objects

@@ -142,17 +142,11 @@ export const task: Task<Args> = {
 	},
 };
 
-/**
- * Data type for publishing result output
- */
 interface Publish_Result_Data {
 	result: Publishing_Result;
 	fatal_error: Error | null;
 }
 
-/**
- * Create formatters for publishing result output
- */
 const create_publish_formatters = (): Output_Formatters<Publish_Result_Data> => ({
 	json: (data) => JSON.stringify(data.result, null, 2),
 	markdown: (data) => format_result_markdown(data.result, data.fatal_error),
