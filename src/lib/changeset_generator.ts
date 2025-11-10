@@ -50,10 +50,6 @@ export const create_changeset_for_dependency_updates = async (
 	return filepath;
 };
 
-/**
- * Calculates the required bump type based on dependency updates.
- * Breaking changes propagate up the dependency tree.
- */
 const calculate_required_bump = (
 	repo: Local_Repo,
 	updates: Array<Dependency_Update>,
@@ -76,6 +72,18 @@ const calculate_required_bump = (
 	return 'patch';
 };
 
+/**
+ * Generates markdown changeset content for dependency updates.
+ *
+ * Creates properly formatted changeset with YAML frontmatter, summary,
+ * and categorized list of breaking vs regular updates. Output format
+ * matches changesets CLI for consistency.
+ *
+ * @param package_name package receiving the dependency updates
+ * @param updates list of dependency changes with version info
+ * @param bump_type required bump type (calculated from breaking changes)
+ * @returns markdown content ready to write to .changeset/*.md file
+ */
 export const generate_changeset_content = (
 	package_name: string,
 	updates: Array<Dependency_Update>,

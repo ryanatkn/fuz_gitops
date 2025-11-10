@@ -46,10 +46,6 @@ export interface Publishing_Plan {
 	errors: Array<string>;
 }
 
-/**
- * Calculates dependency updates for all repos based on predicted versions.
- * Returns both dependency updates and breaking cascades map.
- */
 const calculate_dependency_updates = (
 	repos: Array<Local_Repo>,
 	predicted_versions: Map<string, string>,
@@ -130,10 +126,6 @@ const calculate_dependency_updates = (
 	return {dependency_updates, breaking_cascades};
 };
 
-/**
- * Determines the required bump type based on dependency updates.
- * Returns null if no bump is required, or the bump type needed.
- */
 const get_required_bump_for_dependencies = (
 	repo: Local_Repo,
 	dependency_updates: Array<Dependency_Update>,

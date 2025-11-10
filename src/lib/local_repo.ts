@@ -41,8 +41,20 @@ export interface Unresolved_Local_Repo {
 }
 
 /**
- * Loads the data for a resolved local repo, switching branches if needed and pulling latest changes.
- * Automatically installs dependencies if package.json changed during pull.
+ * Loads repo data with automatic syncing and dependency management.
+ *
+ * Workflow:
+ * 1. Records current commit hash (for detecting changes)
+ * 2. Switches to target branch if needed (requires clean workspace)
+ * 3. Pulls latest changes from remote (skipped for local-only repos)
+ * 4. Validates workspace is clean after pull
+ * 5. Auto-installs dependencies if package.json changed
+ * 6. Parses package.json and extracts Pkg metadata
+ *
+ * This ensures repos are always in sync with their configured branch
+ * before being used by gitops commands.
+ *
+ * @throws {Task_Error} if workspace dirty, branch switch fails, or install fails
  */
 export const load_local_repo = async ({
 	resolved_local_repo,

@@ -19,7 +19,14 @@ export interface Output_Formatters<T> {
 }
 
 /**
- * @throws if stdout format is used with outfile option
+ * Formats data and outputs to file or stdout based on options.
+ *
+ * Supports three formats:
+ * - stdout: Uses logger for colored/styled output (cannot use with --outfile)
+ * - json: Stringified JSON
+ * - markdown: Formatted markdown text
+ *
+ * @throws {Error} if stdout format used with outfile, or if logger missing for stdout
  */
 export const format_and_output = async <T>(
 	data: T,
