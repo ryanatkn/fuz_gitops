@@ -41,7 +41,7 @@ import type {Bump_Type} from '$lib/semver.js';
 import type {Preflight_Options, Preflight_Result} from '$lib/preflight_checks.js';
 
 /**
- * Operations for working with changesets
+ * Changeset operations for reading and predicting versions from `.changeset/*.md` files.
  */
 export interface Changeset_Operations {
 	/**
@@ -73,7 +73,8 @@ export interface Changeset_Operations {
 }
 
 /**
- * Operations for git commands
+ * Git operations for branch management, commits, tags, and workspace state.
+ * All operations return `Result` instead of throwing errors.
  */
 export interface Git_Operations {
 	/**
@@ -203,7 +204,7 @@ export interface Git_Operations {
 }
 
 /**
- * Operations for spawning processes
+ * Process spawning operations for running shell commands.
  */
 export interface Process_Operations {
 	/**
@@ -217,7 +218,7 @@ export interface Process_Operations {
 }
 
 /**
- * Operations for building packages
+ * Build operations for validating packages compile before publishing.
  */
 export interface Build_Operations {
 	/**
@@ -230,7 +231,7 @@ export interface Build_Operations {
 }
 
 /**
- * Options for waiting for NPM packages
+ * Configuration for exponential backoff when waiting for NPM package availability.
  */
 export interface Wait_Options {
 	max_attempts?: number;
@@ -240,7 +241,8 @@ export interface Wait_Options {
 }
 
 /**
- * Operations for NPM registry
+ * NPM registry operations for package availability checks and authentication.
+ * Includes exponential backoff for waiting on package propagation.
  */
 export interface Npm_Operations {
 	/**
@@ -288,7 +290,8 @@ export interface Npm_Operations {
 }
 
 /**
- * Operations for preflight checks
+ * Preflight validation operations to ensure repos are ready for publishing.
+ * Validates workspace state, branches, builds, and npm authentication.
  */
 export interface Preflight_Operations {
 	/**
@@ -305,7 +308,7 @@ export interface Preflight_Operations {
 }
 
 /**
- * Operations for file system access
+ * File system operations for reading and writing files.
  */
 export interface Fs_Operations {
 	/**
@@ -326,7 +329,8 @@ export interface Fs_Operations {
 }
 
 /**
- * Combined operations for all gitops functionality
+ * Combined operations interface grouping all gitops functionality.
+ * This is the main interface injected into publishing and validation workflows.
  */
 export interface Gitops_Operations {
 	changeset: Changeset_Operations;
