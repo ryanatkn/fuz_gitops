@@ -1,3 +1,16 @@
+/**
+ * Shared dependency graph validation logic used across multiple workflows.
+ *
+ * Consolidates graph building, cycle detection, and publishing order computation
+ * that was duplicated in three places: `multi_repo_publisher.ts`, `publishing_plan.ts`,
+ * and `gitops_analyze.task.ts`.
+ *
+ * Options pattern supports different behaviors: analyze can tolerate cycles for
+ * reporting, while publish must throw on production cycles.
+ *
+ * See also: `dependency_graph.ts` for core graph data structure and algorithms.
+ */
+
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {Task_Error} from '@ryanatkn/gro';
 import {styleText as st} from 'node:util';

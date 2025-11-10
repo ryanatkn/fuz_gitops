@@ -1,3 +1,14 @@
+/**
+ * Configuration types and normalization for gitops multi-repo management.
+ *
+ * Two-phase configuration system:
+ * - `Raw_Gitops_Config` - User-friendly format with optional fields and flexible types
+ * - `Gitops_Config` - Internal format with required fields and strict types
+ *
+ * This allows users to provide minimal configs (e.g., just URLs as strings) while
+ * the system works with normalized configs internally for type safety.
+ */
+
 import type {Url} from '@ryanatkn/belt/url.js';
 import {existsSync} from 'node:fs';
 import {strip_end} from '@ryanatkn/belt/string.js';

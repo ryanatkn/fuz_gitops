@@ -1,3 +1,10 @@
+/**
+ * Auto-generation of changesets for dependency updates during publishing.
+ *
+ * Creates changesets when packages need to republish due to updated dependencies.
+ * For parsing existing changesets, see `changeset_reader.ts`.
+ */
+
 import {writeFile, mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {existsSync} from 'node:fs';

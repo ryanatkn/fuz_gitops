@@ -1,3 +1,19 @@
+/**
+ * Shared initialization logic for all gitops tasks.
+ *
+ * Provides `get_gitops_ready()` which orchestrates:
+ * - Config loading and normalization
+ * - Repo resolution (local path discovery)
+ * - Branch switching and syncing
+ * - Dependency installation
+ *
+ * Used by: `gitops_sync.task.ts`, `gitops_analyze.task.ts`, `gitops_plan.task.ts`,
+ * `gitops_publish.task.ts`, and `gitops_validate.task.ts`.
+ *
+ * Accepts `git_ops` and `npm_ops` parameters to support testing via operations pattern
+ * (see `operations.ts` for dependency injection details).
+ */
+
 import {Task_Error} from '@ryanatkn/gro';
 import {styleText as st} from 'node:util';
 import {resolve, dirname} from 'node:path';
@@ -19,6 +35,25 @@ export interface Get_Gitops_Ready_Options {
 	npm_ops?: Npm_Operations;
 }
 
+/**
+ * Central initialization function for all gitops tasks.
+ *
+ * Initialization sequence:
+ * 1. Loads and normalizes config from `gitops.config.ts`
+ * 2. Resolves local repo paths (creates missing with `--download`)
+ * 3. Switches branches and pulls latest changes
+ * 4. Auto-installs deps if package.json changed during pull
+ *
+ * Priority for path resolution:
+ * - `dir` argument (explicit override)
+ * - Config `repos_dir` setting
+ * - `DEFAULT_REPOS_DIR` constant
+ *
+ * @param options.git_ops for testing (defaults to real git operations)
+ * @param options.npm_ops for testing (defaults to real npm operations)
+ * @returns initialized config and fully loaded repos ready for operations
+ * @throws {Task_Error} if config loading or repo resolution fails
+ */
 export const get_gitops_ready = async (
 	options: Get_Gitops_Ready_Options,
 ): Promise<{

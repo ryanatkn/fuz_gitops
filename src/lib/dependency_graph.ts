@@ -1,3 +1,10 @@
+/**
+ * Dependency graph data structure and algorithms for multi-repo publishing.
+ *
+ * Provides `Dependency_Graph` class with topological sort and cycle detection.
+ * For validation workflow and publishing order computation, see `graph_validation.ts`.
+ */
+
 import type {Local_Repo} from '$lib/local_repo.js';
 import {EMPTY_OBJECT} from '@ryanatkn/belt/object.js';
 
