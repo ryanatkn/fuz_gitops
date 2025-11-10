@@ -14,14 +14,23 @@ export interface Changeset_Info {
 }
 
 /**
- * Parses changeset content string (pure function for testing).
- * Format:
+ * Parses changeset content string from markdown format.
+ *
+ * Pure function for testability - no file I/O, just string parsing.
+ * Extracts package names, bump types, and summary from YAML frontmatter format.
+ * Returns null if format is invalid or no packages found.
+ *
+ * Expected format:
  * ---
  * "package-name": patch
  * "@scope/package": minor
  * ---
  *
  * Summary of changes
+ *
+ * @param content changeset markdown with YAML frontmatter
+ * @param filename optional filename for error reporting context
+ * @returns parsed changeset info or null if invalid format
  */
 export const parse_changeset_content = (
 	content: string,
@@ -112,7 +121,13 @@ export const read_changesets = async (
 };
 
 /**
- * Returns the highest bump type found across all changesets (major > minor > patch).
+ * Determines the bump type for a package from its changesets.
+ *
+ * When multiple changesets exist for the same package, returns the highest
+ * bump type (major > minor > patch) to ensure the most significant change
+ * is reflected in the version bump.
+ *
+ * @returns the highest bump type, or null if package has no changesets
  */
 export const determine_bump_from_changesets = (
 	changesets: Array<Changeset_Info>,
@@ -134,8 +149,13 @@ export const determine_bump_from_changesets = (
 };
 
 /**
- * Detects if a repo has changesets.
- * Used by preflight checks and publishing to determine if a repo needs publishing.
+ * Checks if a repo has any changeset files (excluding README.md).
+ *
+ * Used by preflight checks and publishing workflow to determine which packages
+ * need to be published. Returns false if .changeset directory doesn't exist
+ * or contains only README.md.
+ *
+ * @returns true if repo has unpublished changesets
  */
 export const has_changesets = async (repo: Local_Repo): Promise<boolean> => {
 	const changesets_dir = join(repo.repo_dir, '.changeset');
@@ -153,8 +173,15 @@ export const has_changesets = async (repo: Local_Repo): Promise<boolean> => {
 };
 
 /**
- * Predicts the next version for a repo based on its changesets.
- * This enables accurate dry_run mode.
+ * Predicts the next version by analyzing all changesets in a repo.
+ *
+ * Reads all changesets, determines the highest bump type for the package,
+ * and calculates the next version. Returns null if no changesets found.
+ *
+ * Critical for dry-run mode accuracy - allows simulating publishes without
+ * actually running `gro publish` which consumes changesets.
+ *
+ * @returns predicted version and bump type, or null if no changesets
  */
 export const predict_next_version = async (
 	repo: Local_Repo,

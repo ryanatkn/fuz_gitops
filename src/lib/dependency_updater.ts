@@ -13,6 +13,22 @@ import {default_git_operations, default_fs_operations} from '$lib/operations_def
 
 export type Version_Strategy = 'exact' | 'caret' | 'tilde';
 
+/**
+ * Updates package.json dependencies and creates changeset if needed.
+ *
+ * Workflow:
+ * 1. Updates all dependency types (dependencies, devDependencies, peerDependencies)
+ * 2. Writes updated package.json with tabs formatting
+ * 3. Creates auto-changeset if published_versions provided (for transitive updates)
+ * 4. Commits both package.json and changeset with standard message
+ *
+ * Uses version strategy to determine prefix (exact, caret, tilde) while preserving
+ * existing prefixes when possible.
+ *
+ * @param strategy how to format version ranges (default: caret)
+ * @param published_versions if provided, generates auto-changesets for updates
+ * @throws {Error} if file operations or git operations fail
+ */
 export const update_package_json = async (
 	repo: Local_Repo,
 	updates: Map<string, string>,

@@ -372,6 +372,15 @@ export const publish_repos = async (
 	};
 };
 
+/**
+ * Publishes a single repo using gro publish.
+ *
+ * Dry run mode: Predicts version from changesets without side effects.
+ * Real mode: Runs `gro publish --no-build` (builds already validated in preflight),
+ * reads new version from package.json, and returns metadata.
+ *
+ * @throws {Error} if changeset prediction fails (dry run) or publish fails (real)
+ */
 const publish_single_repo = async (
 	repo: Local_Repo,
 	options: Publishing_Options,

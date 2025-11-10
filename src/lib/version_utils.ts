@@ -20,7 +20,14 @@ export const get_version_prefix = (version: string): string => {
 };
 
 /**
- * Normalizes a version string for comparison by removing prefixes.
+ * Normalizes version string for comparison.
+ *
+ * Strips prefixes (^, ~, >=) to get bare version number.
+ * Handles wildcards as-is. Used by needs_update to compare versions.
+ *
+ * @example normalize_version_for_comparison('^1.2.3') // '1.2.3'
+ * @example normalize_version_for_comparison('>=2.0.0') // '2.0.0'
+ * @example normalize_version_for_comparison('*') // '*'
  */
 export const normalize_version_for_comparison = (version: string): string => {
 	// Handle wildcards
@@ -47,8 +54,16 @@ export const needs_update = (current: string, new_version: string): boolean => {
 };
 
 /**
- * Determines the appropriate version prefix for an update.
- * If updating from wildcard, use caret. Otherwise preserve existing prefix.
+ * Determines version prefix to use when updating dependencies.
+ *
+ * Strategy:
+ * - Wildcard (*): Use caret (^) as default
+ * - Has existing prefix: Preserve it (^, ~, >=)
+ * - No prefix: Use default_strategy
+ *
+ * This preserves user intent while handling wildcard replacements sensibly.
+ *
+ * @param default_strategy prefix to use when no existing prefix found
  */
 export const get_update_prefix = (
 	current_version: string,

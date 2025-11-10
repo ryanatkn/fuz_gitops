@@ -46,8 +46,21 @@ export interface Run_Preflight_Checks_Options {
 }
 
 /**
- * Runs preflight checks for all repos before publishing.
- * Validates workspaces, branches, changesets, builds, and npm auth.
+ * Validates all requirements before publishing can proceed.
+ *
+ * Performs comprehensive pre-flight validation:
+ * - Clean workspaces (100% clean required - no uncommitted changes)
+ * - Correct branch (usually main)
+ * - Changesets present (unless skip_changesets=true)
+ * - Builds successful (fail-fast to prevent broken state)
+ * - Git remote reachability
+ * - NPM authentication with username
+ * - NPM registry connectivity
+ *
+ * Build validation runs BEFORE any publishing to prevent the scenario where
+ * version is bumped but build fails, leaving repo in broken state.
+ *
+ * @returns result with ok=false if any errors, plus warnings and detailed status
  */
 export const run_preflight_checks = async ({
 	repos,

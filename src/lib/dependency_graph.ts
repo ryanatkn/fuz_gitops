@@ -109,7 +109,15 @@ export class Dependency_Graph {
 	}
 
 	/**
-	 * @param exclude_dev if true, excludes dev dependencies from the sort
+	 * Computes topological sort order for dependency graph.
+	 *
+	 * Uses Kahn's algorithm with alphabetical ordering within tiers for
+	 * deterministic results. Throws if cycles detected.
+	 *
+	 * @param exclude_dev if true, excludes dev dependencies to break cycles.
+	 *   Publishing uses exclude_dev=true to handle circular dev deps.
+	 * @returns array of package names in dependency order (dependencies before dependents)
+	 * @throws {Error} if circular dependencies detected in included dependency types
 	 */
 	topological_sort(exclude_dev = false): Array<string> {
 		const visited: Set<string> = new Set();
@@ -220,8 +228,15 @@ export class Dependency_Graph {
 	}
 
 	/**
-	 * Detects cycles by dependency type.
-	 * Separates production/peer cycles (errors) from dev cycles (normal).
+	 * Detects circular dependencies, categorized by severity.
+	 *
+	 * Production/peer cycles prevent publishing (impossible to order packages).
+	 * Dev cycles are normal (test utils, shared configs) and safely ignored.
+	 *
+	 * Uses DFS traversal with recursion stack to identify back edges.
+	 * Deduplicates cycles using sorted cycle keys.
+	 *
+	 * @returns object with production_cycles (errors) and dev_cycles (info)
 	 */
 	detect_cycles_by_type(): {
 		production_cycles: Array<Array<string>>;
@@ -344,6 +359,15 @@ export class Dependency_Graph {
  * Builder for creating and analyzing dependency graphs.
  */
 export class Dependency_Graph_Builder {
+	/**
+	 * Constructs dependency graph from local repos.
+	 *
+	 * Two-pass algorithm: first creates nodes, then builds edges (dependents).
+	 * Prioritizes prod/peer deps over dev deps when same package appears in
+	 * multiple dependency types (stronger constraint wins).
+	 *
+	 * @returns fully initialized dependency graph with all nodes and edges
+	 */
 	build_from_repos(repos: Array<Local_Repo>): Dependency_Graph {
 		const graph = new Dependency_Graph();
 		graph.init_from_repos(repos);
@@ -351,8 +375,14 @@ export class Dependency_Graph_Builder {
 	}
 
 	/**
-	 * Returns the topologically sorted order for publishing.
-	 * Excludes dev dependencies to avoid cycles.
+	 * Computes publishing order using topological sort with dev deps excluded.
+	 *
+	 * Excludes dev dependencies to break circular dev dependency cycles while
+	 * preserving production/peer dependency ordering. This allows patterns like
+	 * shared test utilities that depend on each other for development.
+	 *
+	 * @returns package names in safe publishing order (dependencies before dependents)
+	 * @throws {Error} if production/peer cycles detected (cannot be resolved by exclusion)
 	 */
 	compute_publishing_order(graph: Dependency_Graph): Array<string> {
 		return graph.topological_sort(true); // Exclude dev dependencies
