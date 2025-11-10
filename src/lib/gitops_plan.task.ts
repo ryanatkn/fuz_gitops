@@ -73,9 +73,6 @@ export const task: Task<Args> = {
 	},
 };
 
-/**
- * Create formatters for publishing plan output
- */
 const create_plan_formatters = (): Output_Formatters<Publishing_Plan> => ({
 	json: (plan) => {
 		const output = {
@@ -93,9 +90,6 @@ const create_plan_formatters = (): Output_Formatters<Publishing_Plan> => ({
 	stdout: (plan, log) => log_publishing_plan(plan, log),
 });
 
-/**
- * Format the publishing plan as markdown.
- */
 const format_plan_as_markdown = (plan: Publishing_Plan): Array<string> => {
 	const lines: Array<string> = [];
 	const {

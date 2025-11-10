@@ -19,9 +19,6 @@ export interface Get_Gitops_Ready_Options {
 	npm_ops?: Npm_Operations;
 }
 
-/**
- * Readies the workspace for all gitops repos.
- */
 export const get_gitops_ready = async (
 	options: Get_Gitops_Ready_Options,
 ): Promise<{

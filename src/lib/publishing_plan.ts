@@ -446,9 +446,6 @@ export const generate_publishing_plan = async (
 	};
 };
 
-/**
- * Helper to log a group of version changes with consistent formatting.
- */
 const log_version_change_group = (
 	changes: Array<Version_Change>,
 	header: string,
@@ -469,9 +466,6 @@ const log_version_change_group = (
 	}
 };
 
-/**
- * Formats and logs the publishing plan for user review.
- */
 export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void => {
 	const {
 		publishing_order,

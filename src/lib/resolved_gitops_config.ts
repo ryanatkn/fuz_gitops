@@ -12,9 +12,6 @@ export interface Resolved_Gitops_Config {
 	unresolved_local_repos: Array<Unresolved_Local_Repo> | null;
 }
 
-/**
- * Resolves repo data locally on the filesystem.
- */
 export const resolve_gitops_config = (
 	gitops_config: Gitops_Config,
 	repos_dir: string,
