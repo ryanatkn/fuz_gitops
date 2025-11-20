@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.52.0
+
+### Minor Changes
+
+- heal npm install cache ([#38](https://github.com/ryanatkn/fuz_gitops/pull/38)) ([aa3e917](https://github.com/ryanatkn/fuz_gitops/commit/aa3e917))
+
 ## 0.51.0
 
 ### Minor Changes
