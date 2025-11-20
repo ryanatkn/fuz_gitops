@@ -129,6 +129,30 @@ The publishing workflow includes build validation in preflight checks to prevent
 
 This prevents the known issue in `gro publish` where build failures leave repos in broken state (version bumped but not published).
 
+**Dependency Installation with Cache Healing**
+
+The publishing workflow automatically installs dependencies after package.json updates with smart cache healing:
+
+1. **When installations happen:**
+   - After each iteration when dependency updates occur
+   - Batch installs all repos with updated dependencies before next iteration
+   - Published packages skip install (`gro publish` handles it internally)
+
+2. **Cache healing strategy:**
+   - First attempt: regular `npm install`
+   - On ETARGET error (package not found due to stale cache): `npm cache clean --force` then retry
+   - On other errors: fail immediately without cache cleaning
+   - Detects variations: "ETARGET", "notarget", "No matching version found"
+
+3. **Why cache healing is needed:**
+   - After publishing and waiting for NPM propagation, npm's local cache may still have stale "404" metadata
+   - Cache clean forces fresh metadata fetch from registry
+   - Ensures newly published packages can be installed by dependents
+
+4. **Configuration:**
+   - `--skip-install`: Disable installs during publishing (for speed/testing)
+   - Installs enabled by default
+
 **Plan vs Dry Run**
 
 `gro gitops_plan`:

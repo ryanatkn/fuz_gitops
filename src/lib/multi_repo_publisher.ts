@@ -11,58 +11,9 @@ import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_u
 import type {Gitops_Operations} from '$lib/operations.js';
 import {default_gitops_operations} from '$lib/operations_defaults.js';
 import {MAX_ITERATIONS} from '$lib/constants.js';
+import {install_with_cache_healing} from '$lib/npm_install_helpers.js';
 
 /* eslint-disable no-await-in-loop */
-
-/**
- * Installs npm dependencies with cache healing on ETARGET errors.
- * If install fails with ETARGET (package not found), cleans npm cache and retries.
- */
-const install_with_cache_healing = async (
-	repo: Local_Repo,
-	ops: Gitops_Operations,
-	log?: Logger,
-): Promise<void> => {
-	// First attempt
-	const install_result = await ops.npm.install({cwd: repo.repo_dir});
-
-	if (install_result.ok) {
-		return; // Success
-	}
-
-	// Check if error is ETARGET (package not found due to stale cache)
-	const stderr = install_result.stderr || '';
-	const message = install_result.message || '';
-	const is_etarget = stderr.includes('ETARGET') || message.includes('ETARGET');
-
-	if (!is_etarget) {
-		// Different error - fail immediately
-		throw new Error(
-			`Failed to install dependencies in ${repo.pkg.name}: ${install_result.message}${stderr ? `\n${stderr}` : ''}`,
-		);
-	}
-
-	// ETARGET error - try cache healing
-	log?.warn(st('yellow', `  ⚠️  ETARGET error detected - cleaning npm cache...`));
-
-	const cache_result = await ops.npm.cache_clean();
-	if (!cache_result.ok) {
-		throw new Error(`Failed to clean npm cache: ${cache_result.message}`);
-	}
-
-	log?.info('  ✓ Cache cleaned, retrying install...');
-
-	// Retry install after cache clean
-	const retry_result = await ops.npm.install({cwd: repo.repo_dir});
-
-	if (!retry_result.ok) {
-		throw new Error(
-			`Failed to install dependencies after cache clean in ${repo.pkg.name}: ${retry_result.message}${retry_result.stderr ? `\n${retry_result.stderr}` : ''}`,
-		);
-	}
-
-	log?.info(st('green', `  ✓ Dependencies installed successfully after cache heal`));
-};
 
 export interface Publishing_Options {
 	dry_run: boolean;
