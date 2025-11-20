@@ -43,6 +43,10 @@ export const Args = z.strictObject({
 		.number()
 		.meta({description: 'max time to wait for npm propagation in ms'})
 		.default(600000), // 10 minutes
+	skip_install: z
+		.boolean()
+		.meta({description: 'skip npm install after dependency updates'})
+		.default(false),
 	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
 });
 export type Args = z.infer<typeof Args>;
@@ -51,7 +55,18 @@ export const task: Task<Args> = {
 	summary: 'publish all repos in dependency order',
 	Args,
 	run: async ({args, log}): Promise<void> => {
-		const {path, dir, peer_strategy, dry_run, format, deploy, plan, max_wait, outfile} = args;
+		const {
+			path,
+			dir,
+			peer_strategy,
+			dry_run,
+			format,
+			deploy,
+			plan,
+			max_wait,
+			skip_install,
+			outfile,
+		} = args;
 
 		// Load repos
 		const {local_repos: repos} = await get_gitops_ready({
@@ -88,6 +103,7 @@ export const task: Task<Args> = {
 			version_strategy: peer_strategy,
 			deploy,
 			max_wait,
+			skip_install,
 			log,
 		};
 

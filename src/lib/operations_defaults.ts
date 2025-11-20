@@ -345,6 +345,19 @@ export const default_npm_operations: Npm_Operations = {
 			return {ok: false, message: String(error)};
 		}
 	},
+
+	cache_clean: async () => {
+		try {
+			const spawned = await spawn_out('npm', ['cache', 'clean', '--force']);
+			if (spawned.result.ok) {
+				return {ok: true};
+			} else {
+				return {ok: false, message: 'Cache clean failed'};
+			}
+		} catch (error) {
+			return {ok: false, message: String(error)};
+		}
+	},
 };
 
 export const default_preflight_operations: Preflight_Operations = {

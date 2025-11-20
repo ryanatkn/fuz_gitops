@@ -223,6 +223,7 @@ export const create_mock_npm_ops = (overrides: Partial<Npm_Operations> = {}): Np
 	check_auth: async () => ({ok: true, username: 'testuser'}),
 	check_registry: async () => ({ok: true}),
 	install: async () => ({ok: true}),
+	cache_clean: async () => ({ok: true}),
 	...overrides,
 });
 
