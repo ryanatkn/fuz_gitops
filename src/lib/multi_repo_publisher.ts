@@ -11,6 +11,7 @@ import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_u
 import type {Gitops_Operations} from '$lib/operations.js';
 import {default_gitops_operations} from '$lib/operations_defaults.js';
 import {MAX_ITERATIONS} from '$lib/constants.js';
+import {install_with_cache_healing} from '$lib/npm_install_helpers.js';
 
 /* eslint-disable no-await-in-loop */
 
@@ -20,6 +21,7 @@ export interface Publishing_Options {
 	version_strategy?: Version_Strategy;
 	deploy?: boolean;
 	max_wait?: number;
+	skip_install?: boolean;
 	log?: Logger;
 }
 
@@ -98,6 +100,9 @@ export const publish_repos = async (
 		let published_in_iteration = false;
 		let published_count = 0;
 
+		// Track repos changed in THIS iteration only (for batch install)
+		const changed_in_iteration: Set<string> = new Set();
+
 		// Phase 1: Publish each package and immediately update dependents
 		for (let i = 0; i < order.length; i++) {
 			const pkg_name = order[i];
@@ -138,6 +143,8 @@ export const publish_repos = async (
 				const version = await publish_single_repo(repo, options, ops);
 				published.set(pkg_name, version);
 				changed_repos.add(pkg_name); // Mark as changed for deployment
+				// Note: don't add to changed_in_iteration - published packages don't need install
+				// (their dependencies didn't change, only their version)
 				published_in_iteration = true;
 				published_count++;
 				log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
@@ -188,6 +195,7 @@ export const publish_repos = async (
 							if (updates.size > 0) {
 								log?.info(`    Updating ${dependent_repo.pkg.name}'s dependency on ${pkg_name}`);
 								changed_repos.add(dependent_repo.pkg.name); // Mark as changed for deployment
+								changed_in_iteration.add(dependent_repo.pkg.name); // Track for batch install
 								await update_package_json(
 									dependent_repo,
 									updates,
@@ -205,6 +213,28 @@ export const publish_repos = async (
 				failed.set(pkg_name, err);
 				log?.error(st('red', `  ❌ Failed to publish ${pkg_name}: ${err.message}`));
 				break; // Always fail fast on error
+			}
+		}
+
+		// Phase 1b: Batch install dependencies for repos with updated package.json
+		// This ensures workspace stays consistent before next iteration
+		if (!dry_run && !options.skip_install && changed_in_iteration.size > 0) {
+			log?.info(st('cyan', '\n📦 Installing dependencies for updated repos...\n'));
+
+			for (const pkg_name of changed_in_iteration) {
+				const repo = repos.find((r) => r.pkg.name === pkg_name);
+				if (!repo) continue;
+
+				try {
+					log?.info(`  Installing ${pkg_name}...`);
+					await install_with_cache_healing(repo, ops, log);
+					log?.info(st('green', `  ✅ Installed ${pkg_name}`));
+				} catch (error) {
+					const err = error instanceof Error ? error : new Error(String(error));
+					failed.set(pkg_name, err);
+					log?.error(st('red', `  ❌ Failed to install ${pkg_name}: ${err.message}`));
+					// Continue with other installs instead of breaking
+				}
 			}
 		}
 
@@ -235,6 +265,7 @@ export const publish_repos = async (
 
 	// Phase 2: Update all dev dependencies (can have cycles)
 	// Dev dep changes require deployment even without version bumps (rebuild needed)
+	const dev_updated_repos: Set<string> = new Set();
 	if (update_deps && published.size > 0 && !dry_run) {
 		log?.info(st('cyan', '\n🔄 Updating dev dependencies...\n'));
 
@@ -254,6 +285,7 @@ export const publish_repos = async (
 			if (dev_updates.size > 0) {
 				log?.info(`  Updating ${dev_updates.size} dev dependencies in ${repo.pkg.name}`);
 				changed_repos.add(repo.pkg.name); // Mark as changed for deployment
+				dev_updated_repos.add(repo.pkg.name); // Track for batch install
 				await update_package_json(
 					repo,
 					dev_updates,
@@ -262,6 +294,27 @@ export const publish_repos = async (
 					log,
 					ops.git,
 				);
+			}
+		}
+	}
+
+	// Phase 2b: Install dev dependencies for repos with dev dep updates
+	if (!dry_run && !options.skip_install && dev_updated_repos.size > 0) {
+		log?.info(st('cyan', '\n📦 Installing dev dependencies for updated repos...\n'));
+
+		for (const pkg_name of dev_updated_repos) {
+			const repo = repos.find((r) => r.pkg.name === pkg_name);
+			if (!repo) continue;
+
+			try {
+				log?.info(`  Installing ${pkg_name}...`);
+				await install_with_cache_healing(repo, ops, log);
+				log?.info(st('green', `  ✅ Installed ${pkg_name}`));
+			} catch (error) {
+				const err = error instanceof Error ? error : new Error(String(error));
+				failed.set(pkg_name, err);
+				log?.error(st('red', `  ❌ Failed to install ${pkg_name}: ${err.message}`));
+				// Continue with other installs instead of breaking
 			}
 		}
 	}

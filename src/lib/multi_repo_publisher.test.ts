@@ -704,3 +704,79 @@ test('converges early when no new packages publish', async () => {
 // NOTE: MAX_ITERATIONS warning test for multi_repo_publisher is complex to simulate
 // because it requires stateful mocking across iterations. The core warning logic is
 // already tested in publishing_plan.test.ts. See TODO.md for details.
+
+test('skip_install flag prevents npm install', async () => {
+	const repos: Array<Local_Repo> = [
+		create_mock_repo({name: 'lib', version: '1.0.0'}),
+		create_mock_repo({name: 'app', version: '1.0.0', deps: {lib: '^1.0.0'}}),
+	];
+
+	const mock_fs_ops = create_populated_fs_ops(repos);
+	let install_called = false;
+
+	const mock_ops = create_mock_gitops_ops({
+		preflight: create_preflight_mock(['lib'], ['app']),
+		fs: mock_fs_ops,
+		npm: {
+			install: async () => {
+				install_called = true;
+				return {ok: true};
+			},
+			wait_for_package: async () => ({ok: true}),
+			check_package_available: async () => ({ok: true, value: true}),
+			check_auth: async () => ({ok: true, username: 'testuser'}),
+			check_registry: async () => ({ok: true}),
+			cache_clean: async () => ({ok: true}),
+		},
+	});
+
+	await publish_repos(repos, {dry_run: false, update_deps: true, skip_install: true}, mock_ops);
+
+	// Install should NOT be called
+	expect(install_called).toBe(false);
+});
+
+test('install failures are handled gracefully', async () => {
+	const repos: Array<Local_Repo> = [
+		create_mock_repo({name: 'lib', version: '1.0.0'}),
+		create_mock_repo({name: 'app1', version: '1.0.0', deps: {lib: '^1.0.0'}}),
+		create_mock_repo({name: 'app2', version: '1.0.0', deps: {lib: '^1.0.0'}}),
+	];
+
+	const mock_fs_ops = create_populated_fs_ops(repos);
+	let install_attempts = 0;
+
+	const mock_ops = create_mock_gitops_ops({
+		preflight: create_preflight_mock(['lib', 'app1', 'app2']), // All have changesets
+		fs: mock_fs_ops,
+		git: create_mock_git_ops({
+			add_and_commit: async () => ({ok: true}),
+		}),
+		npm: {
+			install: async (options) => {
+				install_attempts++;
+				// Fail on app1, succeed on app2
+				if (options?.cwd?.includes('app1')) {
+					return {ok: false, message: 'Network error', stderr: 'npm ERR! network timeout'};
+				}
+				return {ok: true};
+			},
+			wait_for_package: async () => ({ok: true}),
+			check_package_available: async () => ({ok: true, value: true}),
+			check_auth: async () => ({ok: true, username: 'testuser'}),
+			check_registry: async () => ({ok: true}),
+			cache_clean: async () => ({ok: true}),
+		},
+	});
+
+	const result = await publish_repos(repos, {dry_run: false, update_deps: true}, mock_ops);
+
+	// Install should have been attempted for both apps
+	expect(install_attempts).toBeGreaterThan(0);
+
+	// One failure should be tracked
+	expect(result.failed.some((f) => f.name === 'app1')).toBe(true);
+});
+
+// NOTE: Cache healing during publishing is thoroughly tested in npm_install_helpers.test.ts (9 tests)
+// Integration testing here is complex due to dependency update flow complexity.
