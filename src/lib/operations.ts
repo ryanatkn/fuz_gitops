@@ -279,6 +279,12 @@ export interface Npm_Operations {
 	install: (options?: {
 		cwd?: string;
 	}) => Promise<Result<object, {message: string; stderr?: string}>>;
+
+	/**
+	 * Cleans the npm cache.
+	 * Uses `npm cache clean --force` to clear stale cache entries.
+	 */
+	cache_clean: () => Promise<Result<object, {message: string}>>;
 }
 
 /**

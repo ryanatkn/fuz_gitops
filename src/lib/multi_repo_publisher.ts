@@ -14,12 +14,63 @@ import {MAX_ITERATIONS} from '$lib/constants.js';
 
 /* eslint-disable no-await-in-loop */
 
+/**
+ * Installs npm dependencies with cache healing on ETARGET errors.
+ * If install fails with ETARGET (package not found), cleans npm cache and retries.
+ */
+const install_with_cache_healing = async (
+	repo: Local_Repo,
+	ops: Gitops_Operations,
+	log?: Logger,
+): Promise<void> => {
+	// First attempt
+	const install_result = await ops.npm.install({cwd: repo.repo_dir});
+
+	if (install_result.ok) {
+		return; // Success
+	}
+
+	// Check if error is ETARGET (package not found due to stale cache)
+	const stderr = install_result.stderr || '';
+	const message = install_result.message || '';
+	const is_etarget = stderr.includes('ETARGET') || message.includes('ETARGET');
+
+	if (!is_etarget) {
+		// Different error - fail immediately
+		throw new Error(
+			`Failed to install dependencies in ${repo.pkg.name}: ${install_result.message}${stderr ? `\n${stderr}` : ''}`,
+		);
+	}
+
+	// ETARGET error - try cache healing
+	log?.warn(st('yellow', `  ⚠️  ETARGET error detected - cleaning npm cache...`));
+
+	const cache_result = await ops.npm.cache_clean();
+	if (!cache_result.ok) {
+		throw new Error(`Failed to clean npm cache: ${cache_result.message}`);
+	}
+
+	log?.info('  ✓ Cache cleaned, retrying install...');
+
+	// Retry install after cache clean
+	const retry_result = await ops.npm.install({cwd: repo.repo_dir});
+
+	if (!retry_result.ok) {
+		throw new Error(
+			`Failed to install dependencies after cache clean in ${repo.pkg.name}: ${retry_result.message}${retry_result.stderr ? `\n${retry_result.stderr}` : ''}`,
+		);
+	}
+
+	log?.info(st('green', `  ✓ Dependencies installed successfully after cache heal`));
+};
+
 export interface Publishing_Options {
 	dry_run: boolean;
 	update_deps: boolean;
 	version_strategy?: Version_Strategy;
 	deploy?: boolean;
 	max_wait?: number;
+	skip_install?: boolean;
 	log?: Logger;
 }
 
@@ -98,6 +149,9 @@ export const publish_repos = async (
 		let published_in_iteration = false;
 		let published_count = 0;
 
+		// Track repos changed in THIS iteration only (for batch install)
+		const changed_in_iteration: Set<string> = new Set();
+
 		// Phase 1: Publish each package and immediately update dependents
 		for (let i = 0; i < order.length; i++) {
 			const pkg_name = order[i];
@@ -138,6 +192,8 @@ export const publish_repos = async (
 				const version = await publish_single_repo(repo, options, ops);
 				published.set(pkg_name, version);
 				changed_repos.add(pkg_name); // Mark as changed for deployment
+				// Note: don't add to changed_in_iteration - published packages don't need install
+				// (their dependencies didn't change, only their version)
 				published_in_iteration = true;
 				published_count++;
 				log?.info(st('green', `  ✅ Published ${pkg_name}@${version.new_version}`));
@@ -188,6 +244,7 @@ export const publish_repos = async (
 							if (updates.size > 0) {
 								log?.info(`    Updating ${dependent_repo.pkg.name}'s dependency on ${pkg_name}`);
 								changed_repos.add(dependent_repo.pkg.name); // Mark as changed for deployment
+								changed_in_iteration.add(dependent_repo.pkg.name); // Track for batch install
 								await update_package_json(
 									dependent_repo,
 									updates,
@@ -205,6 +262,28 @@ export const publish_repos = async (
 				failed.set(pkg_name, err);
 				log?.error(st('red', `  ❌ Failed to publish ${pkg_name}: ${err.message}`));
 				break; // Always fail fast on error
+			}
+		}
+
+		// Phase 1b: Batch install dependencies for repos with updated package.json
+		// This ensures workspace stays consistent before next iteration
+		if (!dry_run && !options.skip_install && changed_in_iteration.size > 0) {
+			log?.info(st('cyan', '\n📦 Installing dependencies for updated repos...\n'));
+
+			for (const pkg_name of changed_in_iteration) {
+				const repo = repos.find((r) => r.pkg.name === pkg_name);
+				if (!repo) continue;
+
+				try {
+					log?.info(`  Installing ${pkg_name}...`);
+					await install_with_cache_healing(repo, ops, log);
+					log?.info(st('green', `  ✅ Installed ${pkg_name}`));
+				} catch (error) {
+					const err = error instanceof Error ? error : new Error(String(error));
+					failed.set(pkg_name, err);
+					log?.error(st('red', `  ❌ Failed to install ${pkg_name}: ${err.message}`));
+					// Continue with other installs instead of breaking
+				}
 			}
 		}
 
