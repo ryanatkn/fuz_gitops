@@ -95,7 +95,7 @@ test('detects ETARGET in various formats', async ({expect}) => {
 			} as Npm_Operations,
 		});
 
-		await install_with_cache_healing(repo, ops);
+		await install_with_cache_healing(repo, ops); // eslint-disable-line no-await-in-loop
 		expect(cache_clean_called).toBe(true);
 	}
 });
