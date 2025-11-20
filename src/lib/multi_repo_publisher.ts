@@ -265,6 +265,7 @@ export const publish_repos = async (
 
 	// Phase 2: Update all dev dependencies (can have cycles)
 	// Dev dep changes require deployment even without version bumps (rebuild needed)
+	const dev_updated_repos: Set<string> = new Set();
 	if (update_deps && published.size > 0 && !dry_run) {
 		log?.info(st('cyan', '\n🔄 Updating dev dependencies...\n'));
 
@@ -284,6 +285,7 @@ export const publish_repos = async (
 			if (dev_updates.size > 0) {
 				log?.info(`  Updating ${dev_updates.size} dev dependencies in ${repo.pkg.name}`);
 				changed_repos.add(repo.pkg.name); // Mark as changed for deployment
+				dev_updated_repos.add(repo.pkg.name); // Track for batch install
 				await update_package_json(
 					repo,
 					dev_updates,
@@ -292,6 +294,27 @@ export const publish_repos = async (
 					log,
 					ops.git,
 				);
+			}
+		}
+	}
+
+	// Phase 2b: Install dev dependencies for repos with dev dep updates
+	if (!dry_run && !options.skip_install && dev_updated_repos.size > 0) {
+		log?.info(st('cyan', '\n📦 Installing dev dependencies for updated repos...\n'));
+
+		for (const pkg_name of dev_updated_repos) {
+			const repo = repos.find((r) => r.pkg.name === pkg_name);
+			if (!repo) continue;
+
+			try {
+				log?.info(`  Installing ${pkg_name}...`);
+				await install_with_cache_healing(repo, ops, log);
+				log?.info(st('green', `  ✅ Installed ${pkg_name}`));
+			} catch (error) {
+				const err = error instanceof Error ? error : new Error(String(error));
+				failed.set(pkg_name, err);
+				log?.error(st('red', `  ❌ Failed to install ${pkg_name}: ${err.message}`));
+				// Continue with other installs instead of breaking
 			}
 		}
 	}
