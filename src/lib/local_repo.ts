@@ -3,7 +3,7 @@ import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
-import {create_src_json} from '@ryanatkn/gro/src_json.js';
+import {Src_Json} from '@ryanatkn/fuz/src_json.js';
 import {parse_svelte_config} from '@ryanatkn/gro/svelte_config.js';
 import {Task_Error} from '@ryanatkn/gro';
 import type {Logger} from '@ryanatkn/belt/log.js';
