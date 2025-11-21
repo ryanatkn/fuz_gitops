@@ -18,7 +18,7 @@ describe('Dependency_Graph', () => {
 		it('sets publishable flag based on private field', () => {
 			const repos = [
 				create_mock_repo({name: 'public-pkg', version: '1.0.0'}),
-				create_mock_repo({name: 'private-pkg', version: '1.0.0', is_private: true}),
+				create_mock_repo({name: 'private-pkg', version: '1.0.0', private: true}),
 			];
 
 			const graph = new Dependency_Graph();

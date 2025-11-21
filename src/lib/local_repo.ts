@@ -1,6 +1,6 @@
 import {strip_end} from '@ryanatkn/belt/string.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
-import {parse_pkg, type Pkg} from '@ryanatkn/belt/pkg.js';
+import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
 import {create_src_json} from '@ryanatkn/gro/src_json.js';
@@ -165,7 +165,7 @@ export const load_local_repo = async ({
 
 	const local_repo: Local_Repo = {
 		...resolved_local_repo,
-		pkg: parse_pkg(package_json, src_json),
+		pkg: new Pkg(package_json, src_json),
 	};
 
 	// Extract dependencies

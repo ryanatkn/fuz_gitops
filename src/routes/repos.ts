@@ -662,8 +662,8 @@ export const repos: Array<Repo> = JSON.parse(
 						}\
 					]\
 				},\
-				"./Community_Links_Panel.svelte": {\
-					"path": "Community_Links_Panel.svelte",\
+				"./Ecosystem_Links_Panel.svelte": {\
+					"path": "Ecosystem_Links_Panel.svelte",\
 					"declarations": [\
 						{\
 							"name": "default",\

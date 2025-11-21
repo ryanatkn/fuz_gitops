@@ -335,7 +335,7 @@ describe('validate_dependency_graph', () => {
 
 		it('handles private packages', () => {
 			const repos = [
-				create_mock_repo({name: 'private', version: '1.0.0', is_private: true}),
+				create_mock_repo({name: 'private', version: '1.0.0', private: true}),
 				create_mock_repo({name: 'public', version: '1.0.0', deps: {private: '^1.0.0'}}),
 			];
 
