@@ -4457,7 +4457,7 @@ export const repos: Array<Repo> = JSON.parse(
 						}\
 					]\
 				},\
-				"./test_helpers.js": {\
+				"./test_helpers.ts": {\
 					"path": "test_helpers.ts",\
 					"declarations": [\
 						{\

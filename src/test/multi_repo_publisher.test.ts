@@ -11,7 +11,7 @@ import {
 	create_preflight_mock,
 	create_populated_fs_ops,
 	create_mock_logger,
-} from './test_helpers.js';
+} from './test_helpers.ts';
 
 /* eslint-disable @typescript-eslint/require-await */
 
