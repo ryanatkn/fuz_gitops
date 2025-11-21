@@ -1,6 +1,6 @@
 import {test, assert, describe} from 'vitest';
 
-import {create_mock_npm_ops} from './test_helpers.js';
+import {create_mock_npm_ops} from './test_helpers.ts';
 
 /* eslint-disable @typescript-eslint/require-await */
 

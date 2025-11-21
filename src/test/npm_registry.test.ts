@@ -9,7 +9,7 @@ import {
 	package_exists,
 	type Wait_Options,
 } from '$lib/npm_registry.js';
-import {create_mock_logger} from './test_helpers.js';
+import {create_mock_logger} from './test_helpers.ts';
 
 /* eslint-disable @typescript-eslint/require-await */
 
