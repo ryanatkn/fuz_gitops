@@ -1,5 +1,5 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import type {Pkg} from '@ryanatkn/belt/pkg.js';
+import type {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 import {z} from 'zod';
 import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 

@@ -1,6 +1,6 @@
-import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {vi} from 'vitest';
+import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 
 import type {Local_Repo} from '$lib/local_repo.js';
 import type {
@@ -22,7 +22,7 @@ export interface Mock_Repo_Options {
 	deps?: Record<string, string>;
 	dev_deps?: Record<string, string>;
 	peer_deps?: Record<string, string>;
-	is_private?: boolean;
+	private?: boolean;
 }
 
 /**
@@ -35,7 +35,7 @@ export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
 		deps = {},
 		dev_deps = {},
 		peer_deps = {},
-		is_private = false,
+		private: private_option = false,
 	} = options;
 	return {
 		type: 'resolved_local_repo' as const,
@@ -48,27 +48,28 @@ export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
 			repo_dir: null,
 			branch: 'main',
 		},
-		pkg: {
-			name,
-			repo_name: name,
-			repo_url: `https://github.com/test/${name}`,
-			homepage_url: `https://test.com/${name}`,
-			owner_name: 'test',
-			logo_url: null,
-			logo_alt: `logo for ${name}`,
-			npm_url: null,
-			changelog_url: null,
-			published: false,
-			src_json: {} as Src_Json,
-			package_json: {
-				name,
-				version,
-				dependencies: deps,
-				devDependencies: dev_deps,
-				peerDependencies: peer_deps,
-				private: is_private,
-			},
-		},
+		pkg: new Pkg({name, version, private: private_option}, {name, version}),
+		// {
+		// 	name,
+		// 	repo_name: name,
+		// 	repo_url: `https://github.com/test/${name}`,
+		// 	homepage_url: `https://test.com/${name}`,
+		// 	owner_name: 'test',
+		// 	logo_url: null,
+		// 	logo_alt: `logo for ${name}`,
+		// 	npm_url: null,
+		// 	changelog_url: null,
+		// 	published: false,
+		// 	src_json: {name, version, modules: []},
+		// 	package_json: {
+		// 		name,
+		// 		version,
+		// 		dependencies: deps,
+		// 		devDependencies: dev_deps,
+		// 		peerDependencies: peer_deps,
+		// 		private: is_private,
+		// 	},
+		// },
 		dependencies: new Map(Object.entries(deps)),
 		dev_dependencies: new Map(Object.entries(dev_deps)),
 		peer_dependencies: new Map(Object.entries(peer_deps)),

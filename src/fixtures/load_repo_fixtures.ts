@@ -3,7 +3,8 @@
  */
 
 import type {Local_Repo} from '$lib/local_repo.js';
-import type {Pkg} from '@ryanatkn/belt/pkg.js';
+import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
+import type {} from '@ryanatkn/fuz/src_json.js';
 import type {Repo_Fixture_Set, Repo_Fixture_Data} from './repo_fixture_types.js';
 
 /**
@@ -20,24 +21,11 @@ export const fixture_repo_to_local_repo = (repo_data: Repo_Fixture_Data): Local_
 	const {repo_name, repo_url, package_json} = repo_data;
 
 	// Create minimal Pkg object
-	const pkg: Pkg = {
+	const pkg = new Pkg(package_json, {
 		name: package_json.name,
-		repo_name,
-		repo_url,
-		owner_name: 'test',
-		homepage_url: `https://test.com/${repo_name}`,
-		logo_url: null,
-		logo_alt: `logo for ${repo_name}`,
-		npm_url: null,
-		changelog_url: null,
-		published: false,
-		package_json,
-		src_json: {
-			name: package_json.name,
-			version: package_json.version,
-			exported_modules: [],
-		},
-	};
+		version: package_json.version,
+		modules: [],
+	});
 
 	const local_repo: Local_Repo = {
 		type: 'resolved_local_repo',

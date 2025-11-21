@@ -156,6 +156,10 @@ a.chip {
 .flex_1 {
 	flex: 1;
 }
+.font_size_xl {
+	font-size: var(--font_size_xl);
+	--font_size: var(--font_size_xl);
+}
 .text_align_center {
 	text-align: center;
 }
@@ -187,6 +191,9 @@ a.chip {
 .px_xl {
 	padding-left: var(--space_xl);
 	padding-right: var(--space_xl);
+}
+.mt_0 {
+	margin-top: 0;
 }
 .mt_xs {
 	margin-top: var(--space_xs);
