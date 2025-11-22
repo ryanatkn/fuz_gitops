@@ -55,7 +55,7 @@ export const fetch_repo_data = async (
 		if (!pull_requests) log?.error('failed to fetch issues: ' + repo_url);
 
 		repos.push({
-			...pkg,
+			pkg,
 			check_runs,
 			pull_requests,
 		});

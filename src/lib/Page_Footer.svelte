@@ -8,9 +8,9 @@
 </script>
 
 <section class="box mb_xl7">
-	<Docs_Footer pkg={repo}>
+	<Docs_Footer pkg={repo.pkg}>
 		<nav class="mb_xl5">
-			<Breadcrumb>{repo.package_json.glyph}</Breadcrumb>
+			<Breadcrumb>{repo.pkg.package_json.glyph}</Breadcrumb>
 		</nav>
 	</Docs_Footer>
 </section>

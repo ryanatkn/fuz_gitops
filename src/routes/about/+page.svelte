@@ -10,17 +10,17 @@
 </script>
 
 <svelte:head>
-	<title>about {repo.package_json.glyph} {repo.package_json.name}</title>
+	<title>about {repo.pkg.package_json.glyph} {repo.pkg.package_json.name}</title>
 </svelte:head>
 
 <main class="width_upto_md">
 	<div class="p_lg">
-		<Page_Header pkg={repo}></Page_Header>
+		<Page_Header pkg={repo.pkg}></Page_Header>
 	</div>
 	<Ecosystem_Links_Panel />
 	<section class="box width_100 mb_lg">
 		<div class="panel p_md width_upto_md">
-			<Package_Detail pkg={repo} />
+			<Package_Detail pkg={repo.pkg} />
 		</div>
 	</section>
 	<Page_Footer />

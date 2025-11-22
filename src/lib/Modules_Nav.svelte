@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {page} from '$app/state';
-	import type {Src_Module} from '@ryanatkn/belt/src_json.js';
+	import type {Module_Json} from '@ryanatkn/fuz/src_json.js';
 
 	import type {Repo} from '$lib/repo.js';
 
@@ -9,7 +9,7 @@
 	interface Props {
 		repos_modules: Array<{
 			repo: Repo;
-			modules: Array<Src_Module>;
+			modules: Array<Module_Json>;
 		}>;
 	}
 
@@ -23,8 +23,10 @@
 	<ul class="unstyled">
 		{#each repos_modules as pkg_modules (pkg_modules)}
 			<li role="none">
-				<a href="#{pkg_modules.repo.name}" class:selected={pkg_modules.repo.name === page.url.hash}
-					>{pkg_modules.repo.name}</a
+				<a
+					href="#{pkg_modules.repo.pkg.name}"
+					class:selected={pkg_modules.repo.pkg.name === page.url.hash}
+					>{pkg_modules.repo.pkg.name}</a
 				>
 			</li>
 		{/each}
