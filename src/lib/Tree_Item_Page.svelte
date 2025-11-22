@@ -2,10 +2,10 @@
 	import Alert from '@ryanatkn/fuz/Alert.svelte';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import Page_Footer from '$lib/Page_Footer.svelte';
-	import Page_Header from '$lib/Page_Header.svelte';
-	import Repos_Tree from '$lib/Repos_Tree.svelte';
-	import type {Repo} from '$lib/repo.js';
+	import Page_Footer from './Page_Footer.svelte';
+	import Page_Header from './Page_Header.svelte';
+	import Repos_Tree from './Repos_Tree.svelte';
+	import type {Repo} from './repo.js';
 
 	interface Props {
 		repo: Repo;

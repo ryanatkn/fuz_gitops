@@ -15,8 +15,8 @@ import type {Logger} from '@ryanatkn/belt/log.js';
 import {Task_Error} from '@ryanatkn/gro';
 import {styleText as st} from 'node:util';
 
-import {Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
-import type {Local_Repo} from '$lib/local_repo.js';
+import {Dependency_Graph, Dependency_Graph_Builder} from './dependency_graph.js';
+import type {Local_Repo} from './local_repo.js';
 
 export interface Graph_Validation_Result {
 	graph: Dependency_Graph;

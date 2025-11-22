@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {resolve} from '$app/paths';
 
-	import {to_pull_requests, type Filter_Pull_Request} from '$lib/github_helpers.js';
-	import type {Repo} from '$lib/repo.js';
+	import {to_pull_requests, type Filter_Pull_Request} from './github_helpers.js';
+	import type {Repo} from './repo.js';
 
 	interface Props {
 		repos: Array<Repo>;

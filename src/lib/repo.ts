@@ -1,7 +1,7 @@
 import {create_context} from '@ryanatkn/fuz/context_helpers.js';
 import type {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 
-import {Github_Check_Runs_Item, type Github_Pull_Request} from '$lib/github.js';
+import {Github_Check_Runs_Item, type Github_Pull_Request} from './github.js';
 
 export interface Repo {
 	pkg: Pkg;

@@ -13,7 +13,7 @@
  *
  * **Production usage:**
  * ```typescript
- * import {default_gitops_operations} from '$lib/operations_defaults.js';
+ * import {default_gitops_operations} from './operations_defaults.js';
  * const result = await ops.git.current_branch_name({cwd: '/path'});
  * if (!result.ok) {
  *   throw new Task_Error(result.message);
@@ -35,10 +35,10 @@
 import type {Result} from '@ryanatkn/belt/result.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import type {SpawnOptions} from 'node:child_process';
-import type {Local_Repo} from '$lib/local_repo.js';
-import type {Changeset_Info} from '$lib/changeset_reader.js';
-import type {Bump_Type} from '$lib/semver.js';
-import type {Preflight_Options, Preflight_Result} from '$lib/preflight_checks.js';
+import type {Local_Repo} from './local_repo.js';
+import type {Changeset_Info} from './changeset_reader.js';
+import type {Bump_Type} from './semver.js';
+import type {Preflight_Options, Preflight_Result} from './preflight_checks.js';
 
 /**
  * Changeset operations for reading and predicting versions from `.changeset/*.md` files.

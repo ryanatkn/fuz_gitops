@@ -2,9 +2,9 @@ import type {Logger} from '@ryanatkn/belt/log.js';
 import {wait} from '@ryanatkn/belt/async.js';
 import type {Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
-import {fetch_github_check_runs, fetch_github_pull_requests} from '$lib/github.js';
-import type {Repo} from '$lib/repo.js';
-import type {Local_Repo} from '$lib/local_repo.js';
+import {fetch_github_check_runs, fetch_github_pull_requests} from './github.js';
+import type {Repo} from './repo.js';
+import type {Local_Repo} from './local_repo.js';
 
 /* eslint-disable no-await-in-loop */
 

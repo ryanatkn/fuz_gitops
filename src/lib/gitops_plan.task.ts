@@ -2,13 +2,13 @@ import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
 
-import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
+import {get_gitops_ready} from './gitops_task_helpers.js';
 import {
 	generate_publishing_plan,
 	log_publishing_plan,
 	type Publishing_Plan,
-} from '$lib/publishing_plan.js';
-import {format_and_output, type Output_Formatters} from '$lib/output_helpers.js';
+} from './publishing_plan.js';
+import {format_and_output, type Output_Formatters} from './output_helpers.js';
 
 export const Args = z.strictObject({
 	path: z

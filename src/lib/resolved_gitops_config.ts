@@ -1,10 +1,10 @@
-import type {Gitops_Config} from '$lib/gitops_config.js';
+import type {Gitops_Config} from './gitops_config.js';
 import {
 	resolve_local_repo,
 	type Maybe_Local_Repo,
 	type Resolved_Local_Repo,
 	type Unresolved_Local_Repo,
-} from '$lib/local_repo.js';
+} from './local_repo.js';
 
 export interface Resolved_Gitops_Config {
 	local_repos: Array<Maybe_Local_Repo> | null;

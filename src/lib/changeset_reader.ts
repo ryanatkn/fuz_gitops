@@ -10,9 +10,9 @@ import {existsSync} from 'node:fs';
 import {readdir, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 
-import type {Local_Repo} from '$lib/local_repo.js';
-import type {Bump_Type} from '$lib/semver.js';
-import {compare_bump_types, calculate_next_version} from '$lib/version_utils.js';
+import type {Local_Repo} from './local_repo.js';
+import type {Bump_Type} from './semver.js';
+import {compare_bump_types, calculate_next_version} from './version_utils.js';
 
 export interface Changeset_Info {
 	filename: string;

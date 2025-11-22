@@ -3,8 +3,8 @@
 	import {resolve} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
 
-	import type {Repo} from '$lib/repo.js';
-	import {to_pull_url} from '$lib/github_helpers.js';
+	import type {Repo} from './repo.js';
+	import {to_pull_url} from './github_helpers.js';
 
 	interface Props {
 		repos: Array<Repo>;

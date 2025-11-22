@@ -9,9 +9,9 @@ import {json_embed} from '@ryanatkn/belt/json.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {existsSync} from 'node:fs';
 
-import {fetch_repo_data} from '$lib/fetch_repo_data.js';
-import {create_fs_fetch_value_cache} from '$lib/fs_fetch_value_cache.js';
-import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
+import {fetch_repo_data} from './fetch_repo_data.js';
+import {create_fs_fetch_value_cache} from './fs_fetch_value_cache.js';
+import {get_gitops_ready} from './gitops_task_helpers.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
@@ -69,9 +69,7 @@ export const task: Task<Args> = {
 		// TODO should package_json be provided in the Gro task/gen contexts? check if it's always loaded
 		const package_json = load_package_json();
 		const repo_specifier =
-			package_json.name === '@ryanatkn/fuz_gitops'
-				? '$lib/repo.js'
-				: '@ryanatkn/fuz_gitops/repo.js';
+			package_json.name === '@ryanatkn/fuz_gitops' ? './repo.js' : '@ryanatkn/fuz_gitops/repo.js';
 
 		log.info('generating ' + outfile);
 
