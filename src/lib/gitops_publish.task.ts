@@ -3,14 +3,14 @@ import {z} from 'zod';
 import {createInterface} from 'node:readline/promises';
 import {styleText as st} from 'node:util';
 
-import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
+import {get_gitops_ready} from './gitops_task_helpers.js';
 import {
 	publish_repos,
 	type Publishing_Options,
 	type Publishing_Result,
-} from '$lib/multi_repo_publisher.js';
-import {generate_publishing_plan, log_publishing_plan} from '$lib/publishing_plan.js';
-import {format_and_output, type Output_Formatters} from '$lib/output_helpers.js';
+} from './multi_repo_publisher.js';
+import {generate_publishing_plan, log_publishing_plan} from './publishing_plan.js';
+import {format_and_output, type Output_Formatters} from './output_helpers.js';
 
 export const Args = z.strictObject({
 	path: z
@@ -142,17 +142,11 @@ export const task: Task<Args> = {
 	},
 };
 
-/**
- * Data type for publishing result output
- */
 interface Publish_Result_Data {
 	result: Publishing_Result;
 	fatal_error: Error | null;
 }
 
-/**
- * Create formatters for publishing result output
- */
 const create_publish_formatters = (): Output_Formatters<Publish_Result_Data> => ({
 	json: (data) => JSON.stringify(data.result, null, 2),
 	markdown: (data) => format_result_markdown(data.result, data.fatal_error),

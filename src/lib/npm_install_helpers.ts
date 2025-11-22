@@ -1,8 +1,8 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from '$lib/local_repo.js';
-import type {Gitops_Operations} from '$lib/operations.js';
+import type {Local_Repo} from './local_repo.js';
+import type {Gitops_Operations} from './operations.js';
 
 /**
  * Checks if an npm install error is caused by stale cache (ETARGET).

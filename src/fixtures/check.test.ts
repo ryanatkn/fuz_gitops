@@ -21,6 +21,7 @@ import type {Local_Repo} from '$lib/local_repo.js';
 import {basic_publishing} from './repo_fixtures/basic_publishing.js';
 import {deep_cascade} from './repo_fixtures/deep_cascade.js';
 import {circular_dev_deps} from './repo_fixtures/circular_dev_deps.js';
+import {three_way_dev_cycle} from './repo_fixtures/three_way_dev_cycle.js';
 import {private_packages} from './repo_fixtures/private_packages.js';
 import {major_bumps} from './repo_fixtures/major_bumps.js';
 import {peer_deps_only} from './repo_fixtures/peer_deps_only.js';
@@ -36,6 +37,7 @@ const FIXTURES: Array<Repo_Fixture_Set> = [
 	basic_publishing,
 	deep_cascade,
 	circular_dev_deps,
+	three_way_dev_cycle,
 	private_packages,
 	major_bumps,
 	peer_deps_only,
@@ -369,7 +371,7 @@ describe('Error condition tests', () => {
 
 	test('build failure mock returns expected values', async () => {
 		const build_ops = create_failing_build_ops();
-		const mock_repo = fixture_to_local_repos(basic_publishing)[0];
+		const mock_repo = fixture_to_local_repos(basic_publishing)[0]!;
 		const result = await build_ops.build_package({repo: mock_repo});
 		assert.equal(result.ok, false, 'Should fail build');
 	});
@@ -396,7 +398,7 @@ describe('JSON output format tests', () => {
 
 		// Verify version change structure
 		if (plan.version_changes.length > 0) {
-			const change = plan.version_changes[0];
+			const change = plan.version_changes[0]!;
 			assert.ok('package_name' in change, 'Version change should have package_name');
 			assert.ok('from' in change, 'Version change should have from version');
 			assert.ok('to' in change, 'Version change should have to version');

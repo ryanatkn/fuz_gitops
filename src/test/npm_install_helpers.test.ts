@@ -2,7 +2,7 @@ import {test} from 'vitest';
 
 import {install_with_cache_healing} from '$lib/npm_install_helpers.js';
 import type {Npm_Operations} from '$lib/operations.js';
-import {create_mock_gitops_ops, create_mock_repo} from '$lib/test_helpers.js';
+import {create_mock_gitops_ops, create_mock_repo} from './test_helpers.ts';
 
 /* eslint-disable @typescript-eslint/require-await */
 

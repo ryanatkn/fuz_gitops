@@ -1,6 +1,6 @@
 import {describe, it, expect} from 'vitest';
 import {Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
-import {create_mock_repo} from '$lib/test_helpers.js';
+import {create_mock_repo} from './test_helpers.ts';
 
 describe('Dependency_Graph', () => {
 	describe('basic functionality', () => {
@@ -18,7 +18,7 @@ describe('Dependency_Graph', () => {
 		it('sets publishable flag based on private field', () => {
 			const repos = [
 				create_mock_repo({name: 'public-pkg', version: '1.0.0'}),
-				create_mock_repo({name: 'private-pkg', version: '1.0.0', is_private: true}),
+				create_mock_repo({name: 'private-pkg', version: '1.0.0', private: true}),
 			];
 
 			const graph = new Dependency_Graph();
@@ -303,7 +303,7 @@ describe('Dependency_Graph', () => {
 			}
 
 			// Verify alpha comes before gamma (dependency constraint)
-			expect(orders[0].indexOf('alpha')).toBeLessThan(orders[0].indexOf('gamma'));
+			expect(orders[0]!.indexOf('alpha')).toBeLessThan(orders[0]!.indexOf('gamma'));
 		});
 	});
 

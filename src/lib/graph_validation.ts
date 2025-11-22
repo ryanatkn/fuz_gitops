@@ -1,9 +1,22 @@
+/**
+ * Shared dependency graph validation logic used across multiple workflows.
+ *
+ * Consolidates graph building, cycle detection, and publishing order computation
+ * that was duplicated in three places: `multi_repo_publisher.ts`, `publishing_plan.ts`,
+ * and `gitops_analyze.task.ts`.
+ *
+ * Options pattern supports different behaviors: analyze can tolerate cycles for
+ * reporting, while publish must throw on production cycles.
+ *
+ * See also: `dependency_graph.ts` for core graph data structure and algorithms.
+ */
+
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {Task_Error} from '@ryanatkn/gro';
 import {styleText as st} from 'node:util';
 
-import {Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
-import type {Local_Repo} from '$lib/local_repo.js';
+import {Dependency_Graph, Dependency_Graph_Builder} from './dependency_graph.js';
+import type {Local_Repo} from './local_repo.js';
 
 export interface Graph_Validation_Result {
 	graph: Dependency_Graph;
@@ -17,14 +30,11 @@ export interface Graph_Validation_Result {
  * Shared utility for building dependency graph, detecting cycles, and computing publishing order.
  * This centralizes logic that was duplicated across multi_repo_publisher, publishing_plan, and gitops_analyze.
  *
- * @param repos - Array of local repositories to analyze
- * @param log - Optional logger for output
- * @param options - Configuration options
- * @param options.throw_on_prod_cycles - Whether to throw an error if production cycles are detected (default: true)
- * @param options.log_cycles - Whether to log cycle information (default: true)
- * @param options.log_order - Whether to log publishing order (default: true)
- * @returns Graph validation result with graph, publishing order, and detected cycles
- * @throws {Task_Error} If production cycles detected and throw_on_prod_cycles is true
+ * @param options.throw_on_prod_cycles whether to throw an error if production cycles are detected (default: true)
+ * @param options.log_cycles whether to log cycle information (default: true)
+ * @param options.log_order whether to log publishing order (default: true)
+ * @returns graph validation result with graph, publishing order, and detected cycles
+ * @throws {Task_Error} if production cycles detected and throw_on_prod_cycles is true
  */
 export const validate_dependency_graph = (
 	repos: Array<Local_Repo>,

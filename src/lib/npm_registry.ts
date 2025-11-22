@@ -15,9 +15,6 @@ export interface Package_Info {
 	version: string;
 }
 
-/**
- * Checks if a specific package version is available on NPM.
- */
 export const check_package_available = async (
 	pkg: string,
 	version: string,
@@ -41,7 +38,19 @@ export const check_package_available = async (
 };
 
 /**
- * Waits for a package version to become available on NPM with exponential backoff.
+ * Waits for package version to propagate to NPM registry.
+ *
+ * Uses exponential backoff with jitter to avoid hammering registry.
+ * Logs progress every 5 attempts. Respects timeout to avoid infinite waits.
+ *
+ * Critical for multi-repo publishing: ensures published packages are available
+ * before updating dependent packages.
+ *
+ * @param options.max_attempts max poll attempts (default 30)
+ * @param options.initial_delay starting delay in ms (default 1000)
+ * @param options.max_delay max delay between attempts (default 60000)
+ * @param options.timeout total timeout in ms (default 300000 = 5min)
+ * @throws {Error} if timeout reached or max attempts exceeded
  */
 export const wait_for_package = async (
 	pkg: string,
@@ -93,7 +102,12 @@ export const wait_for_package = async (
 };
 
 /**
- * Gets basic package information from NPM.
+ * Fetches package metadata from NPM registry.
+ *
+ * Returns name and latest version. Returns null if package doesn't exist
+ * or registry is unreachable.
+ *
+ * @returns package info or null on error/not found
  */
 export const get_package_info = async (pkg: string, log?: Logger): Promise<Package_Info | null> => {
 	try {
@@ -114,9 +128,6 @@ export const get_package_info = async (pkg: string, log?: Logger): Promise<Packa
 	}
 };
 
-/**
- * Checks if a package exists on NPM.
- */
 export const package_exists = async (pkg: string, log?: Logger): Promise<boolean> => {
 	const info = await get_package_info(pkg, log);
 	return info !== null;

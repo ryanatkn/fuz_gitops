@@ -2,7 +2,7 @@ import {describe, it, expect} from 'vitest';
 import {Task_Error} from '@ryanatkn/gro';
 
 import {validate_dependency_graph} from '$lib/graph_validation.js';
-import {create_mock_repo} from '$lib/test_helpers.js';
+import {create_mock_repo} from './test_helpers.ts';
 
 describe('validate_dependency_graph', () => {
 	describe('basic functionality', () => {
@@ -335,7 +335,7 @@ describe('validate_dependency_graph', () => {
 
 		it('handles private packages', () => {
 			const repos = [
-				create_mock_repo({name: 'private', version: '1.0.0', is_private: true}),
+				create_mock_repo({name: 'private', version: '1.0.0', private: true}),
 				create_mock_repo({name: 'public', version: '1.0.0', deps: {private: '^1.0.0'}}),
 			];
 

@@ -2,13 +2,13 @@ import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
 
-import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
+import {get_gitops_ready} from './gitops_task_helpers.js';
 import {
 	generate_publishing_plan,
 	log_publishing_plan,
 	type Publishing_Plan,
-} from '$lib/publishing_plan.js';
-import {format_and_output, type Output_Formatters} from '$lib/output_helpers.js';
+} from './publishing_plan.js';
+import {format_and_output, type Output_Formatters} from './output_helpers.js';
 
 export const Args = z.strictObject({
 	path: z
@@ -73,9 +73,6 @@ export const task: Task<Args> = {
 	},
 };
 
-/**
- * Create formatters for publishing plan output
- */
 const create_plan_formatters = (): Output_Formatters<Publishing_Plan> => ({
 	json: (plan) => {
 		const output = {
@@ -93,9 +90,6 @@ const create_plan_formatters = (): Output_Formatters<Publishing_Plan> => ({
 	stdout: (plan, log) => log_publishing_plan(plan, log),
 });
 
-/**
- * Format the publishing plan as markdown.
- */
 const format_plan_as_markdown = (plan: Publishing_Plan): Array<string> => {
 	const lines: Array<string> = [];
 	const {

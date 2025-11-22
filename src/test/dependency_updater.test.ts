@@ -6,7 +6,7 @@ import {
 	update_all_repos,
 	find_updates_needed,
 } from '$lib/dependency_updater.js';
-import {create_mock_repo, create_mock_git_ops, create_mock_fs_ops} from '$lib/test_helpers.js';
+import {create_mock_repo, create_mock_git_ops, create_mock_fs_ops} from './test_helpers.ts';
 import type {Git_Operations} from '$lib/operations.js';
 
 /* eslint-disable @typescript-eslint/require-await */
@@ -573,8 +573,8 @@ describe('dependency_updater', () => {
 
 			expect(result.updated).toBe(0);
 			expect(result.failed).toHaveLength(1);
-			expect(result.failed[0].repo).toBe('pkg-a');
-			expect(result.failed[0].error).toBeInstanceOf(Error);
+			expect(result.failed[0]!.repo).toBe('pkg-a');
+			expect(result.failed[0]!.error).toBeInstanceOf(Error);
 		});
 	});
 });

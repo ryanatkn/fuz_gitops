@@ -70,7 +70,7 @@ Test single quotes.`;
 
 			const result = parse_changeset_content(content);
 
-			expect(result?.packages[0].name).toBe('single-quoted');
+			expect(result?.packages[0]!.name).toBe('single-quoted');
 		});
 
 		it('ignores whitespace variations', () => {
