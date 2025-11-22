@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>{repo.package_json.name}</title>
+	<title>{repo.pkg.package_json.name}</title>
 </svelte:head>
 
 <main class="box">
@@ -34,7 +34,7 @@
 		</menu>
 	</section>
 	<section class="mb_xl7">
-		<Docs_Footer pkg={repo}>
+		<Docs_Footer pkg={repo.pkg}>
 			{#snippet logo_header()}<a href={resolve('/about')} class="mb_xs">about</a>{/snippet}
 			{#snippet logo_footer()}<a href="https://www.fuz.dev/" class="mt_xs">fuz.dev</a>{/snippet}
 		</Docs_Footer>

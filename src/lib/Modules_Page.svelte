@@ -15,18 +15,18 @@
 </script>
 
 <svelte:head>
-	<title>modules {repo.package_json.glyph} {repo.package_json.name}</title>
+	<title>modules {repo.pkg.package_json.glyph} {repo.pkg.package_json.name}</title>
 </svelte:head>
 
 <main class="box width_100">
 	<div class="p_lg">
-		<Page_Header pkg={repo} />
+		<Page_Header pkg={repo.pkg} />
 	</div>
 	<section>
 		<Modules_Detail {repos}>
 			{#snippet nav_footer()}
 				<nav class="row">
-					<Breadcrumb>{repo.package_json.glyph}</Breadcrumb>
+					<Breadcrumb>{repo.pkg.package_json.glyph}</Breadcrumb>
 				</nav>
 			{/snippet}
 		</Modules_Detail>

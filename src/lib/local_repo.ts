@@ -1,10 +1,9 @@
 import {strip_end} from '@ryanatkn/belt/string.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
+import type {Src_Json} from '@ryanatkn/fuz/src_json.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
-import {Src_Json} from '@ryanatkn/fuz/src_json.js';
-import {parse_svelte_config} from '@ryanatkn/gro/svelte_config.js';
 import {Task_Error} from '@ryanatkn/gro';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn} from '@ryanatkn/belt/process.js';
@@ -157,11 +156,13 @@ export const load_local_repo = async ({
 		}
 	}
 
-	const parsed_svelte_config = await parse_svelte_config({dir_or_config: repo_dir});
-	const lib_path = join(repo_dir, parsed_svelte_config.lib_path);
-
 	const package_json = load_package_json(repo_dir);
-	const src_json = create_src_json(package_json, lib_path);
+	// Minimal src_json - gitops doesn't need module metadata for core functionality
+	const src_json: Src_Json = {
+		name: package_json.name,
+		version: package_json.version,
+		modules: [],
+	};
 
 	const local_repo: Local_Repo = {
 		...resolved_local_repo,

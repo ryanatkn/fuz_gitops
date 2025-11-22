@@ -48,7 +48,18 @@ export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
 			repo_dir: null,
 			branch: 'main',
 		},
-		pkg: new Pkg({name, version, private: private_option}, {name, version}),
+		pkg: new Pkg(
+			{
+				name,
+				version,
+				private: private_option,
+				dependencies: Object.keys(deps).length > 0 ? deps : undefined,
+				devDependencies: Object.keys(dev_deps).length > 0 ? dev_deps : undefined,
+				peerDependencies: Object.keys(peer_deps).length > 0 ? peer_deps : undefined,
+				repository: {type: 'git', url: `git+https://github.com/test/${name}.git`},
+			},
+			{name, version},
+		),
 		// {
 		// 	name,
 		// 	repo_name: name,
