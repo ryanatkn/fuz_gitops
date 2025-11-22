@@ -20,11 +20,11 @@ import {resolve, dirname} from 'node:path';
 import {print_path} from '@ryanatkn/gro/paths.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 
-import {load_gitops_config, type Gitops_Config} from '$lib/gitops_config.js';
-import {load_local_repos, resolve_local_repos, type Local_Repo} from '$lib/local_repo.js';
-import {resolve_gitops_config} from '$lib/resolved_gitops_config.js';
-import {DEFAULT_REPOS_DIR} from '$lib/paths.js';
-import type {Git_Operations, Npm_Operations} from '$lib/operations.js';
+import {load_gitops_config, type Gitops_Config} from './gitops_config.js';
+import {load_local_repos, resolve_local_repos, type Local_Repo} from './local_repo.js';
+import {resolve_gitops_config} from './resolved_gitops_config.js';
+import {DEFAULT_REPOS_DIR} from './paths.js';
+import type {Git_Operations, Npm_Operations} from './operations.js';
 
 export interface Get_Gitops_Ready_Options {
 	path: string;

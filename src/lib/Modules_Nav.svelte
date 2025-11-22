@@ -2,7 +2,7 @@
 	import {page} from '$app/state';
 	import type {Module_Json} from '@ryanatkn/fuz/src_json.js';
 
-	import type {Repo} from '$lib/repo.js';
+	import type {Repo} from './repo.js';
 
 	// TODO add highlighting of the items that are onscreen
 

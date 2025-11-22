@@ -1,4 +1,4 @@
-import type {Bump_Type} from '$lib/semver.js';
+import type {Bump_Type} from './semver.js';
 
 export const is_wildcard = (version: string): boolean => {
 	return version === '*';

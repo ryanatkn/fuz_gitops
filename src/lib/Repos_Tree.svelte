@@ -5,8 +5,8 @@
 	import {format_url} from '@ryanatkn/belt/url.js';
 	import type {Snippet} from 'svelte';
 
-	import type {Repo} from '$lib/repo.js';
-	import Repos_Tree_Nav from '$lib/Repos_Tree_Nav.svelte';
+	import type {Repo} from './repo.js';
+	import Repos_Tree_Nav from './Repos_Tree_Nav.svelte';
 
 	interface Props {
 		repos: Array<Repo>;

@@ -5,7 +5,7 @@
  * For validation workflow and publishing order computation, see `graph_validation.ts`.
  */
 
-import type {Local_Repo} from '$lib/local_repo.js';
+import type {Local_Repo} from './local_repo.js';
 import {EMPTY_OBJECT} from '@ryanatkn/belt/object.js';
 
 export const DEPENDENCY_TYPE = {

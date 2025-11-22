@@ -1,7 +1,7 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
-import type {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
+import type {Dependency_Graph_Builder} from './dependency_graph.js';
 
 /**
  * Formats wildcard dependencies as styled strings.

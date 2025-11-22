@@ -10,9 +10,9 @@ import {readFile, writeFile} from 'node:fs/promises';
 import {git_checkout, type Git_Branch, type Git_Origin} from '@ryanatkn/belt/git.js';
 import {EMPTY_OBJECT} from '@ryanatkn/belt/object.js';
 
-import {has_changesets, read_changesets, predict_next_version} from '$lib/changeset_reader.js';
-import {wait_for_package, check_package_available} from '$lib/npm_registry.js';
-import {run_preflight_checks} from '$lib/preflight_checks.js';
+import {has_changesets, read_changesets, predict_next_version} from './changeset_reader.js';
+import {wait_for_package, check_package_available} from './npm_registry.js';
+import {run_preflight_checks} from './preflight_checks.js';
 import {
 	git_add,
 	git_commit,
@@ -29,7 +29,7 @@ import {
 	git_current_commit_hash_required,
 	git_check_clean_workspace_as_boolean,
 	git_has_remote,
-} from '$lib/git_operations.js';
+} from './git_operations.js';
 import type {
 	Changeset_Operations,
 	Git_Operations,
@@ -39,7 +39,7 @@ import type {
 	Fs_Operations,
 	Build_Operations,
 	Gitops_Operations,
-} from '$lib/operations.js';
+} from './operations.js';
 
 export const default_changeset_operations: Changeset_Operations = {
 	has_changesets: async (options) => {

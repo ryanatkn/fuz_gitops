@@ -3,19 +3,19 @@ import type {Result} from '@ryanatkn/belt/result.js';
 import {spawn_out} from '@ryanatkn/belt/process.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from '$lib/local_repo.js';
+import type {Local_Repo} from './local_repo.js';
 import type {
 	Git_Operations,
 	Npm_Operations,
 	Build_Operations,
 	Changeset_Operations,
-} from '$lib/operations.js';
+} from './operations.js';
 import {
 	default_git_operations,
 	default_npm_operations,
 	default_build_operations,
 	default_changeset_operations,
-} from '$lib/operations_defaults.js';
+} from './operations_defaults.js';
 
 export interface Preflight_Options {
 	skip_changesets?: boolean;

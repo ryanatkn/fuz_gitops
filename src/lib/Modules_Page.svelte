@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import Page_Footer from '$lib/Page_Footer.svelte';
-	import Page_Header from '$lib/Page_Header.svelte';
-	import Modules_Detail from '$lib/Modules_Detail.svelte';
-	import type {Repo} from '$lib/repo.js';
+	import Page_Footer from './Page_Footer.svelte';
+	import Page_Header from './Page_Header.svelte';
+	import Modules_Detail from './Modules_Detail.svelte';
+	import type {Repo} from './repo.js';
 
 	interface Props {
 		repo: Repo;

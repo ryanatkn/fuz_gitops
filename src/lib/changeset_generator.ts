@@ -9,9 +9,9 @@ import {writeFile, mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {existsSync} from 'node:fs';
 import type {Logger} from '@ryanatkn/belt/log.js';
-import type {Local_Repo} from '$lib/local_repo.js';
-import type {Published_Version} from '$lib/multi_repo_publisher.js';
-import {strip_version_prefix} from '$lib/version_utils.js';
+import type {Local_Repo} from './local_repo.js';
+import type {Published_Version} from './multi_repo_publisher.js';
+import {strip_version_prefix} from './version_utils.js';
 
 export interface Dependency_Update {
 	package_name: string;

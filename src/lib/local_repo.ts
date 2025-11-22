@@ -7,11 +7,11 @@ import {join} from 'node:path';
 import {Task_Error} from '@ryanatkn/gro';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn} from '@ryanatkn/belt/process.js';
-import type {Git_Operations, Npm_Operations} from '$lib/operations.js';
-import {default_git_operations, default_npm_operations} from '$lib/operations_defaults.js';
+import type {Git_Operations, Npm_Operations} from './operations.js';
+import {default_git_operations, default_npm_operations} from './operations_defaults.js';
 
-import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
-import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';
+import type {Gitops_Config, Gitops_Repo_Config} from './gitops_config.js';
+import type {Resolved_Gitops_Config} from './resolved_gitops_config.js';
 
 export interface Local_Repo extends Resolved_Local_Repo {
 	pkg: Pkg;

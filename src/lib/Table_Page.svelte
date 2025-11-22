@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Page_Footer from '$lib/Page_Footer.svelte';
-	import Page_Header from '$lib/Page_Header.svelte';
-	import Repos_Table from '$lib/Repos_Table.svelte';
-	import type {Repo} from '$lib/repo.js';
+	import Page_Footer from './Page_Footer.svelte';
+	import Page_Header from './Page_Header.svelte';
+	import Repos_Table from './Repos_Table.svelte';
+	import type {Repo} from './repo.js';
 
 	interface Props {
 		repo: Repo;

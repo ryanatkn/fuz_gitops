@@ -2,7 +2,7 @@
 	import Docs_Footer from '@ryanatkn/fuz/Docs_Footer.svelte';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import {repos_context} from '$lib/repo.js';
+	import {repos_context} from './repo.js';
 
 	const {repo} = repos_context.get();
 </script>

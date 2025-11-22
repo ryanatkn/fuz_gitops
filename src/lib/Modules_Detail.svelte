@@ -4,8 +4,8 @@
 	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
-	import Modules_Nav from '$lib/Modules_Nav.svelte';
-	import type {Repo} from '$lib/repo.js';
+	import Modules_Nav from './Modules_Nav.svelte';
+	import type {Repo} from './repo.js';
 
 	interface Props {
 		repos: Array<Repo>; // TODO normalized version with cached primitives?
