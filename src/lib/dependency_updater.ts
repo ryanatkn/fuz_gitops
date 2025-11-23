@@ -11,7 +11,7 @@ import {needs_update, get_update_prefix} from './version_utils.js';
 import type {Git_Operations, Fs_Operations} from './operations.js';
 import {default_git_operations, default_fs_operations} from './operations_defaults.js';
 
-export type Version_Strategy = 'exact' | 'caret' | 'tilde';
+export type Version_Strategy = 'exact' | 'caret' | 'tilde' | 'gte';
 
 /**
  * Updates package.json dependencies and creates changeset if needed.
@@ -50,7 +50,8 @@ export const update_package_json = async (
 	const package_json = JSON.parse(content_result.value);
 
 	// Apply version strategy
-	const prefix = strategy === 'exact' ? '' : strategy === 'caret' ? '^' : '~';
+	const prefix =
+		strategy === 'exact' ? '' : strategy === 'caret' ? '^' : strategy === 'gte' ? '>=' : '~';
 
 	let updated = false;
 

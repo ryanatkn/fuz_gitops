@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type {Module_Json} from '@ryanatkn/fuz/src_json.js';
+	import type {Module_Json} from '@ryanatkn/belt/src_json.js';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';

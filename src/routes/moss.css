@@ -31,6 +31,32 @@
 	max-width: var(--distance_md);
 }
 
+.selectable {
+	--button_fill: color-mix(in hsl, var(--fill) 8%, transparent);
+	--button_fill_hover: color-mix(in hsl, var(--fill) 16%, transparent);
+	--button_fill_active: color-mix(in hsl, var(--fill) 24%, transparent);
+	cursor: pointer;
+	background-color: var(--button_fill);
+	border-color: var(--border_color_3);
+	border-style: var(--border_style);
+	border-width: var(--border_width);
+}
+.selectable:hover {
+	background-color: var(--button_fill_hover);
+	border-color: var(--border_color_2);
+}
+.selectable.selected,
+.selectable:active {
+	background-color: var(--button_fill_active);
+	border-color: var(--color_a_5);
+}
+.selectable.selected {
+	cursor: default;
+}
+.selectable.selected.deselectable:not(:disabled) {
+	cursor: pointer;
+}
+
 /* A pane is a box floating over the page, like for dialogs.
 			By default it's opaque, resetting the background to the initial depth. */
 .pane {
@@ -153,8 +179,14 @@ a.chip {
 .display_flex {
 	display: flex;
 }
+.display_inline_flex {
+	display: inline-flex;
+}
 .flex_1 {
 	flex: 1;
+}
+.align_items_center {
+	align-items: center;
 }
 .font_size_xl {
 	font-size: var(--font_size_xl);
@@ -172,6 +204,9 @@ a.chip {
 }
 .width_100 {
 	width: 100%;
+}
+.height_100 {
+	height: 100%;
 }
 .p_sm {
 	padding: var(--space_sm);

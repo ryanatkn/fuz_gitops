@@ -8,6 +8,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  * - Peer dependency updates trigger republishing
  * - Breaking changes in peer deps escalate version bumps
  * - Multiple peer deps with different bump types
+ * - Both `^` and `>=` version prefixes work correctly
  */
 export const peer_deps_only: Repo_Fixture_Set = {
 	name: 'peer_deps_only',
@@ -94,6 +95,7 @@ Small fix (should escalate to minor due to core breaking change)`,
 		},
 
 		// adapter: Adapter with only peer deps, no changesets
+		// Uses >= prefix (instead of ^) to test prefix handling for controlled packages
 		{
 			repo_name: 'adapter',
 			repo_url: 'https://gitops.fuz.dev/test/adapter',
@@ -101,7 +103,7 @@ Small fix (should escalate to minor due to core breaking change)`,
 				name: '@test/adapter',
 				version: '3.0.0',
 				peerDependencies: {
-					'@test/utils': '^1.0.0',
+					'@test/utils': '>=1.0.0', // >= prefix for controlled package pattern
 				},
 			},
 			// No changesets - utils has patch, should get auto-changeset (patch)

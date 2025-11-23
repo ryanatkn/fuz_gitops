@@ -274,7 +274,7 @@ describe('changeset_generator', () => {
 			expect(updates.find((u) => u.package_name === 'caret-lib')?.from_version).toBe('1.0.0');
 			expect(updates.find((u) => u.package_name === 'tilde-lib')?.from_version).toBe('1.0.0');
 			expect(updates.find((u) => u.package_name === 'exact-lib')?.from_version).toBe('1.0.0');
-			expect(updates.find((u) => u.package_name === 'gte-lib')?.from_version).toBe('=1.0.0'); // >= strips only first char
+			expect(updates.find((u) => u.package_name === 'gte-lib')?.from_version).toBe('1.0.0'); // >= fully stripped
 		});
 
 		it('handles empty inputs', () => {

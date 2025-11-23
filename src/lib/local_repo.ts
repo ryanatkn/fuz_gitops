@@ -1,7 +1,7 @@
 import {strip_end} from '@ryanatkn/belt/string.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
 import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
-import type {Src_Json} from '@ryanatkn/fuz/src_json.js';
+import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
 import {Task_Error} from '@ryanatkn/gro';

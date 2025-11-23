@@ -419,6 +419,41 @@ Commands are categorized by their side effects:
 - Changeset-driven versioning with auto-generation
 - Natural resumption via changeset consumption (no state files needed)
 
+### Peer Dependency Versioning Strategy
+
+For packages you control, use `>=` instead of `^` for peer dependencies:
+
+```json
+"peerDependencies": {
+  "@ryanatkn/belt": ">=0.38.0",   // controlled package - use >=
+  "@ryanatkn/gro": ">=0.174.0",   // controlled package - use >=
+  "@sveltejs/kit": "^2",          // third-party - use ^
+  "svelte": "^5"                  // third-party - use ^
+}
+```
+
+**Why `>=` for controlled packages:**
+
+- Eliminates npm peer dependency resolution conflicts when publishing sequentially
+- `^0.37.0` means `>=0.37.0 <0.38.0` in 0.x semver (excludes next minor)
+- When you publish `moss@0.38.0`, packages with `"@ryanatkn/moss": "^0.37.0"`
+  conflict
+- `>=0.37.0` allows any version `>=0.37.0`, including `0.38.0` and beyond
+- No need for `--legacy-peer-deps` flag
+
+**Why `^` for third-party packages:**
+
+- You don't control when they make breaking changes
+- `^` protects users from accidental incompatibility
+
+**Version prefix preservation:**
+
+When fuz_gitops updates dependencies, it preserves existing prefixes:
+
+- `>=0.38.0` updates to `>=0.39.0` (preserves `>=`)
+- `^1.0.0` updates to `^1.1.0` (preserves `^`)
+- `~1.0.0` updates to `~1.1.0` (preserves `~`)
+
 ## Testability & Operations Pattern
 
 This project uses **dependency injection** for all side effects, making it fully

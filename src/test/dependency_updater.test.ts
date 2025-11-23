@@ -234,6 +234,76 @@ describe('dependency_updater', () => {
 			expect(parsed.dependencies['dep-a']).toBe('1.1.0'); // no prefix
 		});
 
+		it('preserves >= prefix in peerDependencies', async () => {
+			const fs = create_mock_fs_ops();
+			const repo = create_mock_repo({
+				name: 'test-pkg',
+				peer_deps: {
+					'@ryanatkn/belt': '>=0.38.0',
+				},
+			});
+
+			const package_json_path = join(repo.repo_dir, 'package.json');
+			fs.set(
+				package_json_path,
+				JSON.stringify(
+					{
+						name: 'test-pkg',
+						version: '1.0.0',
+						peerDependencies: {
+							'@ryanatkn/belt': '>=0.38.0',
+						},
+					},
+					null,
+					'\t',
+				),
+			);
+
+			const updates = new Map([['@ryanatkn/belt', '0.39.0']]);
+			const git_ops = create_trackable_git_ops();
+
+			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+
+			const updated = fs.get(package_json_path);
+			const parsed = JSON.parse(updated!);
+			expect(parsed.peerDependencies['@ryanatkn/belt']).toBe('>=0.39.0');
+		});
+
+		it('uses gte strategy for >= prefix on new deps', async () => {
+			const fs = create_mock_fs_ops();
+			const repo = create_mock_repo({
+				name: 'test-pkg',
+				deps: {
+					'dep-a': '1.0.0',
+				},
+			});
+
+			const package_json_path = join(repo.repo_dir, 'package.json');
+			fs.set(
+				package_json_path,
+				JSON.stringify(
+					{
+						name: 'test-pkg',
+						version: '1.0.0',
+						dependencies: {
+							'dep-a': '1.0.0',
+						},
+					},
+					null,
+					'\t',
+				),
+			);
+
+			const updates = new Map([['dep-a', '1.1.0']]);
+			const git_ops = create_trackable_git_ops();
+
+			await update_package_json(repo, updates, 'gte', undefined, undefined, git_ops, fs);
+
+			const updated = fs.get(package_json_path);
+			const parsed = JSON.parse(updated!);
+			expect(parsed.dependencies['dep-a']).toBe('>=1.1.0');
+		});
+
 		it('updates multiple dependencies at once', async () => {
 			const fs = create_mock_fs_ops();
 			const repo = create_mock_repo({

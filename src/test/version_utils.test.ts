@@ -31,7 +31,13 @@ describe('version_utils', () => {
 
 		it('removes comparison prefixes', () => {
 			expect(strip_version_prefix('>1.2.3')).toBe('1.2.3');
-			expect(strip_version_prefix('>=1.2.3')).toBe('=1.2.3'); // only removes first char
+			expect(strip_version_prefix('<1.2.3')).toBe('1.2.3');
+			expect(strip_version_prefix('=1.2.3')).toBe('1.2.3');
+		});
+
+		it('removes multi-character comparison prefixes', () => {
+			expect(strip_version_prefix('>=1.2.3')).toBe('1.2.3');
+			expect(strip_version_prefix('<=1.2.3')).toBe('1.2.3');
 		});
 
 		it('leaves exact versions unchanged', () => {
@@ -48,9 +54,15 @@ describe('version_utils', () => {
 			expect(get_version_prefix('~1.2.3')).toBe('~');
 		});
 
-		it('extracts comparison prefixes', () => {
+		it('extracts single-character comparison prefixes', () => {
 			expect(get_version_prefix('>1.2.3')).toBe('>');
-			expect(get_version_prefix('>=1.2.3')).toBe('>'); // only first char
+			expect(get_version_prefix('<1.2.3')).toBe('<');
+			expect(get_version_prefix('=1.2.3')).toBe('=');
+		});
+
+		it('extracts multi-character comparison prefixes', () => {
+			expect(get_version_prefix('>=1.2.3')).toBe('>=');
+			expect(get_version_prefix('<=1.2.3')).toBe('<=');
 		});
 
 		it('returns empty string for exact versions', () => {
@@ -102,6 +114,7 @@ describe('version_utils', () => {
 		it('uses caret for wildcard replacements', () => {
 			expect(get_update_prefix('*', '^')).toBe('^');
 			expect(get_update_prefix('*', '~')).toBe('^'); // always caret for wildcards
+			expect(get_update_prefix('*', '>=')).toBe('^'); // always caret for wildcards
 		});
 
 		it('preserves existing prefix', () => {
@@ -109,10 +122,22 @@ describe('version_utils', () => {
 			expect(get_update_prefix('~1.0.0')).toBe('~');
 		});
 
+		it('preserves >= prefix', () => {
+			expect(get_update_prefix('>=1.0.0')).toBe('>=');
+			expect(get_update_prefix('>=0.38.0')).toBe('>=');
+		});
+
+		it('preserves other comparison prefixes', () => {
+			expect(get_update_prefix('<=1.0.0')).toBe('<=');
+			expect(get_update_prefix('>1.0.0')).toBe('>');
+			expect(get_update_prefix('<1.0.0')).toBe('<');
+		});
+
 		it('uses default strategy when no prefix', () => {
 			expect(get_update_prefix('1.0.0')).toBe('^'); // default is caret
 			expect(get_update_prefix('1.0.0', '~')).toBe('~');
 			expect(get_update_prefix('1.0.0', '')).toBe('');
+			expect(get_update_prefix('1.0.0', '>=')).toBe('>=');
 		});
 	});
 

@@ -4,7 +4,6 @@
 
 import type {Local_Repo} from '$lib/local_repo.js';
 import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
-import type {} from '@ryanatkn/fuz/src_json.js';
 import type {Repo_Fixture_Set, Repo_Fixture_Data} from './repo_fixture_types.js';
 
 /**

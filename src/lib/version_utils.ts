@@ -5,18 +5,18 @@ export const is_wildcard = (version: string): boolean => {
 };
 
 /**
- * Strips version prefix (^, ~, etc) from a version string.
+ * Strips version prefix (^, ~, >=, <=, etc) from a version string.
  */
 export const strip_version_prefix = (version: string): string => {
-	return version.replace(/^[\^~><=]/, '');
+	return version.replace(/^(>=|<=|>|<|=|\^|~)/, '');
 };
 
 /**
- * Gets the version prefix (^, ~, or empty string).
+ * Gets the version prefix (^, ~, >=, <=, or empty string).
  */
 export const get_version_prefix = (version: string): string => {
-	const match = /^[\^~><=]/.exec(version);
-	return match ? match[0] : '';
+	const match = /^(>=|<=|>|<|=|\^|~)/.exec(version);
+	return match ? match[1]! : '';
 };
 
 /**
@@ -58,7 +58,7 @@ export const needs_update = (current: string, new_version: string): boolean => {
  *
  * Strategy:
  * - Wildcard (*): Use caret (^) as default
- * - Has existing prefix: Preserve it (^, ~, >=)
+ * - Has existing prefix: Preserve it (^, ~, >=, <=, etc)
  * - No prefix: Use default_strategy
  *
  * This preserves user intent while handling wildcard replacements sensibly.
@@ -67,7 +67,7 @@ export const needs_update = (current: string, new_version: string): boolean => {
  */
 export const get_update_prefix = (
 	current_version: string,
-	default_strategy: '^' | '~' | '' = '^',
+	default_strategy: '^' | '~' | '' | '>=' = '^',
 ): string => {
 	// Use caret for wildcard replacements
 	if (is_wildcard(current_version)) {
