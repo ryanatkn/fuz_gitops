@@ -1,12 +1,12 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.52.0",
-  "modules": {
-    "./changeset_generator.js": {
+  "version": "0.53.0",
+  "modules": [
+    {
       "path": "changeset_generator.ts",
-      "declarations": [
+      "identifiers": [
         {
-          "name": "Dependency_Update",
+          "name": "Dependency_Version_Change",
           "kind": "type"
         },
         {
@@ -23,9 +23,9 @@
         }
       ]
     },
-    "./changeset_reader.js": {
+    {
       "path": "changeset_reader.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Changeset_Info",
           "kind": "type"
@@ -56,18 +56,18 @@
         }
       ]
     },
-    "./constants.js": {
+    {
       "path": "constants.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "MAX_ITERATIONS",
           "kind": "variable"
         }
       ]
     },
-    "./dependency_graph.js": {
+    {
       "path": "dependency_graph.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "DEPENDENCY_TYPE",
           "kind": "variable"
@@ -98,9 +98,9 @@
         }
       ]
     },
-    "./dependency_updater.js": {
+    {
       "path": "dependency_updater.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Version_Strategy",
           "kind": "type"
@@ -119,18 +119,18 @@
         }
       ]
     },
-    "./fetch_repo_data.js": {
+    {
       "path": "fetch_repo_data.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "fetch_repo_data",
           "kind": "function"
         }
       ]
     },
-    "./fs_fetch_value_cache.js": {
+    {
       "path": "fs_fetch_value_cache.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Fetch_Cache",
           "kind": "type"
@@ -141,9 +141,9 @@
         }
       ]
     },
-    "./git_operations.js": {
+    {
       "path": "git_operations.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "git_add",
           "kind": "function"
@@ -206,9 +206,9 @@
         }
       ]
     },
-    "./github_helpers.js": {
+    {
       "path": "github_helpers.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Filter_Pull_Request",
           "kind": "type"
@@ -227,9 +227,9 @@
         }
       ]
     },
-    "./github.js": {
+    {
       "path": "github.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Github_Pull_Request",
           "kind": "variable"
@@ -256,9 +256,9 @@
         }
       ]
     },
-    "./gitops_analyze.task.js": {
+    {
       "path": "gitops_analyze.task.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Args",
           "kind": "variable"
@@ -269,9 +269,9 @@
         }
       ]
     },
-    "./gitops_config.js": {
+    {
       "path": "gitops_config.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Gitops_Config",
           "kind": "type"
@@ -314,9 +314,9 @@
         }
       ]
     },
-    "./gitops_plan.task.js": {
+    {
       "path": "gitops_plan.task.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Args",
           "kind": "variable"
@@ -327,9 +327,9 @@
         }
       ]
     },
-    "./gitops_publish.task.js": {
+    {
       "path": "gitops_publish.task.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Args",
           "kind": "variable"
@@ -340,9 +340,9 @@
         }
       ]
     },
-    "./gitops_sync.task.js": {
+    {
       "path": "gitops_sync.task.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Args",
           "kind": "variable"
@@ -353,9 +353,9 @@
         }
       ]
     },
-    "./gitops_task_helpers.js": {
+    {
       "path": "gitops_task_helpers.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Get_Gitops_Ready_Options",
           "kind": "type"
@@ -378,9 +378,9 @@
         }
       ]
     },
-    "./gitops_validate.task.js": {
+    {
       "path": "gitops_validate.task.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Args",
           "kind": "variable"
@@ -391,9 +391,9 @@
         }
       ]
     },
-    "./graph_validation.js": {
+    {
       "path": "graph_validation.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Graph_Validation_Result",
           "kind": "type"
@@ -404,9 +404,9 @@
         }
       ]
     },
-    "./local_repo.js": {
+    {
       "path": "local_repo.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Local_Repo",
           "kind": "type"
@@ -441,9 +441,9 @@
         }
       ]
     },
-    "./log_helpers.js": {
+    {
       "path": "log_helpers.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "format_wildcard_dependencies",
           "kind": "function"
@@ -478,9 +478,9 @@
         }
       ]
     },
-    "./multi_repo_publisher.js": {
+    {
       "path": "multi_repo_publisher.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Publishing_Options",
           "kind": "type"
@@ -499,18 +499,18 @@
         }
       ]
     },
-    "./npm_install_helpers.js": {
+    {
       "path": "npm_install_helpers.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "install_with_cache_healing",
           "kind": "function"
         }
       ]
     },
-    "./npm_registry.js": {
+    {
       "path": "npm_registry.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Wait_Options",
           "kind": "type"
@@ -537,9 +537,9 @@
         }
       ]
     },
-    "./operations_defaults.js": {
+    {
       "path": "operations_defaults.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default_changeset_operations",
           "kind": "variable"
@@ -574,9 +574,9 @@
         }
       ]
     },
-    "./operations.js": {
+    {
       "path": "operations.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Changeset_Operations",
           "kind": "type"
@@ -591,10 +591,6 @@
         },
         {
           "name": "Build_Operations",
-          "kind": "type"
-        },
-        {
-          "name": "Wait_Options",
           "kind": "type"
         },
         {
@@ -615,9 +611,9 @@
         }
       ]
     },
-    "./output_helpers.js": {
+    {
       "path": "output_helpers.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Output_Format",
           "kind": "type"
@@ -636,9 +632,9 @@
         }
       ]
     },
-    "./paths.js": {
+    {
       "path": "paths.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "GITOPS_OUTPUT_DIR",
           "kind": "variable"
@@ -649,9 +645,9 @@
         }
       ]
     },
-    "./preflight_checks.js": {
+    {
       "path": "preflight_checks.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Preflight_Options",
           "kind": "type"
@@ -670,9 +666,9 @@
         }
       ]
     },
-    "./publishing_plan.js": {
+    {
       "path": "publishing_plan.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Version_Change",
           "kind": "type"
@@ -695,12 +691,16 @@
         }
       ]
     },
-    "./repo.js": {
-      "path": "repo.ts",
-      "declarations": [
+    {
+      "path": "repo.svelte.ts",
+      "identifiers": [
+        {
+          "name": "Repo_Json",
+          "kind": "type"
+        },
         {
           "name": "Repo",
-          "kind": "type"
+          "kind": "class"
         },
         {
           "name": "Repos",
@@ -711,14 +711,14 @@
           "kind": "variable"
         },
         {
-          "name": "parse_repos",
+          "name": "repos_parse",
           "kind": "function"
         }
       ]
     },
-    "./resolved_gitops_config.js": {
+    {
       "path": "resolved_gitops_config.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Resolved_Gitops_Config",
           "kind": "type"
@@ -729,9 +729,9 @@
         }
       ]
     },
-    "./semver.js": {
+    {
       "path": "semver.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Bump_Type",
           "kind": "type"
@@ -750,9 +750,9 @@
         }
       ]
     },
-    "./serialization_types.js": {
+    {
       "path": "serialization_types.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "Serialized_Node",
           "kind": "type"
@@ -771,74 +771,9 @@
         }
       ]
     },
-    "./test_helpers.js": {
-      "path": "test_helpers.ts",
-      "declarations": [
-        {
-          "name": "Mock_Repo_Options",
-          "kind": "type"
-        },
-        {
-          "name": "create_mock_repo",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_gitops_ops",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_package_json_files",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_repo_with_changesets",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_changeset_ops",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_git_ops",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_npm_ops",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_build_ops",
-          "kind": "function"
-        },
-        {
-          "name": "create_preflight_mock",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_fs_ops",
-          "kind": "function"
-        },
-        {
-          "name": "create_populated_fs_ops",
-          "kind": "function"
-        },
-        {
-          "name": "Tracked_Command",
-          "kind": "type"
-        },
-        {
-          "name": "create_tracking_process_ops",
-          "kind": "function"
-        },
-        {
-          "name": "create_mock_logger",
-          "kind": "function"
-        }
-      ]
-    },
-    "./version_utils.js": {
+    {
       "path": "version_utils.ts",
-      "declarations": [
+      "identifiers": [
         {
           "name": "is_wildcard",
           "kind": "function"
@@ -881,122 +816,122 @@
         }
       ]
     },
-    "./Modules_Detail.svelte": {
+    {
       "path": "Modules_Detail.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Modules_Nav.svelte": {
+    {
       "path": "Modules_Nav.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Modules_Page.svelte": {
+    {
       "path": "Modules_Page.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Page_Footer.svelte": {
+    {
       "path": "Page_Footer.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Page_Header.svelte": {
+    {
       "path": "Page_Header.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Pull_Requests_Detail.svelte": {
+    {
       "path": "Pull_Requests_Detail.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Pull_Requests_Page.svelte": {
+    {
       "path": "Pull_Requests_Page.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Repos_Table.svelte": {
+    {
       "path": "Repos_Table.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Repos_Tree_Nav.svelte": {
+    {
       "path": "Repos_Tree_Nav.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Repos_Tree.svelte": {
+    {
       "path": "Repos_Tree.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Table_Page.svelte": {
+    {
       "path": "Table_Page.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Tree_Item_Page.svelte": {
+    {
       "path": "Tree_Item_Page.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     },
-    "./Tree_Page.svelte": {
+    {
       "path": "Tree_Page.svelte",
-      "declarations": [
+      "identifiers": [
         {
           "name": "default",
           "kind": "component"
         }
       ]
     }
-  }
+  ]
 }
