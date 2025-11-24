@@ -367,8 +367,8 @@ gro build               # build static site
 gro deploy              # deploy to GitHub Pages
 
 # Fixture Management
-gro src/fixtures/generate_repos # generate test git repos from fixture data
-gro test src/fixtures/check     # validate gitops commands against fixture expectations
+gro src/test/fixtures/generate_repos # generate test git repos from fixture data
+gro test src/test/fixtures/check     # validate gitops commands against fixture expectations
 ```
 
 ## Commands Reference
@@ -498,7 +498,7 @@ dependency injection (see above).
 ```bash
 gro test                 # run all tests
 gro test version_utils   # run specific test file
-gro test src/fixtures/check # validate command output fixtures
+gro test src/test/fixtures/check # validate command output fixtures
 ```
 
 Core modules tested:
@@ -517,10 +517,10 @@ reproducible integration tests:
 
 **Generated Test Repos:**
 
-- `src/fixtures/repos/` - Auto-generated from fixture data (gitignored)
-- `src/fixtures/repo_fixtures/*.ts` - Source of truth for test repo definitions
-- `src/fixtures/generate_repos.ts` - Idempotent repo generation logic
-- `src/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
+- `src/test/fixtures/repos/` - Auto-generated from fixture data (gitignored)
+- `src/test/fixtures/repo_fixtures/*.ts` - Source of truth for test repo definitions
+- `src/test/fixtures/generate_repos.ts` - Idempotent repo generation logic
+- `src/test/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
 
 **Fixture Scenarios (9 total):**
 
@@ -538,19 +538,19 @@ reproducible integration tests:
 
 **Structured Validation:**
 
-- `src/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
-- `src/fixtures/check.test.ts` - Validates JSON output against fixture
+- `src/test/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
+- `src/test/fixtures/check.test.ts` - Validates JSON output against fixture
   `expected_outcomes`
-- `src/fixtures/helpers.ts` - JSON command runner and assertion helpers
+- `src/test/fixtures/helpers.ts` - JSON command runner and assertion helpers
 
 **Workflow:**
 
 1. Define fixture data with expected outcomes in `repo_fixtures/*.ts`
-2. Run `gro test src/fixtures/check` to validate commands against expected
+2. Run `gro test src/test/fixtures/check` to validate commands against expected
    outcomes
 
 Fixture repos are auto-generated on first test run if missing. To manually
-regenerate: `gro src/fixtures/generate_repos`
+regenerate: `gro src/test/fixtures/generate_repos`
 
 Each fixture runs in isolation with its own config, validating:
 

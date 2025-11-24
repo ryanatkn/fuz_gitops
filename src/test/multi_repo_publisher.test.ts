@@ -330,7 +330,7 @@ test('deploys all repos when deploy flag is set (Phase 3)', async () => {
 
 test('deploys only repos with changes (skips unchanged repos)', async () => {
 	// This test covers selective deployment including dev dep changes
-	// Full integration coverage in fixture tests (src/fixtures/check.test.ts)
+	// Full integration coverage in fixture tests (src/test/fixtures/check.test.ts)
 	const repos: Array<Local_Repo> = [
 		create_mock_repo({name: 'lib', version: '1.0.0'}),
 		create_mock_repo({name: 'app-with-dep', version: '1.0.0', deps: {lib: '^1.0.0'}}),

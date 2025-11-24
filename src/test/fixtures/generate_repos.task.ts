@@ -30,7 +30,7 @@ const FIXTURES = [
  * Run this before fixture tests to ensure repos exist.
  *
  * Usage:
- *   gro src/fixtures/generate_repos
+ *   gro src/test/fixtures/generate_repos
  */
 export const task: Task = {
 	summary: 'generate git repositories from fixture data',
@@ -41,7 +41,7 @@ export const task: Task = {
 			await generate_all_fixtures(FIXTURES, log);
 
 			log.info(st('green', '✅ All fixture repositories generated successfully'));
-			log.info('   Repos are ready for testing in src/fixtures/repos/');
+			log.info('   Repos are ready for testing in src/test/fixtures/repos/');
 		} catch (error) {
 			log.error(st('red', '❌ Failed to generate fixture repositories'));
 			log.error(`   Error: ${error}`);

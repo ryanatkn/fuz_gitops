@@ -5,7 +5,7 @@ import type {Logger} from '@ryanatkn/belt/log.js';
 
 import type {Repo_Fixture_Set, Repo_Fixture_Data} from './repo_fixture_types.js';
 
-const FIXTURES_BASE_DIR = 'src/fixtures/repos';
+const FIXTURES_BASE_DIR = 'src/test/fixtures/repos';
 
 /**
  * Generate all repositories for multiple fixture sets.

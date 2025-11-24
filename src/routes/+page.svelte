@@ -14,7 +14,7 @@
 </svelte:head>
 
 <main class="box">
-	<section class="pt_xl">
+	<section style:margin-top="var(--docs_primary_nav_height, 60px)">
 		<Main_Header />
 	</section>
 	<section>

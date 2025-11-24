@@ -10,7 +10,7 @@ node_modules
 /.zzz
 
 # Generated test repos
-/src/fixtures/repos/
+/src/test/fixtures/repos/
 
 # Env
 .env*
