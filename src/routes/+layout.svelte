@@ -25,7 +25,12 @@
 
 	const contextmenu = new Contextmenu_State();
 
-	repos_context.set(repos_parse(repos_json.map((r: Repo_Json) => new Repo(r)), 'https://gitops.fuz.dev/'));
+	repos_context.set(
+		repos_parse(
+			repos_json.map((r: Repo_Json) => new Repo(r)),
+			'https://gitops.fuz.dev/',
+		),
+	);
 
 	let show_settings = $state(false);
 </script>
