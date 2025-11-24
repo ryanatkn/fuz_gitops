@@ -17,7 +17,7 @@ const config: Create_Gitops_Config = () => {
 				branch: 'upgrade-deps',
 			},
 			'https://github.com/ryanatkn/webdevladder.net',
-			'https://github.com/ryanatkn/ryanatkn.com',
+			// 'https://github.com/ryanatkn/ryanatkn.com',
 		],
 	};
 };
