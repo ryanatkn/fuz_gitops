@@ -1107,8 +1107,8 @@ export const repos_json: Array<Repo_Json> = JSON.parse(
 			"modules": []\
 		},\
 		"check_runs": {\
-			"status": "completed",\
-			"conclusion": "failure"\
+			"status": "in_progress",\
+			"conclusion": null\
 		},\
 		"pull_requests": [\
 			{\

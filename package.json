@@ -31,7 +31,7 @@
   },
   "peerDependencies": {
     "@ryanatkn/belt": ">=0.38.2",
-    "@ryanatkn/fuz": ">=0.161.1",
+    "@ryanatkn/fuz": ">=0.161.2",
     "@ryanatkn/gro": ">=0.175.0",
     "@ryanatkn/moss": ">=0.38.0",
     "@sveltejs/kit": "^2",
@@ -42,7 +42,7 @@
     "@changesets/changelog-git": "^0.2.1",
     "@ryanatkn/belt": "^0.38.2",
     "@ryanatkn/eslint-config": "^0.9.0",
-    "@ryanatkn/fuz": "^0.161.1",
+    "@ryanatkn/fuz": "^0.161.2",
     "@ryanatkn/fuz_code": "^0.35.0",
     "@ryanatkn/gro": "^0.175.0",
     "@ryanatkn/moss": "^0.38.0",

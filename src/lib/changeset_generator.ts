@@ -13,7 +13,7 @@ import type {Local_Repo} from './local_repo.js';
 import type {Published_Version} from './multi_repo_publisher.js';
 import {strip_version_prefix} from './version_utils.js';
 
-export interface Dependency_Update {
+export interface Dependency_Version_Change {
 	package_name: string;
 	from_version: string;
 	to_version: string;
@@ -27,7 +27,7 @@ export interface Dependency_Update {
  */
 export const create_changeset_for_dependency_updates = async (
 	repo: Local_Repo,
-	updates: Array<Dependency_Update>,
+	updates: Array<Dependency_Version_Change>,
 	log?: Logger,
 ): Promise<string> => {
 	const changesets_dir = join(repo.repo_dir, '.changeset');
@@ -59,7 +59,7 @@ export const create_changeset_for_dependency_updates = async (
 
 const calculate_required_bump = (
 	repo: Local_Repo,
-	updates: Array<Dependency_Update>,
+	updates: Array<Dependency_Version_Change>,
 ): 'major' | 'minor' | 'patch' => {
 	const current_version = repo.pkg.package_json.version || '0.0.0';
 	const [major] = current_version.split('.').map(Number);
@@ -93,7 +93,7 @@ const calculate_required_bump = (
  */
 export const generate_changeset_content = (
 	package_name: string,
-	updates: Array<Dependency_Update>,
+	updates: Array<Dependency_Version_Change>,
 	bump_type: 'major' | 'minor' | 'patch',
 ): string => {
 	// Group updates by type
@@ -138,8 +138,8 @@ export const generate_changeset_content = (
 export const create_dependency_updates = (
 	dependencies: Map<string, string>,
 	published_versions: Map<string, Published_Version>,
-): Array<Dependency_Update> => {
-	const updates: Array<Dependency_Update> = [];
+): Array<Dependency_Version_Change> => {
+	const updates: Array<Dependency_Version_Change> = [];
 
 	for (const [dep_name, current_version] of dependencies) {
 		const published = published_versions.get(dep_name);

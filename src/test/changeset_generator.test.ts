@@ -2,14 +2,14 @@ import {describe, it, expect} from 'vitest';
 import {
 	generate_changeset_content,
 	create_dependency_updates,
-	type Dependency_Update,
+	type Dependency_Version_Change,
 } from '$lib/changeset_generator.js';
 import type {Published_Version} from '$lib/multi_repo_publisher.js';
 
 describe('changeset_generator', () => {
 	describe('generate_changeset_content', () => {
 		it('generates content for patch updates', () => {
-			const updates: Array<Dependency_Update> = [
+			const updates: Array<Dependency_Version_Change> = [
 				{
 					package_name: 'lib-a',
 					from_version: '1.0.0',
@@ -37,7 +37,7 @@ describe('changeset_generator', () => {
 		});
 
 		it('generates content for breaking changes', () => {
-			const updates: Array<Dependency_Update> = [
+			const updates: Array<Dependency_Version_Change> = [
 				{
 					package_name: 'lib-breaking',
 					from_version: '0.5.0',
@@ -56,7 +56,7 @@ describe('changeset_generator', () => {
 		});
 
 		it('generates content for mixed breaking and regular updates', () => {
-			const updates: Array<Dependency_Update> = [
+			const updates: Array<Dependency_Version_Change> = [
 				{
 					package_name: 'breaking-lib',
 					from_version: '1.0.0',
@@ -93,7 +93,7 @@ describe('changeset_generator', () => {
 		});
 
 		it('generates valid changeset format', () => {
-			const updates: Array<Dependency_Update> = [
+			const updates: Array<Dependency_Version_Change> = [
 				{
 					package_name: 'lib',
 					from_version: '1.0.0',
@@ -116,7 +116,7 @@ describe('changeset_generator', () => {
 		});
 
 		it('escapes package names in frontmatter', () => {
-			const updates: Array<Dependency_Update> = [];
+			const updates: Array<Dependency_Version_Change> = [];
 
 			const content = generate_changeset_content('@scope/package-name', updates, 'patch');
 

@@ -39,6 +39,7 @@ import type {Local_Repo} from './local_repo.js';
 import type {Changeset_Info} from './changeset_reader.js';
 import type {Bump_Type} from './semver.js';
 import type {Preflight_Options, Preflight_Result} from './preflight_checks.js';
+import type {Wait_Options} from './npm_registry.js';
 
 /**
  * Changeset operations for reading and predicting versions from `.changeset/*.md` files.
@@ -228,16 +229,6 @@ export interface Build_Operations {
 		repo: Local_Repo;
 		log?: Logger;
 	}) => Promise<Result<object, {message: string; output?: string}>>;
-}
-
-/**
- * Configuration for exponential backoff when waiting for NPM package availability.
- */
-export interface Wait_Options {
-	max_attempts?: number;
-	initial_delay?: number;
-	max_delay?: number;
-	timeout?: number;
 }
 
 /**
