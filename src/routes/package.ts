@@ -6,7 +6,7 @@ import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 
 export const package_json: Package_Json = {
 	name: '@ryanatkn/fuz_gitops',
-	version: '0.52.0',
+	version: '0.53.0',
 	description: 'a tool for managing many repos',
 	glyph: '🪄',
 	logo: 'logo.svg',
@@ -105,7 +105,7 @@ export const package_json: Package_Json = {
 
 export const src_json: Src_Json = {
 	name: '@ryanatkn/fuz_gitops',
-	version: '0.52.0',
+	version: '0.53.0',
 	modules: [
 		{
 			path: 'changeset_generator.ts',

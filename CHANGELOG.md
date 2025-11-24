@@ -1,5 +1,13 @@
 # @ryanatkn/fuz_gitops
 
+## 0.53.0
+
+### Minor Changes
+
+- support `>=` in peer deps ([#37](https://github.com/ryanatkn/fuz_gitops/pull/37))
+- upgrade peer deps ([#37](https://github.com/ryanatkn/fuz_gitops/pull/37))
+- upgrade deps ([#37](https://github.com/ryanatkn/fuz_gitops/pull/37))
+
 ## 0.52.0
 
 ### Minor Changes
