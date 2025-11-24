@@ -14,6 +14,7 @@ import {
 } from './log_helpers.js';
 import {format_and_output, type Output_Formatters} from './output_helpers.js';
 
+/** @nodocs */
 export const Args = z.strictObject({
 	path: z
 		.string()
@@ -29,9 +30,9 @@ export const Args = z.strictObject({
 		.default('stdout'),
 	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
 });
-
 export type Args = z.infer<typeof Args>;
 
+/** @nodocs */
 export const task: Task<Args> = {
 	Args,
 	summary: 'analyze dependency structure and relationships across repos',

@@ -12,6 +12,7 @@ import {
 import {generate_publishing_plan, log_publishing_plan} from './publishing_plan.js';
 import {format_and_output, type Output_Formatters} from './output_helpers.js';
 
+/** @nodocs */
 export const Args = z.strictObject({
 	path: z
 		.string()
@@ -51,6 +52,7 @@ export const Args = z.strictObject({
 });
 export type Args = z.infer<typeof Args>;
 
+/** @nodocs */
 export const task: Task<Args> = {
 	summary: 'publish all repos in dependency order',
 	Args,

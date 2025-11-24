@@ -9,6 +9,7 @@ import {generate_publishing_plan} from './publishing_plan.js';
 import {publish_repos, type Publishing_Options} from './multi_repo_publisher.js';
 import {log_dependency_analysis} from './log_helpers.js';
 
+/** @nodocs */
 export const Args = z.strictObject({
 	path: z
 		.string()
@@ -19,9 +20,9 @@ export const Args = z.strictObject({
 		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
 		.optional(),
 });
-
 export type Args = z.infer<typeof Args>;
 
+/** @nodocs */
 export const task: Task<Args> = {
 	Args,
 	summary:

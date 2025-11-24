@@ -10,6 +10,7 @@ import {
 } from './publishing_plan.js';
 import {format_and_output, type Output_Formatters} from './output_helpers.js';
 
+/** @nodocs */
 export const Args = z.strictObject({
 	path: z
 		.string()
@@ -25,7 +26,6 @@ export const Args = z.strictObject({
 		.default('stdout'),
 	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
 });
-
 export type Args = z.infer<typeof Args>;
 
 /**
@@ -36,6 +36,8 @@ export type Args = z.infer<typeof Args>;
  *   gro gitops_plan
  *   gro gitops_plan --dir ../repos
  *   gro gitops_plan --path ./custom.config.ts
+ *
+ * @nodocs
  */
 export const task: Task<Args> = {
 	summary: 'generate a publishing plan based on changesets',

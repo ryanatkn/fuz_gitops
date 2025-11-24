@@ -15,6 +15,7 @@ import {get_gitops_ready} from './gitops_task_helpers.js';
 
 // TODO add flag to ignore or invalidate cache -- no-cache? clean?
 
+/** @nodocs */
 export const Args = z.strictObject({
 	path: z
 		.string()
@@ -38,6 +39,8 @@ export type Args = z.infer<typeof Args>;
 
 /**
  * This is a task not a `.gen.` file because it makes network calls.
+ *
+ * @nodocs
  */
 export const task: Task<Args> = {
 	Args,
