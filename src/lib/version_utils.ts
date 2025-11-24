@@ -1,33 +1,33 @@
-import type {Bump_Type} from '$lib/semver.js';
+import type {Bump_Type} from './semver.js';
 
-/**
- * Version utility functions for handling semver strings and comparisons.
- */
-
-/**
- * Checks if a version string is a wildcard.
- */
 export const is_wildcard = (version: string): boolean => {
 	return version === '*';
 };
 
 /**
- * Strips version prefix (^, ~, etc) from a version string.
+ * Strips version prefix (^, ~, >=, <=, etc) from a version string.
  */
 export const strip_version_prefix = (version: string): string => {
-	return version.replace(/^[\^~><=]/, '');
+	return version.replace(/^(>=|<=|>|<|=|\^|~)/, '');
 };
 
 /**
- * Gets the version prefix (^, ~, or empty string).
+ * Gets the version prefix (^, ~, >=, <=, or empty string).
  */
 export const get_version_prefix = (version: string): string => {
-	const match = /^[\^~><=]/.exec(version);
-	return match ? match[0] : '';
+	const match = /^(>=|<=|>|<|=|\^|~)/.exec(version);
+	return match ? match[1]! : '';
 };
 
 /**
- * Normalizes a version string for comparison by removing prefixes.
+ * Normalizes version string for comparison.
+ *
+ * Strips prefixes (^, ~, >=) to get bare version number.
+ * Handles wildcards as-is. Used by needs_update to compare versions.
+ *
+ * @example normalize_version_for_comparison('^1.2.3') // '1.2.3'
+ * @example normalize_version_for_comparison('>=2.0.0') // '2.0.0'
+ * @example normalize_version_for_comparison('*') // '*'
  */
 export const normalize_version_for_comparison = (version: string): string => {
 	// Handle wildcards
@@ -42,9 +42,6 @@ export const normalize_version_for_comparison = (version: string): string => {
 	return strip_version_prefix(version);
 };
 
-/**
- * Determines if a dependency needs to be updated.
- */
 export const needs_update = (current: string, new_version: string): boolean => {
 	// Always update wildcards
 	if (is_wildcard(current)) return true;
@@ -57,12 +54,20 @@ export const needs_update = (current: string, new_version: string): boolean => {
 };
 
 /**
- * Determines the appropriate version prefix for an update.
- * If updating from wildcard, use caret. Otherwise preserve existing prefix.
+ * Determines version prefix to use when updating dependencies.
+ *
+ * Strategy:
+ * - Wildcard (*): Use caret (^) as default
+ * - Has existing prefix: Preserve it (^, ~, >=, <=, etc)
+ * - No prefix: Use default_strategy
+ *
+ * This preserves user intent while handling wildcard replacements sensibly.
+ *
+ * @param default_strategy prefix to use when no existing prefix found
  */
 export const get_update_prefix = (
 	current_version: string,
-	default_strategy: '^' | '~' | '' = '^',
+	default_strategy: '^' | '~' | '' | '>=' = '^',
 ): string => {
 	// Use caret for wildcard replacements
 	if (is_wildcard(current_version)) {
@@ -100,9 +105,6 @@ export const is_breaking_change = (
 	}
 };
 
-/**
- * Detects the bump type by comparing two version strings.
- */
 export const detect_bump_type = (
 	old_version: string,
 	new_version: string,
@@ -110,8 +112,8 @@ export const detect_bump_type = (
 	const old_parts = old_version.split('.').map(Number);
 	const new_parts = new_version.split('.').map(Number);
 
-	if (new_parts[0] > old_parts[0]) return 'major';
-	if (new_parts[1] > old_parts[1]) return 'minor';
+	if (new_parts[0]! > old_parts[0]!) return 'major';
+	if (new_parts[1]! > old_parts[1]!) return 'minor';
 	return 'patch';
 };
 
@@ -127,9 +129,6 @@ export const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
 	return order[a] - order[b];
 };
 
-/**
- * Calculates the next version based on current version and bump type.
- */
 export const calculate_next_version = (current_version: string, bump_type: Bump_Type): string => {
 	const parts = current_version.split('.').map(Number);
 	if (parts.length !== 3 || parts.some((p) => Number.isNaN(p))) {
@@ -140,11 +139,11 @@ export const calculate_next_version = (current_version: string, bump_type: Bump_
 
 	switch (bump_type) {
 		case 'major':
-			return `${major + 1}.0.0`;
+			return `${major! + 1}.0.0`;
 		case 'minor':
-			return `${major}.${minor + 1}.0`;
+			return `${major!}.${minor! + 1}.0`;
 		case 'patch':
-			return `${major}.${minor}.${patch + 1}`;
+			return `${major!}.${minor!}.${patch! + 1}`;
 		default:
 			throw new Error(`Invalid bump type: ${bump_type}`);
 	}

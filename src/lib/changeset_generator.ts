@@ -1,12 +1,19 @@
+/**
+ * Auto-generation of changesets for dependency updates during publishing.
+ *
+ * Creates changesets when packages need to republish due to updated dependencies.
+ * For parsing existing changesets, see `changeset_reader.ts`.
+ */
+
 import {writeFile, mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {existsSync} from 'node:fs';
 import type {Logger} from '@ryanatkn/belt/log.js';
-import type {Local_Repo} from '$lib/local_repo.js';
-import type {Published_Version} from '$lib/multi_repo_publisher.js';
-import {strip_version_prefix} from '$lib/version_utils.js';
+import type {Local_Repo} from './local_repo.js';
+import type {Published_Version} from './multi_repo_publisher.js';
+import {strip_version_prefix} from './version_utils.js';
 
-export interface Dependency_Update {
+export interface Dependency_Version_Change {
 	package_name: string;
 	from_version: string;
 	to_version: string;
@@ -20,7 +27,7 @@ export interface Dependency_Update {
  */
 export const create_changeset_for_dependency_updates = async (
 	repo: Local_Repo,
-	updates: Array<Dependency_Update>,
+	updates: Array<Dependency_Version_Change>,
 	log?: Logger,
 ): Promise<string> => {
 	const changesets_dir = join(repo.repo_dir, '.changeset');
@@ -50,13 +57,9 @@ export const create_changeset_for_dependency_updates = async (
 	return filepath;
 };
 
-/**
- * Calculates the required bump type based on dependency updates.
- * Breaking changes propagate up the dependency tree.
- */
 const calculate_required_bump = (
 	repo: Local_Repo,
-	updates: Array<Dependency_Update>,
+	updates: Array<Dependency_Version_Change>,
 ): 'major' | 'minor' | 'patch' => {
 	const current_version = repo.pkg.package_json.version || '0.0.0';
 	const [major] = current_version.split('.').map(Number);
@@ -77,11 +80,20 @@ const calculate_required_bump = (
 };
 
 /**
- * Generates the content of a changeset file.
+ * Generates markdown changeset content for dependency updates.
+ *
+ * Creates properly formatted changeset with YAML frontmatter, summary,
+ * and categorized list of breaking vs regular updates. Output format
+ * matches changesets CLI for consistency.
+ *
+ * @param package_name package receiving the dependency updates
+ * @param updates list of dependency changes with version info
+ * @param bump_type required bump type (calculated from breaking changes)
+ * @returns markdown content ready to write to .changeset/*.md file
  */
 export const generate_changeset_content = (
 	package_name: string,
-	updates: Array<Dependency_Update>,
+	updates: Array<Dependency_Version_Change>,
 	bump_type: 'major' | 'minor' | 'patch',
 ): string => {
 	// Group updates by type
@@ -123,14 +135,11 @@ export const generate_changeset_content = (
 	return lines.join('\n');
 };
 
-/**
- * Creates Dependency_Update objects from published versions.
- */
 export const create_dependency_updates = (
 	dependencies: Map<string, string>,
 	published_versions: Map<string, Published_Version>,
-): Array<Dependency_Update> => {
-	const updates: Array<Dependency_Update> = [];
+): Array<Dependency_Version_Change> => {
+	const updates: Array<Dependency_Version_Change> = [];
 
 	for (const [dep_name, current_version] of dependencies) {
 		const published = published_versions.get(dep_name);

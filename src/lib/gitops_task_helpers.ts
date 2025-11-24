@@ -1,14 +1,30 @@
+/**
+ * Shared initialization logic for all gitops tasks.
+ *
+ * Provides `get_gitops_ready()` which orchestrates:
+ * - Config loading and normalization
+ * - Repo resolution (local path discovery)
+ * - Branch switching and syncing
+ * - Dependency installation
+ *
+ * Used by: `gitops_sync.task.ts`, `gitops_analyze.task.ts`, `gitops_plan.task.ts`,
+ * `gitops_publish.task.ts`, and `gitops_validate.task.ts`.
+ *
+ * Accepts `git_ops` and `npm_ops` parameters to support testing via operations pattern
+ * (see `operations.ts` for dependency injection details).
+ */
+
 import {Task_Error} from '@ryanatkn/gro';
 import {styleText as st} from 'node:util';
 import {resolve, dirname} from 'node:path';
 import {print_path} from '@ryanatkn/gro/paths.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 
-import {load_gitops_config, type Gitops_Config} from '$lib/gitops_config.js';
-import {load_local_repos, resolve_local_repos, type Local_Repo} from '$lib/local_repo.js';
-import {resolve_gitops_config} from '$lib/resolved_gitops_config.js';
-import {DEFAULT_REPOS_DIR} from '$lib/paths.js';
-import type {Git_Operations, Npm_Operations} from '$lib/operations.js';
+import {load_gitops_config, type Gitops_Config} from './gitops_config.js';
+import {load_local_repos, resolve_local_repos, type Local_Repo} from './local_repo.js';
+import {resolve_gitops_config} from './resolved_gitops_config.js';
+import {DEFAULT_REPOS_DIR} from './paths.js';
+import type {Git_Operations, Npm_Operations} from './operations.js';
 
 export interface Get_Gitops_Ready_Options {
 	path: string;
@@ -20,7 +36,23 @@ export interface Get_Gitops_Ready_Options {
 }
 
 /**
- * Readies the workspace for all gitops repos.
+ * Central initialization function for all gitops tasks.
+ *
+ * Initialization sequence:
+ * 1. Loads and normalizes config from `gitops.config.ts`
+ * 2. Resolves local repo paths (creates missing with `--download`)
+ * 3. Switches branches and pulls latest changes
+ * 4. Auto-installs deps if package.json changed during pull
+ *
+ * Priority for path resolution:
+ * - `dir` argument (explicit override)
+ * - Config `repos_dir` setting
+ * - `DEFAULT_REPOS_DIR` constant
+ *
+ * @param options.git_ops for testing (defaults to real git operations)
+ * @param options.npm_ops for testing (defaults to real npm operations)
+ * @returns initialized config and fully loaded repos ready for operations
+ * @throws {Task_Error} if config loading or repo resolution fails
  */
 export const get_gitops_ready = async (
 	options: Get_Gitops_Ready_Options,

@@ -7,12 +7,17 @@
 	import Themed from '@ryanatkn/fuz/Themed.svelte';
 	import Dialog from '@ryanatkn/fuz/Dialog.svelte';
 	import Contextmenu_Root from '@ryanatkn/fuz/Contextmenu_Root.svelte';
-	import {Contextmenu_State, contextmenu_action} from '@ryanatkn/fuz/contextmenu_state.svelte.js';
+	import {
+		Contextmenu_State,
+		contextmenu_attachment,
+	} from '@ryanatkn/fuz/contextmenu_state.svelte.js';
+	import {Pkg, pkg_context} from '@ryanatkn/fuz/pkg.svelte.js';
 	import type {Snippet} from 'svelte';
 
 	import Settings from '$routes/Settings.svelte';
-	import {repos} from '$routes/repos.js';
-	import {parse_repos, repos_context} from '$lib/repo.js';
+	import {repos_json} from '$routes/repos.js';
+	import {Repo, type Repo_Json, repos_parse, repos_context} from '$lib/repo.svelte.js';
+	import {package_json, src_json} from '$routes/package.js';
 
 	interface Props {
 		children: Snippet;
@@ -22,7 +27,12 @@
 
 	const contextmenu = new Contextmenu_State();
 
-	repos_context.set(parse_repos(repos, 'https://gitops.fuz.dev/'));
+	const repos = repos_parse(
+		repos_json.map((r: Repo_Json) => new Repo(r)),
+		'https://gitops.fuz.dev/',
+	);
+	repos_context.set(repos);
+	pkg_context.set(new Pkg(package_json, src_json));
 
 	let show_settings = $state(false);
 </script>
@@ -32,7 +42,7 @@
 </svelte:head>
 
 <svelte:body
-	use:contextmenu_action={[
+	{@attach contextmenu_attachment([
 		{
 			snippet: 'text',
 			props: {
@@ -53,7 +63,7 @@
 				},
 			},
 		},
-	]}
+	])}
 />
 
 <Themed>

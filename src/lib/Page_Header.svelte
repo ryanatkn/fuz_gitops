@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type {Pkg} from '@ryanatkn/belt/pkg.js';
+	import type {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 	import type {Snippet} from 'svelte';
 	import type {SvelteHTMLElements} from 'svelte/elements';

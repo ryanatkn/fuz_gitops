@@ -1,20 +1,33 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {join} from 'node:path';
 
-import type {Local_Repo} from '$lib/local_repo.js';
-import type {Published_Version} from '$lib/multi_repo_publisher.js';
+import type {Local_Repo} from './local_repo.js';
+import type {Published_Version} from './multi_repo_publisher.js';
 import {
 	create_changeset_for_dependency_updates,
 	create_dependency_updates,
-} from '$lib/changeset_generator.js';
-import {needs_update, get_update_prefix} from '$lib/version_utils.js';
-import type {Git_Operations, Fs_Operations} from '$lib/operations.js';
-import {default_git_operations, default_fs_operations} from '$lib/operations_defaults.js';
+} from './changeset_generator.js';
+import {needs_update, get_update_prefix} from './version_utils.js';
+import type {Git_Operations, Fs_Operations} from './operations.js';
+import {default_git_operations, default_fs_operations} from './operations_defaults.js';
 
-export type Version_Strategy = 'exact' | 'caret' | 'tilde';
+export type Version_Strategy = 'exact' | 'caret' | 'tilde' | 'gte';
 
 /**
- * Updates dependencies in a repo's package.json file and creates a changeset.
+ * Updates package.json dependencies and creates changeset if needed.
+ *
+ * Workflow:
+ * 1. Updates all dependency types (dependencies, devDependencies, peerDependencies)
+ * 2. Writes updated package.json with tabs formatting
+ * 3. Creates auto-changeset if published_versions provided (for transitive updates)
+ * 4. Commits both package.json and changeset with standard message
+ *
+ * Uses version strategy to determine prefix (exact, caret, tilde) while preserving
+ * existing prefixes when possible.
+ *
+ * @param strategy how to format version ranges (default: caret)
+ * @param published_versions if provided, generates auto-changesets for updates
+ * @throws {Error} if file operations or git operations fail
  */
 export const update_package_json = async (
 	repo: Local_Repo,
@@ -37,7 +50,8 @@ export const update_package_json = async (
 	const package_json = JSON.parse(content_result.value);
 
 	// Apply version strategy
-	const prefix = strategy === 'exact' ? '' : strategy === 'caret' ? '^' : '~';
+	const prefix =
+		strategy === 'exact' ? '' : strategy === 'caret' ? '^' : strategy === 'gte' ? '>=' : '~';
 
 	let updated = false;
 
@@ -148,9 +162,6 @@ export const update_package_json = async (
 	}
 };
 
-/**
- * Updates all dependencies across multiple repos.
- */
 export const update_all_repos = async (
 	repos: Array<Local_Repo>,
 	published: Map<string, string>,
@@ -209,9 +220,6 @@ export const update_all_repos = async (
 	return {updated: updated_count, failed};
 };
 
-/**
- * Gets dependencies that need updating for a repo.
- */
 export const find_updates_needed = (
 	repo: Local_Repo,
 	published: Map<string, string>,

@@ -2,13 +2,10 @@
 	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
-	import type {Repo} from '$lib/repo.js';
+	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repos: Array<Repo>;
-		/**
-		 * The selected package, if any.
-		 */
 		selected_repo?: Repo;
 		children: Snippet;
 	}
@@ -18,15 +15,16 @@
 
 <nav>
 	<menu class="names panel p_md">
-		{#each repos as repo (repo.name)}
+		{#each repos as repo (repo.pkg.name)}
 			{@const selected = repo === selected_repo}
 			<li style:display="contents">
-				{#if repo.package_json}<a
+				{#if repo.pkg.package_json}<a
 						class="menu_item"
 						class:selected
-						href={resolve(`/tree/${repo.repo_name}`)}
+						href={resolve(`/tree/${repo.pkg.repo_name}`)}
 						><div class="ellipsis">
-							{repo.repo_name}{#if repo.package_json.glyph}&nbsp;{repo.package_json.glyph}{/if}
+							{repo.pkg.repo_name}{#if repo.pkg.package_json.glyph}&nbsp;{repo.pkg.package_json
+									.glyph}{/if}
 						</div></a
 					>{/if}
 			</li>

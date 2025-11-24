@@ -1,19 +1,19 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from '$lib/local_repo.js';
-import type {Bump_Type} from '$lib/semver.js';
-import {validate_dependency_graph} from '$lib/graph_validation.js';
+import type {Local_Repo} from './local_repo.js';
+import type {Bump_Type} from './semver.js';
+import {validate_dependency_graph} from './graph_validation.js';
 import {
 	needs_update,
 	is_breaking_change,
 	compare_bump_types,
 	calculate_next_version,
-} from '$lib/version_utils.js';
-import type {Changeset_Operations} from '$lib/operations.js';
-import {default_changeset_operations} from '$lib/operations_defaults.js';
-import {log_list} from '$lib/log_helpers.js';
-import {MAX_ITERATIONS} from '$lib/constants.js';
+} from './version_utils.js';
+import type {Changeset_Operations} from './operations.js';
+import {default_changeset_operations} from './operations_defaults.js';
+import {log_list} from './log_helpers.js';
+import {MAX_ITERATIONS} from './constants.js';
 
 export interface Version_Change {
 	package_name: string;
@@ -46,10 +46,6 @@ export interface Publishing_Plan {
 	errors: Array<string>;
 }
 
-/**
- * Calculates dependency updates for all repos based on predicted versions.
- * Returns both dependency updates and breaking cascades map.
- */
 const calculate_dependency_updates = (
 	repos: Array<Local_Repo>,
 	predicted_versions: Map<string, string>,
@@ -130,10 +126,6 @@ const calculate_dependency_updates = (
 	return {dependency_updates, breaking_cascades};
 };
 
-/**
- * Determines the required bump type based on dependency updates.
- * Returns null if no bump is required, or the bump type needed.
- */
 const get_required_bump_for_dependencies = (
 	repo: Local_Repo,
 	dependency_updates: Array<Dependency_Update>,
@@ -446,9 +438,6 @@ export const generate_publishing_plan = async (
 	};
 };
 
-/**
- * Helper to log a group of version changes with consistent formatting.
- */
 const log_version_change_group = (
 	changes: Array<Version_Change>,
 	header: string,
@@ -469,9 +458,6 @@ const log_version_change_group = (
 	}
 };
 
-/**
- * Formats and logs the publishing plan for user review.
- */
 export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void => {
 	const {
 		publishing_order,
@@ -564,6 +550,9 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 		for (const [pkg, deps_map] of updates_by_package) {
 			log.info(`  ${pkg}:`);
 			for (const [dep_name, updates] of deps_map) {
+				// Guard against empty updates array
+				if (updates.length === 0) continue;
+
 				// Collect all dependency types for this dependency
 				const types: Array<string> = [];
 				let causes_republish = false;
@@ -582,7 +571,7 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 				// Format output
 				const type_list = types.join(', ');
 				const republish = needs_auto_changeset ? ' (triggers auto-changeset)' : '';
-				log.info(`    ${dep_name} → ${updates[0].new_version} [${type_list}]${republish}`);
+				log.info(`    ${dep_name} → ${updates[0]!.new_version} [${type_list}]${republish}`);
 			}
 		}
 	}

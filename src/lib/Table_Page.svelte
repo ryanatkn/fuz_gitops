@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Page_Footer from '$lib/Page_Footer.svelte';
-	import Page_Header from '$lib/Page_Header.svelte';
-	import Repos_Table from '$lib/Repos_Table.svelte';
-	import type {Repo} from '$lib/repo.js';
+	import Page_Footer from './Page_Footer.svelte';
+	import Page_Header from './Page_Header.svelte';
+	import Repos_Table from './Repos_Table.svelte';
+	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repo: Repo;
@@ -13,12 +13,12 @@
 </script>
 
 <svelte:head>
-	<title>table {repo.package_json.glyph} {repo.package_json.name}</title>
+	<title>table {repo.pkg.package_json.glyph} {repo.pkg.package_json.name}</title>
 </svelte:head>
 
 <main class="box">
 	<div class="p_lg">
-		<Page_Header pkg={repo} />
+		<Page_Header pkg={repo.pkg} />
 	</div>
 	<section>
 		<div class="panel p_md">

@@ -2,14 +2,24 @@ import type {Logger} from '@ryanatkn/belt/log.js';
 import {wait} from '@ryanatkn/belt/async.js';
 import type {Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
 
-import {fetch_github_check_runs, fetch_github_pull_requests} from '$lib/github.js';
-import type {Repo} from '$lib/repo.js';
-import type {Local_Repo} from '$lib/local_repo.js';
+import {fetch_github_check_runs, fetch_github_pull_requests} from './github.js';
+import type {Repo_Json} from './repo.svelte.js';
+import type {Local_Repo} from './local_repo.js';
 
 /* eslint-disable no-await-in-loop */
 
 /**
- * Fetches repo data from the web.
+ * Fetches GitHub metadata (CI status, PRs) for all repos.
+ *
+ * Fetches sequentially with delay between requests to respect GitHub API rate limits.
+ * Uses `await_in_loop` intentionally to avoid parallel requests overwhelming the API.
+ *
+ * Error handling: Logs fetch failures but continues processing remaining repos.
+ * Repos with failed fetches will have `null` for check_runs or pull_requests.
+ *
+ * @param delay milliseconds between API requests (default: 33ms)
+ * @param cache optional cache from belt's fetch.js for response memoization
+ * @returns array of Repo objects with GitHub metadata attached
  */
 export const fetch_repo_data = async (
 	resolved_repos: Array<Local_Repo>,
@@ -18,8 +28,8 @@ export const fetch_repo_data = async (
 	log?: Logger,
 	delay = 33,
 	github_api_version?: string,
-): Promise<Array<Repo>> => {
-	const repos: Array<Repo> = [];
+): Promise<Array<Repo_Json>> => {
+	const repos: Array<Repo_Json> = [];
 	for (const {repo_url, repo_config, pkg} of resolved_repos) {
 		// CI status
 		await wait(delay);
@@ -45,7 +55,8 @@ export const fetch_repo_data = async (
 		if (!pull_requests) log?.error('failed to fetch issues: ' + repo_url);
 
 		repos.push({
-			...pkg,
+			package_json: pkg.package_json,
+			src_json: pkg.src_json,
 			check_runs,
 			pull_requests,
 		});

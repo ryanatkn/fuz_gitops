@@ -2,13 +2,14 @@ import type {Task} from '@ryanatkn/gro';
 import {z} from 'zod';
 import {styleText as st} from 'node:util';
 
-import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
-import {validate_dependency_graph} from '$lib/graph_validation.js';
-import {Dependency_Graph_Builder} from '$lib/dependency_graph.js';
-import {generate_publishing_plan} from '$lib/publishing_plan.js';
-import {publish_repos, type Publishing_Options} from '$lib/multi_repo_publisher.js';
-import {log_dependency_analysis} from '$lib/log_helpers.js';
+import {get_gitops_ready} from './gitops_task_helpers.js';
+import {validate_dependency_graph} from './graph_validation.js';
+import {Dependency_Graph_Builder} from './dependency_graph.js';
+import {generate_publishing_plan} from './publishing_plan.js';
+import {publish_repos, type Publishing_Options} from './multi_repo_publisher.js';
+import {log_dependency_analysis} from './log_helpers.js';
 
+/** @nodocs */
 export const Args = z.strictObject({
 	path: z
 		.string()
@@ -19,9 +20,9 @@ export const Args = z.strictObject({
 		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
 		.optional(),
 });
-
 export type Args = z.infer<typeof Args>;
 
+/** @nodocs */
 export const task: Task<Args> = {
 	Args,
 	summary:

@@ -14,10 +14,10 @@ const config: Create_Gitops_Config = () => {
 			'https://github.com/ryanatkn/fuz_code',
 			{
 				repo_url: 'https://github.com/ryanatkn/fuz_gitops',
-				branch: 'publishing',
+				branch: 'upgrade-deps',
 			},
 			'https://github.com/ryanatkn/webdevladder.net',
-			'https://github.com/ryanatkn/ryanatkn.com',
+			// 'https://github.com/ryanatkn/ryanatkn.com',
 		],
 	};
 };

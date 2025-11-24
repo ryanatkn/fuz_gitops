@@ -11,11 +11,24 @@ export interface Fetch_Cache {
 	name: string;
 	data: Fetch_Value_Cache; // TODO probably expose an API for this instead of passing the map directly
 	/**
-	 * @returns a boolean indicating if anything changed, returns `false` if it was a no-op
+	 * @returns true if anything changed, false if no-op
 	 */
 	save: () => Promise<boolean>;
 }
 
+/**
+ * Creates file-system backed cache for belt's fetch.js API responses.
+ *
+ * Cache invalidation strategy: If cache file can't be read or parsed, entire
+ * cache is cleared (delete file) and starts fresh. This handles format changes.
+ *
+ * Uses `structuredClone` to track changes - only writes to disk if data modified.
+ * Formatted with Prettier before writing for version control friendliness.
+ *
+ * @param name cache filename (without .json extension)
+ * @param dir cache directory (defaults to `.gro/build/fetch/`)
+ * @returns cache object with Map-based data and save() method
+ */
 export const create_fs_fetch_value_cache = async (
 	name: string,
 	dir = join(paths.build, 'fetch'),

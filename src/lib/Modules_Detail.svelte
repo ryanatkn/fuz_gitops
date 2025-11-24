@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type {Src_Module} from '@ryanatkn/belt/src_json.js';
+	import type {Module_Json} from '@ryanatkn/belt/src_json.js';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
-	import Modules_Nav from '$lib/Modules_Nav.svelte';
-	import type {Repo} from '$lib/repo.js';
+	import Modules_Nav from './Modules_Nav.svelte';
+	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repos: Array<Repo>; // TODO normalized version with cached primitives?
@@ -21,12 +21,12 @@
 	// TODO hacky, needs helpers or rethinking
 	const repos_modules: Array<{
 		repo: Repo;
-		modules: Array<Src_Module>;
+		modules: Array<Module_Json>;
 	}> = $derived(
-		repos.reduce<Array<{repo: Repo; modules: Array<Src_Module>}>>((acc, repo) => {
-			const {package_json, src_json} = repo;
+		repos.reduce<Array<{repo: Repo; modules: Array<Module_Json>}>>((acc, repo) => {
+			const {package_json, src_json} = repo.pkg;
 			if (
-				!src_json.modules ||
+				!src_json.modules?.length ||
 				!(
 					!!package_json.devDependencies?.['@sveltejs/package'] ||
 					!!package_json.dependencies?.['@sveltejs/package']
@@ -34,7 +34,7 @@
 			) {
 				return acc;
 			}
-			acc.push({repo, modules: Object.values(src_json.modules)});
+			acc.push({repo, modules: src_json.modules});
 			return acc;
 		}, []),
 	);
@@ -54,12 +54,12 @@
 			{@const {repo, modules} = repo_modules}
 			<li class="repo_module">
 				<header class="width_100 position_relative">
-					<a href="#{repo.name}" id={repo.name} class="subtitle">🔗</a>
-					<a href={resolve(`/tree/${repo.repo_name}`)}>{repo.name}</a>
+					<a href="#{repo.pkg.name}" id={repo.pkg.name} class="subtitle">🔗</a>
+					<a href={resolve(`/tree/${repo.pkg.repo_name}`)}>{repo.pkg.name}</a>
 				</header>
 				<ul class="modules panel unstyled">
 					{#each modules as repo_module (repo_module)}
-						{@const {path, declarations} = repo_module}
+						{@const {path, identifiers} = repo_module}
 						<li
 							class="module"
 							class:ts={path.endsWith('.ts')}
@@ -68,11 +68,11 @@
 							class:json={path.endsWith('.json')}
 						>
 							<div class="module_file">
-								{#if repo.repo_url}
+								{#if repo.pkg.repo_url}
 									<div class="chip row">
 										<!-- TODO this is a hack that could be fixed by adding an optional `base: './'` that defaults to './src/lib/'  -->
 										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-											href="{ensure_end(repo.repo_url, '/')}blob/main/{path === 'package.json'
+											href="{ensure_end(repo.pkg.repo_url, '/')}blob/main/{path === 'package.json'
 												? ''
 												: 'src/lib/'}{path}">{path}</a
 										>
@@ -81,9 +81,9 @@
 									<span class="chip">{path}</span>
 								{/if}
 							</div>
-							{#if declarations?.length}
+							{#if identifiers?.length}
 								<ul class="declarations unstyled">
-									{#each declarations as { name, kind } (name)}
+									{#each identifiers as { name, kind } (name)}
 										{#if name !== 'default'}
 											<li class="declaration chip {kind}_declaration">
 												{name}

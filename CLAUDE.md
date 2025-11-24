@@ -1,6 +1,7 @@
 # fuz_gitops
 
-A tool for managing many repos - alternative to monorepo pattern that loosely couples repos.
+A tool for managing many repos - alternative to monorepo pattern that loosely
+couples repos.
 
 ## Core functionality
 
@@ -32,10 +33,14 @@ gitops.config.ts -> local repos -> GitHub API -> repos.ts -> UI components
 Publishing uses fixed-point iteration to handle transitive dependency updates:
 
 - Runs multiple passes (max 10 iterations) until convergence
-- Each pass publishes packages with changesets and creates auto-changesets for dependents
+- Each pass publishes packages with changesets AND creates auto-changesets for
+  dependents mid-iteration
+- Auto-changesets trigger republishing in subsequent passes (transitive
+  cascades)
 - Stops when no new changesets are created (converged state)
 - Single `gro gitops_publish` command handles full dependency cascades
-- If MAX_ITERATIONS reached without convergence, warns with pending package count and estimated iterations needed
+- If MAX_ITERATIONS reached without convergence, warns with pending package
+  count and estimated iterations needed
 
 ### Dirty State on Failure (By Design)
 
@@ -44,7 +49,8 @@ Publishing intentionally leaves the workspace dirty when failures occur:
 - Auto-changesets are created and committed DURING the publishing loop
 - If publishing fails mid-way, some packages are published, others are not
 - The dirty workspace state shows exactly what succeeded/failed
-- This enables **natural resumption**: just fix the issue and re-run the same command
+- This enables **natural resumption**: just fix the issue and re-run the same
+  command
 - Already-published packages have no changesets → skipped automatically
 - Failed packages still have changesets → retried automatically
 
@@ -59,14 +65,20 @@ fuz_gitops does not support rollback of published packages:
 
 ### No Concurrent Publishing
 
-This tool is not designed for concurrent use. Running multiple `gro gitops_publish` commands simultaneously is not supported and will cause conflicts on git commits and changeset files.
+This tool is not designed for concurrent use. Running multiple
+`gro gitops_publish` commands simultaneously is not supported and will cause
+conflicts on git commits and changeset files.
 
 ## Configuration
 
 ```ts
 // gitops.config.ts
 export default {
-	repos: ['https://github.com/owner/repo', {repo_url: '...', repo_dir: '...', branch: 'main'}],
+  repos: ["https://github.com/owner/repo", {
+    repo_url: "...",
+    repo_dir: "...",
+    branch: "main",
+  }],
 };
 ```
 
@@ -88,7 +100,11 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
 - Resolves repo URLs to local directories
 - Clones missing repos via SSH
 - Switches branches maintaining clean workspace
-- Automatically installs dependencies when package.json changes (after clone or pull)
+- Automatically installs dependencies when package.json changes:
+  - After initial clone
+  - After pulling latest changes
+  - After switching branches (if package.json differs)
+  - Uses `npm install` to ensure dependencies match package.json
 
 ### Data fetching
 
@@ -107,15 +123,23 @@ Requires `SECRET_GITHUB_API_TOKEN` in `.env` for API access.
   - Creates auto-changesets for dependent packages during publishing
 - `gro gitops_plan` - generates a publishing plan (read-only prediction)
 - `gro gitops_analyze` - analyzes dependencies and changesets
-- `gro gitops_publish --dry_run` - simulates publishing without preflight checks or state persistence
+- `gro gitops_publish --dry_run` - simulates publishing without preflight checks
+  or state persistence
 - Handles circular dev dependencies by excluding from topological sort
-- Waits for NPM propagation with exponential backoff (10 minute default timeout)
+- Waits for NPM propagation with exponential backoff (10 minute default
+  timeout):
+  - NPM uses eventually consistent CDN distribution
+  - Published packages may not be immediately available globally
+  - Critical for multi-repo: ensures dependencies are fetchable before
+    publishing dependents
 - Updates cross-repo dependencies automatically
-- Preflight checks validate clean workspaces, branches, builds, and npm authentication (skipped for --dry_run runs)
+- Preflight checks validate clean workspaces, branches, builds, and npm
+  authentication (skipped for --dry_run runs)
 
 **Build Validation (Fail-Fast Safety)**
 
-The publishing workflow includes build validation in preflight checks to prevent broken state:
+The publishing workflow includes build validation in preflight checks to prevent
+broken state:
 
 1. **Preflight phase** (before any publishing):
    - Runs `gro build` on all packages with changesets
@@ -125,9 +149,11 @@ The publishing workflow includes build validation in preflight checks to prevent
 2. **Publishing phase** (after validation):
    - Runs `gro publish --no-build` for each package
    - Builds already validated, so no risk of build failures mid-publish
-   - Optionally deploys repos with changes if `--deploy` flag used (published or any dep updates)
+   - Optionally deploys repos with changes if `--deploy` flag used (published or
+     any dep updates)
 
-This prevents the known issue in `gro publish` where build failures leave repos in broken state (version bumped but not published).
+This prevents the known issue in `gro publish` where build failures leave repos
+in broken state (version bumped but not published).
 
 **Dependency Installation with Cache Healing**
 
@@ -157,17 +183,21 @@ The publishing workflow automatically installs dependencies after package.json u
 
 `gro gitops_plan`:
 
-- **Read-only prediction** - Generates a publishing plan showing what would be published
+- **Read-only prediction** - Generates a publishing plan showing what would be
+  published
 - Uses fixed-point iteration to resolve transitive cascades (max 10 iterations)
-- Shows all 4 publishing scenarios: explicit changesets, bump escalation, auto-generated changesets, and no changes
+- Shows all 4 publishing scenarios: explicit changesets, bump escalation,
+  auto-generated changesets, and no changes
 - No side effects - does not modify any files or state
 
 `gro gitops_publish --dry_run`:
 
 - **Simulated execution** - Runs the same code path as real publishing
 - Skips preflight checks (workspace, branch, npm auth)
-- Only simulates packages with explicit changesets (can't auto-generate changesets without real publishes)
-- Use plan for comprehensive "what would happen" analysis; use dry run to test execution flow
+- Only simulates packages with explicit changesets (can't auto-generate
+  changesets without real publishes)
+- Use plan for comprehensive "what would happen" analysis; use dry run to test
+  execution flow
 
 #### Changeset Semantics
 
@@ -184,7 +214,8 @@ Packages can publish in four distinct scenarios:
 
 - Package has `.changeset/*.md` files specifying bump type
 - BUT dependency updates require a HIGHER bump
-- Behavior: Published with escalated bump (e.g., `patch` → `minor` for breaking dep)
+- Behavior: Published with escalated bump (e.g., `patch` → `minor` for breaking
+  dep)
 - Reported as: "Version Changes (bump escalation required)"
 - Example: You write `patch` changeset, but `gro` (breaking) forces `minor`
 
@@ -208,10 +239,12 @@ Packages can publish in four distinct scenarios:
 
 When a dependency is updated:
 
-- **Production/peer deps**: Package must republish (triggers auto-changeset if needed)
+- **Production/peer deps**: Package must republish (triggers auto-changeset if
+  needed)
 - **Dev deps**: Package.json updated, NO republish (dev-only changes)
 
-When a package appears in both production/peer and dev dependencies, production/peer takes priority for dependency graph calculations.
+When a package appears in both production/peer and dev dependencies,
+production/peer takes priority for dependency graph calculations.
 
 #### Private Packages
 
@@ -229,63 +262,74 @@ Packages with `"private": true` in package.json are excluded from publishing:
 - `changeset_reader.ts` - Parses changesets and predicts versions
 - `changeset_generator.ts` - Auto-generates changesets for dependency updates
 - `dependency_graph.ts` - Topological sorting and cycle detection
-- `graph_validation.ts` - Shared cycle detection and publishing order computation
+- `graph_validation.ts` - Shared cycle detection and publishing order
+  computation
 - `version_utils.ts` - Version comparison and bump type detection
 - `npm_registry.ts` - NPM availability checks with retry
 - `dependency_updater.ts` - Package.json updates with changesets
 - `preflight_checks.ts` - Pre-publish validation including build checks
-- `operations.ts` - Dependency injection interfaces for testability (including build operations)
+- `operations.ts` - Dependency injection interfaces for testability (including
+  build operations)
 
 #### Publishing Algorithms
 
 **Fixed-Point Iteration (Cascade Resolution)**
 
-The publishing plan generation uses fixed-point iteration to resolve transitive breaking change cascades:
+The publishing plan generation uses fixed-point iteration to resolve transitive
+breaking change cascades:
 
 1. **Initial pass**: Identify all packages with explicit changesets
 2. **Iteration loop** (max 10 iterations):
    - Calculate dependency updates based on predicted versions
    - For each package:
      - Check if dependencies require a bump (prod/peer deps only)
-     - **Bump escalation**: If existing changesets specify lower bump than required, escalate
-     - **Auto-changesets**: If no changesets but deps updated, generate auto-changeset
+     - **Bump escalation**: If existing changesets specify lower bump than
+       required, escalate
+     - **Auto-changesets**: If no changesets but deps updated, generate
+       auto-changeset
      - Track breaking changes to propagate to dependents
    - Loop until no new version changes discovered (fixed point reached)
 3. **Final pass**: Calculate all dependency updates and cascades
 
-The 10-iteration limit prevents infinite loops while handling complex dependency graphs. In practice, most repos converge in 2-3 iterations.
+The 10-iteration limit prevents infinite loops while handling complex dependency
+graphs. In practice, most repos converge in 2-3 iterations.
 
 **Cycle Detection Strategy**
 
 The system uses topological sort with dev dependency exclusion:
 
 - **Production/peer cycles**: Block publishing (error, must be resolved)
-  - These create impossible ordering: Package A depends on Package B which depends on Package A
+  - These create impossible ordering: Package A depends on Package B which
+    depends on Package A
   - Solution: Move one dependency to devDependencies or restructure
 - **Dev cycles**: Allowed and normal (warning only)
   - Dev dependencies don't affect runtime, so cycles are safe
-  - Topological sort excludes dev deps (`exclude_dev=true`) to break these cycles
+  - Topological sort excludes dev deps (`exclude_dev=true`) to break these
+    cycles
 - **Publishing order**: Computed via topological sort on prod/peer deps only
   - Ensures dependencies publish before dependents
-  - Deterministic and reproducible (alphabetically sorted within dependency tiers)
+  - Deterministic and reproducible (alphabetically sorted within dependency
+    tiers)
   - Dev dependencies updated in separate phase after all publishing completes
-- **Dependency priority**: When a package appears in multiple dependency types, production/peer takes priority over dev
+- **Dependency priority**: When a package appears in multiple dependency types,
+  production/peer takes priority over dev
 
-This strategy enables practical multi-repo patterns (e.g., shared test utilities) while preventing runtime dependency issues.
+This strategy enables practical multi-repo patterns (e.g., shared test
+utilities) while preventing runtime dependency issues.
 
 ## Data types
 
 ```ts
 interface Repo extends Pkg {
-	check_runs: Github_Check_Runs_Item | null;
-	pull_requests: Array<Github_Pull_Request> | null;
+  check_runs: Github_Check_Runs_Item | null;
+  pull_requests: Array<Github_Pull_Request> | null;
 }
 
 interface Local_Repo {
-	repo_name: string;
-	repo_dir: string;
-	repo_url: string;
-	pkg: Pkg;
+  repo_name: string;
+  repo_dir: string;
+  repo_url: string;
+  pkg: Pkg;
 }
 ```
 
@@ -323,8 +367,8 @@ gro build               # build static site
 gro deploy              # deploy to GitHub Pages
 
 # Fixture Management
-gro src/fixtures/generate_repos # generate test git repos from fixture data
-gro test src/fixtures/check     # validate gitops commands against fixture expectations
+gro src/test/fixtures/generate_repos # generate test git repos from fixture data
+gro test src/test/fixtures/check     # validate gitops commands against fixture expectations
 ```
 
 ## Commands Reference
@@ -334,7 +378,8 @@ Commands are categorized by their side effects:
 ### Read-Only Commands (Safe, No Side Effects)
 
 - `gro gitops_analyze` - Analyze dependency graph, detect cycles
-- `gro gitops_plan` - Generate publishing plan showing version changes and cascades
+- `gro gitops_plan` - Generate publishing plan showing version changes and
+  cascades
 - `gro gitops_validate` - Run all validation checks (analyze + plan + dry run)
 - `gro gitops_publish --dry_run` - Simulate publishing without preflight checks
 
@@ -351,7 +396,8 @@ Commands are categorized by their side effects:
 
 **Command Workflow:**
 
-- `gitops_validate` runs: `gitops_analyze` + `gitops_plan` + `gitops_publish --dry_run`
+- `gitops_validate` runs: `gitops_analyze` + `gitops_plan` +
+  `gitops_publish --dry_run`
 - `gitops_publish` runs: `gitops_plan` (with confirmation) + actual publish
 
 ## Dependencies
@@ -373,29 +419,86 @@ Commands are categorized by their side effects:
 - Changeset-driven versioning with auto-generation
 - Natural resumption via changeset consumption (no state files needed)
 
+### Peer Dependency Versioning Strategy
+
+For packages you control, use `>=` instead of `^` for peer dependencies:
+
+```json
+"peerDependencies": {
+  "@ryanatkn/belt": ">=0.38.0",   // controlled package - use >=
+  "@ryanatkn/gro": ">=0.174.0",   // controlled package - use >=
+  "@sveltejs/kit": "^2",          // third-party - use ^
+  "svelte": "^5"                  // third-party - use ^
+}
+```
+
+**Why `>=` for controlled packages:**
+
+- Eliminates npm peer dependency resolution conflicts when publishing sequentially
+- `^0.37.0` means `>=0.37.0 <0.38.0` in 0.x semver (excludes next minor)
+- When you publish `moss@0.38.0`, packages with `"@ryanatkn/moss": "^0.37.0"`
+  conflict
+- `>=0.37.0` allows any version `>=0.37.0`, including `0.38.0` and beyond
+- No need for `--legacy-peer-deps` flag
+
+**Why `^` for third-party packages:**
+
+- You don't control when they make breaking changes
+- `^` protects users from accidental incompatibility
+
+**Version prefix preservation:**
+
+When fuz_gitops updates dependencies, it preserves existing prefixes:
+
+- `>=0.38.0` updates to `>=0.39.0` (preserves `>=`)
+- `^1.0.0` updates to `^1.1.0` (preserves `^`)
+- `~1.0.0` updates to `~1.1.0` (preserves `~`)
+
 ## Testability & Operations Pattern
 
-This project uses **dependency injection** for all side effects, making it fully testable without mocks:
+This project uses **dependency injection** for all side effects, making it fully
+testable without mocks:
 
-**Why:** Functions that call git, npm, or file system are hard to test. The operations pattern abstracts these into interfaces.
+**Why:** Functions that call git, npm, or file system are hard to test. The
+operations pattern abstracts these into interfaces.
 
-**How:** See `src/lib/operations.ts` - all external dependencies (git, npm, fs, process, build) are defined as interfaces. Tests provide mock implementations.
+**How:** See `src/lib/operations.ts` - all external dependencies (git, npm, fs,
+process, build) are defined as interfaces. Tests provide mock implementations.
+
+**Benefits:**
+
+- **No mocking libraries** - Just plain objects implementing interfaces
+- **Type-safe tests** - Mock implementations must match interface signatures
+- **Easy setup** - Return exactly what you want from fake operations
+- **Fast tests** - No real git/npm/fs operations, instant execution
+- **Predictable** - Control all side effects explicitly
+- **Readable** - Test code shows exactly what operations do
 
 **Example:**
 
 - Production: `multi_repo_publisher(repos, options, default_gitops_operations)`
 - Tests: `multi_repo_publisher(repos, options, mock_gitops_operations)`
 
-See `src/lib/operations_defaults.ts` for real implementations and test files for mock implementations.
+See `src/lib/operations_defaults.ts` for real implementations and test files for
+mock implementations.
+
+**When writing new code:**
+
+- Add side effects as operations interface methods (see `operations.ts`)
+- Accept operations parameter with default:
+  `ops: Gitops_Operations = default_gitops_operations`
+- Call operations through the injected parameter: `await ops.git.commit(...)`
+- Tests inject fake operations that return controlled data
 
 ## Testing
 
-Uses vitest with **zero mocks** - all tests use the operations pattern for dependency injection (see above).
+Uses vitest with **zero mocks** - all tests use the operations pattern for
+dependency injection (see above).
 
 ```bash
 gro test                 # run all tests
 gro test version_utils   # run specific test file
-gro test src/fixtures/check # validate command output fixtures
+gro test src/test/fixtures/check # validate command output fixtures
 ```
 
 Core modules tested:
@@ -409,21 +512,24 @@ Core modules tested:
 
 ### Fixture Testing
 
-The fixture system uses **generated git repositories** for isolated, reproducible integration tests:
+The fixture system uses **generated git repositories** for isolated,
+reproducible integration tests:
 
 **Generated Test Repos:**
 
-- `src/fixtures/repos/` - Auto-generated from fixture data (gitignored)
-- `src/fixtures/repo_fixtures/*.ts` - Source of truth for test repo definitions
-- `src/fixtures/generate_repos.ts` - Idempotent repo generation logic
-- `src/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
+- `src/test/fixtures/repos/` - Auto-generated from fixture data (gitignored)
+- `src/test/fixtures/repo_fixtures/*.ts` - Source of truth for test repo definitions
+- `src/test/fixtures/generate_repos.ts` - Idempotent repo generation logic
+- `src/test/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
 
 **Fixture Scenarios (9 total):**
 
-- `basic_publishing` - All 4 publishing scenarios (explicit, auto-generated, bump escalation, no changes)
+- `basic_publishing` - All 4 publishing scenarios (explicit, auto-generated,
+  bump escalation, no changes)
 - `deep_cascade` - 4-level dependency chains with cascading breaking changes
 - `circular_dev_deps` - Dev dependency cycles (allowed, non-blocking)
-- `circular_prod_deps_error` - Production circular dependencies (error detection)
+- `circular_prod_deps_error` - Production circular dependencies (error
+  detection)
 - `private_packages` - Private package handling (skipped from publishing)
 - `major_bumps` - Major version transitions (0.x → 1.0, 1.x → 2.0)
 - `peer_deps_only` - Plugin/adapter patterns (peer dependencies only)
@@ -432,16 +538,19 @@ The fixture system uses **generated git repositories** for isolated, reproducibl
 
 **Structured Validation:**
 
-- `src/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
-- `src/fixtures/check.test.ts` - Validates JSON output against fixture `expected_outcomes`
-- `src/fixtures/helpers.ts` - JSON command runner and assertion helpers
+- `src/test/fixtures/configs/*.config.ts` - Isolated gitops config per fixture
+- `src/test/fixtures/check.test.ts` - Validates JSON output against fixture
+  `expected_outcomes`
+- `src/test/fixtures/helpers.ts` - JSON command runner and assertion helpers
 
 **Workflow:**
 
 1. Define fixture data with expected outcomes in `repo_fixtures/*.ts`
-2. Run `gro test src/fixtures/check` to validate commands against expected outcomes
+2. Run `gro test src/test/fixtures/check` to validate commands against expected
+   outcomes
 
-Fixture repos are auto-generated on first test run if missing. To manually regenerate: `gro src/fixtures/generate_repos`
+Fixture repos are auto-generated on first test run if missing. To manually
+regenerate: `gro src/test/fixtures/generate_repos`
 
 Each fixture runs in isolation with its own config, validating:
 
@@ -450,7 +559,8 @@ Each fixture runs in isolation with its own config, validating:
 - Breaking change cascades
 - Warnings, errors, and info messages
 
-Test repos are isolated from real workspace repos and can run in CI without cloning.
+Test repos are isolated from real workspace repos and can run in CI without
+cloning.
 
 ## Publishing Workflows
 
@@ -591,7 +701,8 @@ gro build  # See the full build error
 gro build  # Verify it works
 ```
 
-Build validation runs during preflight checks to prevent broken state. All packages must build successfully before any publishing begins.
+Build validation runs during preflight checks to prevent broken state. All
+packages must build successfully before any publishing begins.
 
 **Warning: "Plan differs from actual publish"**
 
@@ -619,7 +730,8 @@ Solution: NPM propagation can be slow. Either:
 - Increase timeout with `--max-wait` (default is 10 minutes / 600000ms)
 - Check NPM registry status
 - Verify package was actually published
-- If verified published, re-run `gro gitops_publish` to continue (already-published packages will be skipped)
+- If verified published, re-run `gro gitops_publish` to continue
+  (already-published packages will be skipped)
 
 **Issue: "Auto-changeset generated when I didn't expect it"**
 
@@ -628,7 +740,8 @@ This happens when:
 - A dependency was published with a new version
 - Your package has that dependency in dependencies or peerDependencies
 
-This is correct behavior - packages must republish when their dependencies change.
+This is correct behavior - packages must republish when their dependencies
+change.
 
 **Issue: "Why was my package deployed when it didn't publish?"**
 
@@ -638,7 +751,8 @@ Deployment occurs for packages with ANY changes (not just published packages):
 - Production/peer dependencies updated
 - Dev dependencies updated (requires rebuild/deploy)
 
-This is correct behavior - dev dep changes require redeployment even without version bumps.
+This is correct behavior - dev dep changes require redeployment even without
+version bumps.
 
 **Issue: "Package not publishing even though I have a changeset"**
 
@@ -654,7 +768,8 @@ Check:
 Resumption is **automatic** and **natural**:
 
 1. When `gro publish` succeeds, it consumes changesets
-2. Single `gro gitops_publish` run handles full dependency cascades via iteration (max 10 passes)
+2. Single `gro gitops_publish` run handles full dependency cascades via
+   iteration (max 10 passes)
 3. If publishing fails mid-way, re-run `gro gitops_publish`:
    - Already-published packages have no changesets → skipped automatically
    - Failed packages still have changesets → retried automatically

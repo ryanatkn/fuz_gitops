@@ -8,22 +8,22 @@
 </script>
 
 <script lang="ts">
-	import Page_Footer from '$lib/Page_Footer.svelte';
-	import Page_Header from '$lib/Page_Header.svelte';
-	import Pull_Requests_Detail from '$lib/Pull_Requests_Detail.svelte';
-	import type {Filter_Pull_Request} from '$lib/github_helpers.js';
-	import type {Repo} from '$lib/repo.js';
+	import Page_Footer from './Page_Footer.svelte';
+	import Page_Header from './Page_Header.svelte';
+	import Pull_Requests_Detail from './Pull_Requests_Detail.svelte';
+	import type {Filter_Pull_Request} from './github_helpers.js';
+	import type {Repo} from './repo.svelte.js';
 
 	const {repo, repos, filter_pull_request}: Props = $props();
 </script>
 
 <svelte:head>
-	<title>pull requests {repo.package_json.glyph} {repo.package_json.name}</title>
+	<title>pull requests {repo.pkg.package_json.glyph} {repo.pkg.package_json.name}</title>
 </svelte:head>
 
 <main class="box width_100">
 	<div class="p_lg">
-		<Page_Header pkg={repo} />
+		<Page_Header pkg={repo.pkg} />
 	</div>
 	<section>
 		<Pull_Requests_Detail {repos} {filter_pull_request} />

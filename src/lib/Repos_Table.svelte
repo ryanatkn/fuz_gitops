@@ -3,8 +3,8 @@
 	import {resolve} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
 
-	import type {Repo} from '$lib/repo.js';
-	import {to_pull_url} from '$lib/github_helpers.js';
+	import type {Repo} from './repo.svelte.js';
+	import {to_pull_url} from './github_helpers.js';
 
 	interface Props {
 		repos: Array<Repo>;
@@ -18,36 +18,36 @@
 	// TODO gray out the latest of each version for deps, but only if the max is knowable via a local dep, don't assume for externals
 
 	// TODO hacky, handle regular deps too
-	const lookup_dep_version = (repo: Repo, dep: string): string | null => {
-		for (const key in repo.package_json.dependencies) {
+	const lookup_dep_version = (repo: Repo, dep: string): string | undefined => {
+		for (const key in repo.pkg.package_json.dependencies) {
 			if (key === dep) {
-				return repo.package_json.dependencies[key];
+				return repo.pkg.package_json.dependencies[key];
 			}
 		}
-		for (const key in repo.package_json.devDependencies) {
+		for (const key in repo.pkg.package_json.devDependencies) {
 			if (key === dep) {
-				return repo.package_json.devDependencies[key];
+				return repo.pkg.package_json.devDependencies[key];
 			}
 		}
-		return null;
+		return undefined;
 	};
 
 	const latest_version_by_dep = $derived(
 		new Map<string, string | null>(
 			deps.map((dep) => {
-				const repo = repos.find((repo) => repo.package_json.name === dep);
-				if (!repo?.package_json) return [dep, null];
-				return [dep, repo.package_json.version];
+				const repo = repos.find((repo) => repo.pkg.package_json.name === dep);
+				if (!repo?.pkg.package_json) return [dep, null];
+				return [dep, repo.pkg.package_json.version];
 			}),
 		),
 	);
 
-	const format_version = (version: string | null): string =>
-		version === null ? '' : version.replace(/^(\^|>=)\s*/, '');
+	const format_version = (version: string | null | undefined): string =>
+		version == null ? '' : version.replace(/^(\^|>=)\s*/, '');
 
 	const lookup_pull_requests = (repos: Array<Repo> | null, repo: Repo) => {
-		const found = repos?.find((p) => p.repo_url === repo.repo_url);
-		if (!found?.package_json) return null;
+		const found = repos?.find((p) => p.pkg.repo_url === repo.pkg.repo_url);
+		if (!found?.pkg.package_json) return null;
 		const {pull_requests} = found;
 		return pull_requests;
 	};
@@ -68,13 +68,13 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each repos as repo (repo.name)}
-			{@const {package_json, homepage_url} = repo}
+		{#each repos as repo (repo.pkg.name)}
+			{@const {package_json, homepage_url} = repo.pkg}
 			<tr>
 				<td>
 					<div class="row">
 						{#if package_json}
-							<a href={resolve(`/tree/${repo.repo_name}`)}>{package_json.glyph ?? '🌳'}</a>
+							<a href={resolve(`/tree/${repo.pkg.repo_name}`)}>{package_json.glyph ?? '🌳'}</a>
 						{/if}
 					</div>
 				</td>
@@ -84,8 +84,8 @@
 							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 							<a class:selected={homepage_url === page.url.href} href={homepage_url} class="row">
 								<img
-									src={repo.logo_url}
-									alt={repo.logo_alt}
+									src={repo.pkg.logo_url}
+									alt={repo.pkg.logo_alt}
 									style:width="16px"
 									style:height="16px"
 									style:margin-right="var(--space_xs)"
@@ -99,13 +99,13 @@
 					<div class="row">
 						{#if package_json}
 							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-							<a href={repo.repo_url}>{repo.repo_name}</a>
+							<a href={repo.pkg.repo_url}>{repo.pkg.repo_name}</a>
 							{@const check_runs = repo.check_runs}
 							{@const check_runs_completed = check_runs?.status === 'completed'}
 							{@const check_runs_success = check_runs?.conclusion === 'success'}
 							{#if check_runs && (!check_runs_completed || !check_runs_success)}
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-									href="{repo.repo_url}/commits/main"
+									href="{repo.pkg.repo_url}/commits/main"
 									title={!check_runs_completed
 										? `status: ${check_runs.status}`
 										: `CI failed: ${check_runs.conclusion}`}
@@ -114,16 +114,16 @@
 							{/if}
 						{:else}
 							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-								href={repo.repo_url}>{format_url(repo.repo_url)}</a
+								href={repo.pkg.repo_url}>{format_url(repo.pkg.repo_url)}</a
 							>
 						{/if}
 					</div>
 				</td>
 				<td>
-					{#if repo.npm_url}
+					{#if repo.pkg.npm_url}
 						<div class="row">
 							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-								href={repo.npm_url}><code>{repo.name}</code></a
+								href={repo.pkg.npm_url}><code>{repo.pkg.name}</code></a
 							>
 						</div>
 					{/if}
@@ -131,7 +131,7 @@
 				<td>
 					{#if package_json.version !== '0.0.1'}
 						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-							href={repo.changelog_url}>{format_version(package_json.version)}</a
+							href={repo.pkg.changelog_url}>{format_version(package_json.version)}</a
 						>
 					{/if}
 				</td>
@@ -148,14 +148,14 @@
 					</td>
 				{/each}
 				<td>
-					{#if repo.repo_url}
+					{#if repo.pkg.repo_url}
 						{@const pull_requests = lookup_pull_requests(repos, repo)}
 						<!-- TODO show something like `and N more` with a link to a dialog list -->
 						<div class="row">
 							{#if pull_requests}
 								{#each pull_requests as pull (pull)}
 									<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-										href={to_pull_url(repo.repo_url, pull)}
+										href={to_pull_url(repo.pkg.repo_url, pull)}
 										class="chip"
 										title={pull.title}>#{pull.number}</a
 									>

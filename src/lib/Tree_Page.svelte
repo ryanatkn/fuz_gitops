@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import Page_Footer from '$lib/Page_Footer.svelte';
-	import Page_Header from '$lib/Page_Header.svelte';
-	import Repos_Tree from '$lib/Repos_Tree.svelte';
-	import type {Repo} from '$lib/repo.js';
+	import Page_Footer from './Page_Footer.svelte';
+	import Page_Header from './Page_Header.svelte';
+	import Repos_Tree from './Repos_Tree.svelte';
+	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repo: Repo;
@@ -17,18 +17,18 @@
 </script>
 
 <svelte:head>
-	<title>tree {repo.package_json.glyph} {repo.name}</title>
+	<title>tree {repo.pkg.package_json.glyph} {repo.pkg.name}</title>
 </svelte:head>
 
 <main class="box width_100">
 	<div class="p_lg">
-		<Page_Header pkg={repo} />
+		<Page_Header pkg={repo.pkg} />
 	</div>
 	<section class="tree">
 		<Repos_Tree {repos}>
 			{#snippet nav()}
 				<div class="repos_tree_nav">
-					<Breadcrumb>{repo.package_json.glyph}</Breadcrumb>
+					<Breadcrumb>{repo.pkg.package_json.glyph}</Breadcrumb>
 				</div>
 			{/snippet}
 		</Repos_Tree>

@@ -3,15 +3,15 @@ import {Task_Error} from '@ryanatkn/gro';
 import {join} from 'node:path';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from '$lib/local_repo.js';
-import {update_package_json, type Version_Strategy} from '$lib/dependency_updater.js';
-import {validate_dependency_graph} from '$lib/graph_validation.js';
-import {type Preflight_Options} from '$lib/preflight_checks.js';
-import {needs_update, is_breaking_change, detect_bump_type} from '$lib/version_utils.js';
-import type {Gitops_Operations} from '$lib/operations.js';
-import {default_gitops_operations} from '$lib/operations_defaults.js';
-import {MAX_ITERATIONS} from '$lib/constants.js';
-import {install_with_cache_healing} from '$lib/npm_install_helpers.js';
+import type {Local_Repo} from './local_repo.js';
+import {update_package_json, type Version_Strategy} from './dependency_updater.js';
+import {validate_dependency_graph} from './graph_validation.js';
+import {type Preflight_Options} from './preflight_checks.js';
+import {needs_update, is_breaking_change, detect_bump_type} from './version_utils.js';
+import type {Gitops_Operations} from './operations.js';
+import {default_gitops_operations} from './operations_defaults.js';
+import {MAX_ITERATIONS} from './constants.js';
+import {install_with_cache_healing} from './npm_install_helpers.js';
 
 /* eslint-disable no-await-in-loop */
 
@@ -42,9 +42,6 @@ export interface Publishing_Result {
 	duration: number;
 }
 
-/**
- * Publishes multiple repositories in dependency order.
- */
 export const publish_repos = async (
 	repos: Array<Local_Repo>,
 	options: Publishing_Options,
@@ -105,7 +102,7 @@ export const publish_repos = async (
 
 		// Phase 1: Publish each package and immediately update dependents
 		for (let i = 0; i < order.length; i++) {
-			const pkg_name = order[i];
+			const pkg_name = order[i]!;
 			const repo = repos.find((r) => r.pkg.name === pkg_name);
 			if (!repo) continue;
 
@@ -376,7 +373,13 @@ export const publish_repos = async (
 };
 
 /**
- * Publishes a single repository.
+ * Publishes a single repo using gro publish.
+ *
+ * Dry run mode: Predicts version from changesets without side effects.
+ * Real mode: Runs `gro publish --no-build` (builds already validated in preflight),
+ * reads new version from package.json, and returns metadata.
+ *
+ * @throws {Error} if changeset prediction fails (dry run) or publish fails (real)
  */
 const publish_single_repo = async (
 	repo: Local_Repo,

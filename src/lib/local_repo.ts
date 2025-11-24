@@ -1,18 +1,17 @@
 import {strip_end} from '@ryanatkn/belt/string.js';
 import {load_package_json} from '@ryanatkn/gro/package_json.js';
-import {parse_pkg, type Pkg} from '@ryanatkn/belt/pkg.js';
+import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
+import type {Src_Json} from '@ryanatkn/belt/src_json.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
-import {create_src_json} from '@ryanatkn/gro/src_json.js';
-import {parse_svelte_config} from '@ryanatkn/gro/svelte_config.js';
 import {Task_Error} from '@ryanatkn/gro';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {spawn} from '@ryanatkn/belt/process.js';
-import type {Git_Operations, Npm_Operations} from '$lib/operations.js';
-import {default_git_operations, default_npm_operations} from '$lib/operations_defaults.js';
+import type {Git_Operations, Npm_Operations} from './operations.js';
+import {default_git_operations, default_npm_operations} from './operations_defaults.js';
 
-import type {Gitops_Config, Gitops_Repo_Config} from '$lib/gitops_config.js';
-import type {Resolved_Gitops_Config} from '$lib/resolved_gitops_config.js';
+import type {Gitops_Config, Gitops_Repo_Config} from './gitops_config.js';
+import type {Resolved_Gitops_Config} from './resolved_gitops_config.js';
 
 export interface Local_Repo extends Resolved_Local_Repo {
 	pkg: Pkg;
@@ -41,8 +40,20 @@ export interface Unresolved_Local_Repo {
 }
 
 /**
- * Loads the data for a resolved local repo, switching branches if needed and pulling latest changes.
- * Automatically installs dependencies if package.json changed during pull.
+ * Loads repo data with automatic syncing and dependency management.
+ *
+ * Workflow:
+ * 1. Records current commit hash (for detecting changes)
+ * 2. Switches to target branch if needed (requires clean workspace)
+ * 3. Pulls latest changes from remote (skipped for local-only repos)
+ * 4. Validates workspace is clean after pull
+ * 5. Auto-installs dependencies if package.json changed
+ * 6. Parses package.json and extracts Pkg metadata
+ *
+ * This ensures repos are always in sync with their configured branch
+ * before being used by gitops commands.
+ *
+ * @throws {Task_Error} if workspace dirty, branch switch fails, or install fails
  */
 export const load_local_repo = async ({
 	resolved_local_repo,
@@ -145,15 +156,17 @@ export const load_local_repo = async ({
 		}
 	}
 
-	const parsed_svelte_config = await parse_svelte_config({dir_or_config: repo_dir});
-	const lib_path = join(repo_dir, parsed_svelte_config.lib_path);
-
 	const package_json = load_package_json(repo_dir);
-	const src_json = create_src_json(package_json, lib_path);
+	// Minimal src_json - gitops doesn't need module metadata for core functionality
+	const src_json: Src_Json = {
+		name: package_json.name,
+		version: package_json.version,
+		modules: [],
+	};
 
 	const local_repo: Local_Repo = {
 		...resolved_local_repo,
-		pkg: parse_pkg(package_json, src_json),
+		pkg: new Pkg(package_json, src_json),
 	};
 
 	// Extract dependencies

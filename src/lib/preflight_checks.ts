@@ -3,19 +3,19 @@ import type {Result} from '@ryanatkn/belt/result.js';
 import {spawn_out} from '@ryanatkn/belt/process.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from '$lib/local_repo.js';
+import type {Local_Repo} from './local_repo.js';
 import type {
 	Git_Operations,
 	Npm_Operations,
 	Build_Operations,
 	Changeset_Operations,
-} from '$lib/operations.js';
+} from './operations.js';
 import {
 	default_git_operations,
 	default_npm_operations,
 	default_build_operations,
 	default_changeset_operations,
-} from '$lib/operations_defaults.js';
+} from './operations_defaults.js';
 
 export interface Preflight_Options {
 	skip_changesets?: boolean;
@@ -46,8 +46,21 @@ export interface Run_Preflight_Checks_Options {
 }
 
 /**
- * Runs preflight checks for all repos before publishing.
- * Validates workspaces, branches, changesets, builds, and npm auth.
+ * Validates all requirements before publishing can proceed.
+ *
+ * Performs comprehensive pre-flight validation:
+ * - Clean workspaces (100% clean required - no uncommitted changes)
+ * - Correct branch (usually main)
+ * - Changesets present (unless skip_changesets=true)
+ * - Builds successful (fail-fast to prevent broken state)
+ * - Git remote reachability
+ * - NPM authentication with username
+ * - NPM registry connectivity
+ *
+ * Build validation runs BEFORE any publishing to prevent the scenario where
+ * version is bumped but build fails, leaving repo in broken state.
+ *
+ * @returns result with ok=false if any errors, plus warnings and detailed status
  */
 export const run_preflight_checks = async ({
 	repos,
@@ -147,7 +160,7 @@ export const run_preflight_checks = async ({
 		const repos_to_build = repos.filter((repo) => repos_with_changesets.has(repo.pkg.name));
 
 		for (let i = 0; i < repos_to_build.length; i++) {
-			const repo = repos_to_build[i];
+			const repo = repos_to_build[i]!;
 			log?.info(st('dim', `    [${i + 1}/${repos_to_build.length}] Building ${repo.pkg.name}...`));
 			const build_result = await build_ops.build_package({repo, log}); // eslint-disable-line no-await-in-loop
 			if (!build_result.ok) {
@@ -170,7 +183,7 @@ export const run_preflight_checks = async ({
 	if (check_remote && repos.length > 0) {
 		log?.info('  Checking git remote connectivity...');
 		// Only check first repo to avoid slowing down tests with multiple remote checks
-		const remote_result = await check_git_remote(repos[0].repo_dir);
+		const remote_result = await check_git_remote(repos[0]!.repo_dir);
 		if (!remote_result.ok) {
 			warnings.push(`git remote may not be reachable - ${remote_result.message}`);
 		}
@@ -240,9 +253,6 @@ export const run_preflight_checks = async ({
 	};
 };
 
-/**
- * Checks if git remote is reachable.
- */
 const check_git_remote = async (cwd: string): Promise<Result<object, {message: string}>> => {
 	try {
 		// Try to fetch refs from remote without downloading objects

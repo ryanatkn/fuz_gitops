@@ -1,7 +1,7 @@
 import {ensure_end} from '@ryanatkn/belt/string.js';
 
-import type {Github_Pull_Request} from '$lib/github.js';
-import type {Repo} from '$lib/repo.js';
+import type {Github_Pull_Request} from './github.js';
+import type {Repo} from './repo.svelte.js';
 
 export type Filter_Pull_Request = (pull_request: Github_Pull_Request, repo: Repo) => boolean;
 
@@ -19,7 +19,7 @@ export const to_pull_requests = (
 			if (!repo.pull_requests) return null;
 			// TODO hacky, figure out the data structure
 			return repo.pull_requests.map((pull_request) =>
-				repo.package_json.homepage &&
+				repo.pkg.package_json.homepage &&
 				(!filter_pull_request || filter_pull_request(pull_request, repo))
 					? {repo, pull_request}
 					: null,

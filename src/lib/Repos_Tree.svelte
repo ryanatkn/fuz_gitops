@@ -5,14 +5,11 @@
 	import {format_url} from '@ryanatkn/belt/url.js';
 	import type {Snippet} from 'svelte';
 
-	import type {Repo} from '$lib/repo.js';
-	import Repos_Tree_Nav from '$lib/Repos_Tree_Nav.svelte';
+	import type {Repo} from './repo.svelte.js';
+	import Repos_Tree_Nav from './Repos_Tree_Nav.svelte';
 
 	interface Props {
 		repos: Array<Repo>;
-		/**
-		 * The selected package, if any.
-		 */
 		selected_repo?: Repo | undefined;
 		nav: Snippet;
 	}
@@ -27,15 +24,15 @@
 	{#if selected_repo}
 		<section class="detail_wrapper">
 			<div class="panel detail p_md">
-				<Package_Detail pkg={selected_repo} />
+				<Package_Detail pkg={selected_repo.pkg} />
 			</div>
 		</section>
 	{:else}
 		<menu class="summaries">
-			{#each repos as repo (repo.name)}
+			{#each repos as repo (repo.pkg.name)}
 				<li class="panel p_md box">
-					{#if repo.package_json}
-						<Package_Summary pkg={repo}>
+					{#if repo.pkg.package_json}
+						<Package_Summary pkg={repo.pkg}>
 							{#snippet repo_name(repo_name)}
 								<a href={resolve(`/tree/${repo_name}`)} class="repo_name">{repo_name}</a>
 							{/snippet}
@@ -45,7 +42,7 @@
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-									href={repo.repo_url}>{format_url(repo.repo_url)}</a
+									href={repo.pkg.repo_url}>{format_url(repo.pkg.repo_url)}</a
 								>
 							</p>
 						</div>

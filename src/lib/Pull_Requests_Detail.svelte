@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {resolve} from '$app/paths';
 
-	import {to_pull_requests, type Filter_Pull_Request} from '$lib/github_helpers.js';
-	import type {Repo} from '$lib/repo.js';
+	import {to_pull_requests, type Filter_Pull_Request} from './github_helpers.js';
+	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repos: Array<Repo>;
@@ -22,15 +22,15 @@
 				{#each pull_requests as pull_request (pull_request.pull_request.number)}
 					<tr>
 						<td
-							><a href={resolve(`/tree/${pull_request.repo.repo_name}`)}
-								>{pull_request.repo
-									.repo_name}{#if pull_request.repo.package_json.glyph}&nbsp;{pull_request.repo
-										.package_json.glyph}{/if}</a
+							><a href={resolve(`/tree/${pull_request.repo.pkg.repo_name}`)}
+								>{pull_request.repo.pkg
+									.repo_name}{#if pull_request.repo.pkg.package_json.glyph}&nbsp;{pull_request.repo
+										.pkg.package_json.glyph}{/if}</a
 							></td
 						>
 						<td
 							><!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-								href="{pull_request.repo.repo_url}/pull/{pull_request.pull_request.number}"
+								href="{pull_request.repo.pkg.repo_url}/pull/{pull_request.pull_request.number}"
 								title={pull_request.pull_request.title}>#{pull_request.pull_request.number}</a
 							></td
 						>

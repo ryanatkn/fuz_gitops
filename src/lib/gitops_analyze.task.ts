@@ -3,17 +3,18 @@ import {z} from 'zod';
 import {styleText as st} from 'node:util';
 import type {Logger} from '@ryanatkn/belt/log.js';
 
-import {get_gitops_ready} from '$lib/gitops_task_helpers.js';
-import {type Dependency_Graph, Dependency_Graph_Builder} from '$lib/dependency_graph.js';
-import type {Local_Repo} from '$lib/local_repo.js';
-import {validate_dependency_graph} from '$lib/graph_validation.js';
+import {get_gitops_ready} from './gitops_task_helpers.js';
+import {type Dependency_Graph, Dependency_Graph_Builder} from './dependency_graph.js';
+import type {Local_Repo} from './local_repo.js';
+import {validate_dependency_graph} from './graph_validation.js';
 import {
 	format_wildcard_dependencies,
 	format_dev_cycles,
 	format_production_cycles,
-} from '$lib/log_helpers.js';
-import {format_and_output, type Output_Formatters} from '$lib/output_helpers.js';
+} from './log_helpers.js';
+import {format_and_output, type Output_Formatters} from './output_helpers.js';
 
+/** @nodocs */
 export const Args = z.strictObject({
 	path: z
 		.string()
@@ -29,9 +30,9 @@ export const Args = z.strictObject({
 		.default('stdout'),
 	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
 });
-
 export type Args = z.infer<typeof Args>;
 
+/** @nodocs */
 export const task: Task<Args> = {
 	Args,
 	summary: 'analyze dependency structure and relationships across repos',
