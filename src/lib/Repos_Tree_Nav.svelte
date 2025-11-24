@@ -2,7 +2,7 @@
 	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
-	import type {Repo} from './repo.js';
+	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repos: Array<Repo>;

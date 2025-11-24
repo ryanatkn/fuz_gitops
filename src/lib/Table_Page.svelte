@@ -2,7 +2,7 @@
 	import Page_Footer from './Page_Footer.svelte';
 	import Page_Header from './Page_Header.svelte';
 	import Repos_Table from './Repos_Table.svelte';
-	import type {Repo} from './repo.js';
+	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repo: Repo;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Tree_Item_Page from '$lib/Tree_Item_Page.svelte';
-	import {repos_context} from '$lib/repo.js';
+	import {repos_context} from '$lib/repo.svelte.js';
 
 	const {params} = $props();
 

@@ -4,7 +4,7 @@
 	import {resolve} from '$app/paths';
 
 	import Main_Header from '$routes/Main_Header.svelte';
-	import {repos_context} from '$lib/repo.js';
+	import {repos_context} from '$lib/repo.svelte.js';
 
 	const {repo} = repos_context.get();
 </script>

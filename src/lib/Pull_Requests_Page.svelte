@@ -12,7 +12,7 @@
 	import Page_Header from './Page_Header.svelte';
 	import Pull_Requests_Detail from './Pull_Requests_Detail.svelte';
 	import type {Filter_Pull_Request} from './github_helpers.js';
-	import type {Repo} from './repo.js';
+	import type {Repo} from './repo.svelte.js';
 
 	const {repo, repos, filter_pull_request}: Props = $props();
 </script>

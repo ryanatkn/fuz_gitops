@@ -5,7 +5,7 @@
 	import type {Snippet} from 'svelte';
 
 	import Modules_Nav from './Modules_Nav.svelte';
-	import type {Repo} from './repo.js';
+	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repos: Array<Repo>; // TODO normalized version with cached primitives?

@@ -14,8 +14,8 @@
 	import type {Snippet} from 'svelte';
 
 	import Settings from '$routes/Settings.svelte';
-	import {repos} from '$routes/repos.js';
-	import {parse_repos, repos_context} from '$lib/repo.js';
+	import {repos_json} from '$routes/repos.js';
+	import {Repo, type Repo_Json, repos_parse, repos_context} from '$lib/repo.svelte.js';
 
 	interface Props {
 		children: Snippet;
@@ -25,7 +25,7 @@
 
 	const contextmenu = new Contextmenu_State();
 
-	repos_context.set(parse_repos(repos, 'https://gitops.fuz.dev/'));
+	repos_context.set(repos_parse(repos_json.map((r: Repo_Json) => new Repo(r)), 'https://gitops.fuz.dev/'));
 
 	let show_settings = $state(false);
 </script>
