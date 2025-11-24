@@ -70,7 +70,7 @@ export const task: Task<Args> = {
 		const package_json = load_package_json();
 		const repo_specifier =
 			package_json.name === '@ryanatkn/fuz_gitops'
-				? './repo.svelte.js'
+				? '$lib/repo.svelte.js'
 				: '@ryanatkn/fuz_gitops/repo.svelte.js';
 
 		log.info('generating ' + outfile);
