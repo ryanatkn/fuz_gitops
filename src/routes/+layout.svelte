@@ -11,6 +11,7 @@
 		Contextmenu_State,
 		contextmenu_attachment,
 	} from '@ryanatkn/fuz/contextmenu_state.svelte.js';
+	import {pkg_context} from '@ryanatkn/fuz/pkg.svelte.js';
 	import type {Snippet} from 'svelte';
 
 	import Settings from '$routes/Settings.svelte';
@@ -25,12 +26,12 @@
 
 	const contextmenu = new Contextmenu_State();
 
-	repos_context.set(
-		repos_parse(
-			repos_json.map((r: Repo_Json) => new Repo(r)),
-			'https://gitops.fuz.dev/',
-		),
+	const repos = repos_parse(
+		repos_json.map((r: Repo_Json) => new Repo(r)),
+		'https://gitops.fuz.dev/',
 	);
+	repos_context.set(repos);
+	pkg_context.set(repos.repo.pkg);
 
 	let show_settings = $state(false);
 </script>
