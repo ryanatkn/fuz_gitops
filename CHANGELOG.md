@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.54.0
+
+### Minor Changes
+
+- rename `PascalCase` from `Upper_Snake_Case` (lol) ([#39](https://github.com/ryanatkn/fuz_gitops/pull/39))
+
 ## 0.53.0
 
 ### Minor Changes
