@@ -6,8 +6,8 @@ import {
 	git_pull as gro_git_pull,
 	git_current_branch_name as gro_git_current_branch_name,
 	git_current_commit_hash as gro_git_current_commit_hash,
-	type Git_Branch,
-	type Git_Origin,
+	type GitBranch,
+	type GitOrigin,
 } from '@ryanatkn/belt/git.js';
 
 /**
@@ -67,7 +67,7 @@ export const git_tag = async (
  */
 export const git_push_tag = async (
 	tag_name: string,
-	origin: Git_Origin = 'origin' as Git_Origin,
+	origin: GitOrigin = 'origin' as GitOrigin,
 	options?: SpawnOptions,
 ): Promise<void> => {
 	const result = await spawn('git', ['push', origin, tag_name], options);
@@ -134,7 +134,7 @@ export const git_stash_pop = async (options?: SpawnOptions): Promise<void> => {
  * Switches to a branch with safety checks and throws if workspace is not clean.
  */
 export const git_switch_branch = async (
-	branch: Git_Branch,
+	branch: GitBranch,
 	pull: boolean = true,
 	options?: SpawnOptions,
 ): Promise<void> => {

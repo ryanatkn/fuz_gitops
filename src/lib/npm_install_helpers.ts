@@ -1,8 +1,8 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from './local_repo.js';
-import type {Gitops_Operations} from './operations.js';
+import type {LocalRepo} from './local_repo.js';
+import type {GitopsOperations} from './operations.js';
 
 /**
  * Checks if an npm install error is caused by stale cache (ETARGET).
@@ -40,8 +40,8 @@ const is_etarget_error = (message: string, stderr: string): boolean => {
  * @throws Error if install fails (with details about cache healing attempts)
  */
 export const install_with_cache_healing = async (
-	repo: Local_Repo,
-	ops: Gitops_Operations,
+	repo: LocalRepo,
+	ops: GitopsOperations,
 	log?: Logger,
 ): Promise<void> => {
 	// First attempt

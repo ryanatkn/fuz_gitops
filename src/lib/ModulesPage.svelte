@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import Page_Footer from './Page_Footer.svelte';
-	import Page_Header from './Page_Header.svelte';
-	import Modules_Detail from './Modules_Detail.svelte';
+	import PageFooter from './PageFooter.svelte';
+	import PageHeader from './PageHeader.svelte';
+	import ModulesDetail from './ModulesDetail.svelte';
 	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
@@ -20,19 +20,19 @@
 
 <main class="box width_100">
 	<div class="p_lg">
-		<Page_Header pkg={repo.pkg} />
+		<PageHeader pkg={repo.pkg} />
 	</div>
 	<section>
-		<Modules_Detail {repos}>
+		<ModulesDetail {repos}>
 			{#snippet nav_footer()}
 				<nav class="row">
 					<Breadcrumb>{repo.pkg.package_json.glyph}</Breadcrumb>
 				</nav>
 			{/snippet}
-		</Modules_Detail>
+		</ModulesDetail>
 	</section>
 	<section class="box mb_xl7">
-		<Page_Footer />
+		<PageFooter />
 	</section>
 </main>
 

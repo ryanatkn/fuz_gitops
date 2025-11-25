@@ -1,6 +1,6 @@
 import {test, expect} from 'vitest';
 
-import type {Local_Repo} from '$lib/local_repo.js';
+import type {LocalRepo} from '$lib/local_repo.js';
 import {publish_repos} from '$lib/multi_repo_publisher.js';
 import {
 	create_mock_repo,
@@ -16,7 +16,7 @@ import {
 /* eslint-disable @typescript-eslint/require-await */
 
 test('dry_run predicts versions without publishing', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
 	];
@@ -55,7 +55,7 @@ test('dry_run predicts versions without publishing', async () => {
 });
 
 test('always fails fast on publish errors', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0'}),
 		create_mock_repo({name: 'pkg-c', version: '0.3.0'}),
@@ -98,7 +98,7 @@ test('always fails fast on publish errors', async () => {
 });
 
 test('handles breaking change cascades in dry_run', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-core', version: '0.5.0'}),
 		create_mock_repo({name: 'pkg-mid', version: '0.3.0', deps: {'pkg-core': '^0.5.0'}}),
 		create_mock_repo({name: 'pkg-app', version: '0.2.0', deps: {'pkg-mid': '^0.3.0'}}),
@@ -148,7 +148,7 @@ test('handles breaking change cascades in dry_run', async () => {
 });
 
 test('skips repos without changesets', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0'}),
 		create_mock_repo({name: 'pkg-c', version: '0.3.0'}),
@@ -184,7 +184,7 @@ test('skips repos without changesets', async () => {
 });
 
 test('publishes in dependency order', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'lib', version: '1.0.0'}),
 		create_mock_repo({name: 'middleware', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 		create_mock_repo({name: 'app', version: '1.0.0', deps: {middleware: '^1.0.0'}}),
@@ -213,7 +213,7 @@ test('publishes in dependency order', async () => {
 });
 
 test('waits for npm propagation after each publish', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '1.0.0'}),
 		create_mock_repo({name: 'pkg-b', version: '1.0.0'}),
 	];
@@ -246,7 +246,7 @@ test('waits for npm propagation after each publish', async () => {
 });
 
 test('updates prod dependencies after publishing (Phase 1)', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'lib', version: '1.0.0'}),
 		create_mock_repo({name: 'app', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 	];
@@ -273,7 +273,7 @@ test('updates prod dependencies after publishing (Phase 1)', async () => {
 });
 
 test('updates dev dependencies (Phase 2)', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'test-utils', version: '1.0.0'}),
 		create_mock_repo({name: 'lib', version: '1.0.0', dev_deps: {'test-utils': '^1.0.0'}}),
 	];
@@ -299,7 +299,7 @@ test('updates dev dependencies (Phase 2)', async () => {
 });
 
 test('deploys all repos when deploy flag is set (Phase 3)', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '1.0.0'}),
 		create_mock_repo({name: 'pkg-b', version: '1.0.0'}),
 	];
@@ -331,7 +331,7 @@ test('deploys all repos when deploy flag is set (Phase 3)', async () => {
 test('deploys only repos with changes (skips unchanged repos)', async () => {
 	// This test covers selective deployment including dev dep changes
 	// Full integration coverage in fixture tests (src/test/fixtures/check.test.ts)
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'lib', version: '1.0.0'}),
 		create_mock_repo({name: 'app-with-dep', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 		create_mock_repo({name: 'app-no-dep', version: '1.0.0'}),
@@ -371,7 +371,7 @@ test('deploys only repos with changes (skips unchanged repos)', async () => {
 });
 
 test('dry run skips deployment even with deploy flag', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '1.0.0'}),
 		create_mock_repo({name: 'pkg-b', version: '1.0.0'}),
 	];
@@ -397,7 +397,7 @@ test('dry run skips deployment even with deploy flag', async () => {
 });
 
 test('no changes results in no deployment', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '1.0.0'}),
 		create_mock_repo({name: 'pkg-b', version: '1.0.0'}),
 		create_mock_repo({name: 'pkg-c', version: '1.0.0'}),
@@ -429,7 +429,7 @@ test('no changes results in no deployment', async () => {
 });
 
 test('applies version strategy (caret vs tilde vs exact)', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'lib', version: '1.0.0'}),
 		create_mock_repo({name: 'app-caret', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 		create_mock_repo({name: 'app-tilde', version: '1.0.0', deps: {lib: '~1.0.0'}}),
@@ -455,7 +455,7 @@ test('applies version strategy (caret vs tilde vs exact)', async () => {
 });
 
 test('handles 4-level transitive dependency chain', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'level-1', version: '1.0.0'}),
 		create_mock_repo({name: 'level-2', version: '1.0.0', deps: {'level-1': '^1.0.0'}}),
 		create_mock_repo({name: 'level-3', version: '1.0.0', deps: {'level-2': '^1.0.0'}}),
@@ -490,7 +490,7 @@ test('handles 4-level transitive dependency chain', async () => {
 });
 
 test('handles mixed prod and dev deps on same package', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'shared', version: '1.0.0'}),
 		create_mock_repo({
 			name: 'app',
@@ -515,7 +515,7 @@ test('handles mixed prod and dev deps on same package', async () => {
 });
 
 test('reports correct duration in result', async () => {
-	const repos: Array<Local_Repo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
+	const repos: Array<LocalRepo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
 
 	const mock_fs_ops = create_populated_fs_ops(repos);
 
@@ -531,7 +531,7 @@ test('reports correct duration in result', async () => {
 });
 
 test('dry_run skips preflight checks', async () => {
-	const repos: Array<Local_Repo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
+	const repos: Array<LocalRepo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
 
 	let preflight_called = false;
 
@@ -551,7 +551,7 @@ test('dry_run skips preflight checks', async () => {
 });
 
 test('handles npm propagation failure gracefully', async () => {
-	const repos: Array<Local_Repo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
+	const repos: Array<LocalRepo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
 
 	const mock_fs_ops = create_populated_fs_ops(repos);
 
@@ -578,7 +578,7 @@ test('handles npm propagation failure gracefully', async () => {
 });
 
 test('handles deploy failures without stopping', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '1.0.0'}),
 		create_mock_repo({name: 'pkg-b', version: '1.0.0'}),
 	];
@@ -625,8 +625,8 @@ test('handles deploy failures without stopping', async () => {
 	expect(deploy_commands.length).toBe(2);
 });
 
-test('returns correct Published_Version metadata', async () => {
-	const repos: Array<Local_Repo> = [create_mock_repo({name: 'pkg-a', version: '0.5.0'})];
+test('returns correct PublishedVersion metadata', async () => {
+	const repos: Array<LocalRepo> = [create_mock_repo({name: 'pkg-a', version: '0.5.0'})];
 
 	const mock_fs = create_mock_package_json_files(repos);
 
@@ -664,7 +664,7 @@ test('returns correct Published_Version metadata', async () => {
 
 test('converges early when no new packages publish', async () => {
 	// Test that iteration stops early when converged (not all 10 iterations)
-	const repos: Array<Local_Repo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
+	const repos: Array<LocalRepo> = [create_mock_repo({name: 'pkg-a', version: '1.0.0'})];
 
 	const mock_fs_ops = create_populated_fs_ops(repos);
 
@@ -706,7 +706,7 @@ test('converges early when no new packages publish', async () => {
 // already tested in publishing_plan.test.ts. See TODO.md for details.
 
 test('skip_install flag prevents npm install', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'lib', version: '1.0.0'}),
 		create_mock_repo({name: 'app', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 	];
@@ -737,7 +737,7 @@ test('skip_install flag prevents npm install', async () => {
 });
 
 test('install failures are handled gracefully', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'lib', version: '1.0.0'}),
 		create_mock_repo({name: 'app1', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 		create_mock_repo({name: 'app2', version: '1.0.0', deps: {lib: '^1.0.0'}}),

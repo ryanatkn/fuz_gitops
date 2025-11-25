@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests detection of circular production/peer dependencies.
@@ -9,7 +9,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  *
  * This should produce an error and prevent publishing.
  */
-export const circular_prod_deps_error: Repo_Fixture_Set = {
+export const circular_prod_deps_error: RepoFixtureSet = {
 	name: 'circular_prod_deps_error',
 	description:
 		'Tests that circular production/peer dependencies are detected and reported as errors',

@@ -2,9 +2,9 @@
 	import Alert from '@ryanatkn/fuz/Alert.svelte';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import Page_Footer from './Page_Footer.svelte';
-	import Page_Header from './Page_Header.svelte';
-	import Repos_Tree from './Repos_Tree.svelte';
+	import PageFooter from './PageFooter.svelte';
+	import PageHeader from './PageHeader.svelte';
+	import ReposTree from './ReposTree.svelte';
 	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
@@ -15,7 +15,7 @@
 
 	const {repo, repos, slug}: Props = $props();
 
-	// TODO ideally there would be one `Repos_Tree` mounted by the layout with transitions
+	// TODO ideally there would be one `ReposTree` mounted by the layout with transitions
 
 	const route_repo = $derived(repos.find((p) => p.pkg.repo_name === slug));
 </script>
@@ -26,7 +26,7 @@
 
 <main class="box width_100">
 	<div class="p_lg">
-		<Page_Header pkg={repo.pkg} />
+		<PageHeader pkg={repo.pkg} />
 	</div>
 	<section class="tree">
 		{#if !route_repo}
@@ -34,16 +34,16 @@
 				<Alert status="error"><p>cannot find <code>{slug}</code></p></Alert>
 			</div>
 		{/if}
-		<Repos_Tree {repos} selected_repo={route_repo}>
+		<ReposTree {repos} selected_repo={route_repo}>
 			{#snippet nav()}
 				<div class="repos_tree_nav">
 					<Breadcrumb>{repo.pkg.package_json.glyph}</Breadcrumb>
 				</div>
 			{/snippet}
-		</Repos_Tree>
+		</ReposTree>
 	</section>
 	<section class="box mb_xl7">
-		<Page_Footer />
+		<PageFooter />
 	</section>
 </main>
 

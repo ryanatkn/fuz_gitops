@@ -3,15 +3,15 @@
 	export interface Props {
 		repo: Repo;
 		repos: Array<Repo>;
-		filter_pull_request?: Filter_Pull_Request | undefined;
+		filter_pull_request?: FilterPullRequest | undefined;
 	}
 </script>
 
 <script lang="ts">
-	import Page_Footer from './Page_Footer.svelte';
-	import Page_Header from './Page_Header.svelte';
-	import Pull_Requests_Detail from './Pull_Requests_Detail.svelte';
-	import type {Filter_Pull_Request} from './github_helpers.js';
+	import PageFooter from './PageFooter.svelte';
+	import PageHeader from './PageHeader.svelte';
+	import PullRequestsDetail from './PullRequestsDetail.svelte';
+	import type {FilterPullRequest} from './github_helpers.js';
 	import type {Repo} from './repo.svelte.js';
 
 	const {repo, repos, filter_pull_request}: Props = $props();
@@ -23,13 +23,13 @@
 
 <main class="box width_100">
 	<div class="p_lg">
-		<Page_Header pkg={repo.pkg} />
+		<PageHeader pkg={repo.pkg} />
 	</div>
 	<section>
-		<Pull_Requests_Detail {repos} {filter_pull_request} />
+		<PullRequestsDetail {repos} {filter_pull_request} />
 	</section>
 	<section class="box mb_xl7">
-		<Page_Footer />
+		<PageFooter />
 	</section>
 </main>
 

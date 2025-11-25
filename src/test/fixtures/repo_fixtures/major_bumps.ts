@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests major version transitions:
@@ -7,7 +7,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  *
  * Both transitions should propagate as breaking changes to dependents.
  */
-export const major_bumps: Repo_Fixture_Set = {
+export const major_bumps: RepoFixtureSet = {
 	name: 'major_bumps',
 	description: 'Tests major version transitions (0.x → 1.0 and 1.x → 2.0) with cascading updates',
 

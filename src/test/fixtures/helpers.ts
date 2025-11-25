@@ -1,5 +1,5 @@
-import type {Version_Change} from '$lib/publishing_plan.js';
-import type {Repo_Fixture_Expected_Version_Change} from './repo_fixture_types.js';
+import type {VersionChange} from '$lib/publishing_plan.js';
+import type {RepoFixtureExpectedVersionChange} from './repo_fixture_types.js';
 
 /**
  * Assert that publishing order matches expected order.
@@ -31,8 +31,8 @@ export const assert_publishing_order = (actual: Array<string>, expected: Array<s
  * Matches by package name, from/to versions, and scenario.
  */
 export const assert_version_changes = (
-	actual: Array<Version_Change>,
-	expected: Array<Repo_Fixture_Expected_Version_Change>,
+	actual: Array<VersionChange>,
+	expected: Array<RepoFixtureExpectedVersionChange>,
 ): void => {
 	// Create maps for easy lookup
 	const actual_by_pkg = new Map(actual.map((vc) => [vc.package_name, vc]));
@@ -96,7 +96,7 @@ export const assert_version_changes = (
  * - explicit_changeset: Has explicit changesets, normal bump
  */
 const get_version_change_scenario = (
-	vc: Version_Change,
+	vc: VersionChange,
 ): 'explicit_changeset' | 'bump_escalation' | 'auto_generated' => {
 	// Check has_changesets first - this is the primary discriminator
 	if (!vc.has_changesets) {

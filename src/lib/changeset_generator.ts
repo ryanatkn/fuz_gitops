@@ -9,11 +9,11 @@ import {writeFile, mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {existsSync} from 'node:fs';
 import type {Logger} from '@ryanatkn/belt/log.js';
-import type {Local_Repo} from './local_repo.js';
-import type {Published_Version} from './multi_repo_publisher.js';
+import type {LocalRepo} from './local_repo.js';
+import type {PublishedVersion} from './multi_repo_publisher.js';
 import {strip_version_prefix} from './version_utils.js';
 
-export interface Dependency_Version_Change {
+export interface DependencyVersionChange {
 	package_name: string;
 	from_version: string;
 	to_version: string;
@@ -26,8 +26,8 @@ export interface Dependency_Version_Change {
  * Returns the path to the created changeset file.
  */
 export const create_changeset_for_dependency_updates = async (
-	repo: Local_Repo,
-	updates: Array<Dependency_Version_Change>,
+	repo: LocalRepo,
+	updates: Array<DependencyVersionChange>,
 	log?: Logger,
 ): Promise<string> => {
 	const changesets_dir = join(repo.repo_dir, '.changeset');
@@ -58,8 +58,8 @@ export const create_changeset_for_dependency_updates = async (
 };
 
 const calculate_required_bump = (
-	repo: Local_Repo,
-	updates: Array<Dependency_Version_Change>,
+	repo: LocalRepo,
+	updates: Array<DependencyVersionChange>,
 ): 'major' | 'minor' | 'patch' => {
 	const current_version = repo.pkg.package_json.version || '0.0.0';
 	const [major] = current_version.split('.').map(Number);
@@ -93,7 +93,7 @@ const calculate_required_bump = (
  */
 export const generate_changeset_content = (
 	package_name: string,
-	updates: Array<Dependency_Version_Change>,
+	updates: Array<DependencyVersionChange>,
 	bump_type: 'major' | 'minor' | 'patch',
 ): string => {
 	// Group updates by type
@@ -137,9 +137,9 @@ export const generate_changeset_content = (
 
 export const create_dependency_updates = (
 	dependencies: Map<string, string>,
-	published_versions: Map<string, Published_Version>,
-): Array<Dependency_Version_Change> => {
-	const updates: Array<Dependency_Version_Change> = [];
+	published_versions: Map<string, PublishedVersion>,
+): Array<DependencyVersionChange> => {
+	const updates: Array<DependencyVersionChange> = [];
 
 	for (const [dep_name, current_version] of dependencies) {
 		const published = published_versions.get(dep_name);

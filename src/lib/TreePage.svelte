@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 
-	import Page_Footer from './Page_Footer.svelte';
-	import Page_Header from './Page_Header.svelte';
-	import Repos_Tree from './Repos_Tree.svelte';
+	import PageFooter from './PageFooter.svelte';
+	import PageHeader from './PageHeader.svelte';
+	import ReposTree from './ReposTree.svelte';
 	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
@@ -13,7 +13,7 @@
 
 	const {repo, repos}: Props = $props();
 
-	// TODO ideally there would be one `Repos_Tree` mounted by the layout with transitions
+	// TODO ideally there would be one `ReposTree` mounted by the layout with transitions
 </script>
 
 <svelte:head>
@@ -22,19 +22,19 @@
 
 <main class="box width_100">
 	<div class="p_lg">
-		<Page_Header pkg={repo.pkg} />
+		<PageHeader pkg={repo.pkg} />
 	</div>
 	<section class="tree">
-		<Repos_Tree {repos}>
+		<ReposTree {repos}>
 			{#snippet nav()}
 				<div class="repos_tree_nav">
 					<Breadcrumb>{repo.pkg.package_json.glyph}</Breadcrumb>
 				</div>
 			{/snippet}
-		</Repos_Tree>
+		</ReposTree>
 	</section>
 	<section class="box mb_xl7">
-		<Page_Footer />
+		<PageFooter />
 	</section>
 </main>
 

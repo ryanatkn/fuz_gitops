@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {page} from '$app/state';
-	import type {Module_Json} from '@ryanatkn/belt/src_json.js';
+	import type {ModuleJson} from '@ryanatkn/belt/src_json.js';
 
 	import type {Repo} from './repo.svelte.js';
 
@@ -9,7 +9,7 @@
 	interface Props {
 		repos_modules: Array<{
 			repo: Repo;
-			modules: Array<Module_Json>;
+			modules: Array<ModuleJson>;
 		}>;
 	}
 

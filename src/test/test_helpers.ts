@@ -2,21 +2,21 @@ import type {Logger} from '@ryanatkn/belt/log.js';
 import {vi} from 'vitest';
 import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 
-import type {Local_Repo} from '$lib/local_repo.js';
+import type {LocalRepo} from '$lib/local_repo.js';
 import type {
-	Gitops_Operations,
-	Changeset_Operations,
-	Git_Operations,
-	Fs_Operations,
-	Npm_Operations,
-	Build_Operations,
-	Process_Operations,
+	GitopsOperations,
+	ChangesetOperations,
+	GitOperations,
+	FsOperations,
+	NpmOperations,
+	BuildOperations,
+	ProcessOperations,
 } from '$lib/operations.js';
-import type {Bump_Type} from '$lib/semver.js';
+import type {BumpType} from '$lib/semver.js';
 
 /* eslint-disable @typescript-eslint/require-await */
 
-export interface Mock_Repo_Options {
+export interface MockRepoOptions {
 	name: string;
 	version?: string;
 	deps?: Record<string, string>;
@@ -26,9 +26,9 @@ export interface Mock_Repo_Options {
 }
 
 /**
- * Creates a mock Local_Repo for testing
+ * Creates a mock LocalRepo for testing
  */
-export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
+export const create_mock_repo = (options: MockRepoOptions): LocalRepo => {
 	const {
 		name,
 		version = '1.0.0',
@@ -88,19 +88,19 @@ export const create_mock_repo = (options: Mock_Repo_Options): Local_Repo => {
 };
 
 /**
- * Creates mock Gitops_Operations with sensible defaults
+ * Creates mock GitopsOperations with sensible defaults
  */
 export const create_mock_gitops_ops = (
 	overrides: Partial<{
-		changeset: Partial<Gitops_Operations['changeset']>;
-		git: Partial<Gitops_Operations['git']>;
-		process: Partial<Gitops_Operations['process']>;
-		npm: Partial<Gitops_Operations['npm']>;
-		preflight: Partial<Gitops_Operations['preflight']>;
-		fs: Partial<Gitops_Operations['fs']>;
-		build: Partial<Gitops_Operations['build']>;
+		changeset: Partial<GitopsOperations['changeset']>;
+		git: Partial<GitopsOperations['git']>;
+		process: Partial<GitopsOperations['process']>;
+		npm: Partial<GitopsOperations['npm']>;
+		preflight: Partial<GitopsOperations['preflight']>;
+		fs: Partial<GitopsOperations['fs']>;
+		build: Partial<GitopsOperations['build']>;
 	}> = {},
-): Gitops_Operations => ({
+): GitopsOperations => ({
 	changeset: {
 		has_changesets: async () => ({ok: true, value: true}),
 		read_changesets: async () => ({ok: true, value: []}),
@@ -147,7 +147,7 @@ const incrementPatch = (version: string): string => {
  * Creates a map of package.json file paths to contents for testing
  */
 export const create_mock_package_json_files = (
-	repos: Array<Local_Repo>,
+	repos: Array<LocalRepo>,
 	updatedVersions: Map<string, string> = new Map(),
 ): Map<string, string> => {
 	const fs: Map<string, string> = new Map();
@@ -172,8 +172,8 @@ export const create_mock_package_json_files = (
  * Creates a mock repo with simulated changesets directory
  */
 export const create_mock_repo_with_changesets = (
-	options: Mock_Repo_Options & {changesets?: boolean},
-): Local_Repo & {has_changesets: boolean} => {
+	options: MockRepoOptions & {changesets?: boolean},
+): LocalRepo & {has_changesets: boolean} => {
 	const repo = create_mock_repo(options);
 	const has_changesets = options.changesets ?? true;
 
@@ -184,12 +184,12 @@ export const create_mock_repo_with_changesets = (
 };
 
 /**
- * Creates mock Changeset_Operations with custom version predictions
+ * Creates mock ChangesetOperations with custom version predictions
  */
 export const create_mock_changeset_ops = (
-	versionPredictions: Map<string, {version: string; bump_type: Bump_Type}>,
+	versionPredictions: Map<string, {version: string; bump_type: BumpType}>,
 	reposWithChangesets: Set<string> = new Set(),
-): Changeset_Operations => ({
+): ChangesetOperations => ({
 	has_changesets: async (options) => ({
 		ok: true,
 		value: reposWithChangesets.has(options.repo.pkg.name),
@@ -203,9 +203,9 @@ export const create_mock_changeset_ops = (
 });
 
 /**
- * Creates mock Git_Operations for testing
+ * Creates mock GitOperations for testing
  */
-export const create_mock_git_ops = (overrides: Partial<Git_Operations> = {}): Git_Operations => ({
+export const create_mock_git_ops = (overrides: Partial<GitOperations> = {}): GitOperations => ({
 	current_branch_name: async () => ({ok: true, value: 'main'}),
 	current_commit_hash: async () => ({ok: true, value: 'abc123'}),
 	check_clean_workspace: async () => ({ok: true, value: true}),
@@ -227,9 +227,9 @@ export const create_mock_git_ops = (overrides: Partial<Git_Operations> = {}): Gi
 });
 
 /**
- * Creates mock Npm_Operations for testing
+ * Creates mock NpmOperations for testing
  */
-export const create_mock_npm_ops = (overrides: Partial<Npm_Operations> = {}): Npm_Operations => ({
+export const create_mock_npm_ops = (overrides: Partial<NpmOperations> = {}): NpmOperations => ({
 	wait_for_package: async () => ({ok: true}),
 	check_package_available: async () => ({ok: true, value: true}),
 	check_auth: async () => ({ok: true, username: 'testuser'}),
@@ -240,11 +240,11 @@ export const create_mock_npm_ops = (overrides: Partial<Npm_Operations> = {}): Np
 });
 
 /**
- * Creates mock Build_Operations for testing
+ * Creates mock BuildOperations for testing
  */
 export const create_mock_build_ops = (
-	overrides: Partial<Build_Operations> = {},
-): Build_Operations => ({
+	overrides: Partial<BuildOperations> = {},
+): BuildOperations => ({
 	build_package: async () => ({ok: true}),
 	...overrides,
 });
@@ -274,9 +274,9 @@ export const create_preflight_mock = (
 });
 
 /**
- * Creates mock Fs_Operations for testing with in-memory storage
+ * Creates mock FsOperations for testing with in-memory storage
  */
-export const create_mock_fs_ops = (): Fs_Operations & {
+export const create_mock_fs_ops = (): FsOperations & {
 	get: (path: string) => string | undefined;
 	set: (path: string, content: string) => void;
 } => {
@@ -305,9 +305,9 @@ export const create_mock_fs_ops = (): Fs_Operations & {
  * Creates and populates fs ops from package.json files
  */
 export const create_populated_fs_ops = (
-	repos: Array<Local_Repo>,
+	repos: Array<LocalRepo>,
 	updated_versions?: Map<string, string>,
-): Fs_Operations & {
+): FsOperations & {
 	get: (path: string) => string | undefined;
 	set: (path: string, content: string) => void;
 } => {
@@ -322,7 +322,7 @@ export const create_populated_fs_ops = (
 /**
  * Tracked command for process operations
  */
-export interface Tracked_Command {
+export interface TrackedCommand {
 	cmd: string;
 	args: Array<string>;
 	cwd: string;
@@ -332,12 +332,12 @@ export interface Tracked_Command {
  * Creates process operations that track which commands were spawned
  */
 export const create_tracking_process_ops = (): {
-	ops: Process_Operations;
-	get_spawned_commands: () => Array<Tracked_Command>;
-	get_commands_by_type: (cmd_name: string) => Array<Tracked_Command>;
-	get_package_names_from_cwd: (commands: Array<Tracked_Command>) => Array<string>;
+	ops: ProcessOperations;
+	get_spawned_commands: () => Array<TrackedCommand>;
+	get_commands_by_type: (cmd_name: string) => Array<TrackedCommand>;
+	get_package_names_from_cwd: (commands: Array<TrackedCommand>) => Array<string>;
 } => {
-	const spawned_commands: Array<Tracked_Command> = [];
+	const spawned_commands: Array<TrackedCommand> = [];
 
 	return {
 		ops: {
@@ -353,7 +353,7 @@ export const create_tracking_process_ops = (): {
 		get_spawned_commands: () => spawned_commands,
 		get_commands_by_type: (cmd_name: string) =>
 			spawned_commands.filter((c) => c.cmd === 'gro' && c.args[0] === cmd_name),
-		get_package_names_from_cwd: (commands: Array<Tracked_Command>) =>
+		get_package_names_from_cwd: (commands: Array<TrackedCommand>) =>
 			commands.map((c) => c.cwd.split('/').pop() || ''),
 	};
 };

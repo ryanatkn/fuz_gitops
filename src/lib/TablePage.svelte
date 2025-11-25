@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Page_Footer from './Page_Footer.svelte';
-	import Page_Header from './Page_Header.svelte';
-	import Repos_Table from './Repos_Table.svelte';
+	import PageFooter from './PageFooter.svelte';
+	import PageHeader from './PageHeader.svelte';
+	import ReposTable from './ReposTable.svelte';
 	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
@@ -18,15 +18,15 @@
 
 <main class="box">
 	<div class="p_lg">
-		<Page_Header pkg={repo.pkg} />
+		<PageHeader pkg={repo.pkg} />
 	</div>
 	<section>
 		<div class="panel p_md">
-			<Repos_Table {repos} />
+			<ReposTable {repos} />
 		</div>
 	</section>
 	<section class="box mb_xl7">
-		<Page_Footer />
+		<PageFooter />
 	</section>
 </main>
 

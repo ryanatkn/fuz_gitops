@@ -1,6 +1,6 @@
-import type {Create_Gitops_Config} from './src/lib/gitops_config.js';
+import type {CreateGitopsConfig} from './src/lib/gitops_config.js';
 
-const config: Create_Gitops_Config = () => {
+const config: CreateGitopsConfig = () => {
 	return {
 		repos: [
 			// 'https://github.com/ryanatkn/zzz',
@@ -14,7 +14,7 @@ const config: Create_Gitops_Config = () => {
 			'https://github.com/ryanatkn/fuz_code',
 			{
 				repo_url: 'https://github.com/ryanatkn/fuz_gitops',
-				branch: 'upgrade-deps',
+				branch: 'migration-scripts',
 			},
 			'https://github.com/ryanatkn/webdevladder.net',
 			// 'https://github.com/ryanatkn/ryanatkn.com',

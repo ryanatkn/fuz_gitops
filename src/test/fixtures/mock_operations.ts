@@ -4,15 +4,15 @@
  */
 
 import type {
-	Git_Operations,
-	Npm_Operations,
-	Process_Operations,
-	Fs_Operations,
-	Build_Operations,
-	Preflight_Operations,
-	Gitops_Operations,
+	GitOperations,
+	NpmOperations,
+	ProcessOperations,
+	FsOperations,
+	BuildOperations,
+	PreflightOperations,
+	GitopsOperations,
 } from '$lib/operations.js';
-import type {Repo_Fixture_Set} from './repo_fixture_types.js';
+import type {RepoFixtureSet} from './repo_fixture_types.js';
 import {create_mock_changeset_ops} from './mock_changeset_operations.js';
 
 /* eslint-disable @typescript-eslint/require-await */
@@ -20,7 +20,7 @@ import {create_mock_changeset_ops} from './mock_changeset_operations.js';
 /**
  * Configuration for mock operations to simulate various conditions.
  */
-export interface Mock_Operations_Config {
+export interface MockOperationsConfig {
 	git?: {
 		workspace_clean?: boolean;
 		current_branch?: string;
@@ -52,7 +52,7 @@ export interface Mock_Operations_Config {
  * Create basic git operations that always succeed.
  * Used for testing normal flow without errors.
  */
-export const create_mock_git_ops = (): Git_Operations => ({
+export const create_mock_git_ops = (): GitOperations => ({
 	// Branch info - fixtures always on main
 	current_branch_name: async () => ({ok: true, value: 'main'}),
 
@@ -92,7 +92,7 @@ export const create_mock_git_ops = (): Git_Operations => ({
 /**
  * Create basic npm operations that always succeed.
  */
-export const create_mock_npm_ops = (): Npm_Operations => ({
+export const create_mock_npm_ops = (): NpmOperations => ({
 	// Install - no-op, fixtures don't need deps installed
 	install: async () => ({ok: true}),
 
@@ -116,7 +116,7 @@ export const create_mock_npm_ops = (): Npm_Operations => ({
  * Create basic process operations.
  * Avoids spawning real processes.
  */
-export const create_mock_process_ops = (): Process_Operations => ({
+export const create_mock_process_ops = (): ProcessOperations => ({
 	spawn: async (options) => {
 		// Simulate success for common commands
 		if (options.cmd === 'gro') {
@@ -135,7 +135,7 @@ export const create_mock_process_ops = (): Process_Operations => ({
  * Create basic file system operations.
  * Returns predictable values without actual I/O.
  */
-export const create_mock_fs_ops = (fixture: Repo_Fixture_Set): Fs_Operations => {
+export const create_mock_fs_ops = (fixture: RepoFixtureSet): FsOperations => {
 	// Pre-compute package.json contents for each repo
 	const package_jsons: Map<string, string> = new Map();
 	for (const repo of fixture.repos) {
@@ -161,7 +161,7 @@ export const create_mock_fs_ops = (fixture: Repo_Fixture_Set): Fs_Operations => 
  * Create basic build operations.
  * Fixtures don't need real builds.
  */
-export const create_mock_build_ops = (): Build_Operations => ({
+export const create_mock_build_ops = (): BuildOperations => ({
 	build_package: async () => ({ok: true}),
 });
 
@@ -169,7 +169,7 @@ export const create_mock_build_ops = (): Build_Operations => ({
  * Create basic preflight operations.
  * Returns success for all fixture repos.
  */
-export const create_mock_preflight_ops = (fixture: Repo_Fixture_Set): Preflight_Operations => {
+export const create_mock_preflight_ops = (fixture: RepoFixtureSet): PreflightOperations => {
 	// Determine which repos have changesets
 	const repos_with_changesets: Set<string> = new Set();
 	const repos_without_changesets: Set<string> = new Set();
@@ -196,7 +196,7 @@ export const create_mock_preflight_ops = (fixture: Repo_Fixture_Set): Preflight_
 /**
  * Create complete gitops operations for a fixture using basic mocks.
  */
-export const create_mock_gitops_ops = (fixture: Repo_Fixture_Set): Gitops_Operations => ({
+export const create_mock_gitops_ops = (fixture: RepoFixtureSet): GitopsOperations => ({
 	changeset: create_mock_changeset_ops(fixture),
 	git: create_mock_git_ops(),
 	npm: create_mock_npm_ops(),
@@ -210,8 +210,8 @@ export const create_mock_gitops_ops = (fixture: Repo_Fixture_Set): Gitops_Operat
  * Create configurable git operations for testing specific scenarios.
  */
 export const create_configurable_git_ops = (
-	config: Mock_Operations_Config['git'] = {},
-): Git_Operations => ({
+	config: MockOperationsConfig['git'] = {},
+): GitOperations => ({
 	// Branch info
 	current_branch_name: async () => ({
 		ok: true,
@@ -285,8 +285,8 @@ export const create_configurable_git_ops = (
  * Create configurable npm operations for testing specific scenarios.
  */
 export const create_configurable_npm_ops = (
-	config: Mock_Operations_Config['npm'] = {},
-): Npm_Operations => ({
+	config: MockOperationsConfig['npm'] = {},
+): NpmOperations => ({
 	// Install
 	install: async () => {
 		if (config.install_fails) {
@@ -333,8 +333,8 @@ export const create_configurable_npm_ops = (
  * Create configurable build operations for testing specific scenarios.
  */
 export const create_configurable_build_ops = (
-	config: Mock_Operations_Config['build'] = {},
-): Build_Operations => ({
+	config: MockOperationsConfig['build'] = {},
+): BuildOperations => ({
 	build_package: async () => {
 		if (config.build_fails) {
 			return {
@@ -351,9 +351,9 @@ export const create_configurable_build_ops = (
  * Create configurable preflight operations for testing specific scenarios.
  */
 export const create_configurable_preflight_ops = (
-	fixture: Repo_Fixture_Set,
-	config: Mock_Operations_Config['preflight'] = {},
-): Preflight_Operations => {
+	fixture: RepoFixtureSet,
+	config: MockOperationsConfig['preflight'] = {},
+): PreflightOperations => {
 	// Determine which repos have changesets
 	const repos_with_changesets: Set<string> = new Set();
 	const repos_without_changesets: Set<string> = new Set();
@@ -392,9 +392,9 @@ export const create_configurable_preflight_ops = (
  * Create complete configurable gitops operations.
  */
 export const create_configurable_gitops_ops = (
-	fixture: Repo_Fixture_Set,
-	config: Mock_Operations_Config = {},
-): Gitops_Operations => ({
+	fixture: RepoFixtureSet,
+	config: MockOperationsConfig = {},
+): GitopsOperations => ({
 	changeset: create_mock_changeset_ops(fixture),
 	git: create_configurable_git_ops(config.git),
 	npm: create_configurable_npm_ops(config.npm),
@@ -411,7 +411,7 @@ export const create_configurable_gitops_ops = (
 /**
  * Create git operations that simulate a dirty workspace.
  */
-export const create_dirty_workspace_git_ops = (): Git_Operations => ({
+export const create_dirty_workspace_git_ops = (): GitOperations => ({
 	...create_mock_git_ops(),
 	check_clean_workspace: async () => ({ok: true, value: false}),
 	has_changes: async () => ({ok: true, value: true}),
@@ -421,7 +421,7 @@ export const create_dirty_workspace_git_ops = (): Git_Operations => ({
 /**
  * Create git operations that simulate being on wrong branch.
  */
-export const create_wrong_branch_git_ops = (): Git_Operations => ({
+export const create_wrong_branch_git_ops = (): GitOperations => ({
 	...create_mock_git_ops(),
 	current_branch_name: async () => ({ok: true, value: 'feature-branch'}),
 });
@@ -429,7 +429,7 @@ export const create_wrong_branch_git_ops = (): Git_Operations => ({
 /**
  * Create npm operations that simulate authentication failure.
  */
-export const create_unauthenticated_npm_ops = (): Npm_Operations => ({
+export const create_unauthenticated_npm_ops = (): NpmOperations => ({
 	...create_mock_npm_ops(),
 	check_auth: async () => ({ok: false, message: 'Not authenticated to npm registry'}),
 });
@@ -437,7 +437,7 @@ export const create_unauthenticated_npm_ops = (): Npm_Operations => ({
 /**
  * Create npm operations that simulate registry being down.
  */
-export const create_unavailable_registry_npm_ops = (): Npm_Operations => ({
+export const create_unavailable_registry_npm_ops = (): NpmOperations => ({
 	...create_mock_npm_ops(),
 	check_registry: async () => ({ok: false, message: 'NPM registry is unavailable'}),
 });
@@ -445,7 +445,7 @@ export const create_unavailable_registry_npm_ops = (): Npm_Operations => ({
 /**
  * Create build operations that simulate build failure.
  */
-export const create_failing_build_ops = (): Build_Operations => ({
+export const create_failing_build_ops = (): BuildOperations => ({
 	build_package: async () => ({
 		ok: false,
 		message: 'Build failed with TypeScript errors',

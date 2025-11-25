@@ -1,6 +1,6 @@
 import {describe, test, assert} from 'vitest';
 
-import {generate_publishing_plan, type Publishing_Plan} from '$lib/publishing_plan.js';
+import {generate_publishing_plan, type PublishingPlan} from '$lib/publishing_plan.js';
 import {basic_publishing} from './repo_fixtures/basic_publishing.js';
 import {deep_cascade} from './repo_fixtures/deep_cascade.js';
 import {circular_dev_deps} from './repo_fixtures/circular_dev_deps.js';
@@ -12,7 +12,7 @@ import {isolated_packages} from './repo_fixtures/isolated_packages.js';
 import {multiple_dep_types} from './repo_fixtures/multiple_dep_types.js';
 import {fixture_to_local_repos} from './load_repo_fixtures.js';
 import {create_mock_changeset_ops} from './mock_changeset_operations.js';
-import type {Repo_Fixture_Set, Repo_Fixture_Expected_Version_Change} from './repo_fixture_types.js';
+import type {RepoFixtureSet, RepoFixtureExpectedVersionChange} from './repo_fixture_types.js';
 
 // All fixtures to test
 const FIXTURES = [
@@ -31,8 +31,8 @@ const FIXTURES = [
  * Validates version changes match expected outcomes
  */
 const validate_version_changes = (
-	plan: Publishing_Plan,
-	expected: Array<Repo_Fixture_Expected_Version_Change>,
+	plan: PublishingPlan,
+	expected: Array<RepoFixtureExpectedVersionChange>,
 	fixture_name: string,
 ): void => {
 	assert.equal(
@@ -81,7 +81,7 @@ const validate_version_changes = (
  * Validates breaking cascades match expected outcomes
  */
 const validate_breaking_cascades = (
-	plan: Publishing_Plan,
+	plan: PublishingPlan,
 	expected: Record<string, Array<string>> | undefined,
 	fixture_name: string,
 ): void => {
@@ -102,7 +102,7 @@ const validate_breaking_cascades = (
  * Validates info messages match expected outcomes
  */
 const validate_info = (
-	plan: Publishing_Plan,
+	plan: PublishingPlan,
 	expected: Array<string> | undefined,
 	fixture_name: string,
 ): void => {
@@ -119,7 +119,7 @@ const validate_info = (
  * Validates warnings match expected outcomes
  */
 const validate_warnings = (
-	plan: Publishing_Plan,
+	plan: PublishingPlan,
 	expected: Array<string> | undefined,
 	fixture_name: string,
 ): void => {
@@ -136,7 +136,7 @@ const validate_warnings = (
  * Validates errors match expected outcomes
  */
 const validate_errors = (
-	plan: Publishing_Plan,
+	plan: PublishingPlan,
 	expected: Array<string> | undefined,
 	fixture_name: string,
 ): void => {
@@ -151,7 +151,7 @@ const validate_errors = (
 /**
  * Generic test for a repo fixture set
  */
-const test_fixture = async (fixture: Repo_Fixture_Set): Promise<void> => {
+const test_fixture = async (fixture: RepoFixtureSet): Promise<void> => {
 	const repos = fixture_to_local_repos(fixture);
 	const ops = create_mock_changeset_ops(fixture);
 

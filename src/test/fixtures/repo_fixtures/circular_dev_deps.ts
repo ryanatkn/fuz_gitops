@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests circular devDependencies between packages.
@@ -10,7 +10,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  *
  * Should publish successfully because topological sort excludes dev dependencies.
  */
-export const circular_dev_deps: Repo_Fixture_Set = {
+export const circular_dev_deps: RepoFixtureSet = {
 	name: 'circular_dev_deps',
 	description:
 		'Tests that circular devDependencies do not prevent publishing (dev deps excluded from topological sort)',

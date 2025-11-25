@@ -3,7 +3,7 @@ import {join} from 'node:path';
 import {spawn_out} from '@ryanatkn/belt/process.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 
-import type {Repo_Fixture_Set, Repo_Fixture_Data} from './repo_fixture_types.js';
+import type {RepoFixtureSet, RepoFixtureData} from './repo_fixture_types.js';
 
 const FIXTURES_BASE_DIR = 'src/test/fixtures/repos';
 
@@ -11,7 +11,7 @@ const FIXTURES_BASE_DIR = 'src/test/fixtures/repos';
  * Generate all repositories for multiple fixture sets.
  */
 export const generate_all_fixtures = async (
-	fixtures: Array<Repo_Fixture_Set>,
+	fixtures: Array<RepoFixtureSet>,
 	log?: Logger,
 ): Promise<void> => {
 	log?.info(`Generating ${fixtures.length} fixture sets...\n`);
@@ -35,7 +35,7 @@ export const fixtures_exist = (fixture_name: string): boolean =>
  * Creates directory structure, package.json, changesets, and initializes git.
  */
 const generate_fixture_repo = async (
-	repo_data: Repo_Fixture_Data,
+	repo_data: RepoFixtureData,
 	fixture_name: string,
 	log?: Logger,
 ): Promise<string> => {
@@ -120,7 +120,7 @@ export default config;
  * Generate all repositories for a fixture set.
  * Idempotent: removes existing fixture directory before generating.
  */
-const generate_fixture_set = async (fixture: Repo_Fixture_Set, log?: Logger): Promise<void> => {
+const generate_fixture_set = async (fixture: RepoFixtureSet, log?: Logger): Promise<void> => {
 	const fixture_dir = join(FIXTURES_BASE_DIR, fixture.name);
 
 	log?.info(`Generating fixture set: ${fixture.name}`);

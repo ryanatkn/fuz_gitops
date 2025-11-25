@@ -4,9 +4,9 @@ import {styleText as st} from 'node:util';
 
 import {get_gitops_ready} from './gitops_task_helpers.js';
 import {validate_dependency_graph} from './graph_validation.js';
-import {Dependency_Graph_Builder} from './dependency_graph.js';
+import {DependencyGraphBuilder} from './dependency_graph.js';
 import {generate_publishing_plan} from './publishing_plan.js';
-import {publish_repos, type Publishing_Options} from './multi_repo_publisher.js';
+import {publish_repos, type PublishingOptions} from './multi_repo_publisher.js';
 import {log_dependency_analysis} from './log_helpers.js';
 
 /** @nodocs */
@@ -41,7 +41,7 @@ export const task: Task<Args> = {
 			duration: number;
 			warning_details?: Array<string>;
 			info_details?: Array<string>;
-			analysis?: ReturnType<Dependency_Graph_Builder['analyze']>;
+			analysis?: ReturnType<DependencyGraphBuilder['analyze']>;
 		}> = [];
 
 		const start_time = Date.now();
@@ -63,7 +63,7 @@ export const task: Task<Args> = {
 			});
 
 			// Perform additional analysis
-			const builder = new Dependency_Graph_Builder();
+			const builder = new DependencyGraphBuilder();
 			const analysis = builder.analyze(graph);
 
 			const analyze_duration = Date.now() - analyze_start;
@@ -152,7 +152,7 @@ export const task: Task<Args> = {
 		log.info(st('yellow', 'Running gitops_publish --dry_run...'));
 		const dry_start = Date.now();
 		try {
-			const options: Publishing_Options = {
+			const options: PublishingOptions = {
 				dry_run: true,
 				update_deps: true,
 				log: undefined, // Silent for validation

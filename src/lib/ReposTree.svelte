@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Package_Summary from '@ryanatkn/fuz/Package_Summary.svelte';
-	import Package_Detail from '@ryanatkn/fuz/Package_Detail.svelte';
+	import PackageSummary from '@ryanatkn/fuz/PackageSummary.svelte';
+	import PackageDetail from '@ryanatkn/fuz/PackageDetail.svelte';
 	import {resolve} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
 	import type {Snippet} from 'svelte';
 
 	import type {Repo} from './repo.svelte.js';
-	import Repos_Tree_Nav from './Repos_Tree_Nav.svelte';
+	import ReposTreeNav from './ReposTreeNav.svelte';
 
 	interface Props {
 		repos: Array<Repo>;
@@ -18,13 +18,13 @@
 </script>
 
 <div class="repos_tree">
-	<Repos_Tree_Nav {repos} {selected_repo}>
+	<ReposTreeNav {repos} {selected_repo}>
 		{@render nav()}
-	</Repos_Tree_Nav>
+	</ReposTreeNav>
 	{#if selected_repo}
 		<section class="detail_wrapper">
 			<div class="panel detail p_md">
-				<Package_Detail pkg={selected_repo.pkg} />
+				<PackageDetail pkg={selected_repo.pkg} />
 			</div>
 		</section>
 	{:else}
@@ -32,11 +32,11 @@
 			{#each repos as repo (repo.pkg.name)}
 				<li class="panel p_md box">
 					{#if repo.pkg.package_json}
-						<Package_Summary pkg={repo.pkg}>
+						<PackageSummary pkg={repo.pkg}>
 							{#snippet repo_name(repo_name)}
 								<a href={resolve(`/tree/${repo_name}`)} class="repo_name">{repo_name}</a>
 							{/snippet}
-						</Package_Summary>
+						</PackageSummary>
 					{:else}
 						<div class="width_upto_sm">
 							<p>

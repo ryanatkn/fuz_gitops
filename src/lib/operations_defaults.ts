@@ -7,7 +7,7 @@
 
 import {spawn, spawn_out} from '@ryanatkn/belt/process.js';
 import {readFile, writeFile} from 'node:fs/promises';
-import {git_checkout, type Git_Branch, type Git_Origin} from '@ryanatkn/belt/git.js';
+import {git_checkout, type GitBranch, type GitOrigin} from '@ryanatkn/belt/git.js';
 import {EMPTY_OBJECT} from '@ryanatkn/belt/object.js';
 
 import {has_changesets, read_changesets, predict_next_version} from './changeset_reader.js';
@@ -31,17 +31,17 @@ import {
 	git_has_remote,
 } from './git_operations.js';
 import type {
-	Changeset_Operations,
-	Git_Operations,
-	Process_Operations,
-	Npm_Operations,
-	Preflight_Operations,
-	Fs_Operations,
-	Build_Operations,
-	Gitops_Operations,
+	ChangesetOperations,
+	GitOperations,
+	ProcessOperations,
+	NpmOperations,
+	PreflightOperations,
+	FsOperations,
+	BuildOperations,
+	GitopsOperations,
 } from './operations.js';
 
-export const default_changeset_operations: Changeset_Operations = {
+export const default_changeset_operations: ChangesetOperations = {
 	has_changesets: async (options) => {
 		const {repo} = options;
 		try {
@@ -77,7 +77,7 @@ export const default_changeset_operations: Changeset_Operations = {
 	},
 };
 
-export const default_git_operations: Git_Operations = {
+export const default_git_operations: GitOperations = {
 	// Core git info
 	current_branch_name: async (options) => {
 		const {cwd} = options ?? EMPTY_OBJECT;
@@ -133,7 +133,7 @@ export const default_git_operations: Git_Operations = {
 	switch_branch: async (options) => {
 		const {branch, pull, cwd} = options;
 		try {
-			await git_switch_branch(branch as Git_Branch, pull, cwd ? {cwd} : undefined);
+			await git_switch_branch(branch as GitBranch, pull, cwd ? {cwd} : undefined);
 			return {ok: true};
 		} catch (error) {
 			return {ok: false, message: String(error)};
@@ -215,7 +215,7 @@ export const default_git_operations: Git_Operations = {
 	push_tag: async (options) => {
 		const {tag_name, origin, cwd} = options;
 		try {
-			await git_push_tag(tag_name, origin as Git_Origin, cwd ? {cwd} : undefined);
+			await git_push_tag(tag_name, origin as GitOrigin, cwd ? {cwd} : undefined);
 			return {ok: true};
 		} catch (error) {
 			return {ok: false, message: String(error)};
@@ -260,7 +260,7 @@ export const default_git_operations: Git_Operations = {
 	},
 };
 
-export const default_process_operations: Process_Operations = {
+export const default_process_operations: ProcessOperations = {
 	spawn: async (options) => {
 		const {cmd, args, spawn_options} = options;
 		try {
@@ -284,7 +284,7 @@ export const default_process_operations: Process_Operations = {
 	},
 };
 
-export const default_npm_operations: Npm_Operations = {
+export const default_npm_operations: NpmOperations = {
 	wait_for_package: async (options) => {
 		const {pkg, version, wait_options, log} = options;
 		try {
@@ -360,13 +360,13 @@ export const default_npm_operations: Npm_Operations = {
 	},
 };
 
-export const default_preflight_operations: Preflight_Operations = {
+export const default_preflight_operations: PreflightOperations = {
 	run_preflight_checks: async (options) => {
 		return run_preflight_checks(options);
 	},
 };
 
-export const default_fs_operations: Fs_Operations = {
+export const default_fs_operations: FsOperations = {
 	readFile: async (options) => {
 		const {path, encoding} = options;
 		try {
@@ -388,7 +388,7 @@ export const default_fs_operations: Fs_Operations = {
 	},
 };
 
-export const default_build_operations: Build_Operations = {
+export const default_build_operations: BuildOperations = {
 	build_package: async (options) => {
 		const {repo, log} = options;
 		try {
@@ -412,7 +412,7 @@ export const default_build_operations: Build_Operations = {
 /**
  * Combined default operations for all gitops functionality.
  */
-export const default_gitops_operations: Gitops_Operations = {
+export const default_gitops_operations: GitopsOperations = {
 	changeset: default_changeset_operations,
 	git: default_git_operations,
 	process: default_process_operations,

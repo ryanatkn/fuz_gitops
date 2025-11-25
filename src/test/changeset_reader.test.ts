@@ -2,9 +2,9 @@ import {describe, it, expect} from 'vitest';
 import {
 	parse_changeset_content,
 	determine_bump_from_changesets,
-	type Changeset_Info,
+	type ChangesetInfo,
 } from '$lib/changeset_reader.js';
-import type {Bump_Type} from '$lib/semver.js';
+import type {BumpType} from '$lib/semver.js';
 import {calculate_next_version, compare_bump_types} from '$lib/version_utils.js';
 
 describe('changeset_reader', () => {
@@ -271,8 +271,8 @@ Duplicate package entries.`;
 
 	describe('determine_bump_from_changesets', () => {
 		const create_changeset = (
-			packages: Array<{name: string; bump_type: Bump_Type}>,
-		): Changeset_Info => ({
+			packages: Array<{name: string; bump_type: BumpType}>,
+		): ChangesetInfo => ({
 			filename: 'test.md',
 			packages,
 			summary: 'Test changeset',

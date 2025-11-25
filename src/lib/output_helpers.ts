@@ -1,15 +1,15 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {writeFile} from 'node:fs/promises';
 
-export type Output_Format = 'stdout' | 'json' | 'markdown';
+export type OutputFormat = 'stdout' | 'json' | 'markdown';
 
-export interface Output_Options {
-	format: Output_Format;
+export interface OutputOptions {
+	format: OutputFormat;
 	outfile?: string;
 	log?: Logger;
 }
 
-export interface Output_Formatters<T> {
+export interface OutputFormatters<T> {
 	json: (data: T) => string;
 	markdown: (data: T) => Array<string>;
 	/**
@@ -30,8 +30,8 @@ export interface Output_Formatters<T> {
  */
 export const format_and_output = async <T>(
 	data: T,
-	formatters: Output_Formatters<T>,
-	options: Output_Options,
+	formatters: OutputFormatters<T>,
+	options: OutputOptions,
 ): Promise<void> => {
 	const {format, outfile, log} = options;
 

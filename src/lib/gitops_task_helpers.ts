@@ -14,25 +14,25 @@
  * (see `operations.ts` for dependency injection details).
  */
 
-import {Task_Error} from '@ryanatkn/gro';
+import {TaskError} from '@ryanatkn/gro';
 import {styleText as st} from 'node:util';
 import {resolve, dirname} from 'node:path';
 import {print_path} from '@ryanatkn/gro/paths.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 
-import {load_gitops_config, type Gitops_Config} from './gitops_config.js';
-import {load_local_repos, resolve_local_repos, type Local_Repo} from './local_repo.js';
+import {load_gitops_config, type GitopsConfig} from './gitops_config.js';
+import {load_local_repos, resolve_local_repos, type LocalRepo} from './local_repo.js';
 import {resolve_gitops_config} from './resolved_gitops_config.js';
 import {DEFAULT_REPOS_DIR} from './paths.js';
-import type {Git_Operations, Npm_Operations} from './operations.js';
+import type {GitOperations, NpmOperations} from './operations.js';
 
-export interface Get_Gitops_Ready_Options {
+export interface GetGitopsReadyOptions {
 	path: string;
 	dir?: string;
 	download: boolean;
 	log?: Logger;
-	git_ops?: Git_Operations;
-	npm_ops?: Npm_Operations;
+	git_ops?: GitOperations;
+	npm_ops?: NpmOperations;
 }
 
 /**
@@ -52,15 +52,15 @@ export interface Get_Gitops_Ready_Options {
  * @param options.git_ops for testing (defaults to real git operations)
  * @param options.npm_ops for testing (defaults to real npm operations)
  * @returns initialized config and fully loaded repos ready for operations
- * @throws {Task_Error} if config loading or repo resolution fails
+ * @throws {TaskError} if config loading or repo resolution fails
  */
 export const get_gitops_ready = async (
-	options: Get_Gitops_Ready_Options,
+	options: GetGitopsReadyOptions,
 ): Promise<{
 	config_path: string;
 	repos_dir: string;
-	gitops_config: Gitops_Config;
-	local_repos: Array<Local_Repo>;
+	gitops_config: GitopsConfig;
+	local_repos: Array<LocalRepo>;
 }> => {
 	const {path, dir, download, log, git_ops, npm_ops} = options;
 	const config_path = resolve(path);
@@ -93,14 +93,14 @@ export const get_gitops_ready = async (
 	return {config_path, repos_dir, gitops_config, local_repos};
 };
 
-export interface Resolve_Gitops_Paths_Options {
+export interface ResolveGitopsPathsOptions {
 	path: string;
 	dir?: string;
 	config_repos_dir?: string;
 }
 
 export const resolve_gitops_paths = (
-	options: Resolve_Gitops_Paths_Options,
+	options: ResolveGitopsPathsOptions,
 ): {config_path: string; repos_dir: string} => {
 	const {path, dir, config_repos_dir} = options;
 	const config_path = resolve(path);
@@ -117,10 +117,10 @@ export const resolve_gitops_paths = (
 	return {config_path, repos_dir};
 };
 
-export const import_gitops_config = async (config_path: string): Promise<Gitops_Config> => {
+export const import_gitops_config = async (config_path: string): Promise<GitopsConfig> => {
 	const gitops_config = await load_gitops_config(config_path);
 	if (!gitops_config) {
-		throw new Task_Error(st('red', `No gitops config found at ${print_path(config_path)}`));
+		throw new TaskError(st('red', `No gitops config found at ${print_path(config_path)}`));
 	}
 	return gitops_config;
 };

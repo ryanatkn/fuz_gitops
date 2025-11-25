@@ -1,31 +1,31 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import {Task_Error} from '@ryanatkn/gro';
+import {TaskError} from '@ryanatkn/gro';
 import {join} from 'node:path';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from './local_repo.js';
-import {update_package_json, type Version_Strategy} from './dependency_updater.js';
+import type {LocalRepo} from './local_repo.js';
+import {update_package_json, type VersionStrategy} from './dependency_updater.js';
 import {validate_dependency_graph} from './graph_validation.js';
-import {type Preflight_Options} from './preflight_checks.js';
+import {type PreflightOptions} from './preflight_checks.js';
 import {needs_update, is_breaking_change, detect_bump_type} from './version_utils.js';
-import type {Gitops_Operations} from './operations.js';
+import type {GitopsOperations} from './operations.js';
 import {default_gitops_operations} from './operations_defaults.js';
 import {MAX_ITERATIONS} from './constants.js';
 import {install_with_cache_healing} from './npm_install_helpers.js';
 
 /* eslint-disable no-await-in-loop */
 
-export interface Publishing_Options {
+export interface PublishingOptions {
 	dry_run: boolean;
 	update_deps: boolean;
-	version_strategy?: Version_Strategy;
+	version_strategy?: VersionStrategy;
 	deploy?: boolean;
 	max_wait?: number;
 	skip_install?: boolean;
 	log?: Logger;
 }
 
-export interface Published_Version {
+export interface PublishedVersion {
 	name: string;
 	old_version: string;
 	new_version: string;
@@ -35,24 +35,24 @@ export interface Published_Version {
 	tag: string;
 }
 
-export interface Publishing_Result {
+export interface PublishingResult {
 	ok: boolean;
-	published: Array<Published_Version>;
+	published: Array<PublishedVersion>;
 	failed: Array<{name: string; error: Error}>;
 	duration: number;
 }
 
 export const publish_repos = async (
-	repos: Array<Local_Repo>,
-	options: Publishing_Options,
-	ops: Gitops_Operations = default_gitops_operations,
-): Promise<Publishing_Result> => {
+	repos: Array<LocalRepo>,
+	options: PublishingOptions,
+	ops: GitopsOperations = default_gitops_operations,
+): Promise<PublishingResult> => {
 	const start_time = Date.now();
 	const {dry_run, update_deps, log} = options;
 
 	// Preflight checks (skip for dry runs since we're not actually publishing)
 	if (!dry_run) {
-		const preflight_options: Preflight_Options = {
+		const preflight_options: PreflightOptions = {
 			skip_changesets: false, // Always check for changesets
 			required_branch: 'main',
 			log,
@@ -67,7 +67,7 @@ export const publish_repos = async (
 		});
 
 		if (!preflight.ok) {
-			throw new Task_Error(`Preflight checks failed: ${preflight.errors.join(', ')}`);
+			throw new TaskError(`Preflight checks failed: ${preflight.errors.join(', ')}`);
 		}
 	} else {
 		log?.info('⏭️  Skipping preflight checks for dry run');
@@ -80,7 +80,7 @@ export const publish_repos = async (
 		log_order: true,
 	});
 
-	const published: Map<string, Published_Version> = new Map();
+	const published: Map<string, PublishedVersion> = new Map();
 	const failed: Map<string, Error> = new Map();
 	const changed_repos: Set<string> = new Set(); // Track repos with any changes for selective deployment
 
@@ -382,10 +382,10 @@ export const publish_repos = async (
  * @throws {Error} if changeset prediction fails (dry run) or publish fails (real)
  */
 const publish_single_repo = async (
-	repo: Local_Repo,
-	options: Publishing_Options,
-	ops: Gitops_Operations = default_gitops_operations,
-): Promise<Published_Version> => {
+	repo: LocalRepo,
+	options: PublishingOptions,
+	ops: GitopsOperations = default_gitops_operations,
+): Promise<PublishedVersion> => {
 	const {dry_run, log} = options;
 
 	const old_version = repo.pkg.package_json.version || '0.0.0';

@@ -2,14 +2,14 @@ import {mkdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {dirname, join} from 'node:path';
 import {paths} from '@ryanatkn/gro/paths.js';
 import {format_file} from '@ryanatkn/gro/format_file.js';
-import {deserialize_cache, serialize_cache, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
+import {deserialize_cache, serialize_cache, type FetchValueCache} from '@ryanatkn/belt/fetch.js';
 import {existsSync} from 'node:fs';
 
 // TODO upstream to Gro probably, and rename/redesign?
 
-export interface Fetch_Cache {
+export interface FetchCache {
 	name: string;
-	data: Fetch_Value_Cache; // TODO probably expose an API for this instead of passing the map directly
+	data: FetchValueCache; // TODO probably expose an API for this instead of passing the map directly
 	/**
 	 * @returns true if anything changed, false if no-op
 	 */
@@ -32,9 +32,9 @@ export interface Fetch_Cache {
 export const create_fs_fetch_value_cache = async (
 	name: string,
 	dir = join(paths.build, 'fetch'),
-): Promise<Fetch_Cache> => {
+): Promise<FetchCache> => {
 	const data_path = join(dir, name + '.json');
-	let data: Fetch_Value_Cache;
+	let data: FetchValueCache;
 	if (existsSync(data_path)) {
 		try {
 			data = deserialize_cache(await readFile(data_path, 'utf8')); // TODO pass schema to parse so failures invalidate the cache

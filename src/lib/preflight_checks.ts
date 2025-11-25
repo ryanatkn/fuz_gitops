@@ -3,12 +3,12 @@ import type {Result} from '@ryanatkn/belt/result.js';
 import {spawn_out} from '@ryanatkn/belt/process.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from './local_repo.js';
+import type {LocalRepo} from './local_repo.js';
 import type {
-	Git_Operations,
-	Npm_Operations,
-	Build_Operations,
-	Changeset_Operations,
+	GitOperations,
+	NpmOperations,
+	BuildOperations,
+	ChangesetOperations,
 } from './operations.js';
 import {
 	default_git_operations,
@@ -17,7 +17,7 @@ import {
 	default_changeset_operations,
 } from './operations_defaults.js';
 
-export interface Preflight_Options {
+export interface PreflightOptions {
 	skip_changesets?: boolean;
 	skip_build_validation?: boolean; // Skip build validation (useful for tests)
 	required_branch?: string;
@@ -26,7 +26,7 @@ export interface Preflight_Options {
 	log?: Logger;
 }
 
-export interface Preflight_Result {
+export interface PreflightResult {
 	ok: boolean;
 	warnings: Array<string>;
 	errors: Array<string>;
@@ -36,13 +36,13 @@ export interface Preflight_Result {
 	npm_username?: string;
 }
 
-export interface Run_Preflight_Checks_Options {
-	repos: Array<Local_Repo>;
-	preflight_options?: Preflight_Options;
-	git_ops?: Git_Operations;
-	npm_ops?: Npm_Operations;
-	build_ops?: Build_Operations;
-	changeset_ops?: Changeset_Operations;
+export interface RunPreflightChecksOptions {
+	repos: Array<LocalRepo>;
+	preflight_options?: PreflightOptions;
+	git_ops?: GitOperations;
+	npm_ops?: NpmOperations;
+	build_ops?: BuildOperations;
+	changeset_ops?: ChangesetOperations;
 }
 
 /**
@@ -69,7 +69,7 @@ export const run_preflight_checks = async ({
 	npm_ops = default_npm_operations,
 	build_ops = default_build_operations,
 	changeset_ops = default_changeset_operations,
-}: Run_Preflight_Checks_Options): Promise<Preflight_Result> => {
+}: RunPreflightChecksOptions): Promise<PreflightResult> => {
 	const {
 		skip_changesets = false,
 		skip_build_validation = false,

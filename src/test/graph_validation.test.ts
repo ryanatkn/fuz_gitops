@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {Task_Error} from '@ryanatkn/gro';
+import {TaskError} from '@ryanatkn/gro';
 
 import {validate_dependency_graph} from '$lib/graph_validation.js';
 import {create_mock_repo} from './test_helpers.ts';
@@ -73,7 +73,7 @@ describe('validate_dependency_graph', () => {
 
 			expect(() =>
 				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(Task_Error);
+			).toThrow(TaskError);
 			expect(() =>
 				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
 			).toThrow(/Cannot publish with production\/peer dependency cycles/);
@@ -87,7 +87,7 @@ describe('validate_dependency_graph', () => {
 
 			expect(() =>
 				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(Task_Error);
+			).toThrow(TaskError);
 		});
 
 		it('throws on mixed prod/peer cycle', () => {
@@ -98,7 +98,7 @@ describe('validate_dependency_graph', () => {
 
 			expect(() =>
 				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(Task_Error);
+			).toThrow(TaskError);
 		});
 
 		it('throws on longer cycle (3+ packages)', () => {
@@ -110,7 +110,7 @@ describe('validate_dependency_graph', () => {
 
 			expect(() =>
 				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(Task_Error);
+			).toThrow(TaskError);
 		});
 	});
 
@@ -354,7 +354,7 @@ describe('validate_dependency_graph', () => {
 			];
 
 			// Default behavior should throw
-			expect(() => validate_dependency_graph(repos)).toThrow(Task_Error);
+			expect(() => validate_dependency_graph(repos)).toThrow(TaskError);
 		});
 
 		it('defaults to log_cycles=true (no crash with undefined logger)', () => {

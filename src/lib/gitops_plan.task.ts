@@ -6,9 +6,9 @@ import {get_gitops_ready} from './gitops_task_helpers.js';
 import {
 	generate_publishing_plan,
 	log_publishing_plan,
-	type Publishing_Plan,
+	type PublishingPlan,
 } from './publishing_plan.js';
-import {format_and_output, type Output_Formatters} from './output_helpers.js';
+import {format_and_output, type OutputFormatters} from './output_helpers.js';
 
 /** @nodocs */
 export const Args = z.strictObject({
@@ -75,7 +75,7 @@ export const task: Task<Args> = {
 	},
 };
 
-const create_plan_formatters = (): Output_Formatters<Publishing_Plan> => ({
+const create_plan_formatters = (): OutputFormatters<PublishingPlan> => ({
 	json: (plan) => {
 		const output = {
 			publishing_order: plan.publishing_order,
@@ -92,7 +92,7 @@ const create_plan_formatters = (): Output_Formatters<Publishing_Plan> => ({
 	stdout: (plan, log) => log_publishing_plan(plan, log),
 });
 
-const format_plan_as_markdown = (plan: Publishing_Plan): Array<string> => {
+const format_plan_as_markdown = (plan: PublishingPlan): Array<string> => {
 	const lines: Array<string> = [];
 	const {
 		publishing_order,

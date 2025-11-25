@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Tree_Item_Page from '$lib/Tree_Item_Page.svelte';
+	import TreeItemPage from '$lib/TreeItemPage.svelte';
 	import {repos_context} from '$lib/repo.svelte.js';
 
 	const {params} = $props();
@@ -7,4 +7,4 @@
 	const {repo, repos} = repos_context.get();
 </script>
 
-<Tree_Item_Page {repo} {repos} slug={params.slug} />
+<TreeItemPage {repo} {repos} slug={params.slug} />
