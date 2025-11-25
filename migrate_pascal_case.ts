@@ -1,16 +1,15 @@
 /**
- * Ecosystem-wide migration: UpperSnakeCase → PascalCase
+ * Ecosystem-wide migration: Upper_Snake_Case → PascalCase
  *
- * Renames all UpperSnakeCase identifiers to PascalCase across
+ * Renames all Upper_Snake_Case identifiers to PascalCase across
  * the @ryanatkn project ecosystem. Lowercase snake_case identifiers remain unchanged.
  *
- * Pattern: Detects identifiers like FooBar (becomes FooBar) and TFoo (becomes TFoo)
+ * Pattern: Detects identifiers like Foo_Bar (becomes FooBar) and T_Foo (becomes TFoo)
  * but NOT identifiers like foo_bar (stays foo_bar) or FOO_BAR (stays FOO_BAR).
  *
  * Usage:
  *   gro run migrate_pascal_case.ts --dry-run          # Preview changes
- *   gro run migrate_pascal_case.ts                    # Run migration with post-checks
- *   gro run migrate_pascal_case.ts --skip-checks      # Skip gro gen/check
+ *   gro run migrate_pascal_case.ts                    # Run migration with formatting
  *   gro run migrate_pascal_case.ts --skip-renames     # Only change content, not filenames
  *   gro run migrate_pascal_case.ts --verbose          # Show detailed output
  *   gro run migrate_pascal_case.ts --repo belt,gro    # Only process specific repos
@@ -31,7 +30,7 @@ import {get_repo_paths, walk_repo_files, type RepoPath} from './src/lib/repo_ops
 // =============================================================================
 
 /**
- * Pattern to match UpperSnakeCase identifiers (non-global for .test()).
+ * Pattern to match Upper_Snake_Case identifiers (non-global for .test()).
  * Matches: FooBar, TFoo, CreateGitopsConfig
  * Does NOT match: foo_bar, FOO_BAR, T (single letter), _Foo_Bar (leading underscore)
  */
@@ -46,7 +45,6 @@ const UPPER_SNAKE_PATTERN_GLOBAL = /\b([A-Z][a-z0-9]*(?:_[A-Z][a-z0-9]*)+)\b/g;
 
 interface CliOptions {
 	dry_run: boolean;
-	skip_checks: boolean;
 	skip_renames: boolean;
 	verbose: boolean;
 	json_output: boolean;
@@ -72,8 +70,7 @@ interface RepoResult {
 	changes: Array<FileChange>;
 	errors: Array<{path: string; error: string}>;
 	collisions: Array<string>;
-	gen_success?: boolean;
-	check_success?: boolean;
+	format_success?: boolean;
 }
 
 interface MigrationSummary {
@@ -95,7 +92,7 @@ interface MigrationSummary {
 // =============================================================================
 
 /**
- * Convert UpperSnakeCase to PascalCase.
+ * Convert Upper_Snake_Case to PascalCase.
  * Examples: FooBar → FooBar, TFoo → TFoo, CreateGitopsConfig → CreateGitopsConfig
  */
 const to_pascal_case = (identifier: string): string => {
@@ -106,7 +103,7 @@ const to_pascal_case = (identifier: string): string => {
 };
 
 /**
- * Check if filename contains UpperSnakeCase.
+ * Check if filename contains Upper_Snake_Case.
  * Uses non-global pattern to avoid lastIndex state issues.
  */
 const has_upper_snake_filename = (path: string): boolean => {
@@ -115,13 +112,15 @@ const has_upper_snake_filename = (path: string): boolean => {
 };
 
 /**
- * Rename a path from UpperSnakeCase to PascalCase in the filename only.
+ * Rename a path from Upper_Snake_Case to PascalCase in the filename only.
  */
 const rename_path_to_pascal = (path: string): string => {
 	const parts = path.split('/');
 	const last = parts.at(-1);
 	if (!last) return path;
-	const renamed = last.replace(UPPER_SNAKE_PATTERN_GLOBAL, (match) => to_pascal_case(match));
+	const renamed = last.replace(UPPER_SNAKE_PATTERN_GLOBAL, (match) =>
+		PRESERVE_IDENTIFIERS.has(match) ? match : to_pascal_case(match),
+	);
 	parts[parts.length - 1] = renamed;
 	return parts.join('/');
 };
@@ -196,8 +195,11 @@ const run_gro = async (command: string, repo_path: string): Promise<boolean> => 
 	});
 };
 
+/** Identifiers to never transform (documentation examples, etc.) */
+const PRESERVE_IDENTIFIERS = new Set(['Upper_Snake_Case']);
+
 /**
- * Process file content: replace UpperSnakeCase identifiers with PascalCase.
+ * Process file content: replace Upper_Snake_Case identifiers with PascalCase.
  * Replaces everywhere including strings - the pattern is specific enough
  * (requires CapitalCase segments) that this is safe.
  */
@@ -208,6 +210,10 @@ const process_content = (
 	let modified = false;
 
 	const new_content = content.replace(UPPER_SNAKE_PATTERN_GLOBAL, (match) => {
+		// Preserve specific identifiers used in documentation/examples
+		if (PRESERVE_IDENTIFIERS.has(match)) {
+			return match;
+		}
 		const pascal = to_pascal_case(match);
 		if (pascal !== match) {
 			replacements.set(match, (replacements.get(match) ?? 0) + 1);
@@ -371,28 +377,14 @@ const migrate_repo = async (
 		}
 	}
 
-	// Phase 3: Run gro gen and check
-	if (
-		!options.dry_run &&
-		!options.skip_checks &&
-		(result.files_modified > 0 || result.files_renamed > 0)
-	) {
+	// Phase 3: Run gro format
+	if (!options.dry_run && (result.files_modified > 0 || result.files_renamed > 0)) {
 		if (!options.json_output) {
-			process.stdout.write(st('dim', '  gro gen... '));
+			process.stdout.write(st('dim', '  gro format... '));
 		}
-		result.gen_success = await run_gro('gen', repo.path);
+		result.format_success = await run_gro('format', repo.path);
 		if (!options.json_output) {
-			console.log(result.gen_success ? st('green', '✓') : st('red', '✗'));
-		}
-
-		if (result.gen_success) {
-			if (!options.json_output) {
-				process.stdout.write(st('dim', '  gro check... '));
-			}
-			result.check_success = await run_gro('check', repo.path);
-			if (!options.json_output) {
-				console.log(result.check_success ? st('green', '✓') : st('red', '✗'));
-			}
+			console.log(result.format_success ? st('green', '✓') : st('red', '✗'));
 		}
 	}
 
@@ -475,10 +467,10 @@ const print_summary = (summary: MigrationSummary): void => {
 		}
 	}
 
-	// Failed repos
-	const failed = summary.repos.filter((r) => r.check_success === false);
+	// Failed format
+	const failed = summary.repos.filter((r) => r.format_success === false);
 	if (failed.length > 0) {
-		console.log(`\n${st('red', 'Failed checks:')} ${failed.map((r) => r.name).join(', ')}`);
+		console.log(`\n${st('red', 'Failed format:')} ${failed.map((r) => r.name).join(', ')}`);
 	}
 
 	if (options.dry_run) {
@@ -507,7 +499,6 @@ const parse_args = (): CliOptions => {
 
 	const options: CliOptions = {
 		dry_run: args.includes('--dry-run'),
-		skip_checks: args.includes('--skip-checks'),
 		skip_renames: args.includes('--skip-renames'),
 		verbose: args.includes('--verbose') || args.includes('-v'),
 		json_output: args.includes('--json'),
@@ -528,14 +519,13 @@ const parse_args = (): CliOptions => {
 
 const print_help = (): void => {
 	console.log(`
-${st('bold', 'UpperSnakeCase → PascalCase Migration')}
+${st('bold', 'Upper_Snake_Case → PascalCase Migration')}
 
 ${st('bold', 'Usage:')}
   gro run migrate_pascal_case.ts [options]
 
 ${st('bold', 'Options:')}
   --dry-run          Preview changes without modifying files
-  --skip-checks      Skip running gro gen and gro check after migration
   --skip-renames     Only change identifiers in content, don't rename files
   --verbose, -v      Show detailed output for each file
   --json             Output JSON summary instead of human-readable
@@ -559,10 +549,9 @@ const main = async (): Promise<void> => {
 	const options = parse_args();
 
 	if (!options.json_output) {
-		console.log(st('bold', '🔄 UpperSnakeCase → PascalCase Migration'));
+		console.log(st('bold', '🔄 Upper_Snake_Case → PascalCase Migration'));
 		console.log('═'.repeat(80));
 		console.log(`Mode: ${options.dry_run ? st('cyan', 'DRY RUN') : st('yellow', 'WRITE')}`);
-		if (options.skip_checks) console.log('Post-checks: ' + st('dim', 'skipped'));
 		if (options.skip_renames) console.log('File renames: ' + st('dim', 'skipped'));
 		if (options.repo_filter) console.log('Repos: ' + st('cyan', options.repo_filter.join(', ')));
 	}
@@ -601,7 +590,7 @@ const main = async (): Promise<void> => {
 	if (summary.totals.errors > 0) {
 		process.exit(1);
 	}
-	if (!options.skip_checks && summary.repos.some((r) => r.check_success === false)) {
+	if (summary.repos.some((r) => r.format_success === false)) {
 		process.exit(1);
 	}
 };
