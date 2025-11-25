@@ -1,12 +1,12 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.53.0",
+  "version": "0.54.0",
   "modules": [
     {
       "path": "changeset_generator.ts",
       "identifiers": [
         {
-          "name": "Dependency_Version_Change",
+          "name": "DependencyVersionChange",
           "kind": "type"
         },
         {
@@ -27,7 +27,7 @@
       "path": "changeset_reader.ts",
       "identifiers": [
         {
-          "name": "Changeset_Info",
+          "name": "ChangesetInfo",
           "kind": "type"
         },
         {
@@ -73,27 +73,27 @@
           "kind": "variable"
         },
         {
-          "name": "Dependency_Type",
+          "name": "DependencyType",
           "kind": "type"
         },
         {
-          "name": "Dependency_Spec",
+          "name": "DependencySpec",
           "kind": "type"
         },
         {
-          "name": "Dependency_Graph_Json",
+          "name": "DependencyGraphJson",
           "kind": "type"
         },
         {
-          "name": "Dependency_Node",
+          "name": "DependencyNode",
           "kind": "type"
         },
         {
-          "name": "Dependency_Graph",
+          "name": "DependencyGraph",
           "kind": "class"
         },
         {
-          "name": "Dependency_Graph_Builder",
+          "name": "DependencyGraphBuilder",
           "kind": "class"
         }
       ]
@@ -102,7 +102,7 @@
       "path": "dependency_updater.ts",
       "identifiers": [
         {
-          "name": "Version_Strategy",
+          "name": "VersionStrategy",
           "kind": "type"
         },
         {
@@ -132,7 +132,7 @@
       "path": "fs_fetch_value_cache.ts",
       "identifiers": [
         {
-          "name": "Fetch_Cache",
+          "name": "FetchCache",
           "kind": "type"
         },
         {
@@ -210,11 +210,11 @@
       "path": "github_helpers.ts",
       "identifiers": [
         {
-          "name": "Filter_Pull_Request",
+          "name": "FilterPullRequest",
           "kind": "type"
         },
         {
-          "name": "Pull_Request_Meta",
+          "name": "PullRequestMeta",
           "kind": "type"
         },
         {
@@ -231,11 +231,11 @@
       "path": "github.ts",
       "identifiers": [
         {
-          "name": "Github_Pull_Request",
+          "name": "GithubPullRequest",
           "kind": "variable"
         },
         {
-          "name": "Github_Pull_Requests",
+          "name": "GithubPullRequests",
           "kind": "variable"
         },
         {
@@ -243,11 +243,11 @@
           "kind": "function"
         },
         {
-          "name": "Github_Check_Runs_Item",
+          "name": "GithubCheckRunsItem",
           "kind": "variable"
         },
         {
-          "name": "Github_Check_Runs",
+          "name": "GithubCheckRuns",
           "kind": "variable"
         },
         {
@@ -273,23 +273,23 @@
       "path": "gitops_config.ts",
       "identifiers": [
         {
-          "name": "Gitops_Config",
+          "name": "GitopsConfig",
           "kind": "type"
         },
         {
-          "name": "Create_Gitops_Config",
+          "name": "CreateGitopsConfig",
           "kind": "type"
         },
         {
-          "name": "Raw_Gitops_Config",
+          "name": "RawGitopsConfig",
           "kind": "type"
         },
         {
-          "name": "Gitops_Repo_Config",
+          "name": "GitopsRepoConfig",
           "kind": "type"
         },
         {
-          "name": "Raw_Gitops_Repo_Config",
+          "name": "RawGitopsRepoConfig",
           "kind": "type"
         },
         {
@@ -301,7 +301,7 @@
           "kind": "function"
         },
         {
-          "name": "Gitops_Config_Module",
+          "name": "GitopsConfigModule",
           "kind": "type"
         },
         {
@@ -357,7 +357,7 @@
       "path": "gitops_task_helpers.ts",
       "identifiers": [
         {
-          "name": "Get_Gitops_Ready_Options",
+          "name": "GetGitopsReadyOptions",
           "kind": "type"
         },
         {
@@ -365,7 +365,7 @@
           "kind": "function"
         },
         {
-          "name": "Resolve_Gitops_Paths_Options",
+          "name": "ResolveGitopsPathsOptions",
           "kind": "type"
         },
         {
@@ -395,7 +395,7 @@
       "path": "graph_validation.ts",
       "identifiers": [
         {
-          "name": "Graph_Validation_Result",
+          "name": "GraphValidationResult",
           "kind": "type"
         },
         {
@@ -408,19 +408,19 @@
       "path": "local_repo.ts",
       "identifiers": [
         {
-          "name": "Local_Repo",
+          "name": "LocalRepo",
           "kind": "type"
         },
         {
-          "name": "Maybe_Local_Repo",
+          "name": "MaybeLocalRepo",
           "kind": "type"
         },
         {
-          "name": "Resolved_Local_Repo",
+          "name": "ResolvedLocalRepo",
           "kind": "type"
         },
         {
-          "name": "Unresolved_Local_Repo",
+          "name": "UnresolvedLocalRepo",
           "kind": "type"
         },
         {
@@ -482,15 +482,15 @@
       "path": "multi_repo_publisher.ts",
       "identifiers": [
         {
-          "name": "Publishing_Options",
+          "name": "PublishingOptions",
           "kind": "type"
         },
         {
-          "name": "Published_Version",
+          "name": "PublishedVersion",
           "kind": "type"
         },
         {
-          "name": "Publishing_Result",
+          "name": "PublishingResult",
           "kind": "type"
         },
         {
@@ -512,11 +512,11 @@
       "path": "npm_registry.ts",
       "identifiers": [
         {
-          "name": "Wait_Options",
+          "name": "WaitOptions",
           "kind": "type"
         },
         {
-          "name": "Package_Info",
+          "name": "PackageInfo",
           "kind": "type"
         },
         {
@@ -578,35 +578,35 @@
       "path": "operations.ts",
       "identifiers": [
         {
-          "name": "Changeset_Operations",
+          "name": "ChangesetOperations",
           "kind": "type"
         },
         {
-          "name": "Git_Operations",
+          "name": "GitOperations",
           "kind": "type"
         },
         {
-          "name": "Process_Operations",
+          "name": "ProcessOperations",
           "kind": "type"
         },
         {
-          "name": "Build_Operations",
+          "name": "BuildOperations",
           "kind": "type"
         },
         {
-          "name": "Npm_Operations",
+          "name": "NpmOperations",
           "kind": "type"
         },
         {
-          "name": "Preflight_Operations",
+          "name": "PreflightOperations",
           "kind": "type"
         },
         {
-          "name": "Fs_Operations",
+          "name": "FsOperations",
           "kind": "type"
         },
         {
-          "name": "Gitops_Operations",
+          "name": "GitopsOperations",
           "kind": "type"
         }
       ]
@@ -615,15 +615,15 @@
       "path": "output_helpers.ts",
       "identifiers": [
         {
-          "name": "Output_Format",
+          "name": "OutputFormat",
           "kind": "type"
         },
         {
-          "name": "Output_Options",
+          "name": "OutputOptions",
           "kind": "type"
         },
         {
-          "name": "Output_Formatters",
+          "name": "OutputFormatters",
           "kind": "type"
         },
         {
@@ -649,15 +649,15 @@
       "path": "preflight_checks.ts",
       "identifiers": [
         {
-          "name": "Preflight_Options",
+          "name": "PreflightOptions",
           "kind": "type"
         },
         {
-          "name": "Preflight_Result",
+          "name": "PreflightResult",
           "kind": "type"
         },
         {
-          "name": "Run_Preflight_Checks_Options",
+          "name": "RunPreflightChecksOptions",
           "kind": "type"
         },
         {
@@ -670,15 +670,15 @@
       "path": "publishing_plan.ts",
       "identifiers": [
         {
-          "name": "Version_Change",
+          "name": "VersionChange",
           "kind": "type"
         },
         {
-          "name": "Dependency_Update",
+          "name": "DependencyUpdate",
           "kind": "type"
         },
         {
-          "name": "Publishing_Plan",
+          "name": "PublishingPlan",
           "kind": "type"
         },
         {
@@ -692,10 +692,47 @@
       ]
     },
     {
+      "path": "repo_ops.ts",
+      "identifiers": [
+        {
+          "name": "walk_repo_files",
+          "kind": "function"
+        },
+        {
+          "name": "DEFAULT_EXCLUDE_DIRS",
+          "kind": "variable"
+        },
+        {
+          "name": "DEFAULT_EXCLUDE_EXTENSIONS",
+          "kind": "variable"
+        },
+        {
+          "name": "WalkOptions",
+          "kind": "type"
+        },
+        {
+          "name": "RepoPath",
+          "kind": "type"
+        },
+        {
+          "name": "get_repo_paths",
+          "kind": "function"
+        },
+        {
+          "name": "should_exclude_path",
+          "kind": "function"
+        },
+        {
+          "name": "collect_repo_files",
+          "kind": "function"
+        }
+      ]
+    },
+    {
       "path": "repo.svelte.ts",
       "identifiers": [
         {
-          "name": "Repo_Json",
+          "name": "RepoJson",
           "kind": "type"
         },
         {
@@ -720,7 +757,7 @@
       "path": "resolved_gitops_config.ts",
       "identifiers": [
         {
-          "name": "Resolved_Gitops_Config",
+          "name": "ResolvedGitopsConfig",
           "kind": "type"
         },
         {
@@ -733,7 +770,7 @@
       "path": "semver.ts",
       "identifiers": [
         {
-          "name": "Bump_Type",
+          "name": "BumpType",
           "kind": "type"
         },
         {
@@ -754,15 +791,15 @@
       "path": "serialization_types.ts",
       "identifiers": [
         {
-          "name": "Serialized_Node",
+          "name": "SerializedNode",
           "kind": "type"
         },
         {
-          "name": "Serialized_Graph",
+          "name": "SerializedGraph",
           "kind": "type"
         },
         {
-          "name": "Serialized_Publishing_Plan",
+          "name": "SerializedPublishingPlan",
           "kind": "type"
         },
         {
@@ -817,7 +854,7 @@
       ]
     },
     {
-      "path": "Modules_Detail.svelte",
+      "path": "ModulesDetail.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -826,7 +863,7 @@
       ]
     },
     {
-      "path": "Modules_Nav.svelte",
+      "path": "ModulesNav.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -835,7 +872,7 @@
       ]
     },
     {
-      "path": "Modules_Page.svelte",
+      "path": "ModulesPage.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -844,7 +881,7 @@
       ]
     },
     {
-      "path": "Page_Footer.svelte",
+      "path": "PageFooter.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -853,7 +890,7 @@
       ]
     },
     {
-      "path": "Page_Header.svelte",
+      "path": "PageHeader.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -862,7 +899,7 @@
       ]
     },
     {
-      "path": "Pull_Requests_Detail.svelte",
+      "path": "PullRequestsDetail.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -871,7 +908,7 @@
       ]
     },
     {
-      "path": "Pull_Requests_Page.svelte",
+      "path": "PullRequestsPage.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -880,7 +917,7 @@
       ]
     },
     {
-      "path": "Repos_Table.svelte",
+      "path": "ReposTable.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -889,7 +926,7 @@
       ]
     },
     {
-      "path": "Repos_Tree_Nav.svelte",
+      "path": "ReposTree.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -898,7 +935,7 @@
       ]
     },
     {
-      "path": "Repos_Tree.svelte",
+      "path": "ReposTreeNav.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -907,7 +944,7 @@
       ]
     },
     {
-      "path": "Table_Page.svelte",
+      "path": "TablePage.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -916,7 +953,7 @@
       ]
     },
     {
-      "path": "Tree_Item_Page.svelte",
+      "path": "TreeItemPage.svelte",
       "identifiers": [
         {
           "name": "default",
@@ -925,7 +962,7 @@
       ]
     },
     {
-      "path": "Tree_Page.svelte",
+      "path": "TreePage.svelte",
       "identifiers": [
         {
           "name": "default",
