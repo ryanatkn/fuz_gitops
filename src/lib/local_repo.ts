@@ -71,21 +71,21 @@ export const load_local_repo = async ({
 	// Record commit hash before any changes
 	const commit_before_result = await git_ops.current_commit_hash({cwd: repo_dir});
 	if (!commit_before_result.ok) {
-		throw new TaskError(`Failed to get commit hash: ${commit_before_result.message}`);
+		throw new TaskError(`Failed to get commit hash in ${repo_dir}: ${commit_before_result.message}`);
 	}
 	const commit_before = commit_before_result.value;
 
 	// Switch to target branch if needed
 	const branch_result = await git_ops.current_branch_name({cwd: repo_dir});
 	if (!branch_result.ok) {
-		throw new TaskError(`Failed to get current branch: ${branch_result.message}`);
+		throw new TaskError(`Failed to get current branch in ${repo_dir}: ${branch_result.message}`);
 	}
 
 	const switched_branches = branch_result.value !== repo_config.branch;
 	if (switched_branches) {
 		const clean_result = await git_ops.check_clean_workspace({cwd: repo_dir});
 		if (!clean_result.ok) {
-			throw new TaskError(`Failed to check workspace: ${clean_result.message}`);
+			throw new TaskError(`Failed to check workspace in ${repo_dir}: ${clean_result.message}`);
 		}
 
 		if (!clean_result.value) {
@@ -96,27 +96,29 @@ export const load_local_repo = async ({
 
 		const checkout_result = await git_ops.checkout({branch: repo_config.branch, cwd: repo_dir});
 		if (!checkout_result.ok) {
-			throw new TaskError(`Failed to checkout branch: ${checkout_result.message}`);
+			throw new TaskError(
+				`Failed to checkout branch "${repo_config.branch}" in ${repo_dir}: ${checkout_result.message}`,
+			);
 		}
 	}
 
 	// Only pull if remote exists (skip for local-only repos, test fixtures)
 	const origin_result = await git_ops.has_remote({remote: 'origin', cwd: repo_dir});
 	if (!origin_result.ok) {
-		throw new TaskError(`Failed to check for remote: ${origin_result.message}`);
+		throw new TaskError(`Failed to check for remote in ${repo_dir}: ${origin_result.message}`);
 	}
 
 	if (origin_result.value) {
 		const pull_result = await git_ops.pull({cwd: repo_dir});
 		if (!pull_result.ok) {
-			throw new TaskError(`Failed to pull: ${pull_result.message}`);
+			throw new TaskError(`Failed to pull in ${repo_dir}: ${pull_result.message}`);
 		}
 	}
 
 	// Check clean workspace after pull to ensure we're in a good state
 	const clean_after_result = await git_ops.check_clean_workspace({cwd: repo_dir});
 	if (!clean_after_result.ok) {
-		throw new TaskError(`Failed to check workspace: ${clean_after_result.message}`);
+		throw new TaskError(`Failed to check workspace in ${repo_dir}: ${clean_after_result.message}`);
 	}
 
 	if (!clean_after_result.value) {
@@ -128,7 +130,7 @@ export const load_local_repo = async ({
 	// Record commit hash after pull
 	const commit_after_result = await git_ops.current_commit_hash({cwd: repo_dir});
 	if (!commit_after_result.ok) {
-		throw new TaskError(`Failed to get commit hash: ${commit_after_result.message}`);
+		throw new TaskError(`Failed to get commit hash in ${repo_dir}: ${commit_after_result.message}`);
 	}
 	const commit_after = commit_after_result.value;
 
@@ -145,7 +147,9 @@ export const load_local_repo = async ({
 		});
 
 		if (!changed_result.ok) {
-			throw new TaskError(`Failed to check if package.json changed: ${changed_result.message}`);
+			throw new TaskError(
+				`Failed to check if package.json changed in ${repo_dir}: ${changed_result.message}`,
+			);
 		}
 
 		if (changed_result.value) {
