@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type {Module_Json} from '@ryanatkn/belt/src_json.js';
+	import type {ModuleJson} from '@ryanatkn/belt/src_json.js';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
 
-	import Modules_Nav from './Modules_Nav.svelte';
+	import ModulesNav from './ModulesNav.svelte';
 	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
@@ -21,9 +21,9 @@
 	// TODO hacky, needs helpers or rethinking
 	const repos_modules: Array<{
 		repo: Repo;
-		modules: Array<Module_Json>;
+		modules: Array<ModuleJson>;
 	}> = $derived(
-		repos.reduce<Array<{repo: Repo; modules: Array<Module_Json>}>>((acc, repo) => {
+		repos.reduce<Array<{repo: Repo; modules: Array<ModuleJson>}>>((acc, repo) => {
 			const {package_json, src_json} = repo.pkg;
 			if (
 				!src_json.modules?.length ||
@@ -45,7 +45,7 @@
 <div class="modules_detail">
 	<div class="nav_wrapper">
 		<section>
-			<Modules_Nav {repos_modules} />
+			<ModulesNav {repos_modules} />
 		</section>
 		{@render nav_footer?.()}
 	</div>

@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Comprehensive fixture covering all 4 publishing scenarios:
@@ -7,7 +7,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  * 3. Bump escalation when dependencies require higher bump (repo_c)
  * 4. No changes to publish (repo_d, repo_e)
  */
-export const basic_publishing: Repo_Fixture_Set = {
+export const basic_publishing: RepoFixtureSet = {
 	name: 'basic_publishing',
 	description:
 		'Tests all 4 publishing scenarios: explicit changeset, bump escalation, auto-generated changeset, and no changes',

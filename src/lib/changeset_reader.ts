@@ -10,13 +10,13 @@ import {existsSync} from 'node:fs';
 import {readdir, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 
-import type {Local_Repo} from './local_repo.js';
-import type {Bump_Type} from './semver.js';
+import type {LocalRepo} from './local_repo.js';
+import type {BumpType} from './semver.js';
 import {compare_bump_types, calculate_next_version} from './version_utils.js';
 
-export interface Changeset_Info {
+export interface ChangesetInfo {
 	filename: string;
-	packages: Array<{name: string; bump_type: Bump_Type}>;
+	packages: Array<{name: string; bump_type: BumpType}>;
 	summary: string;
 }
 
@@ -42,7 +42,7 @@ export interface Changeset_Info {
 export const parse_changeset_content = (
 	content: string,
 	filename = 'changeset.md',
-): Changeset_Info | null => {
+): ChangesetInfo | null => {
 	// Match frontmatter between --- markers
 	const frontmatter_match = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)/.exec(content);
 	if (!frontmatter_match) {
@@ -53,7 +53,7 @@ export const parse_changeset_content = (
 	const summary = frontmatter_match[2]!.trim();
 
 	// Parse package entries
-	const packages: Array<{name: string; bump_type: Bump_Type}> = [];
+	const packages: Array<{name: string; bump_type: BumpType}> = [];
 
 	// Match lines like: "package-name": patch
 	// or: '@scope/package': minor
@@ -64,7 +64,7 @@ export const parse_changeset_content = (
 	while ((match = package_regex.exec(frontmatter)) !== null) {
 		packages.push({
 			name: match[1]!,
-			bump_type: match[2]! as Bump_Type,
+			bump_type: match[2]! as BumpType,
 		});
 	}
 
@@ -82,7 +82,7 @@ export const parse_changeset_content = (
 export const parse_changeset_file = async (
 	filepath: string,
 	log?: Logger,
-): Promise<Changeset_Info | null> => {
+): Promise<ChangesetInfo | null> => {
 	try {
 		const content = await readFile(filepath, 'utf8');
 		const filename = filepath.split('/').pop() || '';
@@ -101,16 +101,16 @@ export const parse_changeset_file = async (
 };
 
 export const read_changesets = async (
-	repo: Local_Repo,
+	repo: LocalRepo,
 	log?: Logger,
-): Promise<Array<Changeset_Info>> => {
+): Promise<Array<ChangesetInfo>> => {
 	const changesets_dir = join(repo.repo_dir, '.changeset');
 
 	try {
 		const files = await readdir(changesets_dir);
 		const changeset_files = files.filter((f) => f.endsWith('.md') && f !== 'README.md');
 
-		const changesets: Array<Changeset_Info> = [];
+		const changesets: Array<ChangesetInfo> = [];
 
 		for (const file of changeset_files) {
 			const filepath = join(changesets_dir, file);
@@ -137,10 +137,10 @@ export const read_changesets = async (
  * @returns the highest bump type, or null if package has no changesets
  */
 export const determine_bump_from_changesets = (
-	changesets: Array<Changeset_Info>,
+	changesets: Array<ChangesetInfo>,
 	package_name: string,
-): Bump_Type | null => {
-	let highest_bump: Bump_Type | null = null;
+): BumpType | null => {
+	let highest_bump: BumpType | null = null;
 
 	for (const changeset of changesets) {
 		for (const pkg of changeset.packages) {
@@ -164,7 +164,7 @@ export const determine_bump_from_changesets = (
  *
  * @returns true if repo has unpublished changesets
  */
-export const has_changesets = async (repo: Local_Repo): Promise<boolean> => {
+export const has_changesets = async (repo: LocalRepo): Promise<boolean> => {
 	const changesets_dir = join(repo.repo_dir, '.changeset');
 	if (!existsSync(changesets_dir)) {
 		return false;
@@ -191,9 +191,9 @@ export const has_changesets = async (repo: Local_Repo): Promise<boolean> => {
  * @returns predicted version and bump type, or null if no changesets
  */
 export const predict_next_version = async (
-	repo: Local_Repo,
+	repo: LocalRepo,
 	log?: Logger,
-): Promise<{version: string; bump_type: Bump_Type} | null> => {
+): Promise<{version: string; bump_type: BumpType} | null> => {
 	const changesets = await read_changesets(repo, log);
 	if (changesets.length === 0) {
 		return null;

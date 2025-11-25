@@ -1,11 +1,11 @@
 /**
  * Dependency graph data structure and algorithms for multi-repo publishing.
  *
- * Provides `Dependency_Graph` class with topological sort and cycle detection.
+ * Provides `DependencyGraph` class with topological sort and cycle detection.
  * For validation workflow and publishing order computation, see `graph_validation.ts`.
  */
 
-import type {Local_Repo} from './local_repo.js';
+import type {LocalRepo} from './local_repo.js';
 import {EMPTY_OBJECT} from '@ryanatkn/belt/object.js';
 
 export const DEPENDENCY_TYPE = {
@@ -14,36 +14,36 @@ export const DEPENDENCY_TYPE = {
 	DEV: 'dev',
 } as const;
 
-export type Dependency_Type = (typeof DEPENDENCY_TYPE)[keyof typeof DEPENDENCY_TYPE];
+export type DependencyType = (typeof DEPENDENCY_TYPE)[keyof typeof DEPENDENCY_TYPE];
 
-export interface Dependency_Spec {
-	type: Dependency_Type;
+export interface DependencySpec {
+	type: DependencyType;
 	version: string;
 	resolved?: string;
 }
 
-export interface Dependency_Graph_Json {
+export interface DependencyGraphJson {
 	nodes: Array<{
 		name: string;
 		version: string;
-		dependencies: Array<{name: string; spec: Dependency_Spec}>;
+		dependencies: Array<{name: string; spec: DependencySpec}>;
 		dependents: Array<string>;
 		publishable: boolean;
 	}>;
 	edges: Array<{from: string; to: string}>;
 }
 
-export interface Dependency_Node {
+export interface DependencyNode {
 	name: string;
 	version: string;
-	repo?: Local_Repo;
-	dependencies: Map<string, Dependency_Spec>;
+	repo?: LocalRepo;
+	dependencies: Map<string, DependencySpec>;
 	dependents: Set<string>;
 	publishable: boolean;
 }
 
-export class Dependency_Graph {
-	nodes: Map<string, Dependency_Node>;
+export class DependencyGraph {
+	nodes: Map<string, DependencyNode>;
 	edges: Map<string, Set<string>>; // pkg -> dependents
 
 	constructor() {
@@ -51,11 +51,11 @@ export class Dependency_Graph {
 		this.edges = new Map();
 	}
 
-	public init_from_repos(repos: Array<Local_Repo>): void {
+	public init_from_repos(repos: Array<LocalRepo>): void {
 		// First pass: create nodes
 		for (const repo of repos) {
 			const {pkg} = repo;
-			const node: Dependency_Node = {
+			const node: DependencyNode = {
 				name: pkg.name,
 				version: pkg.package_json.version || '0.0.0',
 				repo,
@@ -102,7 +102,7 @@ export class Dependency_Graph {
 		}
 	}
 
-	get_node(name: string): Dependency_Node | undefined {
+	get_node(name: string): DependencyNode | undefined {
 		return this.nodes.get(name);
 	}
 
@@ -110,7 +110,7 @@ export class Dependency_Graph {
 		return this.edges.get(name) || new Set();
 	}
 
-	get_dependencies(name: string): Map<string, Dependency_Spec> {
+	get_dependencies(name: string): Map<string, DependencySpec> {
 		const node = this.nodes.get(name);
 		return node ? node.dependencies : new Map();
 	}
@@ -339,7 +339,7 @@ export class Dependency_Graph {
 		return {production_cycles, dev_cycles};
 	}
 
-	toJSON(): Dependency_Graph_Json {
+	toJSON(): DependencyGraphJson {
 		const nodes = Array.from(this.nodes.values()).map((node) => ({
 			name: node.name,
 			version: node.version,
@@ -365,7 +365,7 @@ export class Dependency_Graph {
 /**
  * Builder for creating and analyzing dependency graphs.
  */
-export class Dependency_Graph_Builder {
+export class DependencyGraphBuilder {
 	/**
 	 * Constructs dependency graph from local repos.
 	 *
@@ -375,8 +375,8 @@ export class Dependency_Graph_Builder {
 	 *
 	 * @returns fully initialized dependency graph with all nodes and edges
 	 */
-	build_from_repos(repos: Array<Local_Repo>): Dependency_Graph {
-		const graph = new Dependency_Graph();
+	build_from_repos(repos: Array<LocalRepo>): DependencyGraph {
+		const graph = new DependencyGraph();
 		graph.init_from_repos(repos);
 		return graph;
 	}
@@ -391,11 +391,11 @@ export class Dependency_Graph_Builder {
 	 * @returns package names in safe publishing order (dependencies before dependents)
 	 * @throws {Error} if production/peer cycles detected (cannot be resolved by exclusion)
 	 */
-	compute_publishing_order(graph: Dependency_Graph): Array<string> {
+	compute_publishing_order(graph: DependencyGraph): Array<string> {
 		return graph.topological_sort(true); // Exclude dev dependencies
 	}
 
-	analyze(graph: Dependency_Graph): {
+	analyze(graph: DependencyGraph): {
 		production_cycles: Array<Array<string>>;
 		dev_cycles: Array<Array<string>>;
 		wildcard_deps: Array<{pkg: string; dep: string; version: string}>;

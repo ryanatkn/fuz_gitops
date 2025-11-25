@@ -1,14 +1,14 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
-import type {Dependency_Graph_Builder} from './dependency_graph.js';
+import type {DependencyGraphBuilder} from './dependency_graph.js';
 
 /**
  * Formats wildcard dependencies as styled strings.
  * Returns array of lines for inclusion in output.
  */
 export const format_wildcard_dependencies = (
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 ): Array<string> => {
 	if (analysis.wildcard_deps.length === 0) return [];
 
@@ -25,7 +25,7 @@ export const format_wildcard_dependencies = (
  * Returns array of lines for inclusion in output.
  */
 export const format_dev_cycles = (
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 ): Array<string> => {
 	if (analysis.dev_cycles.length === 0) return [];
 
@@ -47,7 +47,7 @@ export const format_dev_cycles = (
  * Returns array of lines for inclusion in output.
  */
 export const format_production_cycles = (
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 ): Array<string> => {
 	if (analysis.production_cycles.length === 0) return [];
 
@@ -69,7 +69,7 @@ export const format_production_cycles = (
  * Wildcard dependencies require attention and should be reviewed.
  */
 export const log_wildcard_dependencies = (
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 	log: Logger,
 	indent = '',
 ): void => {
@@ -84,7 +84,7 @@ export const log_wildcard_dependencies = (
  * Dev cycles are normal and non-blocking, so they're informational, not warnings.
  */
 export const log_dev_cycles = (
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 	log: Logger,
 	indent = '',
 ): void => {
@@ -99,7 +99,7 @@ export const log_dev_cycles = (
  * Production cycles block publishing and must be resolved.
  */
 export const log_production_cycles = (
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 	log: Logger,
 	indent = '',
 ): void => {
@@ -114,7 +114,7 @@ export const log_production_cycles = (
  * Convenience function that calls all three logging functions in order.
  */
 export const log_dependency_analysis = (
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 	log: Logger,
 	indent = '',
 ): void => {

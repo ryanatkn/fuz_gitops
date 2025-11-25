@@ -1,19 +1,19 @@
 import {ensure_end} from '@ryanatkn/belt/string.js';
 
-import type {Github_Pull_Request} from './github.js';
+import type {GithubPullRequest} from './github.js';
 import type {Repo} from './repo.svelte.js';
 
-export type Filter_Pull_Request = (pull_request: Github_Pull_Request, repo: Repo) => boolean;
+export type FilterPullRequest = (pull_request: GithubPullRequest, repo: Repo) => boolean;
 
-export interface Pull_Request_Meta {
+export interface PullRequestMeta {
 	repo: Repo;
-	pull_request: Github_Pull_Request;
+	pull_request: GithubPullRequest;
 }
 
 export const to_pull_requests = (
 	repos: Array<Repo>,
-	filter_pull_request?: Filter_Pull_Request,
-): Array<Pull_Request_Meta> =>
+	filter_pull_request?: FilterPullRequest,
+): Array<PullRequestMeta> =>
 	repos
 		.flatMap((repo) => {
 			if (!repo.pull_requests) return null;
@@ -27,5 +27,5 @@ export const to_pull_requests = (
 		})
 		.filter((v) => v !== null);
 
-export const to_pull_url = (repo_url: string, pull: Github_Pull_Request): string =>
+export const to_pull_url = (repo_url: string, pull: GithubPullRequest): string =>
 	ensure_end(repo_url, '/') + 'pull/' + pull.number;

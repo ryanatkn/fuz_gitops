@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests packages with multiple dependency types to the same package.
@@ -10,7 +10,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  * - Dev dependencies don't trigger republish
  * - Proper bump escalation with mixed dependency types
  */
-export const multiple_dep_types: Repo_Fixture_Set = {
+export const multiple_dep_types: RepoFixtureSet = {
 	name: 'multiple_dep_types',
 	description:
 		'Tests packages with both peer and dev dependencies on the same package (common plugin pattern)',

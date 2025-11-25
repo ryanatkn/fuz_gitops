@@ -1,21 +1,21 @@
 import {test, expect} from 'vitest';
 
-import type {Local_Repo} from '$lib/local_repo.js';
+import type {LocalRepo} from '$lib/local_repo.js';
 import {generate_publishing_plan} from '$lib/publishing_plan.js';
-import type {Changeset_Operations} from '$lib/operations.js';
+import type {ChangesetOperations} from '$lib/operations.js';
 import {create_mock_repo} from './test_helpers.ts';
 
 /* eslint-disable @typescript-eslint/require-await */
 
 test('detects breaking change cascades', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
 		create_mock_repo({name: 'pkg-c', version: '0.3.0', deps: {'pkg-b': '0.2.0'}}),
 	];
 
 	// Mock changeset operations to simulate breaking changes
-	const mock_ops: Changeset_Operations = {
+	const mock_ops: ChangesetOperations = {
 		has_changesets: async (options) => ({
 			ok: true,
 			value: options.repo.pkg.name === 'pkg-a',
@@ -41,13 +41,13 @@ test('detects breaking change cascades', async () => {
 });
 
 test('handles bump escalation', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
 	];
 
 	// Mock operations where pkg-a has breaking change and pkg-b has patch
-	const mock_ops: Changeset_Operations = {
+	const mock_ops: ChangesetOperations = {
 		has_changesets: async () => ({ok: true, value: true}),
 		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
@@ -70,14 +70,14 @@ test('handles bump escalation', async () => {
 });
 
 test('generates auto-changesets for dependency updates', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0'}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
 		create_mock_repo({name: 'pkg-c', version: '0.3.0', dev_deps: {'pkg-a': '0.1.0'}}), // devDep only
 	];
 
 	// Mock operations where only pkg-a has changesets
-	const mock_ops: Changeset_Operations = {
+	const mock_ops: ChangesetOperations = {
 		has_changesets: async (options) => ({
 			ok: true,
 			value: options.repo.pkg.name === 'pkg-a',
@@ -104,13 +104,13 @@ test('generates auto-changesets for dependency updates', async () => {
 });
 
 test('handles circular dev dependencies', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0', dev_deps: {'pkg-b': '0.2.0'}}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0', dev_deps: {'pkg-a': '0.1.0'}}),
 	];
 
 	// Mock operations with no changesets
-	const mock_ops: Changeset_Operations = {
+	const mock_ops: ChangesetOperations = {
 		has_changesets: async () => ({ok: true, value: false}),
 		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async () => null,
@@ -129,13 +129,13 @@ test('handles circular dev dependencies', async () => {
 });
 
 test('detects production circular dependencies', async () => {
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'pkg-a', version: '0.1.0', deps: {'pkg-b': '0.2.0'}}),
 		create_mock_repo({name: 'pkg-b', version: '0.2.0', deps: {'pkg-a': '0.1.0'}}),
 	];
 
 	// Mock operations with no changesets
-	const mock_ops: Changeset_Operations = {
+	const mock_ops: ChangesetOperations = {
 		has_changesets: async () => ({ok: true, value: false}),
 		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async () => null,
@@ -153,7 +153,7 @@ test('detects production circular dependencies', async () => {
 test('warns when MAX_ITERATIONS reached without convergence', async () => {
 	// Create a very deep dependency chain (12 levels) with breaking changes
 	// This will require more than 10 iterations to fully propagate
-	const repos: Array<Local_Repo> = [
+	const repos: Array<LocalRepo> = [
 		create_mock_repo({name: 'level-1', version: '0.1.0'}),
 		create_mock_repo({name: 'level-2', version: '0.1.0', deps: {'level-1': '^0.1.0'}}),
 		create_mock_repo({name: 'level-3', version: '0.1.0', deps: {'level-2': '^0.1.0'}}),
@@ -169,7 +169,7 @@ test('warns when MAX_ITERATIONS reached without convergence', async () => {
 	];
 
 	// Mock operations: only level-1 has a changeset with breaking change
-	const mock_ops: Changeset_Operations = {
+	const mock_ops: ChangesetOperations = {
 		has_changesets: async (options) => ({
 			ok: true,
 			value: options.repo.pkg.name === 'level-1',

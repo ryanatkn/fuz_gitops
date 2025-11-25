@@ -321,11 +321,11 @@ utilities) while preventing runtime dependency issues.
 
 ```ts
 interface Repo extends Pkg {
-  check_runs: Github_Check_Runs_Item | null;
-  pull_requests: Array<Github_Pull_Request> | null;
+  check_runs: GithubCheckRunsItem | null;
+  pull_requests: Array<GithubPullRequest> | null;
 }
 
-interface Local_Repo {
+interface LocalRepo {
   repo_name: string;
   repo_dir: string;
   repo_url: string;
@@ -335,8 +335,8 @@ interface Local_Repo {
 
 ## UI components
 
-- `Repos_Table.svelte` - dependency matrix view
-- `Repos_Tree.svelte` - hierarchical repo browser
+- `ReposTable.svelte` - dependency matrix view
+- `ReposTree.svelte` - hierarchical repo browser
 - `Modules_*.svelte` - module exploration
 - `Pull_Requests_*.svelte` - PR tracking
 
@@ -486,7 +486,7 @@ mock implementations.
 
 - Add side effects as operations interface methods (see `operations.ts`)
 - Accept operations parameter with default:
-  `ops: Gitops_Operations = default_gitops_operations`
+  `ops: GitopsOperations = default_gitops_operations`
 - Call operations through the injected parameter: `await ops.git.commit(...)`
 - Tests inject fake operations that return controlled data
 

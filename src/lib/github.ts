@@ -1,12 +1,12 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import type {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 import {z} from 'zod';
-import {fetch_value, type Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
+import {fetch_value, type FetchValueCache} from '@ryanatkn/belt/fetch.js';
 
 /**
  * @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
  */
-export const Github_Pull_Request = z.object({
+export const GithubPullRequest = z.object({
 	number: z.number(),
 	title: z.string(),
 	user: z.object({
@@ -14,26 +14,26 @@ export const Github_Pull_Request = z.object({
 	}),
 	draft: z.boolean(),
 });
-export type Github_Pull_Request = z.infer<typeof Github_Pull_Request>;
-export const Github_Pull_Requests = z.array(Github_Pull_Request);
-export type Github_Pull_Requests = z.infer<typeof Github_Pull_Requests>;
+export type GithubPullRequest = z.infer<typeof GithubPullRequest>;
+export const GithubPullRequests = z.array(GithubPullRequest);
+export type GithubPullRequests = z.infer<typeof GithubPullRequests>;
 
 /**
  * @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
  */
 export const fetch_github_pull_requests = async (
 	pkg: Pkg,
-	cache?: Fetch_Value_Cache,
+	cache?: FetchValueCache,
 	log?: Logger,
 	token?: string,
 	api_version?: string,
-): Promise<Github_Pull_Requests | null> => {
+): Promise<GithubPullRequests | null> => {
 	if (!pkg.owner_name) throw Error('owner_name is required');
 	const headers = api_version ? new Headers({'x-github-api-version': api_version}) : undefined;
 	const url = `https://api.github.com/repos/${pkg.owner_name}/${pkg.repo_name}/pulls`;
 	const fetched = await fetch_value(url, {
 		request: {headers},
-		parse: Github_Pull_Requests.parse,
+		parse: GithubPullRequests.parse,
 		token,
 		cache,
 		log,
@@ -53,36 +53,36 @@ export const fetch_github_pull_requests = async (
 /**
  * @see https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference
  */
-export const Github_Check_Runs_Item = z.object({
+export const GithubCheckRunsItem = z.object({
 	status: z.enum(['queued', 'in_progress', 'completed']),
 	conclusion: z
 		.enum(['success', 'failure', 'neutral', 'cancelled', 'skipped', 'timed_out', 'action_required'])
 		.nullable(),
 });
-export type Github_Check_Runs_Item = z.infer<typeof Github_Check_Runs_Item>;
-export const Github_Check_Runs = z.object({
+export type GithubCheckRunsItem = z.infer<typeof GithubCheckRunsItem>;
+export const GithubCheckRuns = z.object({
 	total_count: z.number(),
-	check_runs: z.array(Github_Check_Runs_Item),
+	check_runs: z.array(GithubCheckRunsItem),
 });
-export type Github_Check_Runs = z.infer<typeof Github_Check_Runs>;
+export type GithubCheckRuns = z.infer<typeof GithubCheckRuns>;
 
 /**
  * @see https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference
  */
 export const fetch_github_check_runs = async (
 	pkg: Pkg,
-	cache?: Fetch_Value_Cache,
+	cache?: FetchValueCache,
 	log?: Logger,
 	token?: string,
 	api_version?: string,
 	ref = 'main',
-): Promise<Github_Check_Runs_Item | null> => {
+): Promise<GithubCheckRunsItem | null> => {
 	if (!pkg.owner_name) throw Error('owner_name is required');
 	const headers = api_version ? new Headers({'x-github-api-version': api_version}) : undefined;
 	const url = `https://api.github.com/repos/${pkg.owner_name}/${pkg.repo_name}/commits/${ref}/check-runs`;
 	const fetched = await fetch_value(url, {
 		request: {headers},
-		parse: (v) => reduce_check_runs(Github_Check_Runs.parse(v).check_runs),
+		parse: (v) => reduce_check_runs(GithubCheckRuns.parse(v).check_runs),
 		token,
 		cache,
 		log,
@@ -98,12 +98,12 @@ export const fetch_github_check_runs = async (
 };
 
 const reduce_check_runs = (
-	check_runs: Array<Github_Check_Runs_Item>,
-): Github_Check_Runs_Item | null => {
+	check_runs: Array<GithubCheckRunsItem>,
+): GithubCheckRunsItem | null => {
 	if (!check_runs.length) return null;
-	// TODO fix these types and remove the eslint disable, `Github_Check_Runs_Item` should maybe have nullable properties?
-	let status!: Github_Check_Runs_Item['status'];
-	let conclusion!: Github_Check_Runs_Item['conclusion'];
+	// TODO fix these types and remove the eslint disable, `GithubCheckRunsItem` should maybe have nullable properties?
+	let status!: GithubCheckRunsItem['status'];
+	let conclusion!: GithubCheckRunsItem['conclusion'];
 	for (const check_run of check_runs) {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (!status || status === 'completed') {

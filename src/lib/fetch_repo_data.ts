@@ -1,10 +1,10 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {wait} from '@ryanatkn/belt/async.js';
-import type {Fetch_Value_Cache} from '@ryanatkn/belt/fetch.js';
+import type {FetchValueCache} from '@ryanatkn/belt/fetch.js';
 
 import {fetch_github_check_runs, fetch_github_pull_requests} from './github.js';
-import type {Repo_Json} from './repo.svelte.js';
-import type {Local_Repo} from './local_repo.js';
+import type {RepoJson} from './repo.svelte.js';
+import type {LocalRepo} from './local_repo.js';
 
 /* eslint-disable no-await-in-loop */
 
@@ -22,14 +22,14 @@ import type {Local_Repo} from './local_repo.js';
  * @returns array of Repo objects with GitHub metadata attached
  */
 export const fetch_repo_data = async (
-	resolved_repos: Array<Local_Repo>,
+	resolved_repos: Array<LocalRepo>,
 	token?: string,
-	cache?: Fetch_Value_Cache,
+	cache?: FetchValueCache,
 	log?: Logger,
 	delay = 33,
 	github_api_version?: string,
-): Promise<Array<Repo_Json>> => {
-	const repos: Array<Repo_Json> = [];
+): Promise<Array<RepoJson>> => {
+	const repos: Array<RepoJson> = [];
 	for (const {repo_url, repo_config, pkg} of resolved_repos) {
 		// CI status
 		await wait(delay);

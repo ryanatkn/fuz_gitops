@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests deep cascading updates through 4 levels of dependencies.
@@ -10,7 +10,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  * - trunk: Patch changeset escalates to minor due to branch update
  * - root: Auto-changeset from trunk update
  */
-export const deep_cascade: Repo_Fixture_Set = {
+export const deep_cascade: RepoFixtureSet = {
 	name: 'deep_cascade',
 	description:
 		'Tests 4-level deep dependency chain with cascading breaking changes and bump escalation',

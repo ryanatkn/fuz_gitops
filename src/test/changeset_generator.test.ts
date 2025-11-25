@@ -2,14 +2,14 @@ import {describe, it, expect} from 'vitest';
 import {
 	generate_changeset_content,
 	create_dependency_updates,
-	type Dependency_Version_Change,
+	type DependencyVersionChange,
 } from '$lib/changeset_generator.js';
-import type {Published_Version} from '$lib/multi_repo_publisher.js';
+import type {PublishedVersion} from '$lib/multi_repo_publisher.js';
 
 describe('changeset_generator', () => {
 	describe('generate_changeset_content', () => {
 		it('generates content for patch updates', () => {
-			const updates: Array<Dependency_Version_Change> = [
+			const updates: Array<DependencyVersionChange> = [
 				{
 					package_name: 'lib-a',
 					from_version: '1.0.0',
@@ -37,7 +37,7 @@ describe('changeset_generator', () => {
 		});
 
 		it('generates content for breaking changes', () => {
-			const updates: Array<Dependency_Version_Change> = [
+			const updates: Array<DependencyVersionChange> = [
 				{
 					package_name: 'lib-breaking',
 					from_version: '0.5.0',
@@ -56,7 +56,7 @@ describe('changeset_generator', () => {
 		});
 
 		it('generates content for mixed breaking and regular updates', () => {
-			const updates: Array<Dependency_Version_Change> = [
+			const updates: Array<DependencyVersionChange> = [
 				{
 					package_name: 'breaking-lib',
 					from_version: '1.0.0',
@@ -93,7 +93,7 @@ describe('changeset_generator', () => {
 		});
 
 		it('generates valid changeset format', () => {
-			const updates: Array<Dependency_Version_Change> = [
+			const updates: Array<DependencyVersionChange> = [
 				{
 					package_name: 'lib',
 					from_version: '1.0.0',
@@ -116,7 +116,7 @@ describe('changeset_generator', () => {
 		});
 
 		it('escapes package names in frontmatter', () => {
-			const updates: Array<Dependency_Version_Change> = [];
+			const updates: Array<DependencyVersionChange> = [];
 
 			const content = generate_changeset_content('@scope/package-name', updates, 'patch');
 
@@ -132,7 +132,7 @@ describe('changeset_generator', () => {
 				['external-lib', '^3.0.0'], // not published
 			]);
 
-			const published_versions: Map<string, Published_Version> = new Map([
+			const published_versions: Map<string, PublishedVersion> = new Map([
 				[
 					'lib-a',
 					{
@@ -188,7 +188,7 @@ describe('changeset_generator', () => {
 		it('handles breaking changes', () => {
 			const dependencies = new Map([['breaking-lib', '^0.5.0']]);
 
-			const published_versions: Map<string, Published_Version> = new Map([
+			const published_versions: Map<string, PublishedVersion> = new Map([
 				[
 					'breaking-lib',
 					{
@@ -217,7 +217,7 @@ describe('changeset_generator', () => {
 				['gte-lib', '>=1.0.0'],
 			]);
 
-			const published_versions: Map<string, Published_Version> = new Map([
+			const published_versions: Map<string, PublishedVersion> = new Map([
 				[
 					'caret-lib',
 					{

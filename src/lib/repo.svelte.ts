@@ -1,18 +1,18 @@
 import {create_context} from '@ryanatkn/fuz/context_helpers.js';
 import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
-import type {Package_Json} from '@ryanatkn/belt/package_json.js';
-import type {Src_Json} from '@ryanatkn/belt/src_json.js';
+import type {PackageJson} from '@ryanatkn/belt/package_json.js';
+import type {SrcJson} from '@ryanatkn/belt/src_json.js';
 
-import {Github_Check_Runs_Item, type Github_Pull_Request} from './github.js';
+import {GithubCheckRunsItem, type GithubPullRequest} from './github.js';
 
 /**
  * Serialized repo data as stored in repos.ts (JSON).
  */
-export interface Repo_Json {
-	package_json: Package_Json;
-	src_json: Src_Json;
-	check_runs: Github_Check_Runs_Item | null;
-	pull_requests: Array<Github_Pull_Request> | null;
+export interface RepoJson {
+	package_json: PackageJson;
+	src_json: SrcJson;
+	check_runs: GithubCheckRunsItem | null;
+	pull_requests: Array<GithubPullRequest> | null;
 }
 
 /**
@@ -20,10 +20,10 @@ export interface Repo_Json {
  */
 export class Repo {
 	pkg: Pkg;
-	check_runs: Github_Check_Runs_Item | null;
-	pull_requests: Array<Github_Pull_Request> | null;
+	check_runs: GithubCheckRunsItem | null;
+	pull_requests: Array<GithubPullRequest> | null;
 
-	constructor(repo_json: Repo_Json) {
+	constructor(repo_json: RepoJson) {
 		this.pkg = new Pkg(repo_json.package_json, repo_json.src_json);
 		this.check_runs = repo_json.check_runs;
 		this.pull_requests = repo_json.pull_requests;

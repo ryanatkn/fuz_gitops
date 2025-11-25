@@ -1,8 +1,8 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {styleText as st} from 'node:util';
 
-import type {Local_Repo} from './local_repo.js';
-import type {Bump_Type} from './semver.js';
+import type {LocalRepo} from './local_repo.js';
+import type {BumpType} from './semver.js';
 import {validate_dependency_graph} from './graph_validation.js';
 import {
 	needs_update,
@@ -10,25 +10,25 @@ import {
 	compare_bump_types,
 	calculate_next_version,
 } from './version_utils.js';
-import type {Changeset_Operations} from './operations.js';
+import type {ChangesetOperations} from './operations.js';
 import {default_changeset_operations} from './operations_defaults.js';
 import {log_list} from './log_helpers.js';
 import {MAX_ITERATIONS} from './constants.js';
 
-export interface Version_Change {
+export interface VersionChange {
 	package_name: string;
 	from: string;
 	to: string;
-	bump_type: Bump_Type;
+	bump_type: BumpType;
 	breaking: boolean;
 	has_changesets: boolean;
 	will_generate_changeset?: boolean; // True if changeset will be auto-generated for dependency updates
 	needs_bump_escalation?: boolean; // True if existing changesets need escalation for dependencies
-	existing_bump?: Bump_Type; // The bump type from existing changesets
-	required_bump?: Bump_Type; // The required bump type from dependencies
+	existing_bump?: BumpType; // The bump type from existing changesets
+	required_bump?: BumpType; // The required bump type from dependencies
 }
 
-export interface Dependency_Update {
+export interface DependencyUpdate {
 	dependent_package: string;
 	updated_dependency: string;
 	new_version: string;
@@ -36,10 +36,10 @@ export interface Dependency_Update {
 	causes_republish: boolean;
 }
 
-export interface Publishing_Plan {
+export interface PublishingPlan {
 	publishing_order: Array<string>;
-	version_changes: Array<Version_Change>;
-	dependency_updates: Array<Dependency_Update>;
+	version_changes: Array<VersionChange>;
+	dependency_updates: Array<DependencyUpdate>;
 	breaking_cascades: Map<string, Array<string>>;
 	warnings: Array<string>;
 	info: Array<string>; // Informational status (not warnings)
@@ -47,14 +47,14 @@ export interface Publishing_Plan {
 }
 
 const calculate_dependency_updates = (
-	repos: Array<Local_Repo>,
+	repos: Array<LocalRepo>,
 	predicted_versions: Map<string, string>,
 	breaking_packages: Set<string>,
 ): {
-	dependency_updates: Array<Dependency_Update>;
+	dependency_updates: Array<DependencyUpdate>;
 	breaking_cascades: Map<string, Array<string>>;
 } => {
-	const dependency_updates: Array<Dependency_Update> = [];
+	const dependency_updates: Array<DependencyUpdate> = [];
 	const breaking_cascades: Map<string, Array<string>> = new Map();
 
 	for (const repo of repos) {
@@ -127,10 +127,10 @@ const calculate_dependency_updates = (
 };
 
 const get_required_bump_for_dependencies = (
-	repo: Local_Repo,
-	dependency_updates: Array<Dependency_Update>,
+	repo: LocalRepo,
+	dependency_updates: Array<DependencyUpdate>,
 	breaking_packages: Set<string>,
-): Bump_Type | null => {
+): BumpType | null => {
 	// Check if this repo has any prod/peer dependency updates
 	const relevant_updates = dependency_updates.filter(
 		(update) =>
@@ -168,10 +168,10 @@ const get_required_bump_for_dependencies = (
  * Uses fixed-point iteration to resolve transitive cascades.
  */
 export const generate_publishing_plan = async (
-	repos: Array<Local_Repo>,
+	repos: Array<LocalRepo>,
 	log?: Logger,
-	ops: Changeset_Operations = default_changeset_operations,
-): Promise<Publishing_Plan> => {
+	ops: ChangesetOperations = default_changeset_operations,
+): Promise<PublishingPlan> => {
 	log?.info(st('cyan', 'Generating publishing plan...'));
 
 	const warnings: Array<string> = [];
@@ -227,7 +227,7 @@ export const generate_publishing_plan = async (
 	// Initial pass: get all packages with explicit changesets
 	const predicted_versions: Map<string, string> = new Map();
 	const breaking_packages: Set<string> = new Set();
-	const version_changes: Array<Version_Change> = [];
+	const version_changes: Array<VersionChange> = [];
 
 	for (const pkg_name of publishing_order) {
 		const repo = repos.find((r) => r.pkg.name === pkg_name);
@@ -439,11 +439,11 @@ export const generate_publishing_plan = async (
 };
 
 const log_version_change_group = (
-	changes: Array<Version_Change>,
+	changes: Array<VersionChange>,
 	header: string,
 	color: 'cyan' | 'yellow',
 	log: Logger,
-	extra_info?: (change: Version_Change) => string,
+	extra_info?: (change: VersionChange) => string,
 ): void => {
 	if (changes.length === 0) return;
 
@@ -458,7 +458,7 @@ const log_version_change_group = (
 	}
 };
 
-export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void => {
+export const log_publishing_plan = (plan: PublishingPlan, log: Logger): void => {
 	const {
 		publishing_order,
 		version_changes,
@@ -535,7 +535,7 @@ export const log_publishing_plan = (plan: Publishing_Plan, log: Logger): void =>
 	// Dependency updates
 	if (dependency_updates.length > 0) {
 		// Group by package, then by dependency name
-		const updates_by_package: Map<string, Map<string, Array<Dependency_Update>>> = new Map();
+		const updates_by_package: Map<string, Map<string, Array<DependencyUpdate>>> = new Map();
 		for (const update of dependency_updates) {
 			if (!updates_by_package.has(update.dependent_package)) {
 				updates_by_package.set(update.dependent_package, new Map());

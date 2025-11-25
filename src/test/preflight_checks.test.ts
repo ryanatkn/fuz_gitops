@@ -7,7 +7,7 @@ import {
 	create_mock_npm_ops,
 	create_mock_build_ops,
 } from './test_helpers.ts';
-import type {Local_Repo} from '$lib/local_repo.js';
+import type {LocalRepo} from '$lib/local_repo.js';
 
 /* eslint-disable @typescript-eslint/require-await */
 
@@ -356,7 +356,7 @@ describe('preflight_checks', () => {
 
 	describe('empty repo list', () => {
 		it('passes with empty repo list', async () => {
-			const repos: Array<Local_Repo> = [];
+			const repos: Array<LocalRepo> = [];
 			const git_ops = create_mock_git_ops();
 
 			const npm_ops = create_mock_npm_ops();
@@ -505,7 +505,7 @@ describe('preflight_checks', () => {
 
 			// Mock changeset ops where only package-a and package-b have changesets
 			const changeset_ops = {
-				has_changesets: async (options: {repo: Local_Repo}) => ({
+				has_changesets: async (options: {repo: LocalRepo}) => ({
 					ok: true as const,
 					value: options.repo.pkg.name === 'package-a' || options.repo.pkg.name === 'package-b',
 				}),
@@ -542,7 +542,7 @@ describe('preflight_checks', () => {
 
 			// Mock changeset ops where failing-package has changesets
 			const changeset_ops = {
-				has_changesets: async (options: {repo: Local_Repo}) => ({
+				has_changesets: async (options: {repo: LocalRepo}) => ({
 					ok: true as const,
 					value: options.repo.pkg.name === 'failing-package',
 				}),

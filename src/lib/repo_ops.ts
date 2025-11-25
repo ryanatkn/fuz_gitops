@@ -57,7 +57,7 @@ export const DEFAULT_EXCLUDE_EXTENSIONS = [
 	'.pdf',
 ] as const;
 
-export interface Walk_Options {
+export interface WalkOptions {
 	/** Additional directories to exclude (merged with defaults) */
 	exclude_dirs?: Array<string>;
 	/** Additional extensions to exclude (merged with defaults) */
@@ -70,7 +70,7 @@ export interface Walk_Options {
 	no_defaults?: boolean;
 }
 
-export interface Repo_Path {
+export interface RepoPath {
 	name: string;
 	path: string;
 	url: string;
@@ -83,7 +83,7 @@ export interface Repo_Path {
  * @param config_path Path to gitops.config.ts (defaults to ./gitops.config.ts)
  * @returns Array of repo info with name, path, and url
  */
-export const get_repo_paths = async (config_path?: string): Promise<Array<Repo_Path>> => {
+export const get_repo_paths = async (config_path?: string): Promise<Array<RepoPath>> => {
 	const resolved_config_path = resolve(config_path ?? 'gitops.config.ts');
 	const config = await load_gitops_config(resolved_config_path);
 
@@ -94,7 +94,7 @@ export const get_repo_paths = async (config_path?: string): Promise<Array<Repo_P
 	const config_dir = dirname(resolved_config_path);
 	const repos_dir = resolve(config_dir, config.repos_dir || DEFAULT_REPOS_DIR);
 
-	const repos: Array<Repo_Path> = [];
+	const repos: Array<RepoPath> = [];
 
 	for (const repo_config of config.repos) {
 		const url = repo_config.repo_url;
@@ -116,7 +116,7 @@ export const get_repo_paths = async (config_path?: string): Promise<Array<Repo_P
 /**
  * Check if a path should be excluded based on options.
  */
-export const should_exclude_path = (file_path: string, options?: Walk_Options): boolean => {
+export const should_exclude_path = (file_path: string, options?: WalkOptions): boolean => {
 	const exclude_dirs = options?.no_defaults
 		? (options.exclude_dirs ?? [])
 		: [...DEFAULT_EXCLUDE_DIRS, ...(options?.exclude_dirs ?? [])];
@@ -129,7 +129,8 @@ export const should_exclude_path = (file_path: string, options?: Walk_Options): 
 
 	// Check excluded directories
 	for (const dir of exclude_dirs) {
-		if (normalized.includes(`/${dir}/`) || normalized.includes(`/${dir}`)) {
+		// Must match as a full directory component, not a prefix
+		if (normalized.includes(`/${dir}/`) || normalized.endsWith(`/${dir}`)) {
 			return true;
 		}
 	}
@@ -153,7 +154,7 @@ export const should_exclude_path = (file_path: string, options?: Walk_Options): 
  */
 export async function* walk_repo_files(
 	dir: string,
-	options?: Walk_Options,
+	options?: WalkOptions,
 ): AsyncGenerator<string, void, undefined> {
 	const max_file_size = options?.max_file_size ?? 10 * 1024 * 1024;
 	const include_dirs = options?.include_dirs ?? false;
@@ -202,7 +203,7 @@ export async function* walk_repo_files(
  */
 export const collect_repo_files = async (
 	dir: string,
-	options?: Walk_Options,
+	options?: WalkOptions,
 ): Promise<Array<string>> => {
 	const files: Array<string> = [];
 	for await (const file of walk_repo_files(dir, options)) {

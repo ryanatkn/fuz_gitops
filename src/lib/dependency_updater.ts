@@ -1,17 +1,17 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
 import {join} from 'node:path';
 
-import type {Local_Repo} from './local_repo.js';
-import type {Published_Version} from './multi_repo_publisher.js';
+import type {LocalRepo} from './local_repo.js';
+import type {PublishedVersion} from './multi_repo_publisher.js';
 import {
 	create_changeset_for_dependency_updates,
 	create_dependency_updates,
 } from './changeset_generator.js';
 import {needs_update, get_update_prefix} from './version_utils.js';
-import type {Git_Operations, Fs_Operations} from './operations.js';
+import type {GitOperations, FsOperations} from './operations.js';
 import {default_git_operations, default_fs_operations} from './operations_defaults.js';
 
-export type Version_Strategy = 'exact' | 'caret' | 'tilde' | 'gte';
+export type VersionStrategy = 'exact' | 'caret' | 'tilde' | 'gte';
 
 /**
  * Updates package.json dependencies and creates changeset if needed.
@@ -30,13 +30,13 @@ export type Version_Strategy = 'exact' | 'caret' | 'tilde' | 'gte';
  * @throws {Error} if file operations or git operations fail
  */
 export const update_package_json = async (
-	repo: Local_Repo,
+	repo: LocalRepo,
 	updates: Map<string, string>,
-	strategy: Version_Strategy = 'caret',
-	published_versions?: Map<string, Published_Version>,
+	strategy: VersionStrategy = 'caret',
+	published_versions?: Map<string, PublishedVersion>,
 	log?: Logger,
-	git_ops: Git_Operations = default_git_operations,
-	fs_ops: Fs_Operations = default_fs_operations,
+	git_ops: GitOperations = default_git_operations,
+	fs_ops: FsOperations = default_fs_operations,
 ): Promise<void> => {
 	if (updates.size === 0) return;
 
@@ -163,12 +163,12 @@ export const update_package_json = async (
 };
 
 export const update_all_repos = async (
-	repos: Array<Local_Repo>,
+	repos: Array<LocalRepo>,
 	published: Map<string, string>,
-	strategy: Version_Strategy = 'caret',
+	strategy: VersionStrategy = 'caret',
 	log?: Logger,
-	git_ops: Git_Operations = default_git_operations,
-	fs_ops: Fs_Operations = default_fs_operations,
+	git_ops: GitOperations = default_git_operations,
+	fs_ops: FsOperations = default_fs_operations,
 ): Promise<{updated: number; failed: Array<{repo: string; error: Error}>}> => {
 	let updated_count = 0;
 	const failed: Array<{repo: string; error: Error}> = [];
@@ -221,7 +221,7 @@ export const update_all_repos = async (
 };
 
 export const find_updates_needed = (
-	repo: Local_Repo,
+	repo: LocalRepo,
 	published: Map<string, string>,
 ): Map<
 	string,

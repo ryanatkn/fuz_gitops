@@ -4,15 +4,15 @@ import {styleText as st} from 'node:util';
 import type {Logger} from '@ryanatkn/belt/log.js';
 
 import {get_gitops_ready} from './gitops_task_helpers.js';
-import {type Dependency_Graph, Dependency_Graph_Builder} from './dependency_graph.js';
-import type {Local_Repo} from './local_repo.js';
+import {type DependencyGraph, DependencyGraphBuilder} from './dependency_graph.js';
+import type {LocalRepo} from './local_repo.js';
 import {validate_dependency_graph} from './graph_validation.js';
 import {
 	format_wildcard_dependencies,
 	format_dev_cycles,
 	format_production_cycles,
 } from './log_helpers.js';
-import {format_and_output, type Output_Formatters} from './output_helpers.js';
+import {format_and_output, type OutputFormatters} from './output_helpers.js';
 
 /** @nodocs */
 export const Args = z.strictObject({
@@ -50,7 +50,7 @@ export const task: Task<Args> = {
 		});
 
 		// Perform additional analysis
-		const builder = new Dependency_Graph_Builder();
+		const builder = new DependencyGraphBuilder();
 		const analysis = builder.analyze(graph);
 
 		// Publishing order (may be null if prod cycles exist)
@@ -69,15 +69,15 @@ export const task: Task<Args> = {
 };
 
 // Data type for analysis output
-interface Analysis_Data {
-	repos: Array<Local_Repo>;
-	graph: Dependency_Graph;
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>;
+interface AnalysisData {
+	repos: Array<LocalRepo>;
+	graph: DependencyGraph;
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>;
 	publishing_order: Array<string> | null;
 }
 
 // Create formatters for output_helpers
-const create_formatters = (): Output_Formatters<Analysis_Data> => ({
+const create_formatters = (): OutputFormatters<AnalysisData> => ({
 	json: (data) => format_json(data.graph, data.analysis, data.publishing_order),
 	markdown: (data) => format_markdown(data.repos, data.graph, data.analysis, data.publishing_order),
 	stdout: (data, log) =>
@@ -85,7 +85,7 @@ const create_formatters = (): Output_Formatters<Analysis_Data> => ({
 });
 
 // Helper to calculate common statistics
-const calculate_stats = (graph: Dependency_Graph) => {
+const calculate_stats = (graph: DependencyGraph) => {
 	const total_deps = Array.from(graph.nodes.values()).reduce(
 		(sum, node) => sum + node.dependencies.size,
 		0,
@@ -99,8 +99,8 @@ const calculate_stats = (graph: Dependency_Graph) => {
 };
 
 const format_json = (
-	graph: Dependency_Graph,
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	graph: DependencyGraph,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 	publishing_order: Array<string> | null,
 ): string => {
 	const output = {
@@ -112,9 +112,9 @@ const format_json = (
 };
 
 const format_markdown = (
-	repos: Array<Local_Repo>,
-	graph: Dependency_Graph,
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	repos: Array<LocalRepo>,
+	graph: DependencyGraph,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 	publishing_order: Array<string> | null,
 ): Array<string> => {
 	const lines: Array<string> = ['# Dependency Analysis'];
@@ -188,9 +188,9 @@ const format_markdown = (
 };
 
 const format_stdout = (
-	repos: Array<Local_Repo>,
-	graph: Dependency_Graph,
-	analysis: ReturnType<Dependency_Graph_Builder['analyze']>,
+	repos: Array<LocalRepo>,
+	graph: DependencyGraph,
+	analysis: ReturnType<DependencyGraphBuilder['analyze']>,
 	publishing_order: Array<string> | null,
 	log: Logger,
 ): void => {

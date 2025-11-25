@@ -6,11 +6,11 @@ import {styleText as st} from 'node:util';
 import {get_gitops_ready} from './gitops_task_helpers.js';
 import {
 	publish_repos,
-	type Publishing_Options,
-	type Publishing_Result,
+	type PublishingOptions,
+	type PublishingResult,
 } from './multi_repo_publisher.js';
 import {generate_publishing_plan, log_publishing_plan} from './publishing_plan.js';
-import {format_and_output, type Output_Formatters} from './output_helpers.js';
+import {format_and_output, type OutputFormatters} from './output_helpers.js';
 
 /** @nodocs */
 export const Args = z.strictObject({
@@ -99,7 +99,7 @@ export const task: Task<Args> = {
 		}
 
 		// Publishing options
-		const options: Publishing_Options = {
+		const options: PublishingOptions = {
 			dry_run,
 			update_deps: true, // Always update dependencies
 			version_strategy: peer_strategy,
@@ -110,7 +110,7 @@ export const task: Task<Args> = {
 		};
 
 		// Execute publishing (may throw on fatal errors like circular dependencies)
-		let result: Publishing_Result;
+		let result: PublishingResult;
 		let fatal_error: Error | null = null;
 
 		try {
@@ -144,12 +144,12 @@ export const task: Task<Args> = {
 	},
 };
 
-interface Publish_Result_Data {
-	result: Publishing_Result;
+interface PublishResultData {
+	result: PublishingResult;
 	fatal_error: Error | null;
 }
 
-const create_publish_formatters = (): Output_Formatters<Publish_Result_Data> => ({
+const create_publish_formatters = (): OutputFormatters<PublishResultData> => ({
 	json: (data) => JSON.stringify(data.result, null, 2),
 	markdown: (data) => format_result_markdown(data.result, data.fatal_error),
 	stdout: () => {
@@ -160,7 +160,7 @@ const create_publish_formatters = (): Output_Formatters<Publish_Result_Data> => 
 
 // Format the publishing result as markdown
 const format_result_markdown = (
-	result: Publishing_Result,
+	result: PublishingResult,
 	fatal_error: Error | null,
 ): Array<string> => {
 	const lines: Array<string> = [];

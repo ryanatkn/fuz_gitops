@@ -12,14 +12,14 @@
  */
 
 import type {Logger} from '@ryanatkn/belt/log.js';
-import {Task_Error} from '@ryanatkn/gro';
+import {TaskError} from '@ryanatkn/gro';
 import {styleText as st} from 'node:util';
 
-import {Dependency_Graph, Dependency_Graph_Builder} from './dependency_graph.js';
-import type {Local_Repo} from './local_repo.js';
+import {DependencyGraph, DependencyGraphBuilder} from './dependency_graph.js';
+import type {LocalRepo} from './local_repo.js';
 
-export interface Graph_Validation_Result {
-	graph: Dependency_Graph;
+export interface GraphValidationResult {
+	graph: DependencyGraph;
 	publishing_order: Array<string>;
 	production_cycles: Array<Array<string>>;
 	dev_cycles: Array<Array<string>>;
@@ -34,22 +34,22 @@ export interface Graph_Validation_Result {
  * @param options.log_cycles whether to log cycle information (default: true)
  * @param options.log_order whether to log publishing order (default: true)
  * @returns graph validation result with graph, publishing order, and detected cycles
- * @throws {Task_Error} if production cycles detected and throw_on_prod_cycles is true
+ * @throws {TaskError} if production cycles detected and throw_on_prod_cycles is true
  */
 export const validate_dependency_graph = (
-	repos: Array<Local_Repo>,
+	repos: Array<LocalRepo>,
 	log?: Logger,
 	options: {
 		throw_on_prod_cycles?: boolean;
 		log_cycles?: boolean;
 		log_order?: boolean;
 	} = {},
-): Graph_Validation_Result => {
+): GraphValidationResult => {
 	const {throw_on_prod_cycles = true, log_cycles = true, log_order = true} = options;
 
 	// Build dependency graph
 	log?.info('📊 Analyzing dependencies...');
-	const builder = new Dependency_Graph_Builder();
+	const builder = new DependencyGraphBuilder();
 	const graph = builder.build_from_repos(repos);
 
 	// Check for cycles
@@ -63,7 +63,7 @@ export const validate_dependency_graph = (
 		}
 
 		if (throw_on_prod_cycles) {
-			throw new Task_Error(
+			throw new TaskError(
 				`Cannot publish with production/peer dependency cycles. ` +
 					`These must be resolved before publishing.`,
 			);
@@ -93,7 +93,7 @@ export const validate_dependency_graph = (
 		// If topological sort fails (due to cycles), return empty array
 		// Only throw if production cycles exist AND throw_on_prod_cycles is true
 		if (production_cycles.length > 0 && throw_on_prod_cycles) {
-			throw new Task_Error(sort_error);
+			throw new TaskError(sort_error);
 		}
 		// Otherwise, return empty publishing order (let caller handle it)
 		publishing_order = [];

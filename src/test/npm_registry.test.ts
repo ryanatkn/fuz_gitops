@@ -7,7 +7,7 @@ import {
 	wait_for_package,
 	get_package_info,
 	package_exists,
-	type Wait_Options,
+	type WaitOptions,
 } from '$lib/npm_registry.js';
 import {create_mock_logger} from './test_helpers.ts';
 
@@ -156,7 +156,7 @@ describe('npm_registry', () => {
 				return {stdout: '1.0.0'} as any;
 			});
 
-			const options: Wait_Options = {
+			const options: WaitOptions = {
 				initial_delay: 100,
 				max_delay: 1000,
 			};
@@ -189,7 +189,7 @@ describe('npm_registry', () => {
 				return {stdout: '1.0.0'} as any;
 			});
 
-			const options: Wait_Options = {
+			const options: WaitOptions = {
 				initial_delay: 100,
 				max_delay: 200,
 			};
@@ -212,7 +212,7 @@ describe('npm_registry', () => {
 				return {stdout: '1.0.0'} as any;
 			});
 
-			const options: Wait_Options = {
+			const options: WaitOptions = {
 				initial_delay: 1000,
 			};
 
@@ -230,7 +230,7 @@ describe('npm_registry', () => {
 		it('throws after max_attempts', async () => {
 			vi.mocked(spawn_out).mockResolvedValue({stdout: ''} as any);
 
-			const options: Wait_Options = {
+			const options: WaitOptions = {
 				max_attempts: 3,
 				initial_delay: 10,
 			};
@@ -249,7 +249,7 @@ describe('npm_registry', () => {
 				vi.spyOn(Date, 'now').mockReturnValue(Date.now() + (ms || 0));
 			});
 
-			const options: Wait_Options = {
+			const options: WaitOptions = {
 				timeout: 500,
 				initial_delay: 100,
 			};
@@ -270,7 +270,7 @@ describe('npm_registry', () => {
 				return {stdout: '1.0.0'} as any;
 			});
 
-			const options: Wait_Options = {
+			const options: WaitOptions = {
 				initial_delay: 10,
 			};
 
@@ -327,7 +327,7 @@ describe('npm_registry', () => {
 				now += ms || 0;
 			});
 
-			const options: Wait_Options = {
+			const options: WaitOptions = {
 				timeout: 200,
 				initial_delay: 100,
 			};

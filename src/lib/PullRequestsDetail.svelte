@@ -1,12 +1,12 @@
 <script lang="ts">
 	import {resolve} from '$app/paths';
 
-	import {to_pull_requests, type Filter_Pull_Request} from './github_helpers.js';
+	import {to_pull_requests, type FilterPullRequest} from './github_helpers.js';
 	import type {Repo} from './repo.svelte.js';
 
 	interface Props {
 		repos: Array<Repo>;
-		filter_pull_request?: Filter_Pull_Request | undefined;
+		filter_pull_request?: FilterPullRequest | undefined;
 	}
 
 	const {repos, filter_pull_request}: Props = $props();

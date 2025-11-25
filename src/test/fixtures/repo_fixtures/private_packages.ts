@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests handling of private packages (private: true in package.json).
@@ -10,7 +10,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  * - private_tool: Private package (should be skipped)
  * - consumer: Depends on both public_lib and private_tool
  */
-export const private_packages: Repo_Fixture_Set = {
+export const private_packages: RepoFixtureSet = {
 	name: 'private_packages',
 	description:
 		'Tests that private packages are excluded from publishing but dependents can publish',

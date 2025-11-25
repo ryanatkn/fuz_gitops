@@ -3,7 +3,7 @@
  * @see https://semver.org/
  */
 
-export type Bump_Type = 'major' | 'minor' | 'patch';
+export type BumpType = 'major' | 'minor' | 'patch';
 
 export interface Semver {
 	major: number;
@@ -140,7 +140,7 @@ export const semver_compare_versions = (a: string, b: string): number => {
  * Bumps a version according to the specified type.
  * Resets lower version numbers per SemVer spec.
  */
-export const semver_bump_version = (version: string, type: Bump_Type): string => {
+export const semver_bump_version = (version: string, type: BumpType): string => {
 	const semver = semver_parse(version);
 
 	switch (type) {

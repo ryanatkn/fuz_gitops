@@ -111,10 +111,10 @@ export const src_json: Src_Json = {
 			path: 'changeset_generator.ts',
 			identifiers: [
 				{
-					name: 'Dependency_Version_Change',
+					name: 'DependencyVersionChange',
 					kind: 'type',
 					source_line: 16,
-					type_signature: 'Dependency_Version_Change',
+					type_signature: 'DependencyVersionChange',
 					properties: [
 						{
 							name: 'package_name',
@@ -150,17 +150,17 @@ export const src_json: Src_Json = {
 						'Creates a changeset file for dependency updates.\nReturns the path to the created changeset file.',
 					source_line: 28,
 					type_signature:
-						'(repo: Local_Repo, updates: Dependency_Version_Change[], log?: Logger | undefined): Promise<string>',
+						'(repo: LocalRepo, updates: DependencyVersionChange[], log?: Logger | undefined): Promise<string>',
 					return_type: 'Promise<string>',
 					parameters: [
 						{
 							name: 'repo',
-							type: 'Local_Repo',
+							type: 'LocalRepo',
 							optional: false,
 						},
 						{
 							name: 'updates',
-							type: 'Dependency_Version_Change[]',
+							type: 'DependencyVersionChange[]',
 							optional: false,
 						},
 						{
@@ -177,7 +177,7 @@ export const src_json: Src_Json = {
 						'Generates markdown changeset content for dependency updates.\n\nCreates properly formatted changeset with YAML frontmatter, summary,\nand categorized list of breaking vs regular updates. Output format\nmatches changesets CLI for consistency.',
 					source_line: 94,
 					type_signature:
-						'(package_name: string, updates: Dependency_Version_Change[], bump_type: "major" | "minor" | "patch"): string',
+						'(package_name: string, updates: DependencyVersionChange[], bump_type: "major" | "minor" | "patch"): string',
 					return_type: 'string',
 					return_description: 'markdown content ready to write to .changeset/*.md file',
 					parameters: [
@@ -189,7 +189,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'updates',
-							type: 'Dependency_Version_Change[]',
+							type: 'DependencyVersionChange[]',
 							optional: false,
 							description: 'list of dependency changes with version info',
 						},
@@ -206,8 +206,8 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 138,
 					type_signature:
-						'(dependencies: Map<string, string>, published_versions: Map<string, Published_Version>): Dependency_Version_Change[]',
-					return_type: 'Dependency_Version_Change[]',
+						'(dependencies: Map<string, string>, published_versions: Map<string, PublishedVersion>): DependencyVersionChange[]',
+					return_type: 'DependencyVersionChange[]',
 					parameters: [
 						{
 							name: 'dependencies',
@@ -216,7 +216,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'published_versions',
-							type: 'Map<string, Published_Version>',
+							type: 'Map<string, PublishedVersion>',
 							optional: false,
 						},
 					],
@@ -231,10 +231,10 @@ export const src_json: Src_Json = {
 			path: 'changeset_reader.ts',
 			identifiers: [
 				{
-					name: 'Changeset_Info',
+					name: 'ChangesetInfo',
 					kind: 'type',
 					source_line: 17,
-					type_signature: 'Changeset_Info',
+					type_signature: 'ChangesetInfo',
 					properties: [
 						{
 							name: 'filename',
@@ -244,7 +244,7 @@ export const src_json: Src_Json = {
 						{
 							name: 'packages',
 							kind: 'variable',
-							type_signature: 'Array<{name: string; bump_type: Bump_Type}>',
+							type_signature: 'Array<{name: string; bump_type: BumpType}>',
 						},
 						{
 							name: 'summary',
@@ -259,8 +259,8 @@ export const src_json: Src_Json = {
 					doc_comment:
 						'Parses changeset content string from markdown format.\n\nPure function for testability - no file I/O, just string parsing.\nExtracts package names, bump types, and summary from YAML frontmatter format.\nReturns null if format is invalid or no packages found.\n\nExpected format:\n---\n"package-name": patch\n"@scope/package": minor\n---\n\nSummary of changes',
 					source_line: 42,
-					type_signature: '(content: string, filename?: string): Changeset_Info | null',
-					return_type: 'Changeset_Info | null',
+					type_signature: '(content: string, filename?: string): ChangesetInfo | null',
+					return_type: 'ChangesetInfo | null',
 					return_description: 'parsed changeset info or null if invalid format',
 					parameters: [
 						{
@@ -283,8 +283,8 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 82,
 					type_signature:
-						'(filepath: string, log?: Logger | undefined): Promise<Changeset_Info | null>',
-					return_type: 'Promise<Changeset_Info | null>',
+						'(filepath: string, log?: Logger | undefined): Promise<ChangesetInfo | null>',
+					return_type: 'Promise<ChangesetInfo | null>',
 					parameters: [
 						{
 							name: 'filepath',
@@ -302,12 +302,12 @@ export const src_json: Src_Json = {
 					name: 'read_changesets',
 					kind: 'function',
 					source_line: 103,
-					type_signature: '(repo: Local_Repo, log?: Logger | undefined): Promise<Changeset_Info[]>',
-					return_type: 'Promise<Changeset_Info[]>',
+					type_signature: '(repo: LocalRepo, log?: Logger | undefined): Promise<ChangesetInfo[]>',
+					return_type: 'Promise<ChangesetInfo[]>',
 					parameters: [
 						{
 							name: 'repo',
-							type: 'Local_Repo',
+							type: 'LocalRepo',
 							optional: false,
 						},
 						{
@@ -323,13 +323,13 @@ export const src_json: Src_Json = {
 					doc_comment:
 						'Determines the bump type for a package from its changesets.\n\nWhen multiple changesets exist for the same package, returns the highest\nbump type (major > minor > patch) to ensure the most significant change\nis reflected in the version bump.',
 					source_line: 139,
-					type_signature: '(changesets: Changeset_Info[], package_name: string): Bump_Type | null',
-					return_type: 'Bump_Type | null',
+					type_signature: '(changesets: ChangesetInfo[], package_name: string): BumpType | null',
+					return_type: 'BumpType | null',
 					return_description: 'the highest bump type, or null if package has no changesets',
 					parameters: [
 						{
 							name: 'changesets',
-							type: 'Changeset_Info[]',
+							type: 'ChangesetInfo[]',
 							optional: false,
 						},
 						{
@@ -345,13 +345,13 @@ export const src_json: Src_Json = {
 					doc_comment:
 						"Checks if a repo has any changeset files (excluding README.md).\n\nUsed by preflight checks and publishing workflow to determine which packages\nneed to be published. Returns false if .changeset directory doesn't exist\nor contains only README.md.",
 					source_line: 167,
-					type_signature: '(repo: Local_Repo): Promise<boolean>',
+					type_signature: '(repo: LocalRepo): Promise<boolean>',
 					return_type: 'Promise<boolean>',
 					return_description: 'true if repo has unpublished changesets',
 					parameters: [
 						{
 							name: 'repo',
-							type: 'Local_Repo',
+							type: 'LocalRepo',
 							optional: false,
 						},
 					],
@@ -363,13 +363,13 @@ export const src_json: Src_Json = {
 						'Predicts the next version by analyzing all changesets in a repo.\n\nReads all changesets, determines the highest bump type for the package,\nand calculates the next version. Returns null if no changesets found.\n\nCritical for dry-run mode accuracy - allows simulating publishes without\nactually running `gro publish` which consumes changesets.',
 					source_line: 193,
 					type_signature:
-						'(repo: Local_Repo, log?: Logger | undefined): Promise<{ version: string; bump_type: Bump_Type; } | null>',
-					return_type: 'Promise<{ version: string; bump_type: Bump_Type; } | null>',
+						'(repo: LocalRepo, log?: Logger | undefined): Promise<{ version: string; bump_type: BumpType; } | null>',
+					return_type: 'Promise<{ version: string; bump_type: BumpType; } | null>',
 					return_description: 'predicted version and bump type, or null if no changesets',
 					parameters: [
 						{
 							name: 'repo',
-							type: 'Local_Repo',
+							type: 'LocalRepo',
 							optional: false,
 						},
 						{
@@ -409,21 +409,21 @@ export const src_json: Src_Json = {
 					type_signature: '{ readonly PROD: "prod"; readonly PEER: "peer"; readonly DEV: "dev"; }',
 				},
 				{
-					name: 'Dependency_Type',
+					name: 'DependencyType',
 					kind: 'type',
 					source_line: 17,
-					type_signature: 'Dependency_Type',
+					type_signature: 'DependencyType',
 				},
 				{
-					name: 'Dependency_Spec',
+					name: 'DependencySpec',
 					kind: 'type',
 					source_line: 19,
-					type_signature: 'Dependency_Spec',
+					type_signature: 'DependencySpec',
 					properties: [
 						{
 							name: 'type',
 							kind: 'variable',
-							type_signature: 'Dependency_Type',
+							type_signature: 'DependencyType',
 						},
 						{
 							name: 'version',
@@ -438,16 +438,16 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Dependency_Graph_Json',
+					name: 'DependencyGraphJson',
 					kind: 'type',
 					source_line: 25,
-					type_signature: 'Dependency_Graph_Json',
+					type_signature: 'DependencyGraphJson',
 					properties: [
 						{
 							name: 'nodes',
 							kind: 'variable',
 							type_signature:
-								'Array<{\n\t\tname: string;\n\t\tversion: string;\n\t\tdependencies: Array<{name: string; spec: Dependency_Spec}>;\n\t\tdependents: Array<string>;\n\t\tpublishable: boolean;\n\t}>',
+								'Array<{\n\t\tname: string;\n\t\tversion: string;\n\t\tdependencies: Array<{name: string; spec: DependencySpec}>;\n\t\tdependents: Array<string>;\n\t\tpublishable: boolean;\n\t}>',
 						},
 						{
 							name: 'edges',
@@ -457,10 +457,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Dependency_Node',
+					name: 'DependencyNode',
 					kind: 'type',
 					source_line: 36,
-					type_signature: 'Dependency_Node',
+					type_signature: 'DependencyNode',
 					properties: [
 						{
 							name: 'name',
@@ -475,12 +475,12 @@ export const src_json: Src_Json = {
 						{
 							name: 'repo',
 							kind: 'variable',
-							type_signature: 'Local_Repo',
+							type_signature: 'LocalRepo',
 						},
 						{
 							name: 'dependencies',
 							kind: 'variable',
-							type_signature: 'Map<string, Dependency_Spec>',
+							type_signature: 'Map<string, DependencySpec>',
 						},
 						{
 							name: 'dependents',
@@ -495,14 +495,14 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Dependency_Graph',
+					name: 'DependencyGraph',
 					kind: 'class',
 					source_line: 45,
 					members: [
 						{
 							name: 'nodes',
 							kind: 'variable',
-							type_signature: 'Map<string, Dependency_Node>',
+							type_signature: 'Map<string, DependencyNode>',
 						},
 						{
 							name: 'edges',
@@ -512,19 +512,19 @@ export const src_json: Src_Json = {
 						{
 							name: 'constructor',
 							kind: 'constructor',
-							type_signature: '(): Dependency_Graph',
+							type_signature: '(): DependencyGraph',
 							parameters: [],
 						},
 						{
 							name: 'init_from_repos',
 							kind: 'function',
 							modifiers: ['public'],
-							type_signature: '(repos: Local_Repo[]): void',
+							type_signature: '(repos: LocalRepo[]): void',
 							return_type: 'void',
 							parameters: [
 								{
 									name: 'repos',
-									type: 'Local_Repo[]',
+									type: 'LocalRepo[]',
 									optional: false,
 								},
 							],
@@ -532,8 +532,8 @@ export const src_json: Src_Json = {
 						{
 							name: 'get_node',
 							kind: 'function',
-							type_signature: '(name: string): Dependency_Node | undefined',
-							return_type: 'Dependency_Node | undefined',
+							type_signature: '(name: string): DependencyNode | undefined',
+							return_type: 'DependencyNode | undefined',
 							parameters: [
 								{
 									name: 'name',
@@ -558,8 +558,8 @@ export const src_json: Src_Json = {
 						{
 							name: 'get_dependencies',
 							kind: 'function',
-							type_signature: '(name: string): Map<string, Dependency_Spec>',
-							return_type: 'Map<string, Dependency_Spec>',
+							type_signature: '(name: string): Map<string, DependencySpec>',
+							return_type: 'Map<string, DependencySpec>',
 							parameters: [
 								{
 									name: 'name',
@@ -614,14 +614,14 @@ export const src_json: Src_Json = {
 						{
 							name: 'toJSON',
 							kind: 'function',
-							type_signature: '(): Dependency_Graph_Json',
-							return_type: 'Dependency_Graph_Json',
+							type_signature: '(): DependencyGraphJson',
+							return_type: 'DependencyGraphJson',
 							parameters: [],
 						},
 					],
 				},
 				{
-					name: 'Dependency_Graph_Builder',
+					name: 'DependencyGraphBuilder',
 					kind: 'class',
 					doc_comment: 'Builder for creating and analyzing dependency graphs.',
 					source_line: 368,
@@ -631,13 +631,13 @@ export const src_json: Src_Json = {
 							kind: 'function',
 							doc_comment:
 								'Constructs dependency graph from local repos.\n\nTwo-pass algorithm: first creates nodes, then builds edges (dependents).\nPrioritizes prod/peer deps over dev deps when same package appears in\nmultiple dependency types (stronger constraint wins).',
-							type_signature: '(repos: Local_Repo[]): Dependency_Graph',
-							return_type: 'Dependency_Graph',
+							type_signature: '(repos: LocalRepo[]): DependencyGraph',
+							return_type: 'DependencyGraph',
 							return_description: 'fully initialized dependency graph with all nodes and edges',
 							parameters: [
 								{
 									name: 'repos',
-									type: 'Local_Repo[]',
+									type: 'LocalRepo[]',
 									optional: false,
 								},
 							],
@@ -647,14 +647,14 @@ export const src_json: Src_Json = {
 							kind: 'function',
 							doc_comment:
 								'Computes publishing order using topological sort with dev deps excluded.\n\nExcludes dev dependencies to break circular dev dependency cycles while\npreserving production/peer dependency ordering. This allows patterns like\nshared test utilities that depend on each other for development.',
-							type_signature: '(graph: Dependency_Graph): string[]',
+							type_signature: '(graph: DependencyGraph): string[]',
 							return_type: 'string[]',
 							return_description:
 								'package names in safe publishing order (dependencies before dependents)',
 							parameters: [
 								{
 									name: 'graph',
-									type: 'Dependency_Graph',
+									type: 'DependencyGraph',
 									optional: false,
 								},
 							],
@@ -669,13 +669,13 @@ export const src_json: Src_Json = {
 							name: 'analyze',
 							kind: 'function',
 							type_signature:
-								'(graph: Dependency_Graph): { production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
+								'(graph: DependencyGraph): { production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
 							return_type:
 								'{ production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
 							parameters: [
 								{
 									name: 'graph',
-									type: 'Dependency_Graph',
+									type: 'DependencyGraph',
 									optional: false,
 								},
 							],
@@ -684,17 +684,17 @@ export const src_json: Src_Json = {
 				},
 			],
 			module_comment:
-				'Dependency graph data structure and algorithms for multi-repo publishing.\n\nProvides `Dependency_Graph` class with topological sort and cycle detection.\nFor validation workflow and publishing order computation, see `graph_validation.ts`.',
+				'Dependency graph data structure and algorithms for multi-repo publishing.\n\nProvides `DependencyGraph` class with topological sort and cycle detection.\nFor validation workflow and publishing order computation, see `graph_validation.ts`.',
 			dependents: ['gitops_analyze.task.ts', 'gitops_validate.task.ts', 'graph_validation.ts'],
 		},
 		{
 			path: 'dependency_updater.ts',
 			identifiers: [
 				{
-					name: 'Version_Strategy',
+					name: 'VersionStrategy',
 					kind: 'type',
 					source_line: 14,
-					type_signature: 'Version_Strategy',
+					type_signature: 'VersionStrategy',
 				},
 				{
 					name: 'update_package_json',
@@ -709,12 +709,12 @@ export const src_json: Src_Json = {
 					],
 					source_line: 32,
 					type_signature:
-						'(repo: Local_Repo, updates: Map<string, string>, strategy?: Version_Strategy, published_versions?: Map<string, Published_Version> | undefined, log?: Logger | undefined, git_ops?: Git_Operations, fs_ops?: Fs_Operations): Promise<...>',
+						'(repo: LocalRepo, updates: Map<string, string>, strategy?: VersionStrategy, published_versions?: Map<string, PublishedVersion> | undefined, log?: Logger | undefined, git_ops?: GitOperations, fs_ops?: FsOperations): Promise<...>',
 					return_type: 'Promise<void>',
 					parameters: [
 						{
 							name: 'repo',
-							type: 'Local_Repo',
+							type: 'LocalRepo',
 							optional: false,
 						},
 						{
@@ -724,14 +724,14 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'strategy',
-							type: 'Version_Strategy',
+							type: 'VersionStrategy',
 							optional: false,
 							description: 'how to format version ranges (default: caret)',
 							default_value: "'caret'",
 						},
 						{
 							name: 'published_versions',
-							type: 'Map<string, Published_Version> | undefined',
+							type: 'Map<string, PublishedVersion> | undefined',
 							optional: true,
 							description: 'if provided, generates auto-changesets for updates',
 						},
@@ -742,13 +742,13 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'git_ops',
-							type: 'Git_Operations',
+							type: 'GitOperations',
 							optional: false,
 							default_value: 'default_git_operations',
 						},
 						{
 							name: 'fs_ops',
-							type: 'Fs_Operations',
+							type: 'FsOperations',
 							optional: false,
 							default_value: 'default_fs_operations',
 						},
@@ -759,12 +759,12 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 165,
 					type_signature:
-						'(repos: Local_Repo[], published: Map<string, string>, strategy?: Version_Strategy, log?: Logger | undefined, git_ops?: Git_Operations, fs_ops?: Fs_Operations): Promise<...>',
+						'(repos: LocalRepo[], published: Map<string, string>, strategy?: VersionStrategy, log?: Logger | undefined, git_ops?: GitOperations, fs_ops?: FsOperations): Promise<...>',
 					return_type: 'Promise<{ updated: number; failed: { repo: string; error: Error; }[]; }>',
 					parameters: [
 						{
 							name: 'repos',
-							type: 'Local_Repo[]',
+							type: 'LocalRepo[]',
 							optional: false,
 						},
 						{
@@ -774,7 +774,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'strategy',
-							type: 'Version_Strategy',
+							type: 'VersionStrategy',
 							optional: false,
 							default_value: "'caret'",
 						},
@@ -785,13 +785,13 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'git_ops',
-							type: 'Git_Operations',
+							type: 'GitOperations',
 							optional: false,
 							default_value: 'default_git_operations',
 						},
 						{
 							name: 'fs_ops',
-							type: 'Fs_Operations',
+							type: 'FsOperations',
 							optional: false,
 							default_value: 'default_fs_operations',
 						},
@@ -802,13 +802,13 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 223,
 					type_signature:
-						'(repo: Local_Repo, published: Map<string, string>): Map<string, { current: string; new: string; type: "dependencies" | "devDependencies" | "peerDependencies"; }>',
+						'(repo: LocalRepo, published: Map<string, string>): Map<string, { current: string; new: string; type: "dependencies" | "devDependencies" | "peerDependencies"; }>',
 					return_type:
 						'Map<string, { current: string; new: string; type: "dependencies" | "devDependencies" | "peerDependencies"; }>',
 					parameters: [
 						{
 							name: 'repo',
-							type: 'Local_Repo',
+							type: 'LocalRepo',
 							optional: false,
 						},
 						{
@@ -832,13 +832,13 @@ export const src_json: Src_Json = {
 						'Fetches GitHub metadata (CI status, PRs) for all repos.\n\nFetches sequentially with delay between requests to respect GitHub API rate limits.\nUses `await_in_loop` intentionally to avoid parallel requests overwhelming the API.\n\nError handling: Logs fetch failures but continues processing remaining repos.\nRepos with failed fetches will have `null` for check_runs or pull_requests.',
 					source_line: 24,
 					type_signature:
-						'(resolved_repos: Local_Repo[], token?: string | undefined, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, delay?: number, github_api_version?: string | undefined): Promise<...>',
-					return_type: 'Promise<Repo_Json[]>',
+						'(resolved_repos: LocalRepo[], token?: string | undefined, cache?: any, log?: Logger | undefined, delay?: number, github_api_version?: string | undefined): Promise<RepoJson[]>',
+					return_type: 'Promise<RepoJson[]>',
 					return_description: 'array of Repo objects with GitHub metadata attached',
 					parameters: [
 						{
 							name: 'resolved_repos',
-							type: 'Local_Repo[]',
+							type: 'LocalRepo[]',
 							optional: false,
 						},
 						{
@@ -848,7 +848,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'cache',
-							type: 'Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined',
+							type: 'any',
 							optional: true,
 							description: "optional cache from belt's fetch.js for response memoization",
 						},
@@ -879,10 +879,10 @@ export const src_json: Src_Json = {
 			path: 'fs_fetch_value_cache.ts',
 			identifiers: [
 				{
-					name: 'Fetch_Cache',
+					name: 'FetchCache',
 					kind: 'type',
 					source_line: 10,
-					type_signature: 'Fetch_Cache',
+					type_signature: 'FetchCache',
 					properties: [
 						{
 							name: 'name',
@@ -892,7 +892,7 @@ export const src_json: Src_Json = {
 						{
 							name: 'data',
 							kind: 'variable',
-							type_signature: 'Fetch_Value_Cache',
+							type_signature: 'FetchValueCache',
 						},
 						{
 							name: 'save',
@@ -908,8 +908,8 @@ export const src_json: Src_Json = {
 					doc_comment:
 						"Creates file-system backed cache for belt's fetch.js API responses.\n\nCache invalidation strategy: If cache file can't be read or parsed, entire\ncache is cleared (delete file) and starts fresh. This handles format changes.\n\nUses `structuredClone` to track changes - only writes to disk if data modified.\nFormatted with Prettier before writing for version control friendliness.",
 					source_line: 32,
-					type_signature: '(name: string, dir?: string): Promise<Fetch_Cache>',
-					return_type: 'Promise<Fetch_Cache>',
+					type_signature: '(name: string, dir?: string): Promise<FetchCache>',
+					return_type: 'Promise<FetchCache>',
 					return_description: 'cache object with Map-based data and save() method',
 					parameters: [
 						{
@@ -1032,7 +1032,7 @@ export const src_json: Src_Json = {
 					doc_comment: 'Pushes a tag to origin and throws if anything goes wrong.',
 					source_line: 68,
 					type_signature:
-						'(tag_name: string, origin?: Git_Origin, options?: SpawnOptions | undefined): Promise<void>',
+						'(tag_name: string, origin?: GitOrigin, options?: SpawnOptions | undefined): Promise<void>',
 					return_type: 'Promise<void>',
 					parameters: [
 						{
@@ -1042,9 +1042,9 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'origin',
-							type: 'Git_Origin',
+							type: 'GitOrigin',
 							optional: false,
-							default_value: "'origin' as Git_Origin",
+							default_value: "'origin' as GitOrigin",
 						},
 						{
 							name: 'options',
@@ -1155,12 +1155,12 @@ export const src_json: Src_Json = {
 						'Switches to a branch with safety checks and throws if workspace is not clean.',
 					source_line: 136,
 					type_signature:
-						'(branch: Git_Branch, pull?: boolean, options?: SpawnOptions | undefined): Promise<void>',
+						'(branch: GitBranch, pull?: boolean, options?: SpawnOptions | undefined): Promise<void>',
 					return_type: 'Promise<void>',
 					parameters: [
 						{
 							name: 'branch',
-							type: 'Git_Branch',
+							type: 'GitBranch',
 							optional: false,
 						},
 						{
@@ -1254,16 +1254,16 @@ export const src_json: Src_Json = {
 			path: 'github_helpers.ts',
 			identifiers: [
 				{
-					name: 'Filter_Pull_Request',
+					name: 'FilterPullRequest',
 					kind: 'type',
 					source_line: 6,
-					type_signature: 'Filter_Pull_Request',
+					type_signature: 'FilterPullRequest',
 				},
 				{
-					name: 'Pull_Request_Meta',
+					name: 'PullRequestMeta',
 					kind: 'type',
 					source_line: 8,
-					type_signature: 'Pull_Request_Meta',
+					type_signature: 'PullRequestMeta',
 					properties: [
 						{
 							name: 'repo',
@@ -1273,7 +1273,7 @@ export const src_json: Src_Json = {
 						{
 							name: 'pull_request',
 							kind: 'variable',
-							type_signature: 'Github_Pull_Request',
+							type_signature: 'GithubPullRequest',
 						},
 					],
 				},
@@ -1282,8 +1282,8 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 13,
 					type_signature:
-						'(repos: Repo[], filter_pull_request?: Filter_Pull_Request | undefined): Pull_Request_Meta[]',
-					return_type: 'Pull_Request_Meta[]',
+						'(repos: Repo[], filter_pull_request?: FilterPullRequest | undefined): PullRequestMeta[]',
+					return_type: 'PullRequestMeta[]',
 					parameters: [
 						{
 							name: 'repos',
@@ -1292,7 +1292,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'filter_pull_request',
-							type: 'Filter_Pull_Request | undefined',
+							type: 'FilterPullRequest | undefined',
 							optional: true,
 						},
 					],
@@ -1318,13 +1318,13 @@ export const src_json: Src_Json = {
 					],
 				},
 			],
-			dependents: ['Pull_Requests_Detail.svelte', 'Repos_Table.svelte'],
+			dependents: ['PullRequestsDetail.svelte', 'ReposTable.svelte'],
 		},
 		{
 			path: 'github.ts',
 			identifiers: [
 				{
-					name: 'Github_Pull_Request',
+					name: 'GithubPullRequest',
 					kind: 'type',
 					doc_comment: '',
 					see_also: [
@@ -1335,7 +1335,7 @@ export const src_json: Src_Json = {
 						'ZodObject<{ number: ZodNumber; title: ZodString; user: ZodObject<{ login: ZodString; }, $strip>; draft: ZodBoolean; }, $strip>',
 				},
 				{
-					name: 'Github_Pull_Requests',
+					name: 'GithubPullRequests',
 					kind: 'type',
 					source_line: 18,
 					type_signature:
@@ -1350,7 +1350,7 @@ export const src_json: Src_Json = {
 					],
 					source_line: 24,
 					type_signature:
-						'(pkg: Pkg, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined): Promise<...>',
+						'(pkg: Pkg, cache?: any, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined): Promise<{ number: number; title: string; user: { login: string; }; draft: boolean; }[] | null>',
 					return_type:
 						'Promise<{ number: number; title: string; user: { login: string; }; draft: boolean; }[] | null>',
 					parameters: [
@@ -1361,7 +1361,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'cache',
-							type: 'Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined',
+							type: 'any',
 							optional: true,
 						},
 						{
@@ -1382,7 +1382,7 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Github_Check_Runs_Item',
+					name: 'GithubCheckRunsItem',
 					kind: 'type',
 					doc_comment: '',
 					see_also: [
@@ -1393,7 +1393,7 @@ export const src_json: Src_Json = {
 						'ZodObject<{ status: ZodEnum<{ queued: "queued"; in_progress: "in_progress"; completed: "completed"; }>; conclusion: ZodNullable<ZodEnum<{ success: "success"; failure: "failure"; neutral: "neutral"; cancelled: "cancelled"; skipped: "skipped"; timed_out: "timed_out"; action_required: "action_required"; }>>; }, $strip>',
 				},
 				{
-					name: 'Github_Check_Runs',
+					name: 'GithubCheckRuns',
 					kind: 'type',
 					source_line: 63,
 					type_signature:
@@ -1408,7 +1408,7 @@ export const src_json: Src_Json = {
 					],
 					source_line: 72,
 					type_signature:
-						'(pkg: Pkg, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined, ref?: string): Promise<...>',
+						'(pkg: Pkg, cache?: any, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined, ref?: string): Promise<{ status: "queued" | "in_progress" | "completed"; conclusion: "success" | ... 6 more ... | null; } | null>',
 					return_type:
 						'Promise<{ status: "queued" | "in_progress" | "completed"; conclusion: "success" | "failure" | "neutral" | "cancelled" | "skipped" | "timed_out" | "action_required" | null; } | null>',
 					parameters: [
@@ -1419,7 +1419,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'cache',
-							type: 'Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined',
+							type: 'any',
 							optional: true,
 						},
 						{
@@ -1463,15 +1463,15 @@ export const src_json: Src_Json = {
 			path: 'gitops_config.ts',
 			identifiers: [
 				{
-					name: 'Gitops_Config',
+					name: 'GitopsConfig',
 					kind: 'type',
 					source_line: 19,
-					type_signature: 'Gitops_Config',
+					type_signature: 'GitopsConfig',
 					properties: [
 						{
 							name: 'repos',
 							kind: 'variable',
-							type_signature: 'Array<Gitops_Repo_Config>',
+							type_signature: 'Array<GitopsRepoConfig>',
 						},
 						{
 							name: 'repos_dir',
@@ -1481,21 +1481,21 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Create_Gitops_Config',
+					name: 'CreateGitopsConfig',
 					kind: 'type',
 					source_line: 24,
-					type_signature: 'Create_Gitops_Config',
+					type_signature: 'CreateGitopsConfig',
 				},
 				{
-					name: 'Raw_Gitops_Config',
+					name: 'RawGitopsConfig',
 					kind: 'type',
 					source_line: 28,
-					type_signature: 'Raw_Gitops_Config',
+					type_signature: 'RawGitopsConfig',
 					properties: [
 						{
 							name: 'repos',
 							kind: 'variable',
-							type_signature: 'Array<Url | Raw_Gitops_Repo_Config>',
+							type_signature: 'Array<Url | RawGitopsRepoConfig>',
 						},
 						{
 							name: 'repos_dir',
@@ -1505,10 +1505,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Gitops_Repo_Config',
+					name: 'GitopsRepoConfig',
 					kind: 'type',
 					source_line: 33,
-					type_signature: 'Gitops_Repo_Config',
+					type_signature: 'GitopsRepoConfig',
 					properties: [
 						{
 							name: 'repo_url',
@@ -1526,16 +1526,16 @@ export const src_json: Src_Json = {
 						{
 							name: 'branch',
 							kind: 'variable',
-							type_signature: 'Git_Branch',
+							type_signature: 'GitBranch',
 							doc_comment: 'The branch name to use when fetching the repo. Defaults to `main`.',
 						},
 					],
 				},
 				{
-					name: 'Raw_Gitops_Repo_Config',
+					name: 'RawGitopsRepoConfig',
 					kind: 'type',
 					source_line: 54,
-					type_signature: 'Raw_Gitops_Repo_Config',
+					type_signature: 'RawGitopsRepoConfig',
 					properties: [
 						{
 							name: 'repo_url',
@@ -1550,7 +1550,7 @@ export const src_json: Src_Json = {
 						{
 							name: 'branch',
 							kind: 'variable',
-							type_signature: 'Git_Branch',
+							type_signature: 'GitBranch',
 						},
 					],
 				},
@@ -1558,37 +1558,37 @@ export const src_json: Src_Json = {
 					name: 'create_empty_gitops_config',
 					kind: 'function',
 					source_line: 60,
-					type_signature: '(): Gitops_Config',
-					return_type: 'Gitops_Config',
+					type_signature: '(): GitopsConfig',
+					return_type: 'GitopsConfig',
 					parameters: [],
 				},
 				{
 					name: 'normalize_gitops_config',
 					kind: 'function',
 					doc_comment:
-						'Transforms a `Raw_Gitops_Config` to the more strict `Gitops_Config`.\nThis allows users to provide a more relaxed config.',
+						'Transforms a `RawGitopsConfig` to the more strict `GitopsConfig`.\nThis allows users to provide a more relaxed config.',
 					source_line: 69,
-					type_signature: '(raw_config: Raw_Gitops_Config): Gitops_Config',
-					return_type: 'Gitops_Config',
+					type_signature: '(raw_config: RawGitopsConfig): GitopsConfig',
+					return_type: 'GitopsConfig',
 					parameters: [
 						{
 							name: 'raw_config',
-							type: 'Raw_Gitops_Config',
+							type: 'RawGitopsConfig',
 							optional: false,
 						},
 					],
 				},
 				{
-					name: 'Gitops_Config_Module',
+					name: 'GitopsConfigModule',
 					kind: 'type',
 					source_line: 92,
-					type_signature: 'Gitops_Config_Module',
+					type_signature: 'GitopsConfigModule',
 					properties: [
 						{
 							name: 'default',
 							kind: 'variable',
 							modifiers: ['readonly'],
-							type_signature: 'Raw_Gitops_Config | Create_Gitops_Config',
+							type_signature: 'RawGitopsConfig | CreateGitopsConfig',
 						},
 					],
 				},
@@ -1596,8 +1596,8 @@ export const src_json: Src_Json = {
 					name: 'load_gitops_config',
 					kind: 'function',
 					source_line: 96,
-					type_signature: '(config_path: string): Promise<Gitops_Config | null>',
-					return_type: 'Promise<Gitops_Config | null>',
+					type_signature: '(config_path: string): Promise<GitopsConfig | null>',
+					return_type: 'Promise<GitopsConfig | null>',
 					parameters: [
 						{
 							name: 'config_path',
@@ -1611,7 +1611,7 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 111,
 					type_signature:
-						'(config_module: any, config_path: string): asserts config_module is Gitops_Config_Module',
+						'(config_module: any, config_path: string): asserts config_module is GitopsConfigModule',
 					return_type: 'void',
 					parameters: [
 						{
@@ -1628,7 +1628,7 @@ export const src_json: Src_Json = {
 				},
 			],
 			module_comment:
-				'Configuration types and normalization for gitops multi-repo management.\n\nTwo-phase configuration system:\n- `Raw_Gitops_Config` - User-friendly format with optional fields and flexible types\n- `Gitops_Config` - Internal format with required fields and strict types\n\nThis allows users to provide minimal configs (e.g., just URLs as strings) while\nthe system works with normalized configs internally for type safety.',
+				'Configuration types and normalization for gitops multi-repo management.\n\nTwo-phase configuration system:\n- `RawGitopsConfig` - User-friendly format with optional fields and flexible types\n- `GitopsConfig` - Internal format with required fields and strict types\n\nThis allows users to provide minimal configs (e.g., just URLs as strings) while\nthe system works with normalized configs internally for type safety.',
 			dependencies: ['paths.ts'],
 			dependents: ['gitops_task_helpers.ts', 'repo_ops.ts'],
 		},
@@ -1656,10 +1656,10 @@ export const src_json: Src_Json = {
 			path: 'gitops_task_helpers.ts',
 			identifiers: [
 				{
-					name: 'Get_Gitops_Ready_Options',
+					name: 'GetGitopsReadyOptions',
 					kind: 'type',
 					source_line: 29,
-					type_signature: 'Get_Gitops_Ready_Options',
+					type_signature: 'GetGitopsReadyOptions',
 					properties: [
 						{
 							name: 'path',
@@ -1684,12 +1684,12 @@ export const src_json: Src_Json = {
 						{
 							name: 'git_ops',
 							kind: 'variable',
-							type_signature: 'Git_Operations',
+							type_signature: 'GitOperations',
 						},
 						{
 							name: 'npm_ops',
 							kind: 'variable',
-							type_signature: 'Npm_Operations',
+							type_signature: 'NpmOperations',
 						},
 					],
 				},
@@ -1706,23 +1706,23 @@ export const src_json: Src_Json = {
 					],
 					source_line: 57,
 					type_signature:
-						'(options: Get_Gitops_Ready_Options): Promise<{ config_path: string; repos_dir: string; gitops_config: Gitops_Config; local_repos: Local_Repo[]; }>',
+						'(options: GetGitopsReadyOptions): Promise<{ config_path: string; repos_dir: string; gitops_config: GitopsConfig; local_repos: LocalRepo[]; }>',
 					return_type:
-						'Promise<{ config_path: string; repos_dir: string; gitops_config: Gitops_Config; local_repos: Local_Repo[]; }>',
+						'Promise<{ config_path: string; repos_dir: string; gitops_config: GitopsConfig; local_repos: LocalRepo[]; }>',
 					return_description: 'initialized config and fully loaded repos ready for operations',
 					parameters: [
 						{
 							name: 'options',
-							type: 'Get_Gitops_Ready_Options',
+							type: 'GetGitopsReadyOptions',
 							optional: false,
 						},
 					],
 				},
 				{
-					name: 'Resolve_Gitops_Paths_Options',
+					name: 'ResolveGitopsPathsOptions',
 					kind: 'type',
 					source_line: 96,
-					type_signature: 'Resolve_Gitops_Paths_Options',
+					type_signature: 'ResolveGitopsPathsOptions',
 					properties: [
 						{
 							name: 'path',
@@ -1746,12 +1746,12 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 102,
 					type_signature:
-						'(options: Resolve_Gitops_Paths_Options): { config_path: string; repos_dir: string; }',
+						'(options: ResolveGitopsPathsOptions): { config_path: string; repos_dir: string; }',
 					return_type: '{ config_path: string; repos_dir: string; }',
 					parameters: [
 						{
 							name: 'options',
-							type: 'Resolve_Gitops_Paths_Options',
+							type: 'ResolveGitopsPathsOptions',
 							optional: false,
 						},
 					],
@@ -1760,8 +1760,8 @@ export const src_json: Src_Json = {
 					name: 'import_gitops_config',
 					kind: 'function',
 					source_line: 120,
-					type_signature: '(config_path: string): Promise<Gitops_Config>',
-					return_type: 'Promise<Gitops_Config>',
+					type_signature: '(config_path: string): Promise<GitopsConfig>',
+					return_type: 'Promise<GitopsConfig>',
 					parameters: [
 						{
 							name: 'config_path',
@@ -1798,15 +1798,15 @@ export const src_json: Src_Json = {
 			path: 'graph_validation.ts',
 			identifiers: [
 				{
-					name: 'Graph_Validation_Result',
+					name: 'GraphValidationResult',
 					kind: 'type',
 					source_line: 21,
-					type_signature: 'Graph_Validation_Result',
+					type_signature: 'GraphValidationResult',
 					properties: [
 						{
 							name: 'graph',
 							kind: 'variable',
-							type_signature: 'Dependency_Graph',
+							type_signature: 'DependencyGraph',
 						},
 						{
 							name: 'publishing_order',
@@ -1843,14 +1843,14 @@ export const src_json: Src_Json = {
 					],
 					source_line: 39,
 					type_signature:
-						'(repos: Local_Repo[], log?: Logger | undefined, options?: { throw_on_prod_cycles?: boolean | undefined; log_cycles?: boolean | undefined; log_order?: boolean | undefined; }): Graph_Validation_Result',
-					return_type: 'Graph_Validation_Result',
+						'(repos: LocalRepo[], log?: Logger | undefined, options?: { throw_on_prod_cycles?: boolean | undefined; log_cycles?: boolean | undefined; log_order?: boolean | undefined; }): GraphValidationResult',
+					return_type: 'GraphValidationResult',
 					return_description:
 						'graph validation result with graph, publishing order, and detected cycles',
 					parameters: [
 						{
 							name: 'repos',
-							type: 'Local_Repo[]',
+							type: 'LocalRepo[]',
 							optional: false,
 						},
 						{
@@ -1881,11 +1881,11 @@ export const src_json: Src_Json = {
 			path: 'local_repo.ts',
 			identifiers: [
 				{
-					name: 'Local_Repo',
+					name: 'LocalRepo',
 					kind: 'type',
 					source_line: 16,
-					type_signature: 'Local_Repo',
-					extends: ['Resolved_Local_Repo'],
+					type_signature: 'LocalRepo',
+					extends: ['ResolvedLocalRepo'],
 					properties: [
 						{
 							name: 'pkg',
@@ -1910,16 +1910,16 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Maybe_Local_Repo',
+					name: 'MaybeLocalRepo',
 					kind: 'type',
 					source_line: 23,
-					type_signature: 'Maybe_Local_Repo',
+					type_signature: 'MaybeLocalRepo',
 				},
 				{
-					name: 'Resolved_Local_Repo',
+					name: 'ResolvedLocalRepo',
 					kind: 'type',
 					source_line: 25,
-					type_signature: 'Resolved_Local_Repo',
+					type_signature: 'ResolvedLocalRepo',
 					properties: [
 						{
 							name: 'type',
@@ -1949,15 +1949,15 @@ export const src_json: Src_Json = {
 						{
 							name: 'repo_config',
 							kind: 'variable',
-							type_signature: 'Gitops_Repo_Config',
+							type_signature: 'GitopsRepoConfig',
 						},
 					],
 				},
 				{
-					name: 'Unresolved_Local_Repo',
+					name: 'UnresolvedLocalRepo',
 					kind: 'type',
 					source_line: 34,
-					type_signature: 'Unresolved_Local_Repo',
+					type_signature: 'UnresolvedLocalRepo',
 					properties: [
 						{
 							name: 'type',
@@ -1982,7 +1982,7 @@ export const src_json: Src_Json = {
 						{
 							name: 'repo_config',
 							kind: 'variable',
-							type_signature: 'Gitops_Repo_Config',
+							type_signature: 'GitopsRepoConfig',
 						},
 					],
 				},
@@ -1999,12 +1999,12 @@ export const src_json: Src_Json = {
 					],
 					source_line: 58,
 					type_signature:
-						'({ resolved_local_repo, log: _log, git_ops, npm_ops, }: { resolved_local_repo: Resolved_Local_Repo; log?: Logger | undefined; git_ops?: Git_Operations | undefined; npm_ops?: Npm_Operations | undefined; }): Promise<...>',
-					return_type: 'Promise<Local_Repo>',
+						'({ resolved_local_repo, log: _log, git_ops, npm_ops, }: { resolved_local_repo: ResolvedLocalRepo; log?: Logger | undefined; git_ops?: GitOperations | undefined; npm_ops?: NpmOperations | undefined; }): Promise<...>',
+					return_type: 'Promise<LocalRepo>',
 					parameters: [
 						{
 							name: '__0',
-							type: '{ resolved_local_repo: Resolved_Local_Repo; log?: Logger | undefined; git_ops?: Git_Operations | undefined; npm_ops?: Npm_Operations | undefined; }',
+							type: '{ resolved_local_repo: ResolvedLocalRepo; log?: Logger | undefined; git_ops?: GitOperations | undefined; npm_ops?: NpmOperations | undefined; }',
 							optional: false,
 						},
 					],
@@ -2014,12 +2014,12 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 186,
 					type_signature:
-						'({ resolved_config, repos_dir, gitops_config, download, log, npm_ops, }: { resolved_config: Resolved_Gitops_Config; repos_dir: string; gitops_config: Gitops_Config; download: boolean; log?: Logger | undefined; npm_ops?: Npm_Operations | undefined; }): Promise<...>',
-					return_type: 'Promise<Resolved_Local_Repo[]>',
+						'({ resolved_config, repos_dir, gitops_config, download, log, npm_ops, }: { resolved_config: ResolvedGitopsConfig; repos_dir: string; gitops_config: GitopsConfig; download: boolean; log?: Logger | undefined; npm_ops?: NpmOperations | undefined; }): Promise<...>',
+					return_type: 'Promise<ResolvedLocalRepo[]>',
 					parameters: [
 						{
 							name: '__0',
-							type: '{ resolved_config: Resolved_Gitops_Config; repos_dir: string; gitops_config: Gitops_Config; download: boolean; log?: Logger | undefined; npm_ops?: Npm_Operations | undefined; }',
+							type: '{ resolved_config: ResolvedGitopsConfig; repos_dir: string; gitops_config: GitopsConfig; download: boolean; log?: Logger | undefined; npm_ops?: NpmOperations | undefined; }',
 							optional: false,
 						},
 					],
@@ -2029,12 +2029,12 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 236,
 					type_signature:
-						'({ resolved_local_repos, log, git_ops, npm_ops, }: { resolved_local_repos: Resolved_Local_Repo[]; log?: Logger | undefined; git_ops?: Git_Operations | undefined; npm_ops?: Npm_Operations | undefined; }): Promise<...>',
-					return_type: 'Promise<Local_Repo[]>',
+						'({ resolved_local_repos, log, git_ops, npm_ops, }: { resolved_local_repos: ResolvedLocalRepo[]; log?: Logger | undefined; git_ops?: GitOperations | undefined; npm_ops?: NpmOperations | undefined; }): Promise<...>',
+					return_type: 'Promise<LocalRepo[]>',
 					parameters: [
 						{
 							name: '__0',
-							type: '{ resolved_local_repos: Resolved_Local_Repo[]; log?: Logger | undefined; git_ops?: Git_Operations | undefined; npm_ops?: Npm_Operations | undefined; }',
+							type: '{ resolved_local_repos: ResolvedLocalRepo[]; log?: Logger | undefined; git_ops?: GitOperations | undefined; npm_ops?: NpmOperations | undefined; }',
 							optional: false,
 						},
 					],
@@ -2044,12 +2044,12 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 254,
 					type_signature:
-						'({ repo_config, repos_dir, }: { repo_config: Gitops_Repo_Config; repos_dir: string; }): Maybe_Local_Repo',
-					return_type: 'Maybe_Local_Repo',
+						'({ repo_config, repos_dir, }: { repo_config: GitopsRepoConfig; repos_dir: string; }): MaybeLocalRepo',
+					return_type: 'MaybeLocalRepo',
 					parameters: [
 						{
 							name: '__0',
-							type: '{ repo_config: Gitops_Repo_Config; repos_dir: string; }',
+							type: '{ repo_config: GitopsRepoConfig; repos_dir: string; }',
 							optional: false,
 						},
 					],
@@ -2266,10 +2266,10 @@ export const src_json: Src_Json = {
 			dependents: ['gitops_analyze.task.ts', 'gitops_validate.task.ts', 'publishing_plan.ts'],
 		},
 		{
-			path: 'Modules_Detail.svelte',
+			path: 'ModulesDetail.svelte',
 			identifiers: [
 				{
-					name: 'Modules_Detail',
+					name: 'ModulesDetail',
 					kind: 'component',
 					props: [
 						{
@@ -2286,32 +2286,32 @@ export const src_json: Src_Json = {
 					source_line: 1,
 				},
 			],
-			dependencies: ['Modules_Nav.svelte'],
-			dependents: ['Modules_Page.svelte'],
+			dependencies: ['ModulesNav.svelte'],
+			dependents: ['ModulesPage.svelte'],
 		},
 		{
-			path: 'Modules_Nav.svelte',
+			path: 'ModulesNav.svelte',
 			identifiers: [
 				{
-					name: 'Modules_Nav',
+					name: 'ModulesNav',
 					kind: 'component',
 					props: [
 						{
 							name: 'repos_modules',
-							type: 'Array<{\n\t\t\trepo: Repo;\n\t\t\tmodules: Array<Module_Json>;\n\t\t}>',
+							type: 'Array<{\n\t\t\trepo: Repo;\n\t\t\tmodules: Array<ModuleJson>;\n\t\t}>',
 							optional: false,
 						},
 					],
 					source_line: 1,
 				},
 			],
-			dependents: ['Modules_Detail.svelte'],
+			dependents: ['ModulesDetail.svelte'],
 		},
 		{
-			path: 'Modules_Page.svelte',
+			path: 'ModulesPage.svelte',
 			identifiers: [
 				{
-					name: 'Modules_Page',
+					name: 'ModulesPage',
 					kind: 'component',
 					props: [
 						{
@@ -2328,16 +2328,16 @@ export const src_json: Src_Json = {
 					source_line: 1,
 				},
 			],
-			dependencies: ['Modules_Detail.svelte', 'Page_Footer.svelte', 'Page_Header.svelte'],
+			dependencies: ['ModulesDetail.svelte', 'PageFooter.svelte', 'PageHeader.svelte'],
 		},
 		{
 			path: 'multi_repo_publisher.ts',
 			identifiers: [
 				{
-					name: 'Publishing_Options',
+					name: 'PublishingOptions',
 					kind: 'type',
 					source_line: 18,
-					type_signature: 'Publishing_Options',
+					type_signature: 'PublishingOptions',
 					properties: [
 						{
 							name: 'dry_run',
@@ -2352,7 +2352,7 @@ export const src_json: Src_Json = {
 						{
 							name: 'version_strategy',
 							kind: 'variable',
-							type_signature: 'Version_Strategy',
+							type_signature: 'VersionStrategy',
 						},
 						{
 							name: 'deploy',
@@ -2377,10 +2377,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Published_Version',
+					name: 'PublishedVersion',
 					kind: 'type',
 					source_line: 28,
-					type_signature: 'Published_Version',
+					type_signature: 'PublishedVersion',
 					properties: [
 						{
 							name: 'name',
@@ -2420,10 +2420,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Publishing_Result',
+					name: 'PublishingResult',
 					kind: 'type',
 					source_line: 38,
-					type_signature: 'Publishing_Result',
+					type_signature: 'PublishingResult',
 					properties: [
 						{
 							name: 'ok',
@@ -2433,7 +2433,7 @@ export const src_json: Src_Json = {
 						{
 							name: 'published',
 							kind: 'variable',
-							type_signature: 'Array<Published_Version>',
+							type_signature: 'Array<PublishedVersion>',
 						},
 						{
 							name: 'failed',
@@ -2452,22 +2452,22 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					source_line: 45,
 					type_signature:
-						'(repos: Local_Repo[], options: Publishing_Options, ops?: Gitops_Operations): Promise<Publishing_Result>',
-					return_type: 'Promise<Publishing_Result>',
+						'(repos: LocalRepo[], options: PublishingOptions, ops?: GitopsOperations): Promise<PublishingResult>',
+					return_type: 'Promise<PublishingResult>',
 					parameters: [
 						{
 							name: 'repos',
-							type: 'Local_Repo[]',
+							type: 'LocalRepo[]',
 							optional: false,
 						},
 						{
 							name: 'options',
-							type: 'Publishing_Options',
+							type: 'PublishingOptions',
 							optional: false,
 						},
 						{
 							name: 'ops',
-							type: 'Gitops_Operations',
+							type: 'GitopsOperations',
 							optional: false,
 							default_value: 'default_gitops_operations',
 						},
@@ -2500,18 +2500,18 @@ export const src_json: Src_Json = {
 					],
 					source_line: 42,
 					type_signature:
-						'(repo: Local_Repo, ops: Gitops_Operations, log?: Logger | undefined): Promise<void>',
+						'(repo: LocalRepo, ops: GitopsOperations, log?: Logger | undefined): Promise<void>',
 					return_type: 'Promise<void>',
 					parameters: [
 						{
 							name: 'repo',
-							type: 'Local_Repo',
+							type: 'LocalRepo',
 							optional: false,
 							description: '- The repository to install dependencies for',
 						},
 						{
 							name: 'ops',
-							type: 'Gitops_Operations',
+							type: 'GitopsOperations',
 							optional: false,
 							description: '- Gitops operations (for dependency injection)',
 						},
@@ -2530,10 +2530,10 @@ export const src_json: Src_Json = {
 			path: 'npm_registry.ts',
 			identifiers: [
 				{
-					name: 'Wait_Options',
+					name: 'WaitOptions',
 					kind: 'type',
 					source_line: 6,
-					type_signature: 'Wait_Options',
+					type_signature: 'WaitOptions',
 					properties: [
 						{
 							name: 'max_attempts',
@@ -2558,10 +2558,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Package_Info',
+					name: 'PackageInfo',
 					kind: 'type',
 					source_line: 13,
-					type_signature: 'Package_Info',
+					type_signature: 'PackageInfo',
 					properties: [
 						{
 							name: 'name',
@@ -2613,7 +2613,7 @@ export const src_json: Src_Json = {
 					],
 					source_line: 55,
 					type_signature:
-						'(pkg: string, version: string, options?: Wait_Options, log?: Logger | undefined): Promise<void>',
+						'(pkg: string, version: string, options?: WaitOptions, log?: Logger | undefined): Promise<void>',
 					return_type: 'Promise<void>',
 					parameters: [
 						{
@@ -2628,7 +2628,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'options',
-							type: 'Wait_Options',
+							type: 'WaitOptions',
 							optional: false,
 							default_value: '{}',
 						},
@@ -2645,8 +2645,8 @@ export const src_json: Src_Json = {
 					doc_comment:
 						"Fetches package metadata from NPM registry.\n\nReturns name and latest version. Returns null if package doesn't exist\nor registry is unreachable.",
 					source_line: 112,
-					type_signature: '(pkg: string, log?: Logger | undefined): Promise<Package_Info | null>',
-					return_type: 'Promise<Package_Info | null>',
+					type_signature: '(pkg: string, log?: Logger | undefined): Promise<PackageInfo | null>',
+					return_type: 'Promise<PackageInfo | null>',
 					return_description: 'package info or null on error/not found',
 					parameters: [
 						{
@@ -2690,50 +2690,50 @@ export const src_json: Src_Json = {
 					name: 'default_changeset_operations',
 					kind: 'variable',
 					source_line: 44,
-					type_signature: 'Changeset_Operations',
+					type_signature: 'ChangesetOperations',
 				},
 				{
 					name: 'default_git_operations',
 					kind: 'variable',
 					source_line: 80,
-					type_signature: 'Git_Operations',
+					type_signature: 'GitOperations',
 				},
 				{
 					name: 'default_process_operations',
 					kind: 'variable',
 					source_line: 263,
-					type_signature: 'Process_Operations',
+					type_signature: 'ProcessOperations',
 				},
 				{
 					name: 'default_npm_operations',
 					kind: 'variable',
 					source_line: 287,
-					type_signature: 'Npm_Operations',
+					type_signature: 'NpmOperations',
 				},
 				{
 					name: 'default_preflight_operations',
 					kind: 'variable',
 					source_line: 363,
-					type_signature: 'Preflight_Operations',
+					type_signature: 'PreflightOperations',
 				},
 				{
 					name: 'default_fs_operations',
 					kind: 'variable',
 					source_line: 369,
-					type_signature: 'Fs_Operations',
+					type_signature: 'FsOperations',
 				},
 				{
 					name: 'default_build_operations',
 					kind: 'variable',
 					source_line: 391,
-					type_signature: 'Build_Operations',
+					type_signature: 'BuildOperations',
 				},
 				{
 					name: 'default_gitops_operations',
 					kind: 'variable',
 					doc_comment: 'Combined default operations for all gitops functionality.',
 					source_line: 415,
-					type_signature: 'Gitops_Operations',
+					type_signature: 'GitopsOperations',
 				},
 			],
 			module_comment:
@@ -2756,18 +2756,18 @@ export const src_json: Src_Json = {
 			path: 'operations.ts',
 			identifiers: [
 				{
-					name: 'Changeset_Operations',
+					name: 'ChangesetOperations',
 					kind: 'type',
 					doc_comment:
 						'Changeset operations for reading and predicting versions from `.changeset/*.md` files.',
 					source_line: 47,
-					type_signature: 'Changeset_Operations',
+					type_signature: 'ChangesetOperations',
 					properties: [
 						{
 							name: 'has_changesets',
 							kind: 'variable',
 							type_signature:
-								'(options: {\n\t\trepo: Local_Repo;\n\t}) => Promise<Result<{value: boolean}, {message: string}>>',
+								'(options: {\n\t\trepo: LocalRepo;\n\t}) => Promise<Result<{value: boolean}, {message: string}>>',
 							doc_comment:
 								'Checks if a repo has any changeset files.\nReturns true if changesets exist, false if none found.',
 						},
@@ -2775,7 +2775,7 @@ export const src_json: Src_Json = {
 							name: 'read_changesets',
 							kind: 'variable',
 							type_signature:
-								'(options: {\n\t\trepo: Local_Repo;\n\t\tlog?: Logger;\n\t}) => Promise<Result<{value: Array<Changeset_Info>}, {message: string}>>',
+								'(options: {\n\t\trepo: LocalRepo;\n\t\tlog?: Logger;\n\t}) => Promise<Result<{value: Array<ChangesetInfo>}, {message: string}>>',
 							doc_comment:
 								'Reads all changeset files from a repo.\nReturns array of changeset info, or error if reading fails.',
 						},
@@ -2783,19 +2783,19 @@ export const src_json: Src_Json = {
 							name: 'predict_next_version',
 							kind: 'variable',
 							type_signature:
-								'(options: {\n\t\trepo: Local_Repo;\n\t\tlog?: Logger;\n\t}) => Promise<Result<{version: string; bump_type: Bump_Type}, {message: string}> | null>',
+								'(options: {\n\t\trepo: LocalRepo;\n\t\tlog?: Logger;\n\t}) => Promise<Result<{version: string; bump_type: BumpType}, {message: string}> | null>',
 							doc_comment:
 								"Predicts the next version based on changesets.\nReturns null if no changesets found (expected, not an error).\nReturns error Result if changesets exist but can't be read/parsed.",
 						},
 					],
 				},
 				{
-					name: 'Git_Operations',
+					name: 'GitOperations',
 					kind: 'type',
 					doc_comment:
 						'Git operations for branch management, commits, tags, and workspace state.\nAll operations return `Result` instead of throwing errors.',
 					source_line: 80,
-					type_signature: 'Git_Operations',
+					type_signature: 'GitOperations',
 					properties: [
 						{
 							name: 'current_branch_name',
@@ -2919,11 +2919,11 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Process_Operations',
+					name: 'ProcessOperations',
 					kind: 'type',
 					doc_comment: 'Process spawning operations for running shell commands.',
 					source_line: 210,
-					type_signature: 'Process_Operations',
+					type_signature: 'ProcessOperations',
 					properties: [
 						{
 							name: 'spawn',
@@ -2935,34 +2935,34 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Build_Operations',
+					name: 'BuildOperations',
 					kind: 'type',
 					doc_comment: 'Build operations for validating packages compile before publishing.',
 					source_line: 224,
-					type_signature: 'Build_Operations',
+					type_signature: 'BuildOperations',
 					properties: [
 						{
 							name: 'build_package',
 							kind: 'variable',
 							type_signature:
-								'(options: {\n\t\trepo: Local_Repo;\n\t\tlog?: Logger;\n\t}) => Promise<Result<object, {message: string; output?: string}>>',
+								'(options: {\n\t\trepo: LocalRepo;\n\t\tlog?: Logger;\n\t}) => Promise<Result<object, {message: string; output?: string}>>',
 							doc_comment: 'Builds a package using gro build.',
 						},
 					],
 				},
 				{
-					name: 'Npm_Operations',
+					name: 'NpmOperations',
 					kind: 'type',
 					doc_comment:
 						'NPM registry operations for package availability checks and authentication.\nIncludes exponential backoff for waiting on package propagation.',
 					source_line: 238,
-					type_signature: 'Npm_Operations',
+					type_signature: 'NpmOperations',
 					properties: [
 						{
 							name: 'wait_for_package',
 							kind: 'variable',
 							type_signature:
-								'(options: {\n\t\tpkg: string;\n\t\tversion: string;\n\t\twait_options?: Wait_Options;\n\t\tlog?: Logger;\n\t}) => Promise<Result<object, {message: string; timeout?: boolean}>>',
+								'(options: {\n\t\tpkg: string;\n\t\tversion: string;\n\t\twait_options?: WaitOptions;\n\t\tlog?: Logger;\n\t}) => Promise<Result<object, {message: string; timeout?: boolean}>>',
 							doc_comment:
 								'Waits for a package version to be available on NPM.\nUses exponential backoff with configurable timeout.',
 						},
@@ -3002,28 +3002,28 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Preflight_Operations',
+					name: 'PreflightOperations',
 					kind: 'type',
 					doc_comment:
 						'Preflight validation operations to ensure repos are ready for publishing.\nValidates workspace state, branches, builds, and npm authentication.',
 					source_line: 287,
-					type_signature: 'Preflight_Operations',
+					type_signature: 'PreflightOperations',
 					properties: [
 						{
 							name: 'run_preflight_checks',
 							kind: 'variable',
 							type_signature:
-								'(options: {\n\t\trepos: Array<Local_Repo>;\n\t\tpreflight_options: Preflight_Options;\n\t\tgit_ops?: Git_Operations;\n\t\tnpm_ops?: Npm_Operations;\n\t\tbuild_ops?: Build_Operations;\n\t\tchangeset_ops?: Changeset_Operations;\n\t}) => Promise<Preflight_Result>',
+								'(options: {\n\t\trepos: Array<LocalRepo>;\n\t\tpreflight_options: PreflightOptions;\n\t\tgit_ops?: GitOperations;\n\t\tnpm_ops?: NpmOperations;\n\t\tbuild_ops?: BuildOperations;\n\t\tchangeset_ops?: ChangesetOperations;\n\t}) => Promise<PreflightResult>',
 							doc_comment: 'Runs preflight validation checks before publishing.',
 						},
 					],
 				},
 				{
-					name: 'Fs_Operations',
+					name: 'FsOperations',
 					kind: 'type',
 					doc_comment: 'File system operations for reading and writing files.',
 					source_line: 304,
-					type_signature: 'Fs_Operations',
+					type_signature: 'FsOperations',
 					properties: [
 						{
 							name: 'readFile',
@@ -3042,73 +3042,73 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Gitops_Operations',
+					name: 'GitopsOperations',
 					kind: 'type',
 					doc_comment:
 						'Combined operations interface grouping all gitops functionality.\nThis is the main interface injected into publishing and validation workflows.',
 					source_line: 326,
-					type_signature: 'Gitops_Operations',
+					type_signature: 'GitopsOperations',
 					properties: [
 						{
 							name: 'changeset',
 							kind: 'variable',
-							type_signature: 'Changeset_Operations',
+							type_signature: 'ChangesetOperations',
 						},
 						{
 							name: 'git',
 							kind: 'variable',
-							type_signature: 'Git_Operations',
+							type_signature: 'GitOperations',
 						},
 						{
 							name: 'process',
 							kind: 'variable',
-							type_signature: 'Process_Operations',
+							type_signature: 'ProcessOperations',
 						},
 						{
 							name: 'npm',
 							kind: 'variable',
-							type_signature: 'Npm_Operations',
+							type_signature: 'NpmOperations',
 						},
 						{
 							name: 'preflight',
 							kind: 'variable',
-							type_signature: 'Preflight_Operations',
+							type_signature: 'PreflightOperations',
 						},
 						{
 							name: 'fs',
 							kind: 'variable',
-							type_signature: 'Fs_Operations',
+							type_signature: 'FsOperations',
 						},
 						{
 							name: 'build',
 							kind: 'variable',
-							type_signature: 'Build_Operations',
+							type_signature: 'BuildOperations',
 						},
 					],
 				},
 			],
 			module_comment:
-				"Operations interfaces for dependency injection.\n\nThis is the core pattern enabling testability without mocks.\nAll side effects (git, npm, fs, process) are abstracted into interfaces.\n\n**Design principles:**\n- All operations accept a single `options` object parameter\n- All fallible operations return `Result` from `@ryanatkn/belt`\n- Never throw `Error` in operations - return `Result` with `ok: false`\n- Use `null` for expected \"not found\" cases (not errors)\n- Include `log?: Logger` in options where logging is useful\n\n**Production usage:**\n```typescript\nimport {default_gitops_operations} from './operations_defaults.js';\nconst result = await ops.git.current_branch_name({cwd: '/path'});\nif (!result.ok) {\n  throw new Task_Error(result.message);\n}\nconst branch = result.value;\n```\n\n**Test usage:**\n```typescript\nconst mock_ops = create_mock_operations();\nconst result = await publish_repos(repos, options, mock_ops);\n// Assert on result without any real git/npm calls\n```\n\nSee `operations_defaults.ts` for real implementations.\nSee test files (*.test.ts) for mock implementations.",
+				"Operations interfaces for dependency injection.\n\nThis is the core pattern enabling testability without mocks.\nAll side effects (git, npm, fs, process) are abstracted into interfaces.\n\n**Design principles:**\n- All operations accept a single `options` object parameter\n- All fallible operations return `Result` from `@ryanatkn/belt`\n- Never throw `Error` in operations - return `Result` with `ok: false`\n- Use `null` for expected \"not found\" cases (not errors)\n- Include `log?: Logger` in options where logging is useful\n\n**Production usage:**\n```typescript\nimport {default_gitops_operations} from './operations_defaults.js';\nconst result = await ops.git.current_branch_name({cwd: '/path'});\nif (!result.ok) {\n  throw new TaskError(result.message);\n}\nconst branch = result.value;\n```\n\n**Test usage:**\n```typescript\nconst mock_ops = create_mock_operations();\nconst result = await publish_repos(repos, options, mock_ops);\n// Assert on result without any real git/npm calls\n```\n\nSee `operations_defaults.ts` for real implementations.\nSee test files (*.test.ts) for mock implementations.",
 		},
 		{
 			path: 'output_helpers.ts',
 			identifiers: [
 				{
-					name: 'Output_Format',
+					name: 'OutputFormat',
 					kind: 'type',
 					source_line: 4,
-					type_signature: 'Output_Format',
+					type_signature: 'OutputFormat',
 				},
 				{
-					name: 'Output_Options',
+					name: 'OutputOptions',
 					kind: 'type',
 					source_line: 6,
-					type_signature: 'Output_Options',
+					type_signature: 'OutputOptions',
 					properties: [
 						{
 							name: 'format',
 							kind: 'variable',
-							type_signature: 'Output_Format',
+							type_signature: 'OutputFormat',
 						},
 						{
 							name: 'outfile',
@@ -3123,10 +3123,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Output_Formatters',
+					name: 'OutputFormatters',
 					kind: 'type',
 					source_line: 12,
-					type_signature: 'Output_Formatters<T>',
+					type_signature: 'OutputFormatters<T>',
 					generic_params: [
 						{
 							name: 'T',
@@ -3165,7 +3165,7 @@ export const src_json: Src_Json = {
 					],
 					source_line: 31,
 					type_signature:
-						'<T>(data: T, formatters: Output_Formatters<T>, options: Output_Options): Promise<void>',
+						'<T>(data: T, formatters: OutputFormatters<T>, options: OutputOptions): Promise<void>',
 					return_type: 'Promise<void>',
 					parameters: [
 						{
@@ -3175,12 +3175,12 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'formatters',
-							type: 'Output_Formatters<T>',
+							type: 'OutputFormatters<T>',
 							optional: false,
 						},
 						{
 							name: 'options',
-							type: 'Output_Options',
+							type: 'OutputOptions',
 							optional: false,
 						},
 					],
@@ -3189,28 +3189,28 @@ export const src_json: Src_Json = {
 			dependents: ['gitops_analyze.task.ts', 'gitops_plan.task.ts', 'gitops_publish.task.ts'],
 		},
 		{
-			path: 'Page_Footer.svelte',
+			path: 'PageFooter.svelte',
 			identifiers: [
 				{
-					name: 'Page_Footer',
+					name: 'PageFooter',
 					kind: 'component',
 					source_line: 1,
 				},
 			],
 			dependencies: ['repo.svelte.ts'],
 			dependents: [
-				'Modules_Page.svelte',
-				'Pull_Requests_Page.svelte',
-				'Table_Page.svelte',
-				'Tree_Item_Page.svelte',
-				'Tree_Page.svelte',
+				'ModulesPage.svelte',
+				'PullRequestsPage.svelte',
+				'TablePage.svelte',
+				'TreeItemPage.svelte',
+				'TreePage.svelte',
 			],
 		},
 		{
-			path: 'Page_Header.svelte',
+			path: 'PageHeader.svelte',
 			identifiers: [
 				{
-					name: 'Page_Header',
+					name: 'PageHeader',
 					kind: 'component',
 					props: [
 						{
@@ -3243,11 +3243,11 @@ export const src_json: Src_Json = {
 				},
 			],
 			dependents: [
-				'Modules_Page.svelte',
-				'Pull_Requests_Page.svelte',
-				'Table_Page.svelte',
-				'Tree_Item_Page.svelte',
-				'Tree_Page.svelte',
+				'ModulesPage.svelte',
+				'PullRequestsPage.svelte',
+				'TablePage.svelte',
+				'TreeItemPage.svelte',
+				'TreePage.svelte',
 			],
 		},
 		{
@@ -3275,10 +3275,10 @@ export const src_json: Src_Json = {
 			path: 'preflight_checks.ts',
 			identifiers: [
 				{
-					name: 'Preflight_Options',
+					name: 'PreflightOptions',
 					kind: 'type',
 					source_line: 20,
-					type_signature: 'Preflight_Options',
+					type_signature: 'PreflightOptions',
 					properties: [
 						{
 							name: 'skip_changesets',
@@ -3313,10 +3313,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Preflight_Result',
+					name: 'PreflightResult',
 					kind: 'type',
 					source_line: 29,
-					type_signature: 'Preflight_Result',
+					type_signature: 'PreflightResult',
 					properties: [
 						{
 							name: 'ok',
@@ -3356,40 +3356,40 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Run_Preflight_Checks_Options',
+					name: 'RunPreflightChecksOptions',
 					kind: 'type',
 					source_line: 39,
-					type_signature: 'Run_Preflight_Checks_Options',
+					type_signature: 'RunPreflightChecksOptions',
 					properties: [
 						{
 							name: 'repos',
 							kind: 'variable',
-							type_signature: 'Array<Local_Repo>',
+							type_signature: 'Array<LocalRepo>',
 						},
 						{
 							name: 'preflight_options',
 							kind: 'variable',
-							type_signature: 'Preflight_Options',
+							type_signature: 'PreflightOptions',
 						},
 						{
 							name: 'git_ops',
 							kind: 'variable',
-							type_signature: 'Git_Operations',
+							type_signature: 'GitOperations',
 						},
 						{
 							name: 'npm_ops',
 							kind: 'variable',
-							type_signature: 'Npm_Operations',
+							type_signature: 'NpmOperations',
 						},
 						{
 							name: 'build_ops',
 							kind: 'variable',
-							type_signature: 'Build_Operations',
+							type_signature: 'BuildOperations',
 						},
 						{
 							name: 'changeset_ops',
 							kind: 'variable',
-							type_signature: 'Changeset_Operations',
+							type_signature: 'ChangesetOperations',
 						},
 					],
 				},
@@ -3400,14 +3400,14 @@ export const src_json: Src_Json = {
 						'Validates all requirements before publishing can proceed.\n\nPerforms comprehensive pre-flight validation:\n- Clean workspaces (100% clean required - no uncommitted changes)\n- Correct branch (usually main)\n- Changesets present (unless skip_changesets=true)\n- Builds successful (fail-fast to prevent broken state)\n- Git remote reachability\n- NPM authentication with username\n- NPM registry connectivity\n\nBuild validation runs BEFORE any publishing to prevent the scenario where\nversion is bumped but build fails, leaving repo in broken state.',
 					source_line: 65,
 					type_signature:
-						'({ repos, preflight_options, git_ops, npm_ops, build_ops, changeset_ops, }: Run_Preflight_Checks_Options): Promise<Preflight_Result>',
-					return_type: 'Promise<Preflight_Result>',
+						'({ repos, preflight_options, git_ops, npm_ops, build_ops, changeset_ops, }: RunPreflightChecksOptions): Promise<PreflightResult>',
+					return_type: 'Promise<PreflightResult>',
 					return_description:
 						'result with ok=false if any errors, plus warnings and detailed status',
 					parameters: [
 						{
 							name: '__0',
-							type: 'Run_Preflight_Checks_Options',
+							type: 'RunPreflightChecksOptions',
 							optional: false,
 						},
 					],
@@ -3420,10 +3420,10 @@ export const src_json: Src_Json = {
 			path: 'publishing_plan.ts',
 			identifiers: [
 				{
-					name: 'Version_Change',
+					name: 'VersionChange',
 					kind: 'type',
 					source_line: 18,
-					type_signature: 'Version_Change',
+					type_signature: 'VersionChange',
 					properties: [
 						{
 							name: 'package_name',
@@ -3443,7 +3443,7 @@ export const src_json: Src_Json = {
 						{
 							name: 'bump_type',
 							kind: 'variable',
-							type_signature: 'Bump_Type',
+							type_signature: 'BumpType',
 						},
 						{
 							name: 'breaking',
@@ -3468,20 +3468,20 @@ export const src_json: Src_Json = {
 						{
 							name: 'existing_bump',
 							kind: 'variable',
-							type_signature: 'Bump_Type',
+							type_signature: 'BumpType',
 						},
 						{
 							name: 'required_bump',
 							kind: 'variable',
-							type_signature: 'Bump_Type',
+							type_signature: 'BumpType',
 						},
 					],
 				},
 				{
-					name: 'Dependency_Update',
+					name: 'DependencyUpdate',
 					kind: 'type',
 					source_line: 31,
-					type_signature: 'Dependency_Update',
+					type_signature: 'DependencyUpdate',
 					properties: [
 						{
 							name: 'dependent_package',
@@ -3511,10 +3511,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Publishing_Plan',
+					name: 'PublishingPlan',
 					kind: 'type',
 					source_line: 39,
-					type_signature: 'Publishing_Plan',
+					type_signature: 'PublishingPlan',
 					properties: [
 						{
 							name: 'publishing_order',
@@ -3524,12 +3524,12 @@ export const src_json: Src_Json = {
 						{
 							name: 'version_changes',
 							kind: 'variable',
-							type_signature: 'Array<Version_Change>',
+							type_signature: 'Array<VersionChange>',
 						},
 						{
 							name: 'dependency_updates',
 							kind: 'variable',
-							type_signature: 'Array<Dependency_Update>',
+							type_signature: 'Array<DependencyUpdate>',
 						},
 						{
 							name: 'breaking_cascades',
@@ -3560,12 +3560,12 @@ export const src_json: Src_Json = {
 						'Generates a publishing plan showing what would happen during publishing.\nShows version changes, dependency updates, and breaking change cascades.\nUses fixed-point iteration to resolve transitive cascades.',
 					source_line: 170,
 					type_signature:
-						'(repos: Local_Repo[], log?: Logger | undefined, ops?: Changeset_Operations): Promise<Publishing_Plan>',
-					return_type: 'Promise<Publishing_Plan>',
+						'(repos: LocalRepo[], log?: Logger | undefined, ops?: ChangesetOperations): Promise<PublishingPlan>',
+					return_type: 'Promise<PublishingPlan>',
 					parameters: [
 						{
 							name: 'repos',
-							type: 'Local_Repo[]',
+							type: 'LocalRepo[]',
 							optional: false,
 						},
 						{
@@ -3575,7 +3575,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'ops',
-							type: 'Changeset_Operations',
+							type: 'ChangesetOperations',
 							optional: false,
 							default_value: 'default_changeset_operations',
 						},
@@ -3585,12 +3585,12 @@ export const src_json: Src_Json = {
 					name: 'log_publishing_plan',
 					kind: 'function',
 					source_line: 461,
-					type_signature: '(plan: Publishing_Plan, log: Logger): void',
+					type_signature: '(plan: PublishingPlan, log: Logger): void',
 					return_type: 'void',
 					parameters: [
 						{
 							name: 'plan',
-							type: 'Publishing_Plan',
+							type: 'PublishingPlan',
 							optional: false,
 						},
 						{
@@ -3611,10 +3611,10 @@ export const src_json: Src_Json = {
 			dependents: ['gitops_plan.task.ts', 'gitops_publish.task.ts', 'gitops_validate.task.ts'],
 		},
 		{
-			path: 'Pull_Requests_Detail.svelte',
+			path: 'PullRequestsDetail.svelte',
 			identifiers: [
 				{
-					name: 'Pull_Requests_Detail',
+					name: 'PullRequestsDetail',
 					kind: 'component',
 					props: [
 						{
@@ -3624,7 +3624,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'filter_pull_request',
-							type: 'Filter_Pull_Request | undefined',
+							type: 'FilterPullRequest | undefined',
 							optional: true,
 						},
 					],
@@ -3632,13 +3632,13 @@ export const src_json: Src_Json = {
 				},
 			],
 			dependencies: ['github_helpers.ts'],
-			dependents: ['Pull_Requests_Page.svelte'],
+			dependents: ['PullRequestsPage.svelte'],
 		},
 		{
-			path: 'Pull_Requests_Page.svelte',
+			path: 'PullRequestsPage.svelte',
 			identifiers: [
 				{
-					name: 'Pull_Requests_Page',
+					name: 'PullRequestsPage',
 					kind: 'component',
 					props: [
 						{
@@ -3653,14 +3653,14 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'filter_pull_request',
-							type: 'Filter_Pull_Request | undefined',
+							type: 'FilterPullRequest | undefined',
 							optional: true,
 						},
 					],
 					source_line: 1,
 				},
 			],
-			dependencies: ['Page_Footer.svelte', 'Page_Header.svelte', 'Pull_Requests_Detail.svelte'],
+			dependencies: ['PageFooter.svelte', 'PageHeader.svelte', 'PullRequestsDetail.svelte'],
 		},
 		{
 			path: 'repo_ops.ts',
@@ -3670,9 +3670,9 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					doc_comment:
 						'Walk files in a directory, respecting common exclusions.\nYields absolute paths to files (and optionally directories).',
-					source_line: 152,
+					source_line: 155,
 					type_signature:
-						'(dir: string, options?: Walk_Options | undefined): AsyncGenerator<string, void, undefined>',
+						'(dir: string, options?: WalkOptions | undefined): AsyncGenerator<string, void, undefined>',
 					return_type: 'AsyncGenerator<string, void, undefined>',
 					parameters: [
 						{
@@ -3683,7 +3683,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'options',
-							type: 'Walk_Options | undefined',
+							type: 'WalkOptions | undefined',
 							optional: true,
 							description: 'Walk options for exclusions and filtering',
 						},
@@ -3706,10 +3706,10 @@ export const src_json: Src_Json = {
 						'readonly [".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".webp", ".woff", ".woff2", ".ttf", ".eot", ".mp4", ".webm", ".mp3", ".wav", ".ogg", ".zip", ".tar", ".gz", ".lock", ".pdf"]',
 				},
 				{
-					name: 'Walk_Options',
+					name: 'WalkOptions',
 					kind: 'type',
 					source_line: 60,
-					type_signature: 'Walk_Options',
+					type_signature: 'WalkOptions',
 					properties: [
 						{
 							name: 'exclude_dirs',
@@ -3744,10 +3744,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Repo_Path',
+					name: 'RepoPath',
 					kind: 'type',
 					source_line: 73,
-					type_signature: 'Repo_Path',
+					type_signature: 'RepoPath',
 					properties: [
 						{
 							name: 'name',
@@ -3772,8 +3772,8 @@ export const src_json: Src_Json = {
 					doc_comment:
 						'Get repo paths from gitops config without full git sync.\nLighter weight than `get_gitops_ready()` - just resolves paths.',
 					source_line: 86,
-					type_signature: '(config_path?: string | undefined): Promise<Repo_Path[]>',
-					return_type: 'Promise<Repo_Path[]>',
+					type_signature: '(config_path?: string | undefined): Promise<RepoPath[]>',
+					return_type: 'Promise<RepoPath[]>',
 					return_description: 'Array of repo info with name, path, and url',
 					parameters: [
 						{
@@ -3788,8 +3788,8 @@ export const src_json: Src_Json = {
 					name: 'should_exclude_path',
 					kind: 'function',
 					doc_comment: 'Check if a path should be excluded based on options.',
-					source_line: 117,
-					type_signature: '(file_path: string, options?: Walk_Options | undefined): boolean',
+					source_line: 119,
+					type_signature: '(file_path: string, options?: WalkOptions | undefined): boolean',
 					return_type: 'boolean',
 					parameters: [
 						{
@@ -3799,7 +3799,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'options',
-							type: 'Walk_Options | undefined',
+							type: 'WalkOptions | undefined',
 							optional: true,
 						},
 					],
@@ -3809,8 +3809,8 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					doc_comment:
 						'Collect all files from walk_repo_files into an array.\nConvenience function for when you need all paths upfront.',
-					source_line: 201,
-					type_signature: '(dir: string, options?: Walk_Options | undefined): Promise<string[]>',
+					source_line: 204,
+					type_signature: '(dir: string, options?: WalkOptions | undefined): Promise<string[]>',
 					return_type: 'Promise<string[]>',
 					parameters: [
 						{
@@ -3820,7 +3820,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'options',
-							type: 'Walk_Options | undefined',
+							type: 'WalkOptions | undefined',
 							optional: true,
 						},
 					],
@@ -3834,31 +3834,31 @@ export const src_json: Src_Json = {
 			path: 'repo.svelte.ts',
 			identifiers: [
 				{
-					name: 'Repo_Json',
+					name: 'RepoJson',
 					kind: 'type',
 					doc_comment: 'Serialized repo data as stored in repos.ts (JSON).',
 					source_line: 11,
-					type_signature: 'Repo_Json',
+					type_signature: 'RepoJson',
 					properties: [
 						{
 							name: 'package_json',
 							kind: 'variable',
-							type_signature: 'Package_Json',
+							type_signature: 'PackageJson',
 						},
 						{
 							name: 'src_json',
 							kind: 'variable',
-							type_signature: 'Src_Json',
+							type_signature: 'SrcJson',
 						},
 						{
 							name: 'check_runs',
 							kind: 'variable',
-							type_signature: 'Github_Check_Runs_Item | null',
+							type_signature: 'GithubCheckRunsItem | null',
 						},
 						{
 							name: 'pull_requests',
 							kind: 'variable',
-							type_signature: 'Array<Github_Pull_Request> | null',
+							type_signature: 'Array<GithubPullRequest> | null',
 						},
 					],
 				},
@@ -3876,21 +3876,21 @@ export const src_json: Src_Json = {
 						{
 							name: 'check_runs',
 							kind: 'variable',
-							type_signature: 'Github_Check_Runs_Item | null',
+							type_signature: 'GithubCheckRunsItem | null',
 						},
 						{
 							name: 'pull_requests',
 							kind: 'variable',
-							type_signature: 'Array<Github_Pull_Request> | null',
+							type_signature: 'Array<GithubPullRequest> | null',
 						},
 						{
 							name: 'constructor',
 							kind: 'constructor',
-							type_signature: '(repo_json: Repo_Json): Repo',
+							type_signature: '(repo_json: RepoJson): Repo',
 							parameters: [
 								{
 									name: 'repo_json',
-									type: 'Repo_Json',
+									type: 'RepoJson',
 									optional: false,
 								},
 							],
@@ -3943,13 +3943,13 @@ export const src_json: Src_Json = {
 				},
 			],
 			dependencies: ['github.ts'],
-			dependents: ['Page_Footer.svelte'],
+			dependents: ['PageFooter.svelte'],
 		},
 		{
-			path: 'Repos_Table.svelte',
+			path: 'ReposTable.svelte',
 			identifiers: [
 				{
-					name: 'Repos_Table',
+					name: 'ReposTable',
 					kind: 'component',
 					props: [
 						{
@@ -3967,41 +3967,13 @@ export const src_json: Src_Json = {
 				},
 			],
 			dependencies: ['github_helpers.ts'],
-			dependents: ['Table_Page.svelte'],
+			dependents: ['TablePage.svelte'],
 		},
 		{
-			path: 'Repos_Tree_Nav.svelte',
+			path: 'ReposTree.svelte',
 			identifiers: [
 				{
-					name: 'Repos_Tree_Nav',
-					kind: 'component',
-					props: [
-						{
-							name: 'repos',
-							type: 'Array<Repo>',
-							optional: false,
-						},
-						{
-							name: 'selected_repo',
-							type: 'Repo',
-							optional: true,
-						},
-						{
-							name: 'children',
-							type: 'Snippet',
-							optional: false,
-						},
-					],
-					source_line: 1,
-				},
-			],
-			dependents: ['Repos_Tree.svelte'],
-		},
-		{
-			path: 'Repos_Tree.svelte',
-			identifiers: [
-				{
-					name: 'Repos_Tree',
+					name: 'ReposTree',
 					kind: 'component',
 					props: [
 						{
@@ -4023,32 +3995,60 @@ export const src_json: Src_Json = {
 					source_line: 1,
 				},
 			],
-			dependencies: ['Repos_Tree_Nav.svelte'],
-			dependents: ['Tree_Item_Page.svelte', 'Tree_Page.svelte'],
+			dependencies: ['ReposTreeNav.svelte'],
+			dependents: ['TreeItemPage.svelte', 'TreePage.svelte'],
+		},
+		{
+			path: 'ReposTreeNav.svelte',
+			identifiers: [
+				{
+					name: 'ReposTreeNav',
+					kind: 'component',
+					props: [
+						{
+							name: 'repos',
+							type: 'Array<Repo>',
+							optional: false,
+						},
+						{
+							name: 'selected_repo',
+							type: 'Repo',
+							optional: true,
+						},
+						{
+							name: 'children',
+							type: 'Snippet',
+							optional: false,
+						},
+					],
+					source_line: 1,
+				},
+			],
+			dependents: ['ReposTree.svelte'],
 		},
 		{
 			path: 'resolved_gitops_config.ts',
 			identifiers: [
 				{
-					name: 'Resolved_Gitops_Config',
+					name: 'ResolvedGitopsConfig',
 					kind: 'type',
 					source_line: 9,
-					type_signature: 'Resolved_Gitops_Config',
+					type_signature: 'ResolvedGitopsConfig',
 					properties: [
 						{
 							name: 'local_repos',
 							kind: 'variable',
-							type_signature: 'Array<Maybe_Local_Repo> | null',
+							type_signature: 'Array<MaybeLocalRepo> | null',
 						},
 						{
 							name: 'resolved_local_repos',
 							kind: 'variable',
-							type_signature: 'Array<Resolved_Local_Repo> | null',
+							type_signature: 'Array<ResolvedLocalRepo> | null',
 						},
 						{
 							name: 'unresolved_local_repos',
 							kind: 'variable',
-							type_signature: 'Array<Unresolved_Local_Repo> | null',
+							type_signature: 'Array<UnresolvedLocalRepo> | null',
 						},
 					],
 				},
@@ -4056,13 +4056,12 @@ export const src_json: Src_Json = {
 					name: 'resolve_gitops_config',
 					kind: 'function',
 					source_line: 15,
-					type_signature:
-						'(gitops_config: Gitops_Config, repos_dir: string): Resolved_Gitops_Config',
-					return_type: 'Resolved_Gitops_Config',
+					type_signature: '(gitops_config: GitopsConfig, repos_dir: string): ResolvedGitopsConfig',
+					return_type: 'ResolvedGitopsConfig',
 					parameters: [
 						{
 							name: 'gitops_config',
-							type: 'Gitops_Config',
+							type: 'GitopsConfig',
 							optional: false,
 						},
 						{
@@ -4080,12 +4079,12 @@ export const src_json: Src_Json = {
 			path: 'semver.ts',
 			identifiers: [
 				{
-					name: 'Bump_Type',
+					name: 'BumpType',
 					kind: 'type',
 					doc_comment: 'Semantic Versioning 2.0.0 utilities',
 					see_also: ['https://semver.org/'],
 					source_line: 6,
-					type_signature: 'Bump_Type',
+					type_signature: 'BumpType',
 				},
 				{
 					name: 'Semver',
@@ -4147,7 +4146,7 @@ export const src_json: Src_Json = {
 					doc_comment:
 						'Bumps a version according to the specified type.\nResets lower version numbers per SemVer spec.',
 					source_line: 143,
-					type_signature: '(version: string, type: Bump_Type): string',
+					type_signature: '(version: string, type: BumpType): string',
 					return_type: 'string',
 					parameters: [
 						{
@@ -4157,7 +4156,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'type',
-							type: 'Bump_Type',
+							type: 'BumpType',
 							optional: false,
 						},
 					],
@@ -4169,10 +4168,10 @@ export const src_json: Src_Json = {
 			path: 'serialization_types.ts',
 			identifiers: [
 				{
-					name: 'Serialized_Node',
+					name: 'SerializedNode',
 					kind: 'type',
 					source_line: 15,
-					type_signature: 'Serialized_Node',
+					type_signature: 'SerializedNode',
 					properties: [
 						{
 							name: 'name',
@@ -4203,15 +4202,15 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Serialized_Graph',
+					name: 'SerializedGraph',
 					kind: 'type',
 					source_line: 27,
-					type_signature: 'Serialized_Graph',
+					type_signature: 'SerializedGraph',
 					properties: [
 						{
 							name: 'nodes',
 							kind: 'variable',
-							type_signature: 'Array<Serialized_Node>',
+							type_signature: 'Array<SerializedNode>',
 						},
 						{
 							name: 'edges',
@@ -4221,10 +4220,10 @@ export const src_json: Src_Json = {
 					],
 				},
 				{
-					name: 'Serialized_Publishing_Plan',
+					name: 'SerializedPublishingPlan',
 					kind: 'type',
 					source_line: 32,
-					type_signature: 'Serialized_Publishing_Plan',
+					type_signature: 'SerializedPublishingPlan',
 					properties: [
 						{
 							name: 'publishing_order',
@@ -4265,25 +4264,25 @@ export const src_json: Src_Json = {
 					kind: 'function',
 					doc_comment: 'Serializes a dependency graph to a JSON-safe format.',
 					source_line: 61,
-					type_signature: '(graph: Dependency_Graph): Serialized_Graph',
-					return_type: 'Serialized_Graph',
+					type_signature: '(graph: DependencyGraph): SerializedGraph',
+					return_type: 'SerializedGraph',
 					parameters: [
 						{
 							name: 'graph',
-							type: 'Dependency_Graph',
+							type: 'DependencyGraph',
 							optional: false,
 						},
 					],
 				},
 			],
 			module_comment:
-				'JSON-serializable types for command output formats.\n\nGitops commands support `--format json` and `--format markdown` output modes\nin addition to styled terminal output. These types define the JSON schema for:\n- Dependency graph structures (`Serialized_Graph`)\n- Publishing plan predictions (`Serialized_Publishing_Plan`)\n\nUsed by `gitops_analyze`, `gitops_plan`, and `gitops_publish --dry_run` when\n`--format json` or `--outfile` is specified.',
+				'JSON-serializable types for command output formats.\n\nGitops commands support `--format json` and `--format markdown` output modes\nin addition to styled terminal output. These types define the JSON schema for:\n- Dependency graph structures (`SerializedGraph`)\n- Publishing plan predictions (`SerializedPublishingPlan`)\n\nUsed by `gitops_analyze`, `gitops_plan`, and `gitops_publish --dry_run` when\n`--format json` or `--outfile` is specified.',
 		},
 		{
-			path: 'Table_Page.svelte',
+			path: 'TablePage.svelte',
 			identifiers: [
 				{
-					name: 'Table_Page',
+					name: 'TablePage',
 					kind: 'component',
 					props: [
 						{
@@ -4300,13 +4299,13 @@ export const src_json: Src_Json = {
 					source_line: 1,
 				},
 			],
-			dependencies: ['Page_Footer.svelte', 'Page_Header.svelte', 'Repos_Table.svelte'],
+			dependencies: ['PageFooter.svelte', 'PageHeader.svelte', 'ReposTable.svelte'],
 		},
 		{
-			path: 'Tree_Item_Page.svelte',
+			path: 'TreeItemPage.svelte',
 			identifiers: [
 				{
-					name: 'Tree_Item_Page',
+					name: 'TreeItemPage',
 					kind: 'component',
 					props: [
 						{
@@ -4328,13 +4327,13 @@ export const src_json: Src_Json = {
 					source_line: 1,
 				},
 			],
-			dependencies: ['Page_Footer.svelte', 'Page_Header.svelte', 'Repos_Tree.svelte'],
+			dependencies: ['PageFooter.svelte', 'PageHeader.svelte', 'ReposTree.svelte'],
 		},
 		{
-			path: 'Tree_Page.svelte',
+			path: 'TreePage.svelte',
 			identifiers: [
 				{
-					name: 'Tree_Page',
+					name: 'TreePage',
 					kind: 'component',
 					props: [
 						{
@@ -4351,7 +4350,7 @@ export const src_json: Src_Json = {
 					source_line: 1,
 				},
 			],
-			dependencies: ['Page_Footer.svelte', 'Page_Header.svelte', 'Repos_Tree.svelte'],
+			dependencies: ['PageFooter.svelte', 'PageHeader.svelte', 'ReposTree.svelte'],
 		},
 		{
 			path: 'version_utils.ts',
@@ -4510,17 +4509,17 @@ export const src_json: Src_Json = {
 					doc_comment:
 						'Compares bump types. Returns positive if a > b, negative if a < b, 0 if equal.',
 					source_line: 123,
-					type_signature: '(a: Bump_Type, b: Bump_Type): number',
+					type_signature: '(a: BumpType, b: BumpType): number',
 					return_type: 'number',
 					parameters: [
 						{
 							name: 'a',
-							type: 'Bump_Type',
+							type: 'BumpType',
 							optional: false,
 						},
 						{
 							name: 'b',
-							type: 'Bump_Type',
+							type: 'BumpType',
 							optional: false,
 						},
 					],
@@ -4529,7 +4528,7 @@ export const src_json: Src_Json = {
 					name: 'calculate_next_version',
 					kind: 'function',
 					source_line: 132,
-					type_signature: '(current_version: string, bump_type: Bump_Type): string',
+					type_signature: '(current_version: string, bump_type: BumpType): string',
 					return_type: 'string',
 					parameters: [
 						{
@@ -4539,7 +4538,7 @@ export const src_json: Src_Json = {
 						},
 						{
 							name: 'bump_type',
-							type: 'Bump_Type',
+							type: 'BumpType',
 							optional: false,
 						},
 					],

@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests isolated packages with no internal dependencies.
@@ -10,7 +10,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  * - No breaking cascades
  * - Mix of explicit changesets and no changes
  */
-export const isolated_packages: Repo_Fixture_Set = {
+export const isolated_packages: RepoFixtureSet = {
 	name: 'isolated_packages',
 	description: 'Tests packages with no internal dependencies (fully independent)',
 

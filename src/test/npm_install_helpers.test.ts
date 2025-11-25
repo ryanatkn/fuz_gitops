@@ -1,7 +1,7 @@
 import {test} from 'vitest';
 
 import {install_with_cache_healing} from '$lib/npm_install_helpers.js';
-import type {Npm_Operations} from '$lib/operations.js';
+import type {NpmOperations} from '$lib/operations.js';
 import {create_mock_gitops_ops, create_mock_repo} from './test_helpers.ts';
 
 /* eslint-disable @typescript-eslint/require-await */
@@ -13,7 +13,7 @@ test('install succeeds on first attempt', async ({expect}) => {
 		npm: {
 			install: async () => ({ok: true}),
 			cache_clean: async () => ({ok: true}), // Should not be called
-		} as Npm_Operations,
+		} as NpmOperations,
 	});
 
 	// Should not throw
@@ -48,7 +48,7 @@ test('ETARGET error triggers cache clean and retry', async ({expect}) => {
 				cache_clean_called = true;
 				return {ok: true};
 			},
-		} as Npm_Operations,
+		} as NpmOperations,
 	});
 
 	await install_with_cache_healing(repo, ops);
@@ -92,7 +92,7 @@ test('detects ETARGET in various formats', async ({expect}) => {
 					cache_clean_called = true;
 					return {ok: true};
 				},
-			} as Npm_Operations,
+			} as NpmOperations,
 		});
 
 		await install_with_cache_healing(repo, ops); // eslint-disable-line no-await-in-loop
@@ -117,7 +117,7 @@ test('non-ETARGET error fails immediately', async ({expect}) => {
 				cache_clean_called = true;
 				return {ok: true};
 			},
-		} as Npm_Operations,
+		} as NpmOperations,
 	});
 
 	await expect(async () => {
@@ -143,7 +143,7 @@ test('ETARGET triggers cache clean but clean fails', async ({expect}) => {
 				ok: false,
 				message: 'Cache clean failed: permission denied',
 			}),
-		} as Npm_Operations,
+		} as NpmOperations,
 	});
 
 	await expect(async () => {
@@ -177,7 +177,7 @@ test('cache clean succeeds but retry install fails', async ({expect}) => {
 				}
 			},
 			cache_clean: async () => ({ok: true}),
-		} as Npm_Operations,
+		} as NpmOperations,
 	});
 
 	await expect(async () => {
@@ -196,7 +196,7 @@ test('error message includes stderr details', async ({expect}) => {
 				message: 'Install failed',
 				stderr: 'npm ERR! detailed error log\nnpm ERR! more details',
 			}),
-		} as Npm_Operations,
+		} as NpmOperations,
 	});
 
 	await expect(async () => {
@@ -211,7 +211,7 @@ test('successful install with no stderr', async ({expect}) => {
 	const ops = create_mock_gitops_ops({
 		npm: {
 			install: async () => ({ok: true}),
-		} as Npm_Operations,
+		} as NpmOperations,
 	});
 
 	// Should complete without error
@@ -237,7 +237,7 @@ test('detects ETARGET with multiple indicators', async ({expect}) => {
 				cache_clean_called = true;
 				return {ok: true};
 			},
-		} as Npm_Operations,
+		} as NpmOperations,
 	});
 
 	await expect(async () => {

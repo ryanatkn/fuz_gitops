@@ -3,14 +3,14 @@ import {spawn_out} from '@ryanatkn/belt/process.js';
 import {wait} from '@ryanatkn/belt/async.js';
 import {styleText as st} from 'node:util';
 
-export interface Wait_Options {
+export interface WaitOptions {
 	max_attempts?: number;
 	initial_delay?: number;
 	max_delay?: number;
 	timeout?: number;
 }
 
-export interface Package_Info {
+export interface PackageInfo {
 	name: string;
 	version: string;
 }
@@ -55,7 +55,7 @@ export const check_package_available = async (
 export const wait_for_package = async (
 	pkg: string,
 	version: string,
-	options: Wait_Options = {},
+	options: WaitOptions = {},
 	log?: Logger,
 ): Promise<void> => {
 	const {
@@ -109,7 +109,7 @@ export const wait_for_package = async (
  *
  * @returns package info or null on error/not found
  */
-export const get_package_info = async (pkg: string, log?: Logger): Promise<Package_Info | null> => {
+export const get_package_info = async (pkg: string, log?: Logger): Promise<PackageInfo | null> => {
 	try {
 		const result = await spawn_out('npm', ['view', pkg, '--json']);
 

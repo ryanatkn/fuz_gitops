@@ -17,7 +17,7 @@ import {
 	create_configurable_gitops_ops,
 } from './mock_operations.js';
 import {fixture_to_local_repos} from './load_repo_fixtures.js';
-import type {Local_Repo} from '$lib/local_repo.js';
+import type {LocalRepo} from '$lib/local_repo.js';
 import {basic_publishing} from './repo_fixtures/basic_publishing.js';
 import {deep_cascade} from './repo_fixtures/deep_cascade.js';
 import {circular_dev_deps} from './repo_fixtures/circular_dev_deps.js';
@@ -28,12 +28,12 @@ import {peer_deps_only} from './repo_fixtures/peer_deps_only.js';
 import {circular_prod_deps_error} from './repo_fixtures/circular_prod_deps_error.js';
 import {isolated_packages} from './repo_fixtures/isolated_packages.js';
 import {multiple_dep_types} from './repo_fixtures/multiple_dep_types.js';
-import type {Repo_Fixture_Set} from './repo_fixture_types.js';
+import type {RepoFixtureSet} from './repo_fixture_types.js';
 import {generate_all_fixtures, fixtures_exist} from './generate_repos.js';
 import {assert_publishing_order, assert_version_changes, assert_messages} from './helpers.js';
 
 // All fixture sets
-const FIXTURES: Array<Repo_Fixture_Set> = [
+const FIXTURES: Array<RepoFixtureSet> = [
 	basic_publishing,
 	deep_cascade,
 	circular_dev_deps,
@@ -54,14 +54,14 @@ const ERROR_FIXTURES = FIXTURES.filter(
 	(f) => f.expected_outcomes.errors && f.expected_outcomes.errors.length > 0,
 );
 
-// Cache for fixture Local_Repo objects (avoids redundant conversions)
-const fixture_repos_cache: Map<string, Array<Local_Repo>> = new Map();
+// Cache for fixture LocalRepo objects (avoids redundant conversions)
+const fixture_repos_cache: Map<string, Array<LocalRepo>> = new Map();
 
 /**
- * Get or compute Local_Repo objects for a fixture.
+ * Get or compute LocalRepo objects for a fixture.
  * Caches results to avoid redundant object allocation across tests.
  */
-const get_fixture_repos = (fixture: Repo_Fixture_Set): Array<Local_Repo> => {
+const get_fixture_repos = (fixture: RepoFixtureSet): Array<LocalRepo> => {
 	let cached = fixture_repos_cache.get(fixture.name);
 	if (!cached) {
 		cached = fixture_to_local_repos(fixture);
@@ -74,7 +74,7 @@ const get_fixture_repos = (fixture: Repo_Fixture_Set): Array<Local_Repo> => {
  * Helper to set up common test data for plan tests.
  * Creates mock operations, loads repos, and generates publishing plan.
  */
-const setup_plan_test = async (fixture: Repo_Fixture_Set) => {
+const setup_plan_test = async (fixture: RepoFixtureSet) => {
 	const mock_ops = create_mock_gitops_ops(fixture);
 	const local_repos = get_fixture_repos(fixture);
 	const plan = await generate_publishing_plan(local_repos, undefined, mock_ops.changeset);
@@ -85,7 +85,7 @@ const setup_plan_test = async (fixture: Repo_Fixture_Set) => {
  * Helper to set up common test data for dry run publishing tests.
  * Creates mock operations, loads repos, and runs dry run publish.
  */
-const setup_dry_run_test = async (fixture: Repo_Fixture_Set) => {
+const setup_dry_run_test = async (fixture: RepoFixtureSet) => {
 	const mock_ops = create_mock_gitops_ops(fixture);
 	const local_repos = get_fixture_repos(fixture);
 	const result = await publish_repos(

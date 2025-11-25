@@ -3,16 +3,16 @@
  *
  * Gitops commands support `--format json` and `--format markdown` output modes
  * in addition to styled terminal output. These types define the JSON schema for:
- * - Dependency graph structures (`Serialized_Graph`)
- * - Publishing plan predictions (`Serialized_Publishing_Plan`)
+ * - Dependency graph structures (`SerializedGraph`)
+ * - Publishing plan predictions (`SerializedPublishingPlan`)
  *
  * Used by `gitops_analyze`, `gitops_plan`, and `gitops_publish --dry_run` when
  * `--format json` or `--outfile` is specified.
  */
 
-import type {Dependency_Graph} from './dependency_graph.js';
+import type {DependencyGraph} from './dependency_graph.js';
 
-export interface Serialized_Node {
+export interface SerializedNode {
 	name: string;
 	version: string;
 	dependencies: Array<{
@@ -24,12 +24,12 @@ export interface Serialized_Node {
 	publishable: boolean;
 }
 
-export interface Serialized_Graph {
-	nodes: Array<Serialized_Node>;
+export interface SerializedGraph {
+	nodes: Array<SerializedNode>;
 	edges: Array<[string, string]>;
 }
 
-export interface Serialized_Publishing_Plan {
+export interface SerializedPublishingPlan {
 	publishing_order: Array<string>;
 	version_changes: Array<{
 		package_name: string;
@@ -58,8 +58,8 @@ export interface Serialized_Publishing_Plan {
 /**
  * Serializes a dependency graph to a JSON-safe format.
  */
-export const serialize_graph = (graph: Dependency_Graph): Serialized_Graph => {
-	const nodes: Array<Serialized_Node> = [];
+export const serialize_graph = (graph: DependencyGraph): SerializedGraph => {
+	const nodes: Array<SerializedNode> = [];
 	const edges: Array<[string, string]> = [];
 
 	// Serialize nodes

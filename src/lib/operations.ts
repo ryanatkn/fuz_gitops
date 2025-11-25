@@ -16,7 +16,7 @@
  * import {default_gitops_operations} from './operations_defaults.js';
  * const result = await ops.git.current_branch_name({cwd: '/path'});
  * if (!result.ok) {
- *   throw new Task_Error(result.message);
+ *   throw new TaskError(result.message);
  * }
  * const branch = result.value;
  * ```
@@ -35,22 +35,22 @@
 import type {Result} from '@ryanatkn/belt/result.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 import type {SpawnOptions} from 'node:child_process';
-import type {Local_Repo} from './local_repo.js';
-import type {Changeset_Info} from './changeset_reader.js';
-import type {Bump_Type} from './semver.js';
-import type {Preflight_Options, Preflight_Result} from './preflight_checks.js';
-import type {Wait_Options} from './npm_registry.js';
+import type {LocalRepo} from './local_repo.js';
+import type {ChangesetInfo} from './changeset_reader.js';
+import type {BumpType} from './semver.js';
+import type {PreflightOptions, PreflightResult} from './preflight_checks.js';
+import type {WaitOptions} from './npm_registry.js';
 
 /**
  * Changeset operations for reading and predicting versions from `.changeset/*.md` files.
  */
-export interface Changeset_Operations {
+export interface ChangesetOperations {
 	/**
 	 * Checks if a repo has any changeset files.
 	 * Returns true if changesets exist, false if none found.
 	 */
 	has_changesets: (options: {
-		repo: Local_Repo;
+		repo: LocalRepo;
 	}) => Promise<Result<{value: boolean}, {message: string}>>;
 
 	/**
@@ -58,9 +58,9 @@ export interface Changeset_Operations {
 	 * Returns array of changeset info, or error if reading fails.
 	 */
 	read_changesets: (options: {
-		repo: Local_Repo;
+		repo: LocalRepo;
 		log?: Logger;
-	}) => Promise<Result<{value: Array<Changeset_Info>}, {message: string}>>;
+	}) => Promise<Result<{value: Array<ChangesetInfo>}, {message: string}>>;
 
 	/**
 	 * Predicts the next version based on changesets.
@@ -68,16 +68,16 @@ export interface Changeset_Operations {
 	 * Returns error Result if changesets exist but can't be read/parsed.
 	 */
 	predict_next_version: (options: {
-		repo: Local_Repo;
+		repo: LocalRepo;
 		log?: Logger;
-	}) => Promise<Result<{version: string; bump_type: Bump_Type}, {message: string}> | null>;
+	}) => Promise<Result<{version: string; bump_type: BumpType}, {message: string}> | null>;
 }
 
 /**
  * Git operations for branch management, commits, tags, and workspace state.
  * All operations return `Result` instead of throwing errors.
  */
-export interface Git_Operations {
+export interface GitOperations {
 	/**
 	 * Gets the current branch name.
 	 */
@@ -207,7 +207,7 @@ export interface Git_Operations {
 /**
  * Process spawning operations for running shell commands.
  */
-export interface Process_Operations {
+export interface ProcessOperations {
 	/**
 	 * Spawns a child process and waits for completion.
 	 */
@@ -221,12 +221,12 @@ export interface Process_Operations {
 /**
  * Build operations for validating packages compile before publishing.
  */
-export interface Build_Operations {
+export interface BuildOperations {
 	/**
 	 * Builds a package using gro build.
 	 */
 	build_package: (options: {
-		repo: Local_Repo;
+		repo: LocalRepo;
 		log?: Logger;
 	}) => Promise<Result<object, {message: string; output?: string}>>;
 }
@@ -235,7 +235,7 @@ export interface Build_Operations {
  * NPM registry operations for package availability checks and authentication.
  * Includes exponential backoff for waiting on package propagation.
  */
-export interface Npm_Operations {
+export interface NpmOperations {
 	/**
 	 * Waits for a package version to be available on NPM.
 	 * Uses exponential backoff with configurable timeout.
@@ -243,7 +243,7 @@ export interface Npm_Operations {
 	wait_for_package: (options: {
 		pkg: string;
 		version: string;
-		wait_options?: Wait_Options;
+		wait_options?: WaitOptions;
 		log?: Logger;
 	}) => Promise<Result<object, {message: string; timeout?: boolean}>>;
 
@@ -284,24 +284,24 @@ export interface Npm_Operations {
  * Preflight validation operations to ensure repos are ready for publishing.
  * Validates workspace state, branches, builds, and npm authentication.
  */
-export interface Preflight_Operations {
+export interface PreflightOperations {
 	/**
 	 * Runs preflight validation checks before publishing.
 	 */
 	run_preflight_checks: (options: {
-		repos: Array<Local_Repo>;
-		preflight_options: Preflight_Options;
-		git_ops?: Git_Operations;
-		npm_ops?: Npm_Operations;
-		build_ops?: Build_Operations;
-		changeset_ops?: Changeset_Operations;
-	}) => Promise<Preflight_Result>;
+		repos: Array<LocalRepo>;
+		preflight_options: PreflightOptions;
+		git_ops?: GitOperations;
+		npm_ops?: NpmOperations;
+		build_ops?: BuildOperations;
+		changeset_ops?: ChangesetOperations;
+	}) => Promise<PreflightResult>;
 }
 
 /**
  * File system operations for reading and writing files.
  */
-export interface Fs_Operations {
+export interface FsOperations {
 	/**
 	 * Reads a file from the file system.
 	 */
@@ -323,12 +323,12 @@ export interface Fs_Operations {
  * Combined operations interface grouping all gitops functionality.
  * This is the main interface injected into publishing and validation workflows.
  */
-export interface Gitops_Operations {
-	changeset: Changeset_Operations;
-	git: Git_Operations;
-	process: Process_Operations;
-	npm: Npm_Operations;
-	preflight: Preflight_Operations;
-	fs: Fs_Operations;
-	build: Build_Operations;
+export interface GitopsOperations {
+	changeset: ChangesetOperations;
+	git: GitOperations;
+	process: ProcessOperations;
+	npm: NpmOperations;
+	preflight: PreflightOperations;
+	fs: FsOperations;
+	build: BuildOperations;
 }

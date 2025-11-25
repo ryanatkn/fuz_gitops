@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Docs_Footer from '@ryanatkn/fuz/Docs_Footer.svelte';
+	import DocsFooter from '@ryanatkn/fuz/DocsFooter.svelte';
 	import Card from '@ryanatkn/fuz/Card.svelte';
 	import {resolve} from '$app/paths';
 	import {pkg_context} from '@ryanatkn/fuz/pkg.svelte.js';
 
-	import Main_Header from '$routes/Main_Header.svelte';
+	import MainHeader from '$routes/MainHeader.svelte';
 
 	const pkg = pkg_context.get();
 </script>
@@ -15,7 +15,7 @@
 
 <main class="box">
 	<section style:margin-top="var(--docs_primary_nav_height, 60px)">
-		<Main_Header />
+		<MainHeader />
 	</section>
 	<section>
 		<menu class="unstyled">
@@ -37,10 +37,10 @@
 		</menu>
 	</section>
 	<section class="mb_xl7">
-		<Docs_Footer {pkg}>
+		<DocsFooter {pkg}>
 			{#snippet logo_header()}<a href={resolve('/about')} class="mb_xs">about</a>{/snippet}
 			{#snippet logo_footer()}<a href="https://www.fuz.dev/" class="mt_xs">fuz.dev</a>{/snippet}
-		</Docs_Footer>
+		</DocsFooter>
 	</section>
 </main>
 

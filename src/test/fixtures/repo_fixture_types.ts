@@ -3,14 +3,14 @@
  * These fixtures define complete repo state without requiring filesystem or git.
  */
 
-export interface Repo_Fixture_Changeset {
+export interface RepoFixtureChangeset {
 	/** Changeset filename (e.g. 'breaking.md') */
 	filename: string;
 	/** Full changeset content including frontmatter */
 	content: string;
 }
 
-export interface Repo_Fixture_Data {
+export interface RepoFixtureData {
 	/** Short repo name (e.g. 'repo_a') */
 	repo_name: string;
 	/** Full HTTPS repo URL */
@@ -25,29 +25,29 @@ export interface Repo_Fixture_Data {
 		peerDependencies?: Record<string, string>;
 	};
 	/** Changesets in .changeset/ directory */
-	changesets?: Array<Repo_Fixture_Changeset>;
+	changesets?: Array<RepoFixtureChangeset>;
 }
 
-export interface Repo_Fixture_Expected_Version_Change {
+export interface RepoFixtureExpectedVersionChange {
 	package_name: string;
 	from: string;
 	to: string;
 	scenario: 'explicit_changeset' | 'bump_escalation' | 'auto_generated';
 }
 
-export interface Repo_Fixture_Set {
+export interface RepoFixtureSet {
 	/** Unique name for this fixture set */
 	name: string;
 	/** Human-readable description of what this fixture tests */
 	description: string;
 	/** Array of repo data */
-	repos: Array<Repo_Fixture_Data>;
+	repos: Array<RepoFixtureData>;
 	/** Expected outcomes when running publishing operations */
 	expected_outcomes: {
 		/** Expected topological order for publishing */
 		publishing_order: Array<string>;
 		/** Expected version changes */
-		version_changes: Array<Repo_Fixture_Expected_Version_Change>;
+		version_changes: Array<RepoFixtureExpectedVersionChange>;
 		/** Expected breaking change cascades (source package -> affected packages) */
 		breaking_cascades?: Record<string, Array<string>>;
 		/** Expected informational messages (packages with no changes) */

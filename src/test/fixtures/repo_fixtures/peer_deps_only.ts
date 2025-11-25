@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests packages with only peer dependencies (no production dependencies).
@@ -10,7 +10,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  * - Multiple peer deps with different bump types
  * - Both `^` and `>=` version prefixes work correctly
  */
-export const peer_deps_only: Repo_Fixture_Set = {
+export const peer_deps_only: RepoFixtureSet = {
 	name: 'peer_deps_only',
 	description:
 		'Tests packages with only peer dependencies (plugins/adapters pattern) and bump escalation',

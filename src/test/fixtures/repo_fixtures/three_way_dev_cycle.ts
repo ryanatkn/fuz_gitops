@@ -1,4 +1,4 @@
-import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
+import type {RepoFixtureSet} from '../repo_fixture_types.js';
 
 /**
  * Tests three-way circular devDependencies between packages.
@@ -11,7 +11,7 @@ import type {Repo_Fixture_Set} from '../repo_fixture_types.js';
  * Should publish successfully because topological sort excludes dev dependencies.
  * Validates that longer dev cycles (>2 packages) work in full publishing workflow.
  */
-export const three_way_dev_cycle: Repo_Fixture_Set = {
+export const three_way_dev_cycle: RepoFixtureSet = {
 	name: 'three_way_dev_cycle',
 	description:
 		'Tests that three-way circular devDependencies do not prevent publishing (longer cycles work)',

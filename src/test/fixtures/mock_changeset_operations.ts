@@ -1,36 +1,36 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import type {Changeset_Operations} from '$lib/operations.js';
-import type {Local_Repo} from '$lib/local_repo.js';
-import {parse_changeset_content, type Changeset_Info} from '$lib/changeset_reader.js';
+import type {ChangesetOperations} from '$lib/operations.js';
+import type {LocalRepo} from '$lib/local_repo.js';
+import {parse_changeset_content, type ChangesetInfo} from '$lib/changeset_reader.js';
 import {compare_bump_types, calculate_next_version} from '$lib/version_utils.js';
-import type {Bump_Type} from '$lib/semver.js';
-import type {Repo_Fixture_Set} from './repo_fixture_types.js';
+import type {BumpType} from '$lib/semver.js';
+import type {RepoFixtureSet} from './repo_fixture_types.js';
 
 /* eslint-disable @typescript-eslint/require-await */
 
 /**
  * Create mock changeset operations that read from fixture data.
  */
-export const create_mock_changeset_ops = (fixture: Repo_Fixture_Set): Changeset_Operations => {
+export const create_mock_changeset_ops = (fixture: RepoFixtureSet): ChangesetOperations => {
 	// Create lookup map for quick access
 	const repos_by_name = new Map(fixture.repos.map((repo) => [repo.package_json.name, repo]));
 
 	return {
-		has_changesets: async (options: {repo: Local_Repo}) => {
+		has_changesets: async (options: {repo: LocalRepo}) => {
 			const {repo} = options;
 			const fixture_repo = repos_by_name.get(repo.pkg.name);
 			const value = !!(fixture_repo?.changesets && fixture_repo.changesets.length > 0);
 			return {ok: true, value};
 		},
 
-		read_changesets: async (options: {repo: Local_Repo; log?: Logger}) => {
+		read_changesets: async (options: {repo: LocalRepo; log?: Logger}) => {
 			const {repo} = options;
 			const fixture_repo = repos_by_name.get(repo.pkg.name);
 			if (!fixture_repo?.changesets) {
 				return {ok: true, value: []};
 			}
 
-			const changesets: Array<Changeset_Info> = [];
+			const changesets: Array<ChangesetInfo> = [];
 			for (const changeset_data of fixture_repo.changesets) {
 				const parsed = parse_changeset_content(changeset_data.content, changeset_data.filename);
 				if (parsed) {
@@ -41,7 +41,7 @@ export const create_mock_changeset_ops = (fixture: Repo_Fixture_Set): Changeset_
 			return {ok: true, value: changesets};
 		},
 
-		predict_next_version: async (options: {repo: Local_Repo; log?: Logger}) => {
+		predict_next_version: async (options: {repo: LocalRepo; log?: Logger}) => {
 			const {repo} = options;
 			const fixture_repo = repos_by_name.get(repo.pkg.name);
 			if (!fixture_repo?.changesets || fixture_repo.changesets.length === 0) {
@@ -49,7 +49,7 @@ export const create_mock_changeset_ops = (fixture: Repo_Fixture_Set): Changeset_
 			}
 
 			// Parse all changesets for this repo
-			let highest_bump: Bump_Type | null = null;
+			let highest_bump: BumpType | null = null;
 
 			for (const changeset_data of fixture_repo.changesets) {
 				const parsed = parse_changeset_content(changeset_data.content, changeset_data.filename);

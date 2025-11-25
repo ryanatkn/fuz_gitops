@@ -244,11 +244,11 @@
 ### Minor Changes
 
 - upgrade to svelte 5 ([#21](https://github.com/ryanatkn/fuz_gitops/pull/21))
-- rename `Modules_Nav` from `Modules_Menu` ([#21](https://github.com/ryanatkn/fuz_gitops/pull/21))
+- rename `ModulesNav` from `ModulesMenu` ([#21](https://github.com/ryanatkn/fuz_gitops/pull/21))
 
 ### Patch Changes
 
-- add `Page_Header` and `Page_Footer` ([#21](https://github.com/ryanatkn/fuz_gitops/pull/21))
+- add `PageHeader` and `PageFooter` ([#21](https://github.com/ryanatkn/fuz_gitops/pull/21))
 
 ## 0.24.0
 
@@ -336,7 +336,7 @@
 
 ### Patch Changes
 
-- add `Page_Footer`, `Page_Header`, and page components ([#16](https://github.com/ryanatkn/fuz_gitops/pull/16))
+- add `PageFooter`, `PageHeader`, and page components ([#16](https://github.com/ryanatkn/fuz_gitops/pull/16))
 - add tree nav component ([#12](https://github.com/ryanatkn/fuz_gitops/pull/12))
 
 ## 0.15.0
@@ -353,13 +353,13 @@
 
 ### Minor Changes
 
-- rename `Deployments_Table` from `Repo_Table` ([70d4b0d](https://github.com/ryanatkn/fuz_gitops/commit/70d4b0d))
+- rename `DeploymentsTable` from `RepoTable` ([70d4b0d](https://github.com/ryanatkn/fuz_gitops/commit/70d4b0d))
 
 ## 0.13.3
 
 ### Patch Changes
 
-- make Deployments_Tree full the available width ([19809e1](https://github.com/ryanatkn/fuz_gitops/commit/19809e1))
+- make DeploymentsTree full the available width ([19809e1](https://github.com/ryanatkn/fuz_gitops/commit/19809e1))
 
 ## 0.13.2
 
@@ -389,12 +389,12 @@
 
 ### Minor Changes
 
-- rename `Modules_Detail` slot `"nav"` from `"menu"` ([#11](https://github.com/ryanatkn/fuz_gitops/pull/11))
+- rename `ModulesDetail` slot `"nav"` from `"menu"` ([#11](https://github.com/ryanatkn/fuz_gitops/pull/11))
 
 ### Patch Changes
 
-- add `Deployments_Tree` ([#11](https://github.com/ryanatkn/fuz_gitops/pull/11))
-- add breadcrumb to `Modules_Detail` ([6088428](https://github.com/ryanatkn/fuz_gitops/commit/6088428))
+- add `DeploymentsTree` ([#11](https://github.com/ryanatkn/fuz_gitops/pull/11))
+- add breadcrumb to `ModulesDetail` ([6088428](https://github.com/ryanatkn/fuz_gitops/commit/6088428))
 
 ## 0.10.9
 
@@ -413,25 +413,25 @@
 
 ### Patch Changes
 
-- improve `Pull_Requests_Detail` ([9887469](https://github.com/ryanatkn/fuz_gitops/commit/9887469))
+- improve `PullRequestsDetail` ([9887469](https://github.com/ryanatkn/fuz_gitops/commit/9887469))
 
 ## 0.10.6
 
 ### Patch Changes
 
-- add `Pull_Requests_Detail` ([#10](https://github.com/ryanatkn/fuz_gitops/pull/10))
+- add `PullRequestsDetail` ([#10](https://github.com/ryanatkn/fuz_gitops/pull/10))
 
 ## 0.10.5
 
 ### Patch Changes
 
-- fix `Modules_Detail` layout ([c6d69c3](https://github.com/ryanatkn/fuz_gitops/commit/c6d69c3))
+- fix `ModulesDetail` layout ([c6d69c3](https://github.com/ryanatkn/fuz_gitops/commit/c6d69c3))
 
 ## 0.10.4
 
 ### Patch Changes
 
-- improve `Modules_Detail` ([4e379a1](https://github.com/ryanatkn/fuz_gitops/commit/4e379a1))
+- improve `ModulesDetail` ([4e379a1](https://github.com/ryanatkn/fuz_gitops/commit/4e379a1))
 
 ## 0.10.3
 
@@ -468,7 +468,7 @@
 ### Patch Changes
 
 - publish sample data ([#8](https://github.com/ryanatkn/fuz_gitops/pull/8))
-- add `Modules_Detail.svelte` and `Modules_Nav.svelte` ([#8](https://github.com/ryanatkn/fuz_gitops/pull/8))
+- add `ModulesDetail.svelte` and `ModulesNav.svelte` ([#8](https://github.com/ryanatkn/fuz_gitops/pull/8))
 
 ## 0.8.1
 
@@ -499,20 +499,20 @@
 
 ### Patch Changes
 
-- add favicon to `Deployments_Table` ([9c0e326](https://github.com/ryanatkn/fuz_gitops/commit/9c0e326))
+- add favicon to `DeploymentsTable` ([9c0e326](https://github.com/ryanatkn/fuz_gitops/commit/9c0e326))
 
 ## 0.6.1
 
 ### Patch Changes
 
-- make `Github_Pull_Request` `body` nullable ([77f0ad6](https://github.com/ryanatkn/fuz_gitops/commit/77f0ad6))
+- make `GithubPullRequest` `body` nullable ([77f0ad6](https://github.com/ryanatkn/fuz_gitops/commit/77f0ad6))
 
 ## 0.6.0
 
 ### Minor Changes
 
 - extract `$lib/github.ts` ([#6](https://github.com/ryanatkn/fuz_gitops/pull/6))
-- add `Github_Pull_Request` schema and parse fetch response ([#6](https://github.com/ryanatkn/fuz_gitops/pull/6))
+- add `GithubPullRequest` schema and parse fetch response ([#6](https://github.com/ryanatkn/fuz_gitops/pull/6))
 
 ## 0.5.2
 
@@ -536,7 +536,7 @@
 
 ### Minor Changes
 
-- parse `Gitops_Config` ([1ed8dc4](https://github.com/ryanatkn/fuz_gitops/commit/1ed8dc4))
+- parse `GitopsConfig` ([1ed8dc4](https://github.com/ryanatkn/fuz_gitops/commit/1ed8dc4))
 
 ### Patch Changes
 
@@ -546,7 +546,7 @@
 
 ### Minor Changes
 
-- rename `Gitops_Config` `deployments` from `repos` ([0e16e6f](https://github.com/ryanatkn/fuz_gitops/commit/0e16e6f))
+- rename `GitopsConfig` `deployments` from `repos` ([0e16e6f](https://github.com/ryanatkn/fuz_gitops/commit/0e16e6f))
 
 ## 0.2.1
 

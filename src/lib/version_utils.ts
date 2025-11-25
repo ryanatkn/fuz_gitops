@@ -1,4 +1,4 @@
-import type {Bump_Type} from './semver.js';
+import type {BumpType} from './semver.js';
 
 export const is_wildcard = (version: string): boolean => {
 	return version === '*';
@@ -120,8 +120,8 @@ export const detect_bump_type = (
 /**
  * Compares bump types. Returns positive if a > b, negative if a < b, 0 if equal.
  */
-export const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
-	const order: Record<Bump_Type, number> = {
+export const compare_bump_types = (a: BumpType, b: BumpType): number => {
+	const order: Record<BumpType, number> = {
 		major: 3,
 		minor: 2,
 		patch: 1,
@@ -129,7 +129,7 @@ export const compare_bump_types = (a: Bump_Type, b: Bump_Type): number => {
 	return order[a] - order[b];
 };
 
-export const calculate_next_version = (current_version: string, bump_type: Bump_Type): string => {
+export const calculate_next_version = (current_version: string, bump_type: BumpType): string => {
 	const parts = current_version.split('.').map(Number);
 	if (parts.length !== 3 || parts.some((p) => Number.isNaN(p))) {
 		throw new Error(`Invalid version format: ${current_version}`);

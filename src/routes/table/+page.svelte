@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Table_Page from '$lib/Table_Page.svelte';
+	import TablePage from '$lib/TablePage.svelte';
 	import {repos_context} from '$lib/repo.svelte.js';
 
 	const {repo, repos} = repos_context.get();
 </script>
 
-<Table_Page {repo} {repos} />
+<TablePage {repo} {repos} />
