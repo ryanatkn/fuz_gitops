@@ -1324,20 +1324,39 @@ export const src_json: SrcJson = {
 			path: 'github.ts',
 			identifiers: [
 				{
+					name: 'GithubRepoInfo',
+					kind: 'type',
+					doc_comment: 'Minimal interface for GitHub API calls - works with both Pkg and Repo.',
+					source_line: 8,
+					type_signature: 'GithubRepoInfo',
+					properties: [
+						{
+							name: 'owner_name',
+							kind: 'variable',
+							type_signature: 'string | null',
+						},
+						{
+							name: 'repo_name',
+							kind: 'variable',
+							type_signature: 'string',
+						},
+					],
+				},
+				{
 					name: 'GithubPullRequest',
 					kind: 'type',
 					doc_comment: '',
 					see_also: [
 						'https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests',
 					],
-					source_line: 9,
+					source_line: 16,
 					type_signature:
 						'ZodObject<{ number: ZodNumber; title: ZodString; user: ZodObject<{ login: ZodString; }, $strip>; draft: ZodBoolean; }, $strip>',
 				},
 				{
 					name: 'GithubPullRequests',
 					kind: 'type',
-					source_line: 18,
+					source_line: 25,
 					type_signature:
 						'ZodArray<ZodObject<{ number: ZodNumber; title: ZodString; user: ZodObject<{ login: ZodString; }, $strip>; draft: ZodBoolean; }, $strip>>',
 				},
@@ -1348,15 +1367,15 @@ export const src_json: SrcJson = {
 					see_also: [
 						'https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests',
 					],
-					source_line: 24,
+					source_line: 31,
 					type_signature:
-						'(pkg: Pkg, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined): Promise<...>',
+						'(repo_info: GithubRepoInfo, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined): Promise<...>',
 					return_type:
 						'Promise<{ number: number; title: string; user: { login: string; }; draft: boolean; }[] | null>',
 					parameters: [
 						{
-							name: 'pkg',
-							type: 'Pkg',
+							name: 'repo_info',
+							type: 'GithubRepoInfo',
 							optional: false,
 						},
 						{
@@ -1388,14 +1407,14 @@ export const src_json: SrcJson = {
 					see_also: [
 						'https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference',
 					],
-					source_line: 56,
+					source_line: 63,
 					type_signature:
 						'ZodObject<{ status: ZodEnum<{ queued: "queued"; in_progress: "in_progress"; completed: "completed"; }>; conclusion: ZodNullable<ZodEnum<{ success: "success"; failure: "failure"; neutral: "neutral"; cancelled: "cancelled"; skipped: "skipped"; timed_out: "timed_out"; action_required: "action_required"; }>>; }, $strip>',
 				},
 				{
 					name: 'GithubCheckRuns',
 					kind: 'type',
-					source_line: 63,
+					source_line: 70,
 					type_signature:
 						'ZodObject<{ total_count: ZodNumber; check_runs: ZodArray<ZodObject<{ status: ZodEnum<{ queued: "queued"; in_progress: "in_progress"; completed: "completed"; }>; conclusion: ZodNullable<ZodEnum<{ success: "success"; ... 5 more ...; action_required: "action_required"; }>>; }, $strip>>; }, $strip>',
 				},
@@ -1406,15 +1425,15 @@ export const src_json: SrcJson = {
 					see_also: [
 						'https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference',
 					],
-					source_line: 72,
+					source_line: 79,
 					type_signature:
-						'(pkg: Pkg, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined, ref?: string): Promise<...>',
+						'(repo_info: GithubRepoInfo, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined, ref?: string): Promise<...>',
 					return_type:
 						'Promise<{ status: "queued" | "in_progress" | "completed"; conclusion: "success" | "failure" | "neutral" | "cancelled" | "skipped" | "timed_out" | "action_required" | null; } | null>',
 					parameters: [
 						{
-							name: 'pkg',
-							type: 'Pkg',
+							name: 'repo_info',
+							type: 'GithubRepoInfo',
 							optional: false,
 						},
 						{
@@ -2012,7 +2031,7 @@ export const src_json: SrcJson = {
 				{
 					name: 'resolve_local_repos',
 					kind: 'function',
-					source_line: 186,
+					source_line: 192,
 					type_signature:
 						'({ resolved_config, repos_dir, gitops_config, download, log, npm_ops, }: { resolved_config: ResolvedGitopsConfig; repos_dir: string; gitops_config: GitopsConfig; download: boolean; log?: Logger | undefined; npm_ops?: NpmOperations | undefined; }): Promise<...>',
 					return_type: 'Promise<ResolvedLocalRepo[]>',
@@ -2027,7 +2046,7 @@ export const src_json: SrcJson = {
 				{
 					name: 'load_local_repos',
 					kind: 'function',
-					source_line: 236,
+					source_line: 242,
 					type_signature:
 						'({ resolved_local_repos, log, git_ops, npm_ops, }: { resolved_local_repos: ResolvedLocalRepo[]; log?: Logger | undefined; git_ops?: GitOperations | undefined; npm_ops?: NpmOperations | undefined; }): Promise<...>',
 					return_type: 'Promise<LocalRepo[]>',
@@ -2042,7 +2061,7 @@ export const src_json: SrcJson = {
 				{
 					name: 'resolve_local_repo',
 					kind: 'function',
-					source_line: 254,
+					source_line: 260,
 					type_signature:
 						'({ repo_config, repos_dir, }: { repo_config: GitopsRepoConfig; repos_dir: string; }): MaybeLocalRepo',
 					return_type: 'MaybeLocalRepo',
@@ -3197,7 +3216,6 @@ export const src_json: SrcJson = {
 					source_line: 1,
 				},
 			],
-			dependencies: ['repo.svelte.ts'],
 			dependents: [
 				'ModulesPage.svelte',
 				'PullRequestsPage.svelte',
@@ -3214,8 +3232,8 @@ export const src_json: SrcJson = {
 					kind: 'component',
 					props: [
 						{
-							name: 'pkg',
-							type: 'Pkg | {url: string; package_json: null}',
+							name: 'repo',
+							type: '{package_json: PackageJson} | {url: string; package_json: null}',
 							optional: false,
 						},
 						{
@@ -3837,18 +3855,13 @@ export const src_json: SrcJson = {
 					name: 'RepoJson',
 					kind: 'type',
 					doc_comment: 'Serialized repo data as stored in repos.ts (JSON).',
-					source_line: 11,
+					source_line: 19,
 					type_signature: 'RepoJson',
 					properties: [
 						{
 							name: 'package_json',
 							kind: 'variable',
 							type_signature: 'PackageJson',
-						},
-						{
-							name: 'src_json',
-							kind: 'variable',
-							type_signature: 'SrcJson',
 						},
 						{
 							name: 'check_runs',
@@ -3865,13 +3878,15 @@ export const src_json: SrcJson = {
 				{
 					name: 'Repo',
 					kind: 'class',
-					doc_comment: 'Runtime repo with Pkg instance.',
-					source_line: 21,
+					doc_comment:
+						'Runtime repo with computed properties from package.json.\n\nProvides convenient accessors for package metadata without the module/identifier\nfeatures of Pkg (which are not needed for gitops).',
+					source_line: 31,
 					members: [
 						{
-							name: 'pkg',
+							name: 'package_json',
 							kind: 'variable',
-							type_signature: 'Pkg',
+							modifiers: ['readonly'],
+							type_signature: 'PackageJson',
 						},
 						{
 							name: 'check_runs',
@@ -3882,6 +3897,61 @@ export const src_json: SrcJson = {
 							name: 'pull_requests',
 							kind: 'variable',
 							type_signature: 'Array<GithubPullRequest> | null',
+						},
+						{
+							name: 'name',
+							kind: 'variable',
+							doc_comment: "Package name (e.g., '@ryanatkn/fuz').",
+						},
+						{
+							name: 'repo_name',
+							kind: 'variable',
+							doc_comment: "Repository name without scope (e.g., 'fuz').",
+						},
+						{
+							name: 'repo_url',
+							kind: 'variable',
+							doc_comment: "GitHub repository URL (e.g., 'https://github.com/ryanatkn/fuz').",
+						},
+						{
+							name: 'owner_name',
+							kind: 'variable',
+							doc_comment: "GitHub owner/org name (e.g., 'ryanatkn').",
+						},
+						{
+							name: 'homepage_url',
+							kind: 'variable',
+							doc_comment: "Homepage URL (e.g., 'https://www.fuz.dev/').",
+						},
+						{
+							name: 'logo_url',
+							kind: 'variable',
+							doc_comment: 'Logo URL (falls back to favicon.png).',
+						},
+						{
+							name: 'logo_alt',
+							kind: 'variable',
+							doc_comment: 'Logo alt text.',
+						},
+						{
+							name: 'published',
+							kind: 'variable',
+							doc_comment: 'Whether package is published to npm.',
+						},
+						{
+							name: 'npm_url',
+							kind: 'variable',
+							doc_comment: 'npm package URL (if published).',
+						},
+						{
+							name: 'changelog_url',
+							kind: 'variable',
+							doc_comment: 'Changelog URL (if published).',
+						},
+						{
+							name: 'org_url',
+							kind: 'variable',
+							doc_comment: "Organization URL (e.g., 'https://github.com/ryanatkn').",
 						},
 						{
 							name: 'constructor',
@@ -3900,7 +3970,7 @@ export const src_json: SrcJson = {
 				{
 					name: 'Repos',
 					kind: 'type',
-					source_line: 33,
+					source_line: 86,
 					type_signature: 'Repos',
 					properties: [
 						{
@@ -3918,14 +3988,14 @@ export const src_json: SrcJson = {
 				{
 					name: 'repos_context',
 					kind: 'variable',
-					source_line: 38,
+					source_line: 91,
 					type_signature:
 						'{ get: (error_message?: string | undefined) => Repos; get_maybe: () => Repos | undefined; set: (value: Repos) => Repos; }',
 				},
 				{
 					name: 'repos_parse',
 					kind: 'function',
-					source_line: 40,
+					source_line: 93,
 					type_signature: '(repos: Repo[], homepage_url: string): Repos',
 					return_type: 'Repos',
 					parameters: [
@@ -3943,7 +4013,6 @@ export const src_json: SrcJson = {
 				},
 			],
 			dependencies: ['github.ts'],
-			dependents: ['PageFooter.svelte'],
 		},
 		{
 			path: 'ReposTable.svelte',

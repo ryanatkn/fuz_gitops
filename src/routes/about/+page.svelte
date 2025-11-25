@@ -15,7 +15,7 @@
 
 <main class="width_upto_md">
 	<div class="p_lg">
-		<PageHeader {pkg}></PageHeader>
+		<PageHeader repo={pkg}></PageHeader>
 	</div>
 	<EcosystemLinksPanel />
 	<section class="box width_100 mb_lg">

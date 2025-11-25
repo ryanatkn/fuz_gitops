@@ -1,7 +1,14 @@
 import type {Logger} from '@ryanatkn/belt/log.js';
-import type {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 import {z} from 'zod';
 import {fetch_value, type FetchValueCache} from '@ryanatkn/belt/fetch.js';
+
+/**
+ * Minimal interface for GitHub API calls - works with both Pkg and Repo.
+ */
+export interface GithubRepoInfo {
+	owner_name: string | null;
+	repo_name: string;
+}
 
 /**
  * @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
@@ -22,15 +29,15 @@ export type GithubPullRequests = z.infer<typeof GithubPullRequests>;
  * @see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
  */
 export const fetch_github_pull_requests = async (
-	pkg: Pkg,
+	repo_info: GithubRepoInfo,
 	cache?: FetchValueCache,
 	log?: Logger,
 	token?: string,
 	api_version?: string,
 ): Promise<GithubPullRequests | null> => {
-	if (!pkg.owner_name) throw Error('owner_name is required');
+	if (!repo_info.owner_name) throw Error('owner_name is required');
 	const headers = api_version ? new Headers({'x-github-api-version': api_version}) : undefined;
-	const url = `https://api.github.com/repos/${pkg.owner_name}/${pkg.repo_name}/pulls`;
+	const url = `https://api.github.com/repos/${repo_info.owner_name}/${repo_info.repo_name}/pulls`;
 	const fetched = await fetch_value(url, {
 		request: {headers},
 		parse: GithubPullRequests.parse,
@@ -70,16 +77,16 @@ export type GithubCheckRuns = z.infer<typeof GithubCheckRuns>;
  * @see https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference
  */
 export const fetch_github_check_runs = async (
-	pkg: Pkg,
+	repo_info: GithubRepoInfo,
 	cache?: FetchValueCache,
 	log?: Logger,
 	token?: string,
 	api_version?: string,
 	ref = 'main',
 ): Promise<GithubCheckRunsItem | null> => {
-	if (!pkg.owner_name) throw Error('owner_name is required');
+	if (!repo_info.owner_name) throw Error('owner_name is required');
 	const headers = api_version ? new Headers({'x-github-api-version': api_version}) : undefined;
-	const url = `https://api.github.com/repos/${pkg.owner_name}/${pkg.repo_name}/commits/${ref}/check-runs`;
+	const url = `https://api.github.com/repos/${repo_info.owner_name}/${repo_info.repo_name}/commits/${ref}/check-runs`;
 	const fetched = await fetch_value(url, {
 		request: {headers},
 		parse: (v) => reduce_check_runs(GithubCheckRuns.parse(v).check_runs),

@@ -13,12 +13,12 @@
 </script>
 
 <svelte:head>
-	<title>table {repo.pkg.package_json.glyph} {repo.pkg.package_json.name}</title>
+	<title>table {repo.package_json.glyph} {repo.package_json.name}</title>
 </svelte:head>
 
 <main class="box">
 	<div class="p_lg">
-		<PageHeader pkg={repo.pkg} />
+		<PageHeader {repo} />
 	</div>
 	<section>
 		<div class="panel p_md">

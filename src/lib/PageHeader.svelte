@@ -1,18 +1,18 @@
 <script lang="ts">
-	import type {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
+	import type {PackageJson} from '@ryanatkn/belt/package_json.js';
 	import Breadcrumb from '@ryanatkn/fuz/Breadcrumb.svelte';
 	import type {Snippet} from 'svelte';
 	import type {SvelteHTMLElements} from 'svelte/elements';
 
 	interface Props {
-		pkg: Pkg | {url: string; package_json: null};
+		repo: {package_json: PackageJson} | {url: string; package_json: null};
 		nav_attrs?: SvelteHTMLElements['nav'];
 		attrs?: SvelteHTMLElements['header'];
 		nav?: Snippet;
 		children?: Snippet;
 	}
 
-	const {pkg, nav_attrs, attrs, nav, children}: Props = $props();
+	const {repo, nav_attrs, attrs, nav, children}: Props = $props();
 </script>
 
 <header {...attrs}>
@@ -20,7 +20,7 @@
 	{#if nav}
 		{@render nav()}
 	{:else}
-		<nav {...nav_attrs}><Breadcrumb>{pkg.package_json?.glyph}</Breadcrumb></nav>
+		<nav {...nav_attrs}><Breadcrumb>{repo.package_json?.glyph}</Breadcrumb></nav>
 	{/if}
 </header>
 

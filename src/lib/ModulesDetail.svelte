@@ -19,22 +19,14 @@
 	// TODO show other data (bytes and lines of code per module?)
 
 	// TODO hacky, needs helpers or rethinking
+	// NOTE: src_json/modules data is no longer available on Repo (it was removed to simplify the API).
+	// This component will show an empty list until module metadata is added back or fetched separately.
 	const repos_modules: Array<{
 		repo: Repo;
 		modules: Array<ModuleJson>;
 	}> = $derived(
-		repos.reduce<Array<{repo: Repo; modules: Array<ModuleJson>}>>((acc, repo) => {
-			const {package_json, src_json} = repo.pkg;
-			if (
-				!src_json.modules?.length ||
-				!(
-					!!package_json.devDependencies?.['@sveltejs/package'] ||
-					!!package_json.dependencies?.['@sveltejs/package']
-				)
-			) {
-				return acc;
-			}
-			acc.push({repo, modules: src_json.modules});
+		repos.reduce<Array<{repo: Repo; modules: Array<ModuleJson>}>>((acc, _repo) => {
+			// No src_json on Repo anymore - modules feature requires separate implementation
 			return acc;
 		}, []),
 	);
@@ -54,8 +46,8 @@
 			{@const {repo, modules} = repo_modules}
 			<li class="repo_module">
 				<header class="width_100 position_relative">
-					<a href="#{repo.pkg.name}" id={repo.pkg.name} class="subtitle">🔗</a>
-					<a href={resolve(`/tree/${repo.pkg.repo_name}`)}>{repo.pkg.name}</a>
+					<a href="#{repo.name}" id={repo.name} class="subtitle">🔗</a>
+					<a href={resolve(`/tree/${repo.repo_name}`)}>{repo.name}</a>
 				</header>
 				<ul class="modules panel unstyled">
 					{#each modules as repo_module (repo_module)}
@@ -68,11 +60,11 @@
 							class:json={path.endsWith('.json')}
 						>
 							<div class="module_file">
-								{#if repo.pkg.repo_url}
+								{#if repo.repo_url}
 									<div class="chip row">
 										<!-- TODO this is a hack that could be fixed by adding an optional `base: './'` that defaults to './src/lib/'  -->
 										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-											href="{ensure_end(repo.pkg.repo_url, '/')}blob/main/{path === 'package.json'
+											href="{ensure_end(repo.repo_url, '/')}blob/main/{path === 'package.json'
 												? ''
 												: 'src/lib/'}{path}">{path}</a
 										>

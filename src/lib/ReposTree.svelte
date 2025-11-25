@@ -24,15 +24,17 @@
 	{#if selected_repo}
 		<section class="detail_wrapper">
 			<div class="panel detail p_md">
-				<PackageDetail pkg={selected_repo.pkg} />
+				<!-- TODO PackageDetail expects Pkg but Repo has compatible shape -->
+				<PackageDetail pkg={selected_repo as any} />
 			</div>
 		</section>
 	{:else}
 		<menu class="summaries">
-			{#each repos as repo (repo.pkg.name)}
+			{#each repos as repo (repo.name)}
 				<li class="panel p_md box">
-					{#if repo.pkg.package_json}
-						<PackageSummary pkg={repo.pkg}>
+					{#if repo.package_json}
+						<!-- TODO PackageSummary expects Pkg but Repo has compatible shape -->
+						<PackageSummary pkg={repo as any}>
 							{#snippet repo_name(repo_name)}
 								<a href={resolve(`/tree/${repo_name}`)} class="repo_name">{repo_name}</a>
 							{/snippet}
@@ -42,7 +44,7 @@
 							<p>
 								failed to fetch <code>.well-known/package.json</code> from
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve --><a
-									href={repo.pkg.repo_url}>{format_url(repo.pkg.repo_url)}</a
+									href={repo.repo_url}>{format_url(repo.repo_url)}</a
 								>
 							</p>
 						</div>

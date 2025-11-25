@@ -56,7 +56,6 @@ export const fetch_repo_data = async (
 
 		repos.push({
 			package_json: pkg.package_json,
-			src_json: pkg.src_json,
 			check_runs,
 			pull_requests,
 		});
