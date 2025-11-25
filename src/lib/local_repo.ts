@@ -120,7 +120,9 @@ export const load_local_repo = async ({
 	}
 
 	if (!clean_after_result.value) {
-		throw new TaskError(`Workspace is unclean after pulling branch "${repo_config.branch}"`);
+		throw new TaskError(
+			`Workspace ${repo_dir} is unclean after pulling branch "${repo_config.branch}"`,
+		);
 	}
 
 	// Record commit hash after pull
