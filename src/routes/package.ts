@@ -50,7 +50,7 @@ export const package_json: Package_Json = {
 		'@ryanatkn/eslint-config': '^0.9.0',
 		'@ryanatkn/fuz': '^0.161.2',
 		'@ryanatkn/fuz_code': '^0.35.0',
-		'@ryanatkn/gro': '^0.175.0',
+		'@ryanatkn/gro': '^0.176.0',
 		'@ryanatkn/moss': '^0.38.0',
 		'@sveltejs/adapter-static': '^3.0.10',
 		'@sveltejs/kit': '^2.49.0',
@@ -1630,7 +1630,7 @@ export const src_json: Src_Json = {
 			module_comment:
 				'Configuration types and normalization for gitops multi-repo management.\n\nTwo-phase configuration system:\n- `Raw_Gitops_Config` - User-friendly format with optional fields and flexible types\n- `Gitops_Config` - Internal format with required fields and strict types\n\nThis allows users to provide minimal configs (e.g., just URLs as strings) while\nthe system works with normalized configs internally for type safety.',
 			dependencies: ['paths.ts'],
-			dependents: ['gitops_task_helpers.ts'],
+			dependents: ['gitops_task_helpers.ts', 'repo_ops.ts'],
 		},
 		{
 			path: 'gitops_plan.task.ts',
@@ -3269,7 +3269,7 @@ export const src_json: Src_Json = {
 					type_signature: '".."',
 				},
 			],
-			dependents: ['gitops_config.ts', 'gitops_task_helpers.ts'],
+			dependents: ['gitops_config.ts', 'gitops_task_helpers.ts', 'repo_ops.ts'],
 		},
 		{
 			path: 'preflight_checks.ts',
@@ -3661,6 +3661,174 @@ export const src_json: Src_Json = {
 				},
 			],
 			dependencies: ['Page_Footer.svelte', 'Page_Header.svelte', 'Pull_Requests_Detail.svelte'],
+		},
+		{
+			path: 'repo_ops.ts',
+			identifiers: [
+				{
+					name: 'walk_repo_files',
+					kind: 'function',
+					doc_comment:
+						'Walk files in a directory, respecting common exclusions.\nYields absolute paths to files (and optionally directories).',
+					source_line: 152,
+					type_signature:
+						'(dir: string, options?: Walk_Options | undefined): AsyncGenerator<string, void, undefined>',
+					return_type: 'AsyncGenerator<string, void, undefined>',
+					parameters: [
+						{
+							name: 'dir',
+							type: 'string',
+							optional: false,
+							description: 'Directory to walk',
+						},
+						{
+							name: 'options',
+							type: 'Walk_Options | undefined',
+							optional: true,
+							description: 'Walk options for exclusions and filtering',
+						},
+					],
+				},
+				{
+					name: 'DEFAULT_EXCLUDE_DIRS',
+					kind: 'variable',
+					doc_comment: 'Default directories to exclude from file walking',
+					source_line: 20,
+					type_signature:
+						'readonly ["node_modules", ".git", ".gro", ".svelte-kit", ".deno", ".vscode", ".idea", "dist", "build", "coverage", ".cache", ".turbo"]',
+				},
+				{
+					name: 'DEFAULT_EXCLUDE_EXTENSIONS',
+					kind: 'variable',
+					doc_comment: 'Default binary/non-text extensions to exclude from content processing',
+					source_line: 36,
+					type_signature:
+						'readonly [".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".webp", ".woff", ".woff2", ".ttf", ".eot", ".mp4", ".webm", ".mp3", ".wav", ".ogg", ".zip", ".tar", ".gz", ".lock", ".pdf"]',
+				},
+				{
+					name: 'Walk_Options',
+					kind: 'type',
+					source_line: 60,
+					type_signature: 'Walk_Options',
+					properties: [
+						{
+							name: 'exclude_dirs',
+							kind: 'variable',
+							type_signature: 'Array<string>',
+							doc_comment: 'Additional directories to exclude (merged with defaults)',
+						},
+						{
+							name: 'exclude_extensions',
+							kind: 'variable',
+							type_signature: 'Array<string>',
+							doc_comment: 'Additional extensions to exclude (merged with defaults)',
+						},
+						{
+							name: 'max_file_size',
+							kind: 'variable',
+							type_signature: 'number',
+							doc_comment: 'Maximum file size in bytes (default: 10MB)',
+						},
+						{
+							name: 'include_dirs',
+							kind: 'variable',
+							type_signature: 'boolean',
+							doc_comment: 'Include directories in output (default: false)',
+						},
+						{
+							name: 'no_defaults',
+							kind: 'variable',
+							type_signature: 'boolean',
+							doc_comment: 'Use only provided exclusions, ignoring defaults',
+						},
+					],
+				},
+				{
+					name: 'Repo_Path',
+					kind: 'type',
+					source_line: 73,
+					type_signature: 'Repo_Path',
+					properties: [
+						{
+							name: 'name',
+							kind: 'variable',
+							type_signature: 'string',
+						},
+						{
+							name: 'path',
+							kind: 'variable',
+							type_signature: 'string',
+						},
+						{
+							name: 'url',
+							kind: 'variable',
+							type_signature: 'string',
+						},
+					],
+				},
+				{
+					name: 'get_repo_paths',
+					kind: 'function',
+					doc_comment:
+						'Get repo paths from gitops config without full git sync.\nLighter weight than `get_gitops_ready()` - just resolves paths.',
+					source_line: 86,
+					type_signature: '(config_path?: string | undefined): Promise<Repo_Path[]>',
+					return_type: 'Promise<Repo_Path[]>',
+					return_description: 'Array of repo info with name, path, and url',
+					parameters: [
+						{
+							name: 'config_path',
+							type: 'string | undefined',
+							optional: true,
+							description: 'Path to gitops.config.ts (defaults to ./gitops.config.ts)',
+						},
+					],
+				},
+				{
+					name: 'should_exclude_path',
+					kind: 'function',
+					doc_comment: 'Check if a path should be excluded based on options.',
+					source_line: 117,
+					type_signature: '(file_path: string, options?: Walk_Options | undefined): boolean',
+					return_type: 'boolean',
+					parameters: [
+						{
+							name: 'file_path',
+							type: 'string',
+							optional: false,
+						},
+						{
+							name: 'options',
+							type: 'Walk_Options | undefined',
+							optional: true,
+						},
+					],
+				},
+				{
+					name: 'collect_repo_files',
+					kind: 'function',
+					doc_comment:
+						'Collect all files from walk_repo_files into an array.\nConvenience function for when you need all paths upfront.',
+					source_line: 201,
+					type_signature: '(dir: string, options?: Walk_Options | undefined): Promise<string[]>',
+					return_type: 'Promise<string[]>',
+					parameters: [
+						{
+							name: 'dir',
+							type: 'string',
+							optional: false,
+						},
+						{
+							name: 'options',
+							type: 'Walk_Options | undefined',
+							optional: true,
+						},
+					],
+				},
+			],
+			module_comment:
+				'Generic repository operations for scripts that work across repos.\n\nProvides lightweight utilities for:\n- Getting repo paths from gitops config (without full git sync)\n- Walking files in repos with sensible exclusions\n- Common exclusion patterns for node/svelte projects\n\nFor full git sync/clone functionality, use `get_gitops_ready()` from gitops_task_helpers.',
+			dependencies: ['gitops_config.ts', 'paths.ts'],
 		},
 		{
 			path: 'repo.svelte.ts',
