@@ -92,7 +92,7 @@ export const get_repo_paths = async (config_path?: string): Promise<Array<Repo_P
 	}
 
 	const config_dir = dirname(resolved_config_path);
-	const repos_dir = resolve(config_dir, config.repos_dir ?? DEFAULT_REPOS_DIR);
+	const repos_dir = resolve(config_dir, config.repos_dir || DEFAULT_REPOS_DIR);
 
 	const repos: Array<Repo_Path> = [];
 
@@ -101,7 +101,9 @@ export const get_repo_paths = async (config_path?: string): Promise<Array<Repo_P
 		const name = url.split('/').at(-1);
 		if (!name) continue;
 
-		const path = repo_config.repo_dir ? resolve(config_dir, repo_config.repo_dir) : join(repos_dir, name);
+		const path = repo_config.repo_dir
+			? resolve(config_dir, repo_config.repo_dir)
+			: join(repos_dir, name);
 
 		if (existsSync(path)) {
 			repos.push({name, path, url});
@@ -180,7 +182,7 @@ export async function* walk_repo_files(
 			} else if (entry.isFile()) {
 				// Check file size
 				try {
-					const file_stat = await stat(full_path);
+					const file_stat = await stat(full_path); // eslint-disable-line no-await-in-loop
 					if (file_stat.size <= max_file_size) {
 						yield full_path;
 					}
