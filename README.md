@@ -36,8 +36,25 @@ npm i -D @ryanatkn/fuz_gitops
   in either `process.env`, a project-local `.env`, or the parent directory at `../.env`
   (currently optional to read public repos, but it's recommended regardless,
   and you'll need to select options to support private repos)
-- re-export the `gro gitops_sync` task by creating `$lib/gitops_sync.task.ts` with
-  the contents `export * from '@ryanatkn/fuz_gitops/gitops_sync.task.js';`
+- re-export the gitops tasks by creating files in `$lib/`:
+
+  ```ts
+  // gitops_sync.task.ts
+  export * from '@ryanatkn/fuz_gitops/gitops_sync.task.js';
+
+  // gitops_analyze.task.ts
+  export * from '@ryanatkn/fuz_gitops/gitops_analyze.task.js';
+
+  // gitops_plan.task.ts
+  export * from '@ryanatkn/fuz_gitops/gitops_plan.task.js';
+
+  // gitops_publish.task.ts
+  export * from '@ryanatkn/fuz_gitops/gitops_publish.task.js';
+
+  // gitops_validate.task.ts
+  export * from '@ryanatkn/fuz_gitops/gitops_validate.task.js';
+  ```
+
 - run `gro gitops_sync` to sync repos and update the local data
 
 ## Architecture

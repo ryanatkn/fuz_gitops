@@ -3,7 +3,7 @@ import type {CreateGitopsConfig} from './src/lib/gitops_config.js';
 const config: CreateGitopsConfig = () => {
 	return {
 		repos: [
-			// 'https://github.com/ryanatkn/zzz',
+			'https://github.com/ryanatkn/zzz',
 			'https://github.com/ryanatkn/moss',
 			'https://github.com/ryanatkn/fuz',
 			'https://github.com/ryanatkn/gro',
@@ -14,10 +14,10 @@ const config: CreateGitopsConfig = () => {
 			'https://github.com/ryanatkn/fuz_code',
 			{
 				repo_url: 'https://github.com/ryanatkn/fuz_gitops',
-				branch: 'migration-scripts',
+				branch: 'main',
 			},
 			'https://github.com/ryanatkn/webdevladder.net',
-			// 'https://github.com/ryanatkn/ryanatkn.com',
+			'https://github.com/ryanatkn/ryanatkn.com',
 		],
 	};
 };
