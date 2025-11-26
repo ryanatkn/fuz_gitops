@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type {ModuleJson} from '@ryanatkn/belt/src_json.js';
 	import {ensure_end} from '@ryanatkn/belt/string.js';
 	import {resolve} from '$app/paths';
 	import type {Snippet} from 'svelte';
@@ -18,17 +17,16 @@
 
 	// TODO show other data (bytes and lines of code per module?)
 
-	// TODO hacky, needs helpers or rethinking
-	// NOTE: src_json/modules data is no longer available on Repo (it was removed to simplify the API).
-	// This component will show an empty list until module metadata is added back or fetched separately.
-	const repos_modules: Array<{
-		repo: Repo;
-		modules: Array<ModuleJson>;
-	}> = $derived(
-		repos.reduce<Array<{repo: Repo; modules: Array<ModuleJson>}>>((acc, _repo) => {
-			// No src_json on Repo anymore - modules feature requires separate implementation
-			return acc;
-		}, []),
+	// Get modules from each repo's source_json
+	const repos_modules = $derived(
+		repos
+			.filter((repo): repo is Repo & {source_json: {modules: Array<unknown>}} =>
+				Boolean(repo.source_json.modules?.length),
+			)
+			.map((repo) => ({
+				repo,
+				modules: repo.source_json.modules,
+			})),
 	);
 
 	// TODO add favicon (from library? gro?)
@@ -51,7 +49,7 @@
 				</header>
 				<ul class="modules panel unstyled">
 					{#each modules as repo_module (repo_module)}
-						{@const {path, identifiers} = repo_module}
+						{@const {path, declarations} = repo_module}
 						<li
 							class="module"
 							class:ts={path.endsWith('.ts')}
@@ -73,9 +71,9 @@
 									<span class="chip">{path}</span>
 								{/if}
 							</div>
-							{#if identifiers?.length}
+							{#if declarations?.length}
 								<ul class="declarations unstyled">
-									{#each identifiers as { name, kind } (name)}
+									{#each declarations as { name, kind } (name)}
 										{#if name !== 'default'}
 											<li class="declaration chip {kind}_declaration">
 												{name}

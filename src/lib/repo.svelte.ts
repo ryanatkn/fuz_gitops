@@ -1,15 +1,10 @@
 import {create_context} from '@ryanatkn/fuz/context_helpers.js';
+import type {LibraryJson} from '@ryanatkn/belt/library_json.js';
 import type {PackageJson} from '@ryanatkn/belt/package_json.js';
-import {
-	repo_name_parse,
-	repo_url_parse,
-	github_owner_parse,
-	url_npm_package,
-	package_is_published,
-	url_package_logo,
-	url_github_file,
-	url_github_org,
-} from '@ryanatkn/fuz/package_helpers.js';
+import type {SourceJson} from '@ryanatkn/belt/source_json.js';
+import type {Url} from '@ryanatkn/belt/url.js';
+import {Library} from '@ryanatkn/fuz/library.svelte.js';
+import type {Module} from '@ryanatkn/fuz/module.svelte.js';
 
 import {GithubCheckRunsItem, type GithubPullRequest} from './github.js';
 
@@ -17,67 +12,68 @@ import {GithubCheckRunsItem, type GithubPullRequest} from './github.js';
  * Serialized repo data as stored in repos.ts (JSON).
  */
 export interface RepoJson {
-	package_json: PackageJson;
+	library_json: LibraryJson;
 	check_runs: GithubCheckRunsItem | null;
 	pull_requests: Array<GithubPullRequest> | null;
 }
 
 /**
- * Runtime repo with computed properties from package.json.
+ * Runtime repo with Library composition for package metadata.
  *
- * Provides convenient accessors for package metadata without the module/identifier
- * features of Pkg (which are not needed for gitops).
+ * Wraps a Library instance and adds GitHub-specific data (CI status, PRs).
+ * Convenience getters delegate to `this.library.*` for common properties.
  */
 export class Repo {
-	readonly package_json: PackageJson = $state.raw()!;
+	readonly library: Library;
 	check_runs: GithubCheckRunsItem | null;
 	pull_requests: Array<GithubPullRequest> | null;
 
-	/** Package name (e.g., '@ryanatkn/fuz'). */
-	name = $derived(this.package_json.name);
-
-	/** Repository name without scope (e.g., 'fuz'). */
-	repo_name = $derived(repo_name_parse(this.package_json.name));
-
-	/** GitHub repository URL (e.g., 'https://github.com/ryanatkn/fuz'). */
-	repo_url = $derived(
-		(() => {
-			const url = repo_url_parse(this.package_json.repository);
-			if (!url) {
-				throw Error('failed to parse repo - `repo_url` is required in package_json');
-			}
-			return url;
-		})(),
-	);
-
-	/** GitHub owner/org name (e.g., 'ryanatkn'). */
-	owner_name = $derived(this.repo_url ? github_owner_parse(this.repo_url) : null);
-
-	/** Homepage URL (e.g., 'https://www.fuz.dev/'). */
-	homepage_url = $derived(this.package_json.homepage ?? null);
-
-	/** Logo URL (falls back to favicon.png). */
-	logo_url = $derived(url_package_logo(this.homepage_url, this.package_json.logo));
-
-	/** Logo alt text. */
-	logo_alt = $derived(this.package_json.logo_alt ?? `logo for ${this.repo_name}`);
-
-	/** Whether package is published to npm. */
-	published = $derived(package_is_published(this.package_json));
-
-	/** npm package URL (if published). */
-	npm_url = $derived(this.published ? url_npm_package(this.package_json.name) : null);
-
-	/** Changelog URL (if published). */
-	changelog_url = $derived(
-		this.published && this.repo_url ? url_github_file(this.repo_url, 'CHANGELOG.md') : null,
-	);
-
-	/** Organization URL (e.g., 'https://github.com/ryanatkn'). */
-	org_url = $derived(url_github_org(this.repo_url, this.repo_name));
+	// Convenience getters delegating to library
+	get name(): string {
+		return this.library.name;
+	}
+	get repo_name(): string {
+		return this.library.repo_name;
+	}
+	get repo_url(): Url {
+		return this.library.repo_url;
+	}
+	get owner_name(): string | null {
+		return this.library.owner_name;
+	}
+	get homepage_url(): Url | null {
+		return this.library.homepage_url;
+	}
+	get logo_url(): Url | null {
+		return this.library.logo_url;
+	}
+	get logo_alt(): string {
+		return this.library.logo_alt;
+	}
+	get published(): boolean {
+		return this.library.published;
+	}
+	get npm_url(): Url | null {
+		return this.library.npm_url;
+	}
+	get changelog_url(): Url | null {
+		return this.library.changelog_url;
+	}
+	get package_json(): PackageJson {
+		return this.library.package_json;
+	}
+	get source_json(): SourceJson {
+		return this.library.source_json;
+	}
+	get modules(): Array<Module> {
+		return this.library.modules;
+	}
+	get org_url(): string | null {
+		return this.library.org_url;
+	}
 
 	constructor(repo_json: RepoJson) {
-		this.package_json = repo_json.package_json;
+		this.library = new Library(repo_json.library_json);
 		this.check_runs = repo_json.check_runs;
 		this.pull_requests = repo_json.pull_requests;
 	}

@@ -14,7 +14,7 @@ const config: CreateGitopsConfig = () => {
 			'https://github.com/ryanatkn/fuz_code',
 			{
 				repo_url: 'https://github.com/ryanatkn/fuz_gitops',
-				branch: 'main',
+				branch: 'upgrade-deps',
 			},
 			'https://github.com/ryanatkn/webdevladder.net',
 			'https://github.com/ryanatkn/ryanatkn.com',

@@ -23,8 +23,7 @@
 						class:selected
 						href={resolve(`/tree/${repo.repo_name}`)}
 						><div class="ellipsis">
-							{repo.repo_name}{#if repo.package_json.glyph}&nbsp;{repo.package_json
-									.glyph}{/if}
+							{repo.repo_name}{#if repo.package_json.glyph}&nbsp;{repo.package_json.glyph}{/if}
 						</div></a
 					>{/if}
 			</li>

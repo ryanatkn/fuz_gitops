@@ -209,11 +209,11 @@ export const update_all_repos = async (
 		try {
 			await update_package_json(repo, updates, strategy, undefined, log, git_ops, fs_ops); // eslint-disable-line no-await-in-loop
 			updated_count++;
-			log?.info(`    Updated ${updates.size} dependencies in ${repo.pkg.name}`);
+			log?.info(`    Updated ${updates.size} dependencies in ${repo.library.name}`);
 		} catch (error) {
 			const err = error instanceof Error ? error : new Error(String(error));
-			failed.push({repo: repo.pkg.name, error: err});
-			log?.error(`    Failed to update ${repo.pkg.name}: ${err.message}`);
+			failed.push({repo: repo.library.name, error: err});
+			log?.error(`    Failed to update ${repo.library.name}: ${err.message}`);
 		}
 	}
 

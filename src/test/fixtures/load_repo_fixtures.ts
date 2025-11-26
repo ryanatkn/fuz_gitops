@@ -2,8 +2,10 @@
  * Utilities for loading in-memory fixture data as LocalRepo objects.
  */
 
+import type {LibraryJson} from '@ryanatkn/belt/library_json.js';
+import {Library} from '@ryanatkn/fuz/library.svelte.js';
+
 import type {LocalRepo} from '$lib/local_repo.js';
-import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
 import type {RepoFixtureSet, RepoFixtureData} from './repo_fixture_types.js';
 
 /**
@@ -19,25 +21,38 @@ export const fixture_to_local_repos = (fixture: RepoFixtureSet): Array<LocalRepo
 export const fixture_repo_to_local_repo = (repo_data: RepoFixtureData): LocalRepo => {
 	const {repo_name, repo_url, package_json} = repo_data;
 
-	// Create minimal Pkg object
-	const pkg = new Pkg(package_json, {
+	// Create LibraryJson from fixture data
+	const library_json: LibraryJson = {
 		name: package_json.name,
-		version: package_json.version,
-		modules: [],
-	});
+		repo_name,
+		repo_url,
+		owner_name: 'test',
+		homepage_url: `https://test.com/${repo_name}`,
+		logo_url: null,
+		logo_alt: `logo for ${repo_name}`,
+		npm_url: null,
+		changelog_url: null,
+		published: false,
+		package_json,
+		source_json: {
+			name: package_json.name,
+			version: package_json.version,
+			modules: [],
+		},
+	};
+
+	const library = new Library(library_json);
 
 	const local_repo: LocalRepo = {
-		type: 'resolved_local_repo',
-		repo_name,
+		library,
+		library_json,
 		repo_dir: `/fixtures/${repo_name}`, // Fake path - not used in tests
-		repo_url,
 		repo_git_ssh_url: `git@github.com:test/${repo_name}.git`,
 		repo_config: {
 			repo_url,
 			repo_dir: null,
 			branch: 'main',
 		},
-		pkg,
 	};
 
 	// Add dependency maps if present

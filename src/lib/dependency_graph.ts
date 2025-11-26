@@ -54,21 +54,22 @@ export class DependencyGraph {
 	public init_from_repos(repos: Array<LocalRepo>): void {
 		// First pass: create nodes
 		for (const repo of repos) {
-			const {pkg} = repo;
+			const {library} = repo;
 			const node: DependencyNode = {
-				name: pkg.name,
-				version: pkg.package_json.version || '0.0.0',
+				name: library.name,
+				version: library.package_json.version || '0.0.0',
 				repo,
 				dependencies: new Map(),
 				dependents: new Set(),
-				publishable: !!pkg.package_json.private === false, // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+				publishable: !!library.package_json.private === false, // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
 			};
 
 			// Extract dependencies
-			const deps = pkg.package_json.dependencies || (EMPTY_OBJECT as Record<string, string>);
-			const dev_deps = pkg.package_json.devDependencies || (EMPTY_OBJECT as Record<string, string>);
+			const deps = library.package_json.dependencies || (EMPTY_OBJECT as Record<string, string>);
+			const dev_deps =
+				library.package_json.devDependencies || (EMPTY_OBJECT as Record<string, string>);
 			const peer_deps =
-				pkg.package_json.peerDependencies || (EMPTY_OBJECT as Record<string, string>);
+				library.package_json.peerDependencies || (EMPTY_OBJECT as Record<string, string>);
 
 			// Add dependencies, prioritizing prod/peer over dev
 			// (if a package appears in multiple dep types, use the stronger constraint)
@@ -85,8 +86,8 @@ export class DependencyGraph {
 				}
 			}
 
-			this.nodes.set(pkg.name, node);
-			this.edges.set(pkg.name, new Set());
+			this.nodes.set(library.name, node);
+			this.edges.set(library.name, new Set());
 		}
 
 		// Second pass: build edges (dependents)

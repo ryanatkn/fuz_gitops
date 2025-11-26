@@ -58,7 +58,7 @@ export const install_with_cache_healing = async (
 	if (!is_etarget_error(message, stderr)) {
 		// Different error - fail immediately without cache healing
 		throw new Error(
-			`Failed to install dependencies in ${repo.pkg.name}: ${install_result.message}${stderr ? `\n${stderr}` : ''}`,
+			`Failed to install dependencies in ${repo.library.name}: ${install_result.message}${stderr ? `\n${stderr}` : ''}`,
 		);
 	}
 
@@ -77,7 +77,7 @@ export const install_with_cache_healing = async (
 
 	if (!retry_result.ok) {
 		throw new Error(
-			`Failed to install dependencies after cache clean in ${repo.pkg.name}: ${retry_result.message}${retry_result.stderr ? `\n${retry_result.stderr}` : ''}`,
+			`Failed to install dependencies after cache clean in ${repo.library.name}: ${retry_result.message}${retry_result.stderr ? `\n${retry_result.stderr}` : ''}`,
 		);
 	}
 

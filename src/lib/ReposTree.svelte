@@ -1,6 +1,6 @@
 <script lang="ts">
-	import PackageSummary from '@ryanatkn/fuz/PackageSummary.svelte';
-	import PackageDetail from '@ryanatkn/fuz/PackageDetail.svelte';
+	import LibrarySummary from '@ryanatkn/fuz/LibrarySummary.svelte';
+	import LibraryDetail from '@ryanatkn/fuz/LibraryDetail.svelte';
 	import {resolve} from '$app/paths';
 	import {format_url} from '@ryanatkn/belt/url.js';
 	import type {Snippet} from 'svelte';
@@ -24,8 +24,7 @@
 	{#if selected_repo}
 		<section class="detail_wrapper">
 			<div class="panel detail p_md">
-				<!-- TODO PackageDetail expects Pkg but Repo has compatible shape -->
-				<PackageDetail pkg={selected_repo as any} />
+				<LibraryDetail library={selected_repo.library} />
 			</div>
 		</section>
 	{:else}
@@ -33,12 +32,11 @@
 			{#each repos as repo (repo.name)}
 				<li class="panel p_md box">
 					{#if repo.package_json}
-						<!-- TODO PackageSummary expects Pkg but Repo has compatible shape -->
-						<PackageSummary pkg={repo as any}>
+						<LibrarySummary library={repo.library}>
 							{#snippet repo_name(repo_name)}
 								<a href={resolve(`/tree/${repo_name}`)} class="repo_name">{repo_name}</a>
 							{/snippet}
-						</PackageSummary>
+						</LibrarySummary>
 					{:else}
 						<div class="width_upto_sm">
 							<p>

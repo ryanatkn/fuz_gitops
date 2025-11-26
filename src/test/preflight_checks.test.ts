@@ -436,7 +436,7 @@ describe('preflight_checks', () => {
 			const build_ops = create_mock_build_ops({
 				build_package: async (options) => {
 					build_count++;
-					built_packages.push(options.repo.pkg.name);
+					built_packages.push(options.repo.library.name);
 					return {ok: true};
 				},
 			});
@@ -467,7 +467,7 @@ describe('preflight_checks', () => {
 			const build_ops = create_mock_build_ops({
 				build_package: async (options) => {
 					call_count++;
-					if (options.repo.pkg.name === 'package-b') {
+					if (options.repo.library.name === 'package-b') {
 						return {ok: false, message: 'TypeScript compilation error'};
 					}
 					return {ok: true};
@@ -496,7 +496,7 @@ describe('preflight_checks', () => {
 			// Mock build ops where package-b fails
 			const build_ops = create_mock_build_ops({
 				build_package: async (options) => {
-					if (options.repo.pkg.name === 'package-b') {
+					if (options.repo.library.name === 'package-b') {
 						return {ok: false, message: 'Build failed: syntax error'};
 					}
 					return {ok: true};
@@ -507,7 +507,8 @@ describe('preflight_checks', () => {
 			const changeset_ops = {
 				has_changesets: async (options: {repo: LocalRepo}) => ({
 					ok: true as const,
-					value: options.repo.pkg.name === 'package-a' || options.repo.pkg.name === 'package-b',
+					value:
+						options.repo.library.name === 'package-a' || options.repo.library.name === 'package-b',
 				}),
 				read_changesets: async () => ({ok: true as const, value: []}),
 				predict_next_version: async () => null,
@@ -544,7 +545,7 @@ describe('preflight_checks', () => {
 			const changeset_ops = {
 				has_changesets: async (options: {repo: LocalRepo}) => ({
 					ok: true as const,
-					value: options.repo.pkg.name === 'failing-package',
+					value: options.repo.library.name === 'failing-package',
 				}),
 				read_changesets: async () => ({ok: true as const, value: []}),
 				predict_next_version: async () => null,
@@ -579,7 +580,7 @@ describe('preflight_checks', () => {
 			const built_packages: Array<string> = [];
 			const build_ops = create_mock_build_ops({
 				build_package: async (options) => {
-					built_packages.push(options.repo.pkg.name);
+					built_packages.push(options.repo.library.name);
 					return {ok: true};
 				},
 			});
@@ -609,9 +610,12 @@ describe('preflight_checks', () => {
 			const built_packages: Array<string> = [];
 			const build_ops = create_mock_build_ops({
 				build_package: async (options) => {
-					built_packages.push(options.repo.pkg.name);
+					built_packages.push(options.repo.library.name);
 					// Fail on package-a and package-c
-					if (options.repo.pkg.name === 'package-a' || options.repo.pkg.name === 'package-c') {
+					if (
+						options.repo.library.name === 'package-a' ||
+						options.repo.library.name === 'package-c'
+					) {
 						return {ok: false, message: 'Build error'};
 					}
 					return {ok: true};

@@ -25,10 +25,10 @@ test('dry_run predicts versions without publishing', async () => {
 	const mock_ops = create_mock_gitops_ops({
 		changeset: {
 			predict_next_version: async (options) => {
-				if (options.repo.pkg.name === 'pkg-a') {
+				if (options.repo.library.name === 'pkg-a') {
 					return {ok: true, version: '0.1.1', bump_type: 'patch' as const};
 				}
-				if (options.repo.pkg.name === 'pkg-b') {
+				if (options.repo.library.name === 'pkg-b') {
 					return {ok: true, version: '0.2.1', bump_type: 'patch' as const};
 				}
 				return null;
@@ -108,14 +108,14 @@ test('handles breaking change cascades in dry_run', async () => {
 		changeset: {
 			predict_next_version: async (options) => {
 				// pkg-core has a breaking change (0.x minor bump)
-				if (options.repo.pkg.name === 'pkg-core') {
+				if (options.repo.library.name === 'pkg-core') {
 					return {ok: true, version: '0.6.0', bump_type: 'minor' as const};
 				}
 				// Others have patch bumps
-				if (options.repo.pkg.name === 'pkg-mid') {
+				if (options.repo.library.name === 'pkg-mid') {
 					return {ok: true, version: '0.3.1', bump_type: 'patch' as const};
 				}
-				if (options.repo.pkg.name === 'pkg-app') {
+				if (options.repo.library.name === 'pkg-app') {
 					return {ok: true, version: '0.2.1', bump_type: 'patch' as const};
 				}
 				return null;
@@ -161,7 +161,7 @@ test('skips repos without changesets', async () => {
 		changeset: {
 			has_changesets: async (options) => ({
 				ok: true,
-				value: options.repo.pkg.name === 'pkg-a',
+				value: options.repo.library.name === 'pkg-a',
 			}),
 		},
 		preflight: create_preflight_mock(['pkg-a'], ['pkg-b', 'pkg-c']),
@@ -346,7 +346,7 @@ test('deploys only repos with changes (skips unchanged repos)', async () => {
 		changeset: {
 			has_changesets: async (options) => ({
 				ok: true,
-				value: options.repo.pkg.name === 'lib', // Only lib has changesets
+				value: options.repo.library.name === 'lib', // Only lib has changesets
 			}),
 		},
 		process: process_ops,

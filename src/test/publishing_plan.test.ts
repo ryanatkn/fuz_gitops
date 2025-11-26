@@ -18,11 +18,11 @@ test('detects breaking change cascades', async () => {
 	const mock_ops: ChangesetOperations = {
 		has_changesets: async (options) => ({
 			ok: true,
-			value: options.repo.pkg.name === 'pkg-a',
+			value: options.repo.library.name === 'pkg-a',
 		}),
 		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
-			if (options.repo.pkg.name === 'pkg-a') {
+			if (options.repo.library.name === 'pkg-a') {
 				// Simulate a breaking change for pkg-a
 				return {ok: true, version: '0.2.0', bump_type: 'minor' as const};
 			}
@@ -51,10 +51,10 @@ test('handles bump escalation', async () => {
 		has_changesets: async () => ({ok: true, value: true}),
 		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
-			if (options.repo.pkg.name === 'pkg-a') {
+			if (options.repo.library.name === 'pkg-a') {
 				return {ok: true, version: '0.2.0', bump_type: 'minor' as const}; // breaking
 			}
-			if (options.repo.pkg.name === 'pkg-b') {
+			if (options.repo.library.name === 'pkg-b') {
 				return {ok: true, version: '0.2.1', bump_type: 'patch' as const}; // non-breaking
 			}
 			return null;
@@ -80,11 +80,11 @@ test('generates auto-changesets for dependency updates', async () => {
 	const mock_ops: ChangesetOperations = {
 		has_changesets: async (options) => ({
 			ok: true,
-			value: options.repo.pkg.name === 'pkg-a',
+			value: options.repo.library.name === 'pkg-a',
 		}),
 		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
-			if (options.repo.pkg.name === 'pkg-a') {
+			if (options.repo.library.name === 'pkg-a') {
 				return {ok: true, version: '0.1.1', bump_type: 'patch' as const};
 			}
 			return null;
@@ -172,11 +172,11 @@ test('warns when MAX_ITERATIONS reached without convergence', async () => {
 	const mock_ops: ChangesetOperations = {
 		has_changesets: async (options) => ({
 			ok: true,
-			value: options.repo.pkg.name === 'level-1',
+			value: options.repo.library.name === 'level-1',
 		}),
 		read_changesets: async () => ({ok: true, value: []}),
 		predict_next_version: async (options) => {
-			if (options.repo.pkg.name === 'level-1') {
+			if (options.repo.library.name === 'level-1') {
 				// Breaking change in 0.x (minor bump)
 				return {ok: true, version: '0.2.0', bump_type: 'minor' as const};
 			}

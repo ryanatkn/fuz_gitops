@@ -93,7 +93,7 @@ export const run_preflight_checks = async ({
 	for (const repo of repos) {
 		const clean_result = await git_ops.check_clean_workspace({cwd: repo.repo_dir}); // eslint-disable-line no-await-in-loop
 		if (!clean_result.ok) {
-			errors.push(`${repo.pkg.name} failed workspace check: ${clean_result.message}`);
+			errors.push(`${repo.library.name} failed workspace check: ${clean_result.message}`);
 			continue;
 		}
 
@@ -106,11 +106,11 @@ export const run_preflight_checks = async ({
 
 				if (unexpected_files.length > 0) {
 					errors.push(
-						`${repo.pkg.name} has uncommitted changes in: ${unexpected_files.slice(0, 3).join(', ')}${unexpected_files.length > 3 ? ` and ${unexpected_files.length - 3} more` : ''}`,
+						`${repo.library.name} has uncommitted changes in: ${unexpected_files.slice(0, 3).join(', ')}${unexpected_files.length > 3 ? ` and ${unexpected_files.length - 3} more` : ''}`,
 					);
 				}
 			} else {
-				errors.push(`${repo.pkg.name} has uncommitted changes`);
+				errors.push(`${repo.library.name} has uncommitted changes`);
 			}
 		}
 	}
@@ -120,13 +120,13 @@ export const run_preflight_checks = async ({
 	for (const repo of repos) {
 		const branch_result = await git_ops.current_branch_name({cwd: repo.repo_dir}); // eslint-disable-line no-await-in-loop
 		if (!branch_result.ok) {
-			errors.push(`${repo.pkg.name} failed branch check: ${branch_result.message}`);
+			errors.push(`${repo.library.name} failed branch check: ${branch_result.message}`);
 			continue;
 		}
 
 		if (branch_result.value !== required_branch) {
 			errors.push(
-				`${repo.pkg.name} is on branch '${branch_result.value}', expected '${required_branch}'`,
+				`${repo.library.name} is on branch '${branch_result.value}', expected '${required_branch}'`,
 			);
 		}
 	}
@@ -137,15 +137,15 @@ export const run_preflight_checks = async ({
 		for (const repo of repos) {
 			const has_result = await changeset_ops.has_changesets({repo}); // eslint-disable-line no-await-in-loop
 			if (!has_result.ok) {
-				errors.push(`${repo.pkg.name} failed changeset check: ${has_result.message}`);
+				errors.push(`${repo.library.name} failed changeset check: ${has_result.message}`);
 				continue;
 			}
 
 			if (has_result.value) {
-				repos_with_changesets.add(repo.pkg.name);
+				repos_with_changesets.add(repo.library.name);
 			} else {
-				repos_without_changesets.add(repo.pkg.name);
-				warnings.push(`${repo.pkg.name} has no changesets`);
+				repos_without_changesets.add(repo.library.name);
+				warnings.push(`${repo.library.name} has no changesets`);
 			}
 		}
 
@@ -157,18 +157,20 @@ export const run_preflight_checks = async ({
 	// 4. Validate builds for packages with changesets
 	if (!skip_build_validation && repos_with_changesets.size > 0) {
 		log?.info(st('cyan', `  Validating builds for ${repos_with_changesets.size} package(s)...`));
-		const repos_to_build = repos.filter((repo) => repos_with_changesets.has(repo.pkg.name));
+		const repos_to_build = repos.filter((repo) => repos_with_changesets.has(repo.library.name));
 
 		for (let i = 0; i < repos_to_build.length; i++) {
 			const repo = repos_to_build[i]!;
-			log?.info(st('dim', `    [${i + 1}/${repos_to_build.length}] Building ${repo.pkg.name}...`));
+			log?.info(
+				st('dim', `    [${i + 1}/${repos_to_build.length}] Building ${repo.library.name}...`),
+			);
 			const build_result = await build_ops.build_package({repo, log}); // eslint-disable-line no-await-in-loop
 			if (!build_result.ok) {
 				errors.push(
-					`${repo.pkg.name} failed to build: ${build_result.output || build_result.message || 'unknown error'}`,
+					`${repo.library.name} failed to build: ${build_result.output || build_result.message || 'unknown error'}`,
 				);
 			} else {
-				log?.info(st('dim', `    ✓ ${repo.pkg.name} built successfully`));
+				log?.info(st('dim', `    ✓ ${repo.library.name} built successfully`));
 			}
 		}
 

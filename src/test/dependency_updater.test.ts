@@ -578,7 +578,7 @@ describe('dependency_updater', () => {
 					path,
 					JSON.stringify(
 						{
-							name: repo.pkg.name,
+							name: repo.library.name,
 							version: '1.0.0',
 							dependencies: {lib: '^1.0.0'},
 						},
@@ -611,9 +611,9 @@ describe('dependency_updater', () => {
 					path,
 					JSON.stringify(
 						{
-							name: repo.pkg.name,
+							name: repo.library.name,
 							version: '1.0.0',
-							dependencies: repo.pkg.package_json.dependencies,
+							dependencies: repo.library.package_json.dependencies,
 						},
 						null,
 						'\t',
