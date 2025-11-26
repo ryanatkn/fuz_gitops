@@ -45,9 +45,9 @@ export const library_json: LibraryJson = {
 		},
 		devDependencies: {
 			'@changesets/changelog-git': '^0.2.1',
-			'@ryanatkn/belt': '^0.40.0',
+			'@ryanatkn/belt': '^0.40.1',
 			'@ryanatkn/eslint-config': '^0.9.0',
-			'@ryanatkn/fuz': '^0.165.0',
+			'@ryanatkn/fuz': '^0.167.0',
 			'@ryanatkn/fuz_code': '^0.36.0',
 			'@ryanatkn/gro': '^0.179.0',
 			'@ryanatkn/moss': '^0.39.0',
@@ -154,12 +154,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'LocalRepo',
-								optional: false,
 							},
 							{
 								name: 'updates',
 								type: 'DependencyVersionChange[]',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -182,19 +180,16 @@ export const library_json: LibraryJson = {
 							{
 								name: 'package_name',
 								type: 'string',
-								optional: false,
 								description: 'package receiving the dependency updates',
 							},
 							{
 								name: 'updates',
 								type: 'DependencyVersionChange[]',
-								optional: false,
 								description: 'list of dependency changes with version info',
 							},
 							{
 								name: 'bump_type',
 								type: '"major" | "minor" | "patch"',
-								optional: false,
 								description: 'required bump type (calculated from breaking changes)',
 							},
 						],
@@ -210,12 +205,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'dependencies',
 								type: 'Map<string, string>',
-								optional: false,
 							},
 							{
 								name: 'published_versions',
 								type: 'Map<string, PublishedVersion>',
-								optional: false,
 							},
 						],
 					},
@@ -264,13 +257,11 @@ export const library_json: LibraryJson = {
 							{
 								name: 'content',
 								type: 'string',
-								optional: false,
 								description: 'changeset markdown with YAML frontmatter',
 							},
 							{
 								name: 'filename',
 								type: 'string',
-								optional: false,
 								description: 'optional filename for error reporting context',
 								default_value: "'changeset.md'",
 							},
@@ -287,7 +278,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'filepath',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -306,7 +296,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'LocalRepo',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -328,12 +317,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'changesets',
 								type: 'ChangesetInfo[]',
-								optional: false,
 							},
 							{
 								name: 'package_name',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -350,7 +337,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'LocalRepo',
-								optional: false,
 							},
 						],
 					},
@@ -368,7 +354,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'LocalRepo',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -524,7 +509,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'repos',
 										type: 'LocalRepo[]',
-										optional: false,
 									},
 								],
 							},
@@ -537,7 +521,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'name',
 										type: 'string',
-										optional: false,
 									},
 								],
 							},
@@ -550,7 +533,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'name',
 										type: 'string',
-										optional: false,
 									},
 								],
 							},
@@ -563,7 +545,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'name',
 										type: 'string',
-										optional: false,
 									},
 								],
 							},
@@ -580,7 +561,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'exclude_dev',
 										type: 'boolean',
-										optional: false,
 										description:
 											'if true, excludes dev dependencies to break cycles.\nPublishing uses exclude_dev=true to handle circular dev deps.',
 										default_value: 'false',
@@ -637,7 +617,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'repos',
 										type: 'LocalRepo[]',
-										optional: false,
 									},
 								],
 							},
@@ -654,7 +633,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'graph',
 										type: 'DependencyGraph',
-										optional: false,
 									},
 								],
 								throws: [
@@ -676,7 +654,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'graph',
 										type: 'DependencyGraph',
-										optional: false,
 									},
 								],
 							},
@@ -715,17 +692,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'LocalRepo',
-								optional: false,
 							},
 							{
 								name: 'updates',
 								type: 'Map<string, string>',
-								optional: false,
 							},
 							{
 								name: 'strategy',
 								type: 'VersionStrategy',
-								optional: false,
 								description: 'how to format version ranges (default: caret)',
 								default_value: "'caret'",
 							},
@@ -743,13 +717,11 @@ export const library_json: LibraryJson = {
 							{
 								name: 'git_ops',
 								type: 'GitOperations',
-								optional: false,
 								default_value: 'default_git_operations',
 							},
 							{
 								name: 'fs_ops',
 								type: 'FsOperations',
-								optional: false,
 								default_value: 'default_fs_operations',
 							},
 						],
@@ -765,17 +737,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'LocalRepo[]',
-								optional: false,
 							},
 							{
 								name: 'published',
 								type: 'Map<string, string>',
-								optional: false,
 							},
 							{
 								name: 'strategy',
 								type: 'VersionStrategy',
-								optional: false,
 								default_value: "'caret'",
 							},
 							{
@@ -786,13 +755,11 @@ export const library_json: LibraryJson = {
 							{
 								name: 'git_ops',
 								type: 'GitOperations',
-								optional: false,
 								default_value: 'default_git_operations',
 							},
 							{
 								name: 'fs_ops',
 								type: 'FsOperations',
-								optional: false,
 								default_value: 'default_fs_operations',
 							},
 						],
@@ -809,12 +776,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'LocalRepo',
-								optional: false,
 							},
 							{
 								name: 'published',
 								type: 'Map<string, string>',
-								optional: false,
 							},
 						],
 					},
@@ -839,7 +804,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'resolved_repos',
 								type: 'LocalRepo[]',
-								optional: false,
 							},
 							{
 								name: 'token',
@@ -860,7 +824,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'delay',
 								type: 'number',
-								optional: false,
 								description: 'milliseconds between API requests (default: 33ms)',
 								default_value: '33',
 							},
@@ -915,13 +878,11 @@ export const library_json: LibraryJson = {
 							{
 								name: 'name',
 								type: 'string',
-								optional: false,
 								description: 'cache filename (without .json extension)',
 							},
 							{
 								name: 'dir',
 								type: 'string',
-								optional: false,
 								description: 'cache directory (defaults to `.gro/build/fetch/`)',
 								default_value: "join(paths.build, 'fetch')",
 							},
@@ -945,7 +906,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'files',
 								type: 'string | string[]',
-								optional: false,
 							},
 							{
 								name: 'options',
@@ -965,7 +925,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'message',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'options',
@@ -987,12 +946,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'files',
 								type: 'string | string[]',
-								optional: false,
 							},
 							{
 								name: 'message',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'options',
@@ -1013,7 +970,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'tag_name',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'message',
@@ -1039,12 +995,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'tag_name',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'origin',
 								type: 'GitOrigin',
-								optional: false,
 								default_value: "'origin' as GitOrigin",
 							},
 							{
@@ -1094,17 +1048,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'from_commit',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'to_commit',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'file_path',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'options',
@@ -1162,12 +1113,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'branch',
 								type: 'GitBranch',
-								optional: false,
 							},
 							{
 								name: 'pull',
 								type: 'boolean',
-								optional: false,
 								default_value: 'true',
 							},
 							{
@@ -1239,7 +1188,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'remote',
 								type: 'string',
-								optional: false,
 								default_value: "'origin'",
 							},
 							{
@@ -1290,7 +1238,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'Repo[]',
-								optional: false,
 							},
 							{
 								name: 'filter_pull_request',
@@ -1310,12 +1257,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo_url',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'pull',
 								type: '{ number: number; title: string; user: { login: string; }; draft: boolean; }',
-								optional: false,
 							},
 						],
 					},
@@ -1378,7 +1323,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo_info',
 								type: 'GithubRepoInfo',
-								optional: false,
 							},
 							{
 								name: 'cache',
@@ -1436,7 +1380,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo_info',
 								type: 'GithubRepoInfo',
-								optional: false,
 							},
 							{
 								name: 'cache',
@@ -1461,7 +1404,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'ref',
 								type: 'string',
-								optional: false,
 								default_value: "'main'",
 							},
 						],
@@ -1595,7 +1537,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'raw_config',
 								type: 'RawGitopsConfig',
-								optional: false,
 							},
 						],
 					},
@@ -1623,7 +1564,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'config_path',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -1638,12 +1578,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'config_module',
 								type: 'any',
-								optional: false,
 							},
 							{
 								name: 'config_path',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -1735,7 +1673,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'options',
 								type: 'GetGitopsReadyOptions',
-								optional: false,
 							},
 						],
 					},
@@ -1773,7 +1710,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'options',
 								type: 'ResolveGitopsPathsOptions',
-								optional: false,
 							},
 						],
 					},
@@ -1787,7 +1723,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'config_path',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -1877,7 +1812,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'LocalRepo[]',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -1887,7 +1821,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'options',
 								type: '{ throw_on_prod_cycles?: boolean | undefined; log_cycles?: boolean | undefined; log_order?: boolean | undefined; }',
-								optional: false,
 								default_value: '{}',
 							},
 						],
@@ -2050,7 +1983,6 @@ export const library_json: LibraryJson = {
 							{
 								name: '__0',
 								type: '{ local_repo_path: LocalRepoPath; log?: Logger | undefined; git_ops?: GitOperations | undefined; npm_ops?: NpmOperations | undefined; }',
-								optional: false,
 							},
 						],
 					},
@@ -2065,7 +1997,6 @@ export const library_json: LibraryJson = {
 							{
 								name: '__0',
 								type: '{ resolved_config: ResolvedGitopsConfig; repos_dir: string; gitops_config: GitopsConfig; download: boolean; log?: Logger | undefined; npm_ops?: NpmOperations | undefined; }',
-								optional: false,
 							},
 						],
 					},
@@ -2080,7 +2011,6 @@ export const library_json: LibraryJson = {
 							{
 								name: '__0',
 								type: '{ local_repo_paths: LocalRepoPath[]; log?: Logger | undefined; git_ops?: GitOperations | undefined; npm_ops?: NpmOperations | undefined; }',
-								optional: false,
 							},
 						],
 					},
@@ -2095,7 +2025,6 @@ export const library_json: LibraryJson = {
 							{
 								name: '__0',
 								type: '{ repo_config: GitopsRepoConfig; repos_dir: string; }',
-								optional: false,
 							},
 						],
 					},
@@ -2119,7 +2048,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'analysis',
 								type: '{ production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
-								optional: false,
 							},
 						],
 					},
@@ -2136,7 +2064,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'analysis',
 								type: '{ production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
-								optional: false,
 							},
 						],
 					},
@@ -2153,7 +2080,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'analysis',
 								type: '{ production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
-								optional: false,
 							},
 						],
 					},
@@ -2170,17 +2096,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'analysis',
 								type: '{ production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
-								optional: false,
 							},
 							{
 								name: 'log',
 								type: 'Logger',
-								optional: false,
 							},
 							{
 								name: 'indent',
 								type: 'string',
-								optional: false,
 								default_value: "''",
 							},
 						],
@@ -2198,17 +2121,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'analysis',
 								type: '{ production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
-								optional: false,
 							},
 							{
 								name: 'log',
 								type: 'Logger',
-								optional: false,
 							},
 							{
 								name: 'indent',
 								type: 'string',
-								optional: false,
 								default_value: "''",
 							},
 						],
@@ -2226,17 +2146,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'analysis',
 								type: '{ production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
-								optional: false,
 							},
 							{
 								name: 'log',
 								type: 'Logger',
-								optional: false,
 							},
 							{
 								name: 'indent',
 								type: 'string',
-								optional: false,
 								default_value: "''",
 							},
 						],
@@ -2254,17 +2171,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'analysis',
 								type: '{ production_cycles: string[][]; dev_cycles: string[][]; wildcard_deps: { pkg: string; dep: string; version: string; }[]; missing_peers: { pkg: string; dep: string; }[]; }',
-								optional: false,
 							},
 							{
 								name: 'log',
 								type: 'Logger',
-								optional: false,
 							},
 							{
 								name: 'indent',
 								type: 'string',
-								optional: false,
 								default_value: "''",
 							},
 						],
@@ -2282,27 +2196,22 @@ export const library_json: LibraryJson = {
 							{
 								name: 'items',
 								type: 'string[]',
-								optional: false,
 							},
 							{
 								name: 'header',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'color',
 								type: '"cyan" | "yellow" | "red" | "dim"',
-								optional: false,
 							},
 							{
 								name: 'log',
 								type: 'Logger',
-								optional: false,
 							},
 							{
 								name: 'log_method',
 								type: '"info" | "warn" | "error"',
-								optional: false,
 								default_value: "'info'",
 							},
 						],
@@ -2320,7 +2229,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 							{
 								name: 'nav_footer',
@@ -2344,7 +2252,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos_modules',
 								type: 'Array<{\n\t\t\trepo: Repo;\n\t\t\tmodules: Array<unknown>;\n\t\t}>',
-								optional: false,
 							},
 						],
 						source_line: 1,
@@ -2362,12 +2269,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'Repo',
-								optional: false,
 							},
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 						],
 						source_line: 1,
@@ -2503,17 +2408,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'LocalRepo[]',
-								optional: false,
 							},
 							{
 								name: 'options',
 								type: 'PublishingOptions',
-								optional: false,
 							},
 							{
 								name: 'ops',
 								type: 'GitopsOperations',
-								optional: false,
 								default_value: 'default_gitops_operations',
 							},
 						],
@@ -2551,13 +2453,11 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'LocalRepo',
-								optional: false,
 								description: '- The repository to install dependencies for',
 							},
 							{
 								name: 'ops',
 								type: 'GitopsOperations',
-								optional: false,
 								description: '- Gitops operations (for dependency injection)',
 							},
 							{
@@ -2631,12 +2531,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'pkg',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'version',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -2664,17 +2562,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'pkg',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'version',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'options',
 								type: 'WaitOptions',
-								optional: false,
 								default_value: '{}',
 							},
 							{
@@ -2697,7 +2592,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'pkg',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -2716,7 +2610,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'pkg',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -3216,17 +3109,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'data',
 								type: 'T',
-								optional: false,
 							},
 							{
 								name: 'formatters',
 								type: 'OutputFormatters<T>',
-								optional: false,
 							},
 							{
 								name: 'options',
 								type: 'OutputOptions',
-								optional: false,
 							},
 						],
 					},
@@ -3260,7 +3150,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: '{package_json: PackageJson} | {url: string; package_json: null}',
-								optional: false,
 							},
 							{
 								name: 'nav_attrs',
@@ -3452,7 +3341,6 @@ export const library_json: LibraryJson = {
 							{
 								name: '__0',
 								type: 'RunPreflightChecksOptions',
-								optional: false,
 							},
 						],
 					},
@@ -3610,7 +3498,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'LocalRepo[]',
-								optional: false,
 							},
 							{
 								name: 'log',
@@ -3620,7 +3507,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'ops',
 								type: 'ChangesetOperations',
-								optional: false,
 								default_value: 'default_changeset_operations',
 							},
 						],
@@ -3635,12 +3521,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'plan',
 								type: 'PublishingPlan',
-								optional: false,
 							},
 							{
 								name: 'log',
 								type: 'Logger',
-								optional: false,
 							},
 						],
 					},
@@ -3664,7 +3548,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 							{
 								name: 'filter_pull_request',
@@ -3688,12 +3571,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'Repo',
-								optional: false,
 							},
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 							{
 								name: 'filter_pull_request',
@@ -3722,7 +3603,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'dir',
 								type: 'string',
-								optional: false,
 								description: 'Directory to walk',
 							},
 							{
@@ -3839,7 +3719,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'file_path',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'options',
@@ -3860,7 +3739,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'dir',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'options',
@@ -3932,7 +3810,6 @@ export const library_json: LibraryJson = {
 									{
 										name: 'repo_json',
 										type: 'RepoJson',
-										optional: false,
 									},
 								],
 							},
@@ -3973,12 +3850,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'Repo[]',
-								optional: false,
 							},
 							{
 								name: 'homepage_url',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -3995,7 +3870,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 							{
 								name: 'deps',
@@ -4019,7 +3893,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 							{
 								name: 'selected_repo',
@@ -4029,7 +3902,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'nav',
 								type: 'Snippet',
-								optional: false,
 							},
 						],
 						source_line: 1,
@@ -4048,7 +3920,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 							{
 								name: 'selected_repo',
@@ -4058,7 +3929,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'children',
 								type: 'Snippet',
-								optional: false,
 							},
 						],
 						source_line: 1,
@@ -4103,12 +3973,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'gitops_config',
 								type: 'GitopsConfig',
-								optional: false,
 							},
 							{
 								name: 'repos_dir',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -4172,12 +4040,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'a',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'b',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -4193,12 +4059,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'version',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'type',
 								type: 'BumpType',
-								optional: false,
 							},
 						],
 					},
@@ -4311,7 +4175,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'graph',
 								type: 'DependencyGraph',
-								optional: false,
 							},
 						],
 					},
@@ -4329,12 +4192,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'Repo',
-								optional: false,
 							},
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 						],
 						source_line: 1,
@@ -4352,17 +4213,14 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'Repo',
-								optional: false,
 							},
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 							{
 								name: 'slug',
 								type: 'string',
-								optional: false,
 							},
 						],
 						source_line: 1,
@@ -4380,12 +4238,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'repo',
 								type: 'Repo',
-								optional: false,
 							},
 							{
 								name: 'repos',
 								type: 'Array<Repo>',
-								optional: false,
 							},
 						],
 						source_line: 1,
@@ -4406,7 +4262,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'version',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -4421,7 +4276,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'version',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -4436,7 +4290,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'version',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -4457,7 +4310,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'version',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -4471,12 +4323,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'current',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'new_version',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -4493,12 +4343,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'current_version',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'default_strategy',
 								type: '"" | "^" | "~" | ">="',
-								optional: false,
 								description: 'prefix to use when no existing prefix found',
 								default_value: "'^'",
 							},
@@ -4517,12 +4365,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'old_version',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'bump_type',
 								type: '"major" | "minor" | "patch"',
-								optional: false,
 							},
 						],
 					},
@@ -4537,12 +4383,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'old_version',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'new_version',
 								type: 'string',
-								optional: false,
 							},
 						],
 					},
@@ -4558,12 +4402,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'a',
 								type: 'BumpType',
-								optional: false,
 							},
 							{
 								name: 'b',
 								type: 'BumpType',
-								optional: false,
 							},
 						],
 					},
@@ -4577,12 +4419,10 @@ export const library_json: LibraryJson = {
 							{
 								name: 'current_version',
 								type: 'string',
-								optional: false,
 							},
 							{
 								name: 'bump_type',
 								type: 'BumpType',
-								optional: false,
 							},
 						],
 					},
