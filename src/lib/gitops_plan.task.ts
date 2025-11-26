@@ -7,6 +7,7 @@ import {
 	generate_publishing_plan,
 	log_publishing_plan,
 	type PublishingPlan,
+	type LogPlanOptions,
 } from './publishing_plan.js';
 import {format_and_output, type OutputFormatters} from './output_helpers.js';
 
@@ -25,6 +26,7 @@ export const Args = z.strictObject({
 		.meta({description: 'output format'})
 		.default('stdout'),
 	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
+	verbose: z.boolean().meta({description: 'show additional details'}).default(false),
 });
 export type Args = z.infer<typeof Args>;
 
@@ -43,7 +45,7 @@ export const task: Task<Args> = {
 	summary: 'generate a publishing plan based on changesets',
 	Args,
 	run: async ({args, log}): Promise<void> => {
-		const {dir, path, format, outfile} = args;
+		const {dir, path, format, outfile, verbose} = args;
 
 		log.info(st('cyan', 'Generating multi-repo publishing plan...'));
 
@@ -66,7 +68,7 @@ export const task: Task<Args> = {
 		const plan = await generate_publishing_plan(local_repos, log);
 
 		// Format and output using output_helpers
-		await format_and_output(plan, create_plan_formatters(), {format, outfile, log});
+		await format_and_output(plan, create_plan_formatters({verbose}), {format, outfile, log});
 
 		// Exit with error if there are blocking issues
 		if (plan.errors.length > 0) {
@@ -75,7 +77,9 @@ export const task: Task<Args> = {
 	},
 };
 
-const create_plan_formatters = (): OutputFormatters<PublishingPlan> => ({
+const create_plan_formatters = (
+	options: LogPlanOptions = {},
+): OutputFormatters<PublishingPlan> => ({
 	json: (plan) => {
 		const output = {
 			publishing_order: plan.publishing_order,
@@ -89,7 +93,7 @@ const create_plan_formatters = (): OutputFormatters<PublishingPlan> => ({
 		return JSON.stringify(output, null, 2);
 	},
 	markdown: (plan) => format_plan_as_markdown(plan),
-	stdout: (plan, log) => log_publishing_plan(plan, log),
+	stdout: (plan, log) => log_publishing_plan(plan, log, options),
 });
 
 const format_plan_as_markdown = (plan: PublishingPlan): Array<string> => {
@@ -195,7 +199,7 @@ const format_plan_as_markdown = (plan: PublishingPlan): Array<string> => {
 		lines.push('');
 	}
 
-	// Dependency updates
+	// Dependency updates - show diff-style
 	if (dependency_updates.length > 0) {
 		// Group by package
 		const updates_by_package: Map<string, typeof dependency_updates> = new Map();
@@ -208,16 +212,24 @@ const format_plan_as_markdown = (plan: PublishingPlan): Array<string> => {
 		lines.push('## Dependency Updates');
 		lines.push('');
 		for (const [pkg, updates] of updates_by_package) {
-			lines.push(`### ${pkg}`);
+			const has_version_change = version_changes.some((vc) => vc.package_name === pkg);
+			const label = has_version_change ? '' : ' (no republish)';
+			lines.push(`### ${pkg}${label}`);
 			lines.push('');
-			lines.push('| Dependency | New Version | Type | Triggers Republish |');
-			lines.push('|------------|-------------|------|-------------------|');
+			lines.push('```diff');
 			for (const update of updates) {
-				const republish = update.causes_republish ? 'Yes' : 'No';
+				const type_label =
+					update.type === 'dependencies'
+						? 'prod'
+						: update.type === 'peerDependencies'
+							? 'peer'
+							: 'dev';
 				lines.push(
-					`| \`${update.updated_dependency}\` | ${update.new_version} | ${update.type} | ${republish} |`,
+					`- "${update.updated_dependency}": "${update.current_version}"  # ${type_label}`,
 				);
+				lines.push(`+ "${update.updated_dependency}": "${update.new_version}"  # ${type_label}`);
 			}
+			lines.push('```');
 			lines.push('');
 		}
 	}

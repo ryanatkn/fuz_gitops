@@ -2217,7 +2217,7 @@ export const library_json: LibraryJson = {
 						],
 					},
 				],
-				dependents: ['gitops_analyze.task.ts', 'gitops_validate.task.ts', 'publishing_plan.ts'],
+				dependents: ['gitops_analyze.task.ts', 'gitops_validate.task.ts'],
 			},
 			{
 				path: 'ModulesDetail.svelte',
@@ -3354,7 +3354,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'VersionChange',
 						kind: 'type',
-						source_line: 18,
+						source_line: 17,
 						type_signature: 'VersionChange',
 						properties: [
 							{
@@ -3412,7 +3412,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'DependencyUpdate',
 						kind: 'type',
-						source_line: 31,
+						source_line: 30,
 						type_signature: 'DependencyUpdate',
 						properties: [
 							{
@@ -3422,6 +3422,11 @@ export const library_json: LibraryJson = {
 							},
 							{
 								name: 'updated_dependency',
+								kind: 'variable',
+								type_signature: 'string',
+							},
+							{
+								name: 'current_version',
 								kind: 'variable',
 								type_signature: 'string',
 							},
@@ -3490,7 +3495,7 @@ export const library_json: LibraryJson = {
 						kind: 'function',
 						doc_comment:
 							'Generates a publishing plan showing what would happen during publishing.\nShows version changes, dependency updates, and breaking change cascades.\nUses fixed-point iteration to resolve transitive cascades.',
-						source_line: 170,
+						source_line: 173,
 						type_signature:
 							'(repos: LocalRepo[], log?: Logger | undefined, ops?: ChangesetOperations): Promise<PublishingPlan>',
 						return_type: 'Promise<PublishingPlan>',
@@ -3512,10 +3517,23 @@ export const library_json: LibraryJson = {
 						],
 					},
 					{
+						name: 'LogPlanOptions',
+						kind: 'type',
+						source_line: 444,
+						type_signature: 'LogPlanOptions',
+						properties: [
+							{
+								name: 'verbose',
+								kind: 'variable',
+								type_signature: 'boolean',
+							},
+						],
+					},
+					{
 						name: 'log_publishing_plan',
 						kind: 'function',
-						source_line: 461,
-						type_signature: '(plan: PublishingPlan, log: Logger): void',
+						source_line: 543,
+						type_signature: '(plan: PublishingPlan, log: Logger, options?: LogPlanOptions): void',
 						return_type: 'void',
 						parameters: [
 							{
@@ -3526,13 +3544,17 @@ export const library_json: LibraryJson = {
 								name: 'log',
 								type: 'Logger',
 							},
+							{
+								name: 'options',
+								type: 'LogPlanOptions',
+								default_value: '{}',
+							},
 						],
 					},
 				],
 				dependencies: [
 					'constants.ts',
 					'graph_validation.ts',
-					'log_helpers.ts',
 					'operations_defaults.ts',
 					'version_utils.ts',
 				],
