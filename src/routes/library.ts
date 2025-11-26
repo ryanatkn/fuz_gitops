@@ -2057,7 +2057,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'local_repos_ensure',
 						kind: 'function',
-						source_line: 220,
+						source_line: 228,
 						type_signature:
 							'({ resolved_config, repos_dir, gitops_config, download, log, npm_ops, }: { resolved_config: ResolvedGitopsConfig; repos_dir: string; gitops_config: GitopsConfig; download: boolean; log?: Logger | undefined; npm_ops?: NpmOperations | undefined; }): Promise<...>',
 						return_type: 'Promise<LocalRepoPath[]>',
@@ -2072,7 +2072,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'local_repos_load',
 						kind: 'function',
-						source_line: 270,
+						source_line: 278,
 						type_signature:
 							'({ local_repo_paths, log, git_ops, npm_ops, }: { local_repo_paths: LocalRepoPath[]; log?: Logger | undefined; git_ops?: GitOperations | undefined; npm_ops?: NpmOperations | undefined; }): Promise<...>',
 						return_type: 'Promise<LocalRepo[]>',
@@ -2087,7 +2087,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'local_repo_locate',
 						kind: 'function',
-						source_line: 288,
+						source_line: 296,
 						type_signature:
 							'({ repo_config, repos_dir, }: { repo_config: GitopsRepoConfig; repos_dir: string; }): LocalRepoPath | LocalRepoMissing',
 						return_type: 'LocalRepoPath | LocalRepoMissing',
@@ -3941,7 +3941,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'Repos',
 						kind: 'type',
-						source_line: 83,
+						source_line: 82,
 						type_signature: 'Repos',
 						properties: [
 							{
@@ -3959,14 +3959,14 @@ export const library_json: LibraryJson = {
 					{
 						name: 'repos_context',
 						kind: 'variable',
-						source_line: 88,
+						source_line: 87,
 						type_signature:
 							'{ get: (error_message?: string | undefined) => Repos; get_maybe: () => Repos | undefined; set: (value: Repos) => Repos; }',
 					},
 					{
 						name: 'repos_parse',
 						kind: 'function',
-						source_line: 90,
+						source_line: 89,
 						type_signature: '(repos: Repo[], homepage_url: string): Repos',
 						return_type: 'Repos',
 						parameters: [
