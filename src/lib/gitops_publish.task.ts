@@ -83,7 +83,7 @@ export const task: Task<Args> = {
 		// Show plan if requested (skip for dry runs)
 		if (plan && !dry_run) {
 			log.info(st('cyan', 'Publishing Plan'));
-			const plan_result = await generate_publishing_plan(repos, log);
+			const plan_result = await generate_publishing_plan(repos, log, undefined, {verbose});
 			log_publishing_plan(plan_result, log, {verbose});
 
 			if (plan_result.errors.length > 0) {

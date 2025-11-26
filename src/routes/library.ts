@@ -2220,6 +2220,107 @@ export const library_json: LibraryJson = {
 				dependents: ['gitops_analyze.task.ts', 'gitops_validate.task.ts'],
 			},
 			{
+				path: 'log_verbose.ts',
+				declarations: [
+					{
+						name: 'log_verbose',
+						kind: 'function',
+						doc_comment: 'Logs all verbose sections in order.',
+						source_line: 21,
+						type_signature: '(data: VerboseData, log: Logger): void',
+						return_type: 'void',
+						parameters: [
+							{
+								name: 'data',
+								type: 'VerboseData',
+							},
+							{
+								name: 'log',
+								type: 'Logger',
+							},
+						],
+					},
+					{
+						name: 'log_verbose_changeset_details',
+						kind: 'function',
+						doc_comment: 'Logs changeset file details per package.',
+						source_line: 33,
+						type_signature: '(details: VerboseChangesetDetail[], log: Logger): void',
+						return_type: 'void',
+						parameters: [
+							{
+								name: 'details',
+								type: 'VerboseChangesetDetail[]',
+							},
+							{
+								name: 'log',
+								type: 'Logger',
+							},
+						],
+					},
+					{
+						name: 'log_verbose_iteration_details',
+						kind: 'function',
+						doc_comment: 'Logs fixed-point iteration details.',
+						source_line: 56,
+						type_signature: '(iterations: VerboseIteration[], total: number, log: Logger): void',
+						return_type: 'void',
+						parameters: [
+							{
+								name: 'iterations',
+								type: 'VerboseIteration[]',
+							},
+							{
+								name: 'total',
+								type: 'number',
+							},
+							{
+								name: 'log',
+								type: 'Logger',
+							},
+						],
+					},
+					{
+						name: 'log_verbose_propagation_chains',
+						kind: 'function',
+						doc_comment: 'Logs breaking change propagation chains as tree structure.',
+						source_line: 123,
+						type_signature: '(chains: VerbosePropagationChain[], log: Logger): void',
+						return_type: 'void',
+						parameters: [
+							{
+								name: 'chains',
+								type: 'VerbosePropagationChain[]',
+							},
+							{
+								name: 'log',
+								type: 'Logger',
+							},
+						],
+					},
+					{
+						name: 'log_verbose_graph_summary',
+						kind: 'function',
+						doc_comment: 'Logs dependency graph summary.',
+						source_line: 151,
+						type_signature: '(summary: VerboseGraphSummary, log: Logger): void',
+						return_type: 'void',
+						parameters: [
+							{
+								name: 'summary',
+								type: 'VerboseGraphSummary',
+							},
+							{
+								name: 'log',
+								type: 'Logger',
+							},
+						],
+					},
+				],
+				module_comment: 'Verbose logging functions for publishing plan diagnostic output.',
+				dependents: ['publishing_plan.ts'],
+			},
+			{
 				path: 'ModulesDetail.svelte',
 				declarations: [
 					{
@@ -3354,7 +3455,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'VersionChange',
 						kind: 'type',
-						source_line: 17,
+						source_line: 19,
 						type_signature: 'VersionChange',
 						properties: [
 							{
@@ -3412,7 +3513,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'DependencyUpdate',
 						kind: 'type',
-						source_line: 30,
+						source_line: 32,
 						type_signature: 'DependencyUpdate',
 						properties: [
 							{
@@ -3448,9 +3549,187 @@ export const library_json: LibraryJson = {
 						],
 					},
 					{
+						name: 'VerboseChangesetDetail',
+						kind: 'type',
+						source_line: 42,
+						type_signature: 'VerboseChangesetDetail',
+						properties: [
+							{
+								name: 'package_name',
+								kind: 'variable',
+								type_signature: 'string',
+							},
+							{
+								name: 'files',
+								kind: 'variable',
+								type_signature: 'Array<{filename: string; bump_type: BumpType; summary: string}>',
+							},
+						],
+					},
+					{
+						name: 'VerboseIterationPackage',
+						kind: 'type',
+						source_line: 47,
+						type_signature: 'VerboseIterationPackage',
+						properties: [
+							{
+								name: 'name',
+								kind: 'variable',
+								type_signature: 'string',
+							},
+							{
+								name: 'changeset_count',
+								kind: 'variable',
+								type_signature: 'number',
+							},
+							{
+								name: 'bump_from_changesets',
+								kind: 'variable',
+								type_signature: 'BumpType | null',
+							},
+							{
+								name: 'required_bump',
+								kind: 'variable',
+								type_signature: 'BumpType | null',
+							},
+							{
+								name: 'triggering_dep',
+								kind: 'variable',
+								type_signature: 'string | null',
+							},
+							{
+								name: 'action',
+								kind: 'variable',
+								type_signature: "'publish' | 'auto_changeset' | 'escalation' | 'skip'",
+							},
+							{
+								name: 'version_to',
+								kind: 'variable',
+								type_signature: 'string | null',
+							},
+							{
+								name: 'is_breaking',
+								kind: 'variable',
+								type_signature: 'boolean',
+							},
+						],
+					},
+					{
+						name: 'VerboseIteration',
+						kind: 'type',
+						source_line: 58,
+						type_signature: 'VerboseIteration',
+						properties: [
+							{
+								name: 'iteration',
+								kind: 'variable',
+								type_signature: 'number',
+							},
+							{
+								name: 'packages',
+								kind: 'variable',
+								type_signature: 'Array<VerboseIterationPackage>',
+							},
+							{
+								name: 'new_changes',
+								kind: 'variable',
+								type_signature: 'number',
+							},
+						],
+					},
+					{
+						name: 'VerbosePropagationChain',
+						kind: 'type',
+						source_line: 64,
+						type_signature: 'VerbosePropagationChain',
+						properties: [
+							{
+								name: 'source',
+								kind: 'variable',
+								type_signature: 'string',
+							},
+							{
+								name: 'chain',
+								kind: 'variable',
+								type_signature: "Array<{pkg: string; dep_type: 'prod' | 'peer'; action: string}>",
+							},
+						],
+					},
+					{
+						name: 'VerboseGraphSummary',
+						kind: 'type',
+						source_line: 69,
+						type_signature: 'VerboseGraphSummary',
+						properties: [
+							{
+								name: 'package_count',
+								kind: 'variable',
+								type_signature: 'number',
+							},
+							{
+								name: 'internal_dep_count',
+								kind: 'variable',
+								type_signature: 'number',
+							},
+							{
+								name: 'prod_peer_edges',
+								kind: 'variable',
+								type_signature: "Array<{from: string; to: string; type: 'prod' | 'peer'}>",
+							},
+							{
+								name: 'dev_edges',
+								kind: 'variable',
+								type_signature: 'Array<{from: string; to: string}>',
+							},
+							{
+								name: 'prod_cycle_count',
+								kind: 'variable',
+								type_signature: 'number',
+							},
+							{
+								name: 'dev_cycle_count',
+								kind: 'variable',
+								type_signature: 'number',
+							},
+						],
+					},
+					{
+						name: 'VerboseData',
+						kind: 'type',
+						source_line: 78,
+						type_signature: 'VerboseData',
+						properties: [
+							{
+								name: 'changeset_details',
+								kind: 'variable',
+								type_signature: 'Array<VerboseChangesetDetail>',
+							},
+							{
+								name: 'iterations',
+								kind: 'variable',
+								type_signature: 'Array<VerboseIteration>',
+							},
+							{
+								name: 'propagation_chains',
+								kind: 'variable',
+								type_signature: 'Array<VerbosePropagationChain>',
+							},
+							{
+								name: 'graph_summary',
+								kind: 'variable',
+								type_signature: 'VerboseGraphSummary',
+							},
+							{
+								name: 'total_iterations',
+								kind: 'variable',
+								type_signature: 'number',
+							},
+						],
+					},
+					{
 						name: 'PublishingPlan',
 						kind: 'type',
-						source_line: 39,
+						source_line: 86,
 						type_signature: 'PublishingPlan',
 						properties: [
 							{
@@ -3488,6 +3767,34 @@ export const library_json: LibraryJson = {
 								kind: 'variable',
 								type_signature: 'Array<string>',
 							},
+							{
+								name: 'verbose_data',
+								kind: 'variable',
+								type_signature: 'VerboseData',
+							},
+						],
+					},
+					{
+						name: 'GeneratePlanOptions',
+						kind: 'type',
+						source_line: 216,
+						type_signature: 'GeneratePlanOptions',
+						properties: [
+							{
+								name: 'log',
+								kind: 'variable',
+								type_signature: 'Logger',
+							},
+							{
+								name: 'ops',
+								kind: 'variable',
+								type_signature: 'ChangesetOperations',
+							},
+							{
+								name: 'verbose',
+								kind: 'variable',
+								type_signature: 'boolean',
+							},
 						],
 					},
 					{
@@ -3495,9 +3802,9 @@ export const library_json: LibraryJson = {
 						kind: 'function',
 						doc_comment:
 							'Generates a publishing plan showing what would happen during publishing.\nShows version changes, dependency updates, and breaking change cascades.\nUses fixed-point iteration to resolve transitive cascades.',
-						source_line: 173,
+						source_line: 227,
 						type_signature:
-							'(repos: LocalRepo[], log?: Logger | undefined, ops?: ChangesetOperations): Promise<PublishingPlan>',
+							'(repos: LocalRepo[], options?: GeneratePlanOptions): Promise<PublishingPlan>',
 						return_type: 'Promise<PublishingPlan>',
 						parameters: [
 							{
@@ -3505,21 +3812,16 @@ export const library_json: LibraryJson = {
 								type: 'LocalRepo[]',
 							},
 							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
-							},
-							{
-								name: 'ops',
-								type: 'ChangesetOperations',
-								default_value: 'default_changeset_operations',
+								name: 'options',
+								type: 'GeneratePlanOptions',
+								default_value: '{}',
 							},
 						],
 					},
 					{
 						name: 'LogPlanOptions',
 						kind: 'type',
-						source_line: 444,
+						source_line: 651,
 						type_signature: 'LogPlanOptions',
 						properties: [
 							{
@@ -3532,7 +3834,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'log_publishing_plan',
 						kind: 'function',
-						source_line: 543,
+						source_line: 750,
 						type_signature: '(plan: PublishingPlan, log: Logger, options?: LogPlanOptions): void',
 						return_type: 'void',
 						parameters: [
@@ -3555,6 +3857,7 @@ export const library_json: LibraryJson = {
 				dependencies: [
 					'constants.ts',
 					'graph_validation.ts',
+					'log_verbose.ts',
 					'operations_defaults.ts',
 					'version_utils.ts',
 				],
