@@ -191,7 +191,15 @@ export const local_repo_load = async ({
 	}
 
 	const library_module = await import(library_path);
-	const {library_json} = library_module as {library_json: LibraryJson};
+	const {library_json} = library_module as {library_json: LibraryJson | undefined};
+	if (!library_json) {
+		throw new TaskError(
+			`Repo "${repo_name}" has invalid src/routes/library.ts - missing library_json export\n` +
+				`The file must export a library_json object. To fix:\n` +
+				`  1. Ensure src/routes/library.gen.ts uses library_gen from @ryanatkn/fuz\n` +
+				`  2. Run: cd ${repo_dir} && gro gen`,
+		);
+	}
 	const library = new Library(library_json);
 
 	const local_repo: LocalRepo = {
