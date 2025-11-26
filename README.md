@@ -96,12 +96,13 @@ gro gitops_publish --no-plan  # skip plan confirmation
 
 **Note:** If publishing fails, simply re-run the same command. Already-published packages are automatically skipped (changesets consumed), failed packages retried naturally.
 
-**See [CLAUDE.md](CLAUDE.md) for comprehensive documentation:**
+**Documentation:**
 
-- Command reference (read-only vs side effects)
-- Publishing workflows and examples
-- Troubleshooting guide
-- Architecture and testing patterns
+- [CLAUDE.md](CLAUDE.md) - Architecture, commands, testing patterns
+- [docs/publishing.md](docs/publishing.md) - Publishing workflows, changeset
+  semantics, examples
+- [docs/troubleshooting.md](docs/troubleshooting.md) - Common errors and
+  debugging tips
 
 Getting started as a dev? Start with [Gro](https://github.com/grogarden/gro)
 and the [Fuz template](https://github.com/fuz-dev/fuz_template).
