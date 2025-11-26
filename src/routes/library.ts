@@ -5,7 +5,7 @@ import type {LibraryJson} from '@ryanatkn/belt/library_json.js';
 export const library_json: LibraryJson = {
 	package_json: {
 		name: '@ryanatkn/fuz_gitops',
-		version: '0.54.0',
+		version: '0.55.0',
 		description: 'a tool for managing many repos',
 		glyph: '🪄',
 		logo: 'logo.svg',
@@ -103,7 +103,7 @@ export const library_json: LibraryJson = {
 	},
 	source_json: {
 		name: '@ryanatkn/fuz_gitops',
-		version: '0.54.0',
+		version: '0.55.0',
 		modules: [
 			{
 				path: 'changeset_generator.ts',

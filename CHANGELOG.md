@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.55.0
+
+### Minor Changes
+
+- rework some interfaces ([#40](https://github.com/ryanatkn/fuz_gitops/pull/40))
+
 ## 0.54.0
 
 ### Minor Changes
