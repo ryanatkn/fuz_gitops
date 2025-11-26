@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {page} from '$app/state';
-	import type {ModuleJson} from '@ryanatkn/belt/src_json.js';
 
 	import type {Repo} from './repo.svelte.js';
 
@@ -9,7 +8,7 @@
 	interface Props {
 		repos_modules: Array<{
 			repo: Repo;
-			modules: Array<ModuleJson>;
+			modules: Array<unknown>;
 		}>;
 	}
 
@@ -23,10 +22,8 @@
 	<ul class="unstyled">
 		{#each repos_modules as pkg_modules (pkg_modules)}
 			<li role="none">
-				<a
-					href="#{pkg_modules.repo.pkg.name}"
-					class:selected={pkg_modules.repo.pkg.name === page.url.hash}
-					>{pkg_modules.repo.pkg.name}</a
+				<a href="#{pkg_modules.repo.name}" class:selected={pkg_modules.repo.name === page.url.hash}
+					>{pkg_modules.repo.name}</a
 				>
 			</li>
 		{/each}

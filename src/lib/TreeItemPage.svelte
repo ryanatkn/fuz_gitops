@@ -17,16 +17,16 @@
 
 	// TODO ideally there would be one `ReposTree` mounted by the layout with transitions
 
-	const route_repo = $derived(repos.find((p) => p.pkg.repo_name === slug));
+	const route_repo = $derived(repos.find((p) => p.repo_name === slug));
 </script>
 
 <svelte:head>
-	<title>{slug} - tree {repo.pkg.package_json.glyph} {repo.pkg.package_json.name}</title>
+	<title>{slug} - tree {repo.package_json.glyph} {repo.package_json.name}</title>
 </svelte:head>
 
 <main class="box width_100">
 	<div class="p_lg">
-		<PageHeader pkg={repo.pkg} />
+		<PageHeader {repo} />
 	</div>
 	<section class="tree">
 		{#if !route_repo}
@@ -37,7 +37,7 @@
 		<ReposTree {repos} selected_repo={route_repo}>
 			{#snippet nav()}
 				<div class="repos_tree_nav">
-					<Breadcrumb>{repo.pkg.package_json.glyph}</Breadcrumb>
+					<Breadcrumb>{repo.package_json.glyph}</Breadcrumb>
 				</div>
 			{/snippet}
 		</ReposTree>

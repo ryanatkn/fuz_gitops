@@ -103,7 +103,7 @@ export const publish_repos = async (
 		// Phase 1: Publish each package and immediately update dependents
 		for (let i = 0; i < order.length; i++) {
 			const pkg_name = order[i]!;
-			const repo = repos.find((r) => r.pkg.name === pkg_name);
+			const repo = repos.find((r) => r.library.name === pkg_name);
 			if (!repo) continue;
 
 			// Skip if already published in a previous iteration
@@ -190,9 +190,11 @@ export const publish_repos = async (
 
 							// Apply updates if any
 							if (updates.size > 0) {
-								log?.info(`    Updating ${dependent_repo.pkg.name}'s dependency on ${pkg_name}`);
-								changed_repos.add(dependent_repo.pkg.name); // Mark as changed for deployment
-								changed_in_iteration.add(dependent_repo.pkg.name); // Track for batch install
+								log?.info(
+									`    Updating ${dependent_repo.library.name}'s dependency on ${pkg_name}`,
+								);
+								changed_repos.add(dependent_repo.library.name); // Mark as changed for deployment
+								changed_in_iteration.add(dependent_repo.library.name); // Track for batch install
 								await update_package_json(
 									dependent_repo,
 									updates,
@@ -219,7 +221,7 @@ export const publish_repos = async (
 			log?.info(st('cyan', '\n📦 Installing dependencies for updated repos...\n'));
 
 			for (const pkg_name of changed_in_iteration) {
-				const repo = repos.find((r) => r.pkg.name === pkg_name);
+				const repo = repos.find((r) => r.library.name === pkg_name);
 				if (!repo) continue;
 
 				try {
@@ -280,9 +282,9 @@ export const publish_repos = async (
 			}
 
 			if (dev_updates.size > 0) {
-				log?.info(`  Updating ${dev_updates.size} dev dependencies in ${repo.pkg.name}`);
-				changed_repos.add(repo.pkg.name); // Mark as changed for deployment
-				dev_updated_repos.add(repo.pkg.name); // Track for batch install
+				log?.info(`  Updating ${dev_updates.size} dev dependencies in ${repo.library.name}`);
+				changed_repos.add(repo.library.name); // Mark as changed for deployment
+				dev_updated_repos.add(repo.library.name); // Track for batch install
 				await update_package_json(
 					repo,
 					dev_updates,
@@ -300,7 +302,7 @@ export const publish_repos = async (
 		log?.info(st('cyan', '\n📦 Installing dev dependencies for updated repos...\n'));
 
 		for (const pkg_name of dev_updated_repos) {
-			const repo = repos.find((r) => r.pkg.name === pkg_name);
+			const repo = repos.find((r) => r.library.name === pkg_name);
 			if (!repo) continue;
 
 			try {
@@ -319,7 +321,7 @@ export const publish_repos = async (
 	// Phase 3: Deploy repos with changes (optional)
 	// Deploys only repos that were: published, had prod/peer deps updated, or had dev deps updated
 	if (options.deploy && !dry_run) {
-		const repos_to_deploy = repos.filter((r) => changed_repos.has(r.pkg.name));
+		const repos_to_deploy = repos.filter((r) => changed_repos.has(r.library.name));
 		log?.info(
 			st(
 				'cyan',
@@ -329,7 +331,7 @@ export const publish_repos = async (
 
 		for (const repo of repos_to_deploy) {
 			try {
-				log?.info(`  Deploying ${repo.pkg.name}...`);
+				log?.info(`  Deploying ${repo.library.name}...`);
 				const deploy_result = await ops.process.spawn({
 					cmd: 'gro',
 					args: ['deploy', '--no-build'],
@@ -337,12 +339,12 @@ export const publish_repos = async (
 				});
 
 				if (deploy_result.ok) {
-					log?.info(st('green', `  ✅ Deployed ${repo.pkg.name}`));
+					log?.info(st('green', `  ✅ Deployed ${repo.library.name}`));
 				} else {
-					log?.warn(st('yellow', `  ⚠️  Failed to deploy ${repo.pkg.name}`));
+					log?.warn(st('yellow', `  ⚠️  Failed to deploy ${repo.library.name}`));
 				}
 			} catch (error) {
-				log?.error(st('red', `  ❌ Error deploying ${repo.pkg.name}: ${error}`));
+				log?.error(st('red', `  ❌ Error deploying ${repo.library.name}: ${error}`));
 			}
 		}
 	}
@@ -388,7 +390,7 @@ const publish_single_repo = async (
 ): Promise<PublishedVersion> => {
 	const {dry_run, log} = options;
 
-	const old_version = repo.pkg.package_json.version || '0.0.0';
+	const old_version = repo.library.package_json.version || '0.0.0';
 
 	if (dry_run) {
 		// In dry run, predict version from changesets
@@ -396,7 +398,7 @@ const publish_single_repo = async (
 
 		if (!prediction) {
 			// No changesets found, skip this repo
-			throw new Error(`No changesets found for ${repo.pkg.name}`);
+			throw new Error(`No changesets found for ${repo.library.name}`);
 		}
 
 		if (!prediction.ok) {
@@ -408,7 +410,7 @@ const publish_single_repo = async (
 		const breaking = is_breaking_change(old_version, bump_type);
 
 		return {
-			name: repo.pkg.name,
+			name: repo.library.name,
 			old_version,
 			new_version,
 			bump_type,
@@ -426,7 +428,7 @@ const publish_single_repo = async (
 	});
 
 	if (!publish_result.ok) {
-		throw new Error(`Failed to publish ${repo.pkg.name}: ${publish_result.message}`);
+		throw new Error(`Failed to publish ${repo.library.name}: ${publish_result.message}`);
 	}
 
 	// Read the new version from package.json after gro publish
@@ -454,7 +456,7 @@ const publish_single_repo = async (
 	const commit = commit_result.value;
 
 	return {
-		name: repo.pkg.name,
+		name: repo.library.name,
 		old_version,
 		new_version,
 		bump_type,

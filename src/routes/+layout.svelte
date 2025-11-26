@@ -11,13 +11,13 @@
 		ContextmenuState,
 		contextmenu_attachment,
 	} from '@ryanatkn/fuz/contextmenu_state.svelte.js';
-	import {Pkg, pkg_context} from '@ryanatkn/fuz/pkg.svelte.js';
+	import {Library, library_context} from '@ryanatkn/fuz/library.svelte.js';
 	import type {Snippet} from 'svelte';
 
 	import Settings from '$routes/Settings.svelte';
 	import {repos_json} from '$routes/repos.js';
 	import {Repo, type RepoJson, repos_parse, repos_context} from '$lib/repo.svelte.js';
-	import {package_json, src_json} from '$routes/package.js';
+	import {library_json} from '$routes/library.js';
 
 	interface Props {
 		children: Snippet;
@@ -32,7 +32,7 @@
 		'https://gitops.fuz.dev/',
 	);
 	repos_context.set(repos);
-	pkg_context.set(new Pkg(package_json, src_json));
+	library_context.set(new Library(library_json));
 
 	let show_settings = $state(false);
 </script>

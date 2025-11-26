@@ -1,7 +1,6 @@
 import {strip_end} from '@ryanatkn/belt/string.js';
-import {load_package_json} from '@ryanatkn/gro/package_json.js';
-import {Pkg} from '@ryanatkn/fuz/pkg.svelte.js';
-import type {SrcJson} from '@ryanatkn/belt/src_json.js';
+import type {LibraryJson} from '@ryanatkn/belt/library_json.js';
+import {Library} from '@ryanatkn/fuz/library.svelte.js';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
 import {TaskError} from '@ryanatkn/gro';
@@ -13,26 +12,39 @@ import {default_git_operations, default_npm_operations} from './operations_defau
 import type {GitopsConfig, GitopsRepoConfig} from './gitops_config.js';
 import type {ResolvedGitopsConfig} from './resolved_gitops_config.js';
 
-export interface LocalRepo extends ResolvedLocalRepo {
-	pkg: Pkg;
+/**
+ * Fully loaded local repo with Library and extracted dependency data.
+ * Does not extend LocalRepoPath - Library is source of truth for name/repo_url/etc.
+ */
+export interface LocalRepo {
+	library: Library;
+	library_json: LibraryJson;
+	repo_dir: string;
+	repo_git_ssh_url: string;
+	repo_config: GitopsRepoConfig;
 	dependencies?: Map<string, string>;
 	dev_dependencies?: Map<string, string>;
 	peer_dependencies?: Map<string, string>;
 }
 
-export type MaybeLocalRepo = ResolvedLocalRepo | UnresolvedLocalRepo;
-
-export interface ResolvedLocalRepo {
-	type: 'resolved_local_repo';
-	repo_name: string;
+/**
+ * A repo that has been located on the filesystem (path exists).
+ * Used before loading - just filesystem/git concerns.
+ */
+export interface LocalRepoPath {
+	type: 'local_repo_path';
+	repo_name: string; // from URL parsing (for display/logging before Library loaded)
 	repo_dir: string;
 	repo_url: string;
 	repo_git_ssh_url: string;
 	repo_config: GitopsRepoConfig;
 }
 
-export interface UnresolvedLocalRepo {
-	type: 'unresolved_local_repo';
+/**
+ * A repo that is missing from the filesystem (needs cloning).
+ */
+export interface LocalRepoMissing {
+	type: 'local_repo_missing';
 	repo_name: string;
 	repo_url: string;
 	repo_git_ssh_url: string;
@@ -48,44 +60,47 @@ export interface UnresolvedLocalRepo {
  * 3. Pulls latest changes from remote (skipped for local-only repos)
  * 4. Validates workspace is clean after pull
  * 5. Auto-installs dependencies if package.json changed
- * 6. Parses package.json and extracts Pkg metadata
+ * 6. Imports library_json from src/routes/library.ts
+ * 7. Creates Library and extracts dependency maps
  *
  * This ensures repos are always in sync with their configured branch
  * before being used by gitops commands.
  *
- * @throws {TaskError} if workspace dirty, branch switch fails, or install fails
+ * @throws {TaskError} if workspace dirty, branch switch fails, install fails, or library.ts missing
  */
-export const load_local_repo = async ({
-	resolved_local_repo,
+export const local_repo_load = async ({
+	local_repo_path,
 	log: _log,
 	git_ops = default_git_operations,
 	npm_ops = default_npm_operations,
 }: {
-	resolved_local_repo: ResolvedLocalRepo;
+	local_repo_path: LocalRepoPath;
 	log?: Logger;
 	git_ops?: GitOperations;
 	npm_ops?: NpmOperations;
 }): Promise<LocalRepo> => {
-	const {repo_config, repo_dir} = resolved_local_repo;
+	const {repo_config, repo_dir, repo_name, repo_git_ssh_url} = local_repo_path;
 
 	// Record commit hash before any changes
 	const commit_before_result = await git_ops.current_commit_hash({cwd: repo_dir});
 	if (!commit_before_result.ok) {
-		throw new TaskError(`Failed to get commit hash: ${commit_before_result.message}`);
+		throw new TaskError(
+			`Failed to get commit hash in ${repo_dir}: ${commit_before_result.message}`,
+		);
 	}
 	const commit_before = commit_before_result.value;
 
 	// Switch to target branch if needed
 	const branch_result = await git_ops.current_branch_name({cwd: repo_dir});
 	if (!branch_result.ok) {
-		throw new TaskError(`Failed to get current branch: ${branch_result.message}`);
+		throw new TaskError(`Failed to get current branch in ${repo_dir}: ${branch_result.message}`);
 	}
 
 	const switched_branches = branch_result.value !== repo_config.branch;
 	if (switched_branches) {
 		const clean_result = await git_ops.check_clean_workspace({cwd: repo_dir});
 		if (!clean_result.ok) {
-			throw new TaskError(`Failed to check workspace: ${clean_result.message}`);
+			throw new TaskError(`Failed to check workspace in ${repo_dir}: ${clean_result.message}`);
 		}
 
 		if (!clean_result.value) {
@@ -96,37 +111,41 @@ export const load_local_repo = async ({
 
 		const checkout_result = await git_ops.checkout({branch: repo_config.branch, cwd: repo_dir});
 		if (!checkout_result.ok) {
-			throw new TaskError(`Failed to checkout branch: ${checkout_result.message}`);
+			throw new TaskError(
+				`Failed to checkout branch "${repo_config.branch}" in ${repo_dir}: ${checkout_result.message}`,
+			);
 		}
 	}
 
 	// Only pull if remote exists (skip for local-only repos, test fixtures)
 	const origin_result = await git_ops.has_remote({remote: 'origin', cwd: repo_dir});
 	if (!origin_result.ok) {
-		throw new TaskError(`Failed to check for remote: ${origin_result.message}`);
+		throw new TaskError(`Failed to check for remote in ${repo_dir}: ${origin_result.message}`);
 	}
 
 	if (origin_result.value) {
 		const pull_result = await git_ops.pull({cwd: repo_dir});
 		if (!pull_result.ok) {
-			throw new TaskError(`Failed to pull: ${pull_result.message}`);
+			throw new TaskError(`Failed to pull in ${repo_dir}: ${pull_result.message}`);
 		}
 	}
 
 	// Check clean workspace after pull to ensure we're in a good state
 	const clean_after_result = await git_ops.check_clean_workspace({cwd: repo_dir});
 	if (!clean_after_result.ok) {
-		throw new TaskError(`Failed to check workspace: ${clean_after_result.message}`);
+		throw new TaskError(`Failed to check workspace in ${repo_dir}: ${clean_after_result.message}`);
 	}
 
 	if (!clean_after_result.value) {
-		throw new TaskError(`Workspace is unclean after pulling branch "${repo_config.branch}"`);
+		throw new TaskError(
+			`Workspace ${repo_dir} is unclean after pulling branch "${repo_config.branch}"`,
+		);
 	}
 
 	// Record commit hash after pull
 	const commit_after_result = await git_ops.current_commit_hash({cwd: repo_dir});
 	if (!commit_after_result.ok) {
-		throw new TaskError(`Failed to get commit hash: ${commit_after_result.message}`);
+		throw new TaskError(`Failed to get commit hash in ${repo_dir}: ${commit_after_result.message}`);
 	}
 	const commit_after = commit_after_result.value;
 
@@ -143,7 +162,9 @@ export const load_local_repo = async ({
 		});
 
 		if (!changed_result.ok) {
-			throw new TaskError(`Failed to check if package.json changed: ${changed_result.message}`);
+			throw new TaskError(
+				`Failed to check if package.json changed in ${repo_dir}: ${changed_result.message}`,
+			);
 		}
 
 		if (changed_result.value) {
@@ -156,20 +177,41 @@ export const load_local_repo = async ({
 		}
 	}
 
-	const package_json = load_package_json(repo_dir);
-	// Minimal src_json - gitops doesn't need module metadata for core functionality
-	const src_json: SrcJson = {
-		name: package_json.name,
-		version: package_json.version,
-		modules: [],
-	};
+	// Validate and load library.ts
+	const library_path = join(repo_dir, 'src/routes/library.ts');
+	if (!existsSync(library_path)) {
+		throw new TaskError(
+			`Repo "${repo_name}" is missing src/routes/library.ts\n` +
+				`This file is required for fuz_gitops. To fix:\n` +
+				`  1. Create src/routes/library.gen.ts with:\n` +
+				`     import {library_gen} from '@ryanatkn/fuz/library_gen.js';\n` +
+				`     export const gen = library_gen();\n` +
+				`  2. Run: cd ${repo_dir} && gro gen`,
+		);
+	}
+
+	const library_module = await import(library_path);
+	const {library_json} = library_module as {library_json: LibraryJson | undefined};
+	if (!library_json) {
+		throw new TaskError(
+			`Repo "${repo_name}" has invalid src/routes/library.ts - missing library_json export\n` +
+				`The file must export a library_json object. To fix:\n` +
+				`  1. Ensure src/routes/library.gen.ts uses library_gen from @ryanatkn/fuz\n` +
+				`  2. Run: cd ${repo_dir} && gro gen`,
+		);
+	}
+	const library = new Library(library_json);
 
 	const local_repo: LocalRepo = {
-		...resolved_local_repo,
-		pkg: new Pkg(package_json, src_json),
+		library,
+		library_json,
+		repo_dir,
+		repo_git_ssh_url,
+		repo_config,
 	};
 
-	// Extract dependencies
+	// Extract dependencies from package_json
+	const {package_json} = library;
 	if (package_json.dependencies) {
 		local_repo.dependencies = new Map(Object.entries(package_json.dependencies));
 	}
@@ -183,7 +225,7 @@ export const load_local_repo = async ({
 	return local_repo;
 };
 
-export const resolve_local_repos = async ({
+export const local_repos_ensure = async ({
 	resolved_config,
 	repos_dir,
 	gitops_config,
@@ -197,20 +239,20 @@ export const resolve_local_repos = async ({
 	download: boolean;
 	log?: Logger;
 	npm_ops?: NpmOperations;
-}): Promise<Array<ResolvedLocalRepo>> => {
-	let resolved_local_repos: Array<ResolvedLocalRepo> | null = null;
+}): Promise<Array<LocalRepoPath>> => {
+	let local_repo_paths: Array<LocalRepoPath> | null = null;
 
-	if (!resolved_config.unresolved_local_repos) {
-		resolved_local_repos = resolved_config.resolved_local_repos;
+	if (!resolved_config.local_repos_missing) {
+		local_repo_paths = resolved_config.local_repo_paths;
 	} else {
 		if (download) {
 			const downloaded = await download_repos({
 				repos_dir,
-				unresolved_local_repos: resolved_config.unresolved_local_repos,
+				local_repos_missing: resolved_config.local_repos_missing,
 				log,
 				npm_ops,
 			});
-			resolved_local_repos = (resolved_config.resolved_local_repos ?? [])
+			local_repo_paths = (resolved_config.local_repo_paths ?? [])
 				.concat(downloaded)
 				.sort(
 					(a, b) =>
@@ -220,44 +262,44 @@ export const resolve_local_repos = async ({
 		} else {
 			log?.error(
 				`Failed to resolve local repos in ${repos_dir} - do you need to pass \`--download\` or configure the directory?`, // TODO leaking task impl details
-				resolved_config.unresolved_local_repos.map((r) => r.repo_url),
+				resolved_config.local_repos_missing.map((r) => r.repo_url),
 			);
 			throw new TaskError('Failed to resolve local configs');
 		}
 	}
 
-	if (!resolved_local_repos) {
+	if (!local_repo_paths) {
 		throw new TaskError('No repos are configured in `gitops_config.ts`');
 	}
 
-	return resolved_local_repos;
+	return local_repo_paths;
 };
 
-export const load_local_repos = async ({
-	resolved_local_repos,
+export const local_repos_load = async ({
+	local_repo_paths,
 	log,
 	git_ops = default_git_operations,
 	npm_ops = default_npm_operations,
 }: {
-	resolved_local_repos: Array<ResolvedLocalRepo>;
+	local_repo_paths: Array<LocalRepoPath>;
 	log?: Logger;
 	git_ops?: GitOperations;
 	npm_ops?: NpmOperations;
 }): Promise<Array<LocalRepo>> => {
 	const loaded: Array<LocalRepo> = [];
-	for (const resolved_local_repo of resolved_local_repos) {
-		loaded.push(await load_local_repo({resolved_local_repo, log, git_ops, npm_ops})); // eslint-disable-line no-await-in-loop
+	for (const local_repo_path of local_repo_paths) {
+		loaded.push(await local_repo_load({local_repo_path, log, git_ops, npm_ops})); // eslint-disable-line no-await-in-loop
 	}
 	return loaded;
 };
 
-export const resolve_local_repo = ({
+export const local_repo_locate = ({
 	repo_config,
 	repos_dir,
 }: {
 	repo_config: GitopsRepoConfig;
 	repos_dir: string;
-}): MaybeLocalRepo => {
+}): LocalRepoPath | LocalRepoMissing => {
 	const {repo_url} = repo_config;
 	const repo_name = strip_end(repo_url, '/').split('/').at(-1);
 	if (!repo_name) throw Error('Invalid `repo_config.repo_url` ' + repo_url);
@@ -266,11 +308,11 @@ export const resolve_local_repo = ({
 
 	const repo_dir = repo_config.repo_dir ?? join(repos_dir, repo_name);
 	if (!existsSync(repo_dir)) {
-		return {type: 'unresolved_local_repo', repo_name, repo_url, repo_git_ssh_url, repo_config};
+		return {type: 'local_repo_missing', repo_name, repo_url, repo_git_ssh_url, repo_config};
 	}
 
 	return {
-		type: 'resolved_local_repo',
+		type: 'local_repo_path',
 		repo_name,
 		repo_dir,
 		repo_url,
@@ -286,21 +328,21 @@ const to_repo_git_ssh_url = (repo_url: string): string => {
 
 const download_repos = async ({
 	repos_dir,
-	unresolved_local_repos,
+	local_repos_missing,
 	log,
 	npm_ops = default_npm_operations,
 }: {
 	repos_dir: string;
-	unresolved_local_repos: Array<UnresolvedLocalRepo>;
+	local_repos_missing: Array<LocalRepoMissing>;
 	log?: Logger;
 	npm_ops?: NpmOperations;
-}): Promise<Array<ResolvedLocalRepo>> => {
-	const resolved: Array<ResolvedLocalRepo> = [];
-	for (const {repo_config, repo_git_ssh_url} of unresolved_local_repos) {
+}): Promise<Array<LocalRepoPath>> => {
+	const resolved: Array<LocalRepoPath> = [];
+	for (const {repo_config, repo_git_ssh_url} of local_repos_missing) {
 		log?.info(`cloning repo ${repo_git_ssh_url} to ${repos_dir}`);
 		await spawn('git', ['clone', repo_git_ssh_url], {cwd: repos_dir}); // eslint-disable-line no-await-in-loop
-		const local_repo = resolve_local_repo({repo_config, repos_dir});
-		if (local_repo.type === 'unresolved_local_repo') {
+		const local_repo = local_repo_locate({repo_config, repos_dir});
+		if (local_repo.type === 'local_repo_missing') {
 			throw new TaskError(`Failed to clone repo ${repo_git_ssh_url} to ${repos_dir}`);
 		}
 		// Always install dependencies after cloning

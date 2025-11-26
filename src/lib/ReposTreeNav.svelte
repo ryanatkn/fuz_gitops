@@ -15,16 +15,15 @@
 
 <nav>
 	<menu class="names panel p_md">
-		{#each repos as repo (repo.pkg.name)}
+		{#each repos as repo (repo.name)}
 			{@const selected = repo === selected_repo}
 			<li style:display="contents">
-				{#if repo.pkg.package_json}<a
+				{#if repo.package_json}<a
 						class="menu_item"
 						class:selected
-						href={resolve(`/tree/${repo.pkg.repo_name}`)}
+						href={resolve(`/tree/${repo.repo_name}`)}
 						><div class="ellipsis">
-							{repo.pkg.repo_name}{#if repo.pkg.package_json.glyph}&nbsp;{repo.pkg.package_json
-									.glyph}{/if}
+							{repo.repo_name}{#if repo.package_json.glyph}&nbsp;{repo.package_json.glyph}{/if}
 						</div></a
 					>{/if}
 			</li>

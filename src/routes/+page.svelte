@@ -2,15 +2,15 @@
 	import DocsFooter from '@ryanatkn/fuz/DocsFooter.svelte';
 	import Card from '@ryanatkn/fuz/Card.svelte';
 	import {resolve} from '$app/paths';
-	import {pkg_context} from '@ryanatkn/fuz/pkg.svelte.js';
+	import {library_context} from '@ryanatkn/fuz/library.svelte.js';
 
 	import MainHeader from '$routes/MainHeader.svelte';
 
-	const pkg = pkg_context.get();
+	const library = library_context.get();
 </script>
 
 <svelte:head>
-	<title>{pkg.package_json.name}</title>
+	<title>{library.package_json.name}</title>
 </svelte:head>
 
 <main class="box">
@@ -20,7 +20,9 @@
 	<section>
 		<menu class="unstyled">
 			<li>
-				<Card href={resolve('/docs')}>docs{#snippet icon()}{pkg.package_json.glyph}{/snippet}</Card>
+				<Card href={resolve('/docs')}
+					>docs{#snippet icon()}{library.package_json.glyph}{/snippet}</Card
+				>
 			</li>
 			<li>
 				<Card href={resolve('/tree')} icon="">tree</Card>
@@ -37,7 +39,7 @@
 		</menu>
 	</section>
 	<section class="mb_xl7">
-		<DocsFooter {pkg}>
+		<DocsFooter {library}>
 			{#snippet logo_header()}<a href={resolve('/about')} class="mb_xs">about</a>{/snippet}
 			{#snippet logo_footer()}<a href="https://www.fuz.dev/" class="mt_xs">fuz.dev</a>{/snippet}
 		</DocsFooter>

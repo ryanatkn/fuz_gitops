@@ -9,5 +9,5 @@ const parsed = repos_parse(
 );
 
 export const entries: EntryGenerator = () => {
-	return parsed.repos.map((d) => ({slug: d.pkg.repo_name}));
+	return parsed.repos.map((d) => ({slug: d.repo_name}));
 };

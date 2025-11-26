@@ -199,15 +199,17 @@ export const predict_next_version = async (
 		return null;
 	}
 
-	const bump_type = determine_bump_from_changesets(changesets, repo.pkg.name);
+	const bump_type = determine_bump_from_changesets(changesets, repo.library.name);
 	if (!bump_type) {
 		return null;
 	}
 
-	const current_version = repo.pkg.package_json.version || '0.0.0';
+	const current_version = repo.library.package_json.version || '0.0.0';
 	const next_version = calculate_next_version(current_version, bump_type);
 
-	log?.debug(`  Predicted ${repo.pkg.name}: ${current_version} → ${next_version} (${bump_type})`);
+	log?.debug(
+		`  Predicted ${repo.library.name}: ${current_version} → ${next_version} (${bump_type})`,
+	);
 
 	return {
 		version: next_version,

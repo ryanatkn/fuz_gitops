@@ -19,7 +19,7 @@ export const to_pull_requests = (
 			if (!repo.pull_requests) return null;
 			// TODO hacky, figure out the data structure
 			return repo.pull_requests.map((pull_request) =>
-				repo.pkg.package_json.homepage &&
+				repo.package_json.homepage &&
 				(!filter_pull_request || filter_pull_request(pull_request, repo))
 					? {repo, pull_request}
 					: null,

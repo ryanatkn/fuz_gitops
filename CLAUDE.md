@@ -74,11 +74,14 @@ conflicts on git commits and changeset files.
 ```ts
 // gitops.config.ts
 export default {
-  repos: ["https://github.com/owner/repo", {
-    repo_url: "...",
-    repo_dir: "...",
-    branch: "main",
-  }],
+	repos: [
+		'https://github.com/owner/repo',
+		{
+			repo_url: '...',
+			repo_dir: '...',
+			branch: 'main',
+		},
+	],
 };
 ```
 
@@ -321,15 +324,15 @@ utilities) while preventing runtime dependency issues.
 
 ```ts
 interface Repo extends Pkg {
-  check_runs: GithubCheckRunsItem | null;
-  pull_requests: Array<GithubPullRequest> | null;
+	check_runs: GithubCheckRunsItem | null;
+	pull_requests: Array<GithubPullRequest> | null;
 }
 
 interface LocalRepo {
-  repo_name: string;
-  repo_dir: string;
-  repo_url: string;
-  pkg: Pkg;
+	repo_name: string;
+	repo_dir: string;
+	repo_url: string;
+	pkg: Pkg;
 }
 ```
 

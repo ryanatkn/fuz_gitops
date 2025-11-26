@@ -17,18 +17,18 @@
 </script>
 
 <svelte:head>
-	<title>tree {repo.pkg.package_json.glyph} {repo.pkg.name}</title>
+	<title>tree {repo.package_json.glyph} {repo.name}</title>
 </svelte:head>
 
 <main class="box width_100">
 	<div class="p_lg">
-		<PageHeader pkg={repo.pkg} />
+		<PageHeader {repo} />
 	</div>
 	<section class="tree">
 		<ReposTree {repos}>
 			{#snippet nav()}
 				<div class="repos_tree_nav">
-					<Breadcrumb>{repo.pkg.package_json.glyph}</Breadcrumb>
+					<Breadcrumb>{repo.package_json.glyph}</Breadcrumb>
 				</div>
 			{/snippet}
 		</ReposTree>

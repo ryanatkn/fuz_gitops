@@ -21,7 +21,7 @@ import {print_path} from '@ryanatkn/gro/paths.js';
 import type {Logger} from '@ryanatkn/belt/log.js';
 
 import {load_gitops_config, type GitopsConfig} from './gitops_config.js';
-import {load_local_repos, resolve_local_repos, type LocalRepo} from './local_repo.js';
+import {local_repos_load, local_repos_ensure, type LocalRepo} from './local_repo.js';
 import {resolve_gitops_config} from './resolved_gitops_config.js';
 import {DEFAULT_REPOS_DIR} from './paths.js';
 import type {GitOperations, NpmOperations} from './operations.js';
@@ -79,7 +79,7 @@ export const get_gitops_ready = async (
 	);
 	const resolved_config = resolve_gitops_config(gitops_config, repos_dir);
 
-	const resolved_local_repos = await resolve_local_repos({
+	const local_repo_paths = await local_repos_ensure({
 		resolved_config,
 		repos_dir,
 		gitops_config,
@@ -88,7 +88,7 @@ export const get_gitops_ready = async (
 		npm_ops,
 	});
 
-	const local_repos = await load_local_repos({resolved_local_repos, log, git_ops, npm_ops});
+	const local_repos = await local_repos_load({local_repo_paths, log, git_ops, npm_ops});
 
 	return {config_path, repos_dir, gitops_config, local_repos};
 };

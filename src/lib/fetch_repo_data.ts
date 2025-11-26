@@ -30,11 +30,13 @@ export const fetch_repo_data = async (
 	github_api_version?: string,
 ): Promise<Array<RepoJson>> => {
 	const repos: Array<RepoJson> = [];
-	for (const {repo_url, repo_config, pkg} of resolved_repos) {
+	for (const {library, library_json, repo_config} of resolved_repos) {
+		const repo_url = library.repo_url;
+
 		// CI status
 		await wait(delay);
 		const check_runs = await fetch_github_check_runs(
-			pkg,
+			library,
 			cache,
 			log,
 			token,
@@ -46,7 +48,7 @@ export const fetch_repo_data = async (
 		// pull requests
 		await wait(delay);
 		const pull_requests = await fetch_github_pull_requests(
-			pkg,
+			library,
 			cache,
 			log,
 			token,
@@ -55,8 +57,7 @@ export const fetch_repo_data = async (
 		if (!pull_requests) log?.error('failed to fetch issues: ' + repo_url);
 
 		repos.push({
-			package_json: pkg.package_json,
-			src_json: pkg.src_json,
+			library_json,
 			check_runs,
 			pull_requests,
 		});

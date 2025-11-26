@@ -18,12 +18,12 @@
 </script>
 
 <svelte:head>
-	<title>pull requests {repo.pkg.package_json.glyph} {repo.pkg.package_json.name}</title>
+	<title>pull requests {repo.package_json.glyph} {repo.package_json.name}</title>
 </svelte:head>
 
 <main class="box width_100">
 	<div class="p_lg">
-		<PageHeader pkg={repo.pkg} />
+		<PageHeader {repo} />
 	</div>
 	<section>
 		<PullRequestsDetail {repos} {filter_pull_request} />

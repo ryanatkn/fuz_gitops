@@ -1,15 +1,10 @@
 import type {GitopsConfig} from './gitops_config.js';
-import {
-	resolve_local_repo,
-	type MaybeLocalRepo,
-	type ResolvedLocalRepo,
-	type UnresolvedLocalRepo,
-} from './local_repo.js';
+import {local_repo_locate, type LocalRepoPath, type LocalRepoMissing} from './local_repo.js';
 
 export interface ResolvedGitopsConfig {
-	local_repos: Array<MaybeLocalRepo> | null;
-	resolved_local_repos: Array<ResolvedLocalRepo> | null;
-	unresolved_local_repos: Array<UnresolvedLocalRepo> | null;
+	local_repos: Array<LocalRepoPath | LocalRepoMissing> | null;
+	local_repo_paths: Array<LocalRepoPath> | null;
+	local_repos_missing: Array<LocalRepoMissing> | null;
 }
 
 export const resolve_gitops_config = (
@@ -17,16 +12,16 @@ export const resolve_gitops_config = (
 	repos_dir: string,
 ): ResolvedGitopsConfig => {
 	const local_repos = gitops_config.repos.map((r) =>
-		resolve_local_repo({repo_config: r, repos_dir}),
+		local_repo_locate({repo_config: r, repos_dir}),
 	);
 
-	const resolved_local_repos = local_repos.filter((r) => r.type === 'resolved_local_repo');
-	const unresolved_local_repos = local_repos.filter((r) => r.type === 'unresolved_local_repo');
+	const local_repo_paths = local_repos.filter((r) => r.type === 'local_repo_path');
+	const local_repos_missing = local_repos.filter((r) => r.type === 'local_repo_missing');
 
 	const config: ResolvedGitopsConfig = {
 		local_repos: local_repos.length ? local_repos : null,
-		resolved_local_repos: resolved_local_repos.length ? resolved_local_repos : null,
-		unresolved_local_repos: unresolved_local_repos.length ? unresolved_local_repos : null,
+		local_repo_paths: local_repo_paths.length ? local_repo_paths : null,
+		local_repos_missing: local_repos_missing.length ? local_repos_missing : null,
 	};
 	return config;
 };

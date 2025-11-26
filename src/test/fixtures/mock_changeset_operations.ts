@@ -18,14 +18,14 @@ export const create_mock_changeset_ops = (fixture: RepoFixtureSet): ChangesetOpe
 	return {
 		has_changesets: async (options: {repo: LocalRepo}) => {
 			const {repo} = options;
-			const fixture_repo = repos_by_name.get(repo.pkg.name);
+			const fixture_repo = repos_by_name.get(repo.library.name);
 			const value = !!(fixture_repo?.changesets && fixture_repo.changesets.length > 0);
 			return {ok: true, value};
 		},
 
 		read_changesets: async (options: {repo: LocalRepo; log?: Logger}) => {
 			const {repo} = options;
-			const fixture_repo = repos_by_name.get(repo.pkg.name);
+			const fixture_repo = repos_by_name.get(repo.library.name);
 			if (!fixture_repo?.changesets) {
 				return {ok: true, value: []};
 			}
@@ -43,7 +43,7 @@ export const create_mock_changeset_ops = (fixture: RepoFixtureSet): ChangesetOpe
 
 		predict_next_version: async (options: {repo: LocalRepo; log?: Logger}) => {
 			const {repo} = options;
-			const fixture_repo = repos_by_name.get(repo.pkg.name);
+			const fixture_repo = repos_by_name.get(repo.library.name);
 			if (!fixture_repo?.changesets || fixture_repo.changesets.length === 0) {
 				return null;
 			}
@@ -56,7 +56,7 @@ export const create_mock_changeset_ops = (fixture: RepoFixtureSet): ChangesetOpe
 				if (!parsed) continue;
 
 				// Find the package entry for this repo
-				const pkg_entry = parsed.packages.find((p) => p.name === repo.pkg.name);
+				const pkg_entry = parsed.packages.find((p) => p.name === repo.library.name);
 				if (!pkg_entry) continue;
 
 				// Track the highest bump type

@@ -392,7 +392,7 @@ export const default_build_operations: BuildOperations = {
 	build_package: async (options) => {
 		const {repo, log} = options;
 		try {
-			log?.info(`  Building ${repo.pkg.name}...`);
+			log?.info(`  Building ${repo.library.name}...`);
 			const spawned = await spawn_out('gro', ['build'], {cwd: repo.repo_dir});
 			if (spawned.result.ok) {
 				return {ok: true};

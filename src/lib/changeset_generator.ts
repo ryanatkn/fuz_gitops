@@ -47,7 +47,7 @@ export const create_changeset_for_dependency_updates = async (
 	const required_bump = calculate_required_bump(repo, updates);
 
 	// Generate changeset content
-	const content = generate_changeset_content(repo.pkg.name, updates, required_bump);
+	const content = generate_changeset_content(repo.library.name, updates, required_bump);
 
 	// Write the changeset file
 	await writeFile(filepath, content, 'utf8');
@@ -61,7 +61,7 @@ const calculate_required_bump = (
 	repo: LocalRepo,
 	updates: Array<DependencyVersionChange>,
 ): 'major' | 'minor' | 'patch' => {
-	const current_version = repo.pkg.package_json.version || '0.0.0';
+	const current_version = repo.library.package_json.version || '0.0.0';
 	const [major] = current_version.split('.').map(Number);
 	const is_pre_1_0 = major === 0;
 
