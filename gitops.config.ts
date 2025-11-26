@@ -31,11 +31,6 @@ const config: CreateGitopsConfig = () => {
 				repo_url: 'https://github.com/ryanatkn/fuz_gitops',
 				branch: 'main',
 			},
-			{
-				repo_url: 'https://github.com/ryanatkn/webdevladder.net',
-				branch: 'main',
-			},
-			'https://github.com/ryanatkn/ryanatkn.com',
 		],
 	};
 };
