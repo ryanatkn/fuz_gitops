@@ -123,11 +123,11 @@ Deleted old files:
 
 ---
 
-## Phase 3: fuz_gitops 🚧 IN PROGRESS
+## Phase 3: fuz_gitops ✅ COMPLETE
 
 See `TODO_repo_pkg_refactor.md` for detailed design.
 
-### 3.1 Update RepoJson
+### 3.1 Update RepoJson ✅
 
 ```ts
 // Old
@@ -145,45 +145,47 @@ interface RepoJson {
 }
 ```
 
-### 3.2 Update Repo class (composition)
+### 3.2 Update Repo class (composition) ✅
 
-- [ ] Change to composition: `readonly library: Library`
-- [ ] Add convenience getters delegating to `this.library.*`
-- [ ] Constructor creates Library from `repo_json.library_json`
+- [x] Change to composition: `readonly library: Library`
+- [x] Add convenience getters delegating to `this.library.*`
+- [x] Constructor creates Library from `repo_json.library_json`
 
-### 3.3 Refactor LocalRepo and resolution types
+### 3.3 Refactor LocalRepo and resolution types ✅
 
-- [ ] Rename `ResolvedLocalRepo` → `LocalRepoPath`
-- [ ] Rename `UnresolvedLocalRepo` → `LocalRepoMissing` (descriptor-last pattern)
-- [ ] Rename `resolve_local_repo()` → `local_repo_locate()` (domain-first)
-- [ ] Rename `resolve_local_repos()` → `local_repos_ensure()` (domain-first)
-- [ ] Rename `load_local_repo()` → `local_repo_load()` (domain-first)
-- [ ] Rename `load_local_repos()` → `local_repos_load()` (domain-first)
-- [ ] `LocalRepo` no longer extends - has `library: Library` + needed fields only
-- [ ] Import from `src/routes/library.ts` in `local_repo_load()`
-- [ ] Add validation: halt with actionable error if library.ts missing
+- [x] Rename `ResolvedLocalRepo` → `LocalRepoPath`
+- [x] Rename `UnresolvedLocalRepo` → `LocalRepoMissing` (descriptor-last pattern)
+- [x] Rename `resolve_local_repo()` → `local_repo_locate()` (domain-first)
+- [x] Rename `resolve_local_repos()` → `local_repos_ensure()` (domain-first)
+- [x] Rename `load_local_repo()` → `local_repo_load()` (domain-first)
+- [x] Rename `load_local_repos()` → `local_repos_load()` (domain-first)
+- [x] `LocalRepo` no longer extends - has `library: Library` + needed fields only
+- [x] Import from `src/routes/library.ts` in `local_repo_load()`
+- [x] Add validation: halt with actionable error if library.ts missing
 
-### 3.4 Update sync task
+### 3.4 Update sync task ✅
 
-- [ ] Read `library.ts` from each repo (was stubbed)
-- [ ] Update generated `repos.ts` structure
-- [ ] Update `fetch_repo_data.ts` to use `library.package_json`
+- [x] Read `library.ts` from each repo (was stubbed)
+- [x] Update generated `repos.ts` structure
+- [x] Update `fetch_repo_data.ts` to use `library.package_json`
 
-### 3.5 Update UI components
+### 3.5 Update UI components ✅
 
-- [ ] Update imports from fuz
-- [ ] Update references (convenience getters maintain compatibility)
-- [ ] Update tomes: `related_identifiers` → `related_declarations`
+- [x] Update imports from fuz
+- [x] Update references (convenience getters maintain compatibility)
+- [x] Update tomes: `related_identifiers` → `related_declarations`
+- [x] Remove all `as any` casts
 
-### 3.6 Update gen files
+### 3.6 Update gen files ✅
 
-- [ ] `package.gen.ts` → `library.gen.ts`
-- [ ] Delete `package.ts`, regenerate as `library.ts`
+- [x] `package.gen.ts` → `library.gen.ts`
+- [x] Delete `package.ts`, regenerate as `library.ts`
 
-### 3.7 Update tests
+### 3.7 Update tests ✅
 
-- [ ] Update test helpers to use Library
-- [ ] Update fixture loaders
+- [x] Update test helpers to use Library
+- [x] Update fixture loaders
+- [x] All 383 tests pass
 
 ---
 
@@ -213,10 +215,10 @@ Repos:
 - [x] belt
 - [x] gro - updated source_json.ts, imports, tests, library.gen.ts
 - [x] fuz_code - library.gen.ts
+- [x] fuz_gitops - full refactor with composition, domain-first naming, validation
 - [ ] fuz_blog
 - [ ] fuz_mastodon
 - [ ] fuz_template
-- [ ] fuz_gitops
 - [ ] webdevladder.net
 
 ---
