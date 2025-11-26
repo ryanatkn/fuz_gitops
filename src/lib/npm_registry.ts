@@ -4,6 +4,7 @@ import {wait} from '@ryanatkn/belt/async.js';
 import {styleText as st} from 'node:util';
 
 export interface WaitOptions {
+	log?: Logger;
 	max_attempts?: number;
 	initial_delay?: number;
 	max_delay?: number;
@@ -18,8 +19,9 @@ export interface PackageInfo {
 export const check_package_available = async (
 	pkg: string,
 	version: string,
-	log?: Logger,
+	options: {log?: Logger} = {},
 ): Promise<boolean> => {
+	const {log} = options;
 	try {
 		// Use npm view to check if the specific version exists
 		const result = await spawn_out('npm', ['view', `${pkg}@${version}`, 'version']);
@@ -56,9 +58,9 @@ export const wait_for_package = async (
 	pkg: string,
 	version: string,
 	options: WaitOptions = {},
-	log?: Logger,
 ): Promise<void> => {
 	const {
+		log,
 		max_attempts = 30,
 		initial_delay = 1000,
 		max_delay = 60000,
@@ -79,7 +81,7 @@ export const wait_for_package = async (
 
 		// Check if package is available
 		// eslint-disable-next-line no-await-in-loop
-		if (await check_package_available(pkg, version, log)) {
+		if (await check_package_available(pkg, version, {log})) {
 			log?.info(st('green', `    ✓ ${pkg}@${version} is now available on NPM`));
 			return;
 		}
@@ -109,7 +111,11 @@ export const wait_for_package = async (
  *
  * @returns package info or null on error/not found
  */
-export const get_package_info = async (pkg: string, log?: Logger): Promise<PackageInfo | null> => {
+export const get_package_info = async (
+	pkg: string,
+	options: {log?: Logger} = {},
+): Promise<PackageInfo | null> => {
+	const {log} = options;
 	try {
 		const result = await spawn_out('npm', ['view', pkg, '--json']);
 
@@ -128,7 +134,10 @@ export const get_package_info = async (pkg: string, log?: Logger): Promise<Packa
 	}
 };
 
-export const package_exists = async (pkg: string, log?: Logger): Promise<boolean> => {
-	const info = await get_package_info(pkg, log);
+export const package_exists = async (
+	pkg: string,
+	options: {log?: Logger} = {},
+): Promise<boolean> => {
+	const info = await get_package_info(pkg, options);
 	return info !== null;
 };

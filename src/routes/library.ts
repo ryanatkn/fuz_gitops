@@ -2425,12 +2425,17 @@ export const library_json: LibraryJson = {
 								kind: 'variable',
 								type_signature: 'Logger',
 							},
+							{
+								name: 'ops',
+								kind: 'variable',
+								type_signature: 'GitopsOperations',
+							},
 						],
 					},
 					{
 						name: 'PublishedVersion',
 						kind: 'type',
-						source_line: 28,
+						source_line: 29,
 						type_signature: 'PublishedVersion',
 						properties: [
 							{
@@ -2473,7 +2478,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'PublishingResult',
 						kind: 'type',
-						source_line: 38,
+						source_line: 39,
 						type_signature: 'PublishingResult',
 						properties: [
 							{
@@ -2501,9 +2506,9 @@ export const library_json: LibraryJson = {
 					{
 						name: 'publish_repos',
 						kind: 'function',
-						source_line: 45,
+						source_line: 46,
 						type_signature:
-							'(repos: LocalRepo[], options: PublishingOptions, ops?: GitopsOperations): Promise<PublishingResult>',
+							'(repos: LocalRepo[], options: PublishingOptions): Promise<PublishingResult>',
 						return_type: 'Promise<PublishingResult>',
 						parameters: [
 							{
@@ -2513,11 +2518,6 @@ export const library_json: LibraryJson = {
 							{
 								name: 'options',
 								type: 'PublishingOptions',
-							},
-							{
-								name: 'ops',
-								type: 'GitopsOperations',
-								default_value: 'default_gitops_operations',
 							},
 						],
 					},
@@ -3127,7 +3127,7 @@ export const library_json: LibraryJson = {
 					},
 				],
 				module_comment:
-					"Operations interfaces for dependency injection.\n\nThis is the core pattern enabling testability without mocks.\nAll side effects (git, npm, fs, process) are abstracted into interfaces.\n\n**Design principles:**\n- All operations accept a single `options` object parameter\n- All fallible operations return `Result` from `@ryanatkn/belt`\n- Never throw `Error` in operations - return `Result` with `ok: false`\n- Use `null` for expected \"not found\" cases (not errors)\n- Include `log?: Logger` in options where logging is useful\n\n**Production usage:**\n```typescript\nimport {default_gitops_operations} from './operations_defaults.js';\nconst result = await ops.git.current_branch_name({cwd: '/path'});\nif (!result.ok) {\n  throw new TaskError(result.message);\n}\nconst branch = result.value;\n```\n\n**Test usage:**\n```typescript\nconst mock_ops = create_mock_operations();\nconst result = await publish_repos(repos, options, mock_ops);\n// Assert on result without any real git/npm calls\n```\n\nSee `operations_defaults.ts` for real implementations.\nSee test files (*.test.ts) for mock implementations.",
+					"Operations interfaces for dependency injection.\n\nThis is the core pattern enabling testability without mocks.\nAll side effects (git, npm, fs, process) are abstracted into interfaces.\n\n**Design principles:**\n- All operations accept a single `options` object parameter\n- All fallible operations return `Result` from `@ryanatkn/belt`\n- Never throw `Error` in operations - return `Result` with `ok: false`\n- Use `null` for expected \"not found\" cases (not errors)\n- Include `log?: Logger` in options where logging is useful\n\n**Production usage:**\n```typescript\nimport {default_gitops_operations} from './operations_defaults.js';\nconst result = await ops.git.current_branch_name({cwd: '/path'});\nif (!result.ok) {\n  throw new TaskError(result.message);\n}\nconst branch = result.value;\n```\n\n**Test usage:**\n```typescript\nconst mock_ops = create_mock_operations();\nconst result = await publish_repos(repos, {...options, ops: mock_ops});\n// Assert on result without any real git/npm calls\n```\n\nSee `operations_defaults.ts` for real implementations.\nSee test files (*.test.ts) for mock implementations.",
 			},
 			{
 				path: 'output_helpers.ts',

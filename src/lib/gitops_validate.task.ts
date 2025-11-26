@@ -56,7 +56,7 @@ export const task: Task<Args> = {
 		const analyze_start = Date.now();
 		try {
 			// Build dependency graph and validate (but don't throw on cycles for analyze)
-			const {graph} = validate_dependency_graph(local_repos, undefined, {
+			const {graph} = validate_dependency_graph(local_repos, {
 				throw_on_prod_cycles: false, // Analyze should report, not throw
 				log_cycles: false, // We'll collect our own statistics
 				log_order: false,
@@ -115,7 +115,7 @@ export const task: Task<Args> = {
 		log.info(st('yellow', 'Running gitops_plan...'));
 		const plan_start = Date.now();
 		try {
-			const plan = await generate_publishing_plan(local_repos, undefined);
+			const plan = await generate_publishing_plan(local_repos);
 			const plan_duration = Date.now() - plan_start;
 
 			const warnings = plan.warnings.length;

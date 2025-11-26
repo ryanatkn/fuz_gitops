@@ -77,7 +77,7 @@ const get_fixture_repos = (fixture: RepoFixtureSet): Array<LocalRepo> => {
 const setup_plan_test = async (fixture: RepoFixtureSet) => {
 	const mock_ops = create_mock_gitops_ops(fixture);
 	const local_repos = get_fixture_repos(fixture);
-	const plan = await generate_publishing_plan(local_repos, undefined, mock_ops.changeset);
+	const plan = await generate_publishing_plan(local_repos, {ops: mock_ops.changeset});
 	return {mock_ops, local_repos, plan};
 };
 
@@ -88,14 +88,11 @@ const setup_plan_test = async (fixture: RepoFixtureSet) => {
 const setup_dry_run_test = async (fixture: RepoFixtureSet) => {
 	const mock_ops = create_mock_gitops_ops(fixture);
 	const local_repos = get_fixture_repos(fixture);
-	const result = await publish_repos(
-		local_repos,
-		{
-			dry_run: true,
-			update_deps: false,
-		},
-		mock_ops,
-	);
+	const result = await publish_repos(local_repos, {
+		dry_run: true,
+		update_deps: false,
+		ops: mock_ops,
+	});
 	return {mock_ops, local_repos, result};
 };
 
@@ -132,7 +129,7 @@ describe('Success scenario fixtures', () => {
 					const local_repos = get_fixture_repos(fixture);
 
 					// Validate dependency graph directly
-					const {publishing_order: order} = validate_dependency_graph(local_repos, undefined, {
+					const {publishing_order: order} = validate_dependency_graph(local_repos, {
 						throw_on_prod_cycles: false,
 						log_cycles: false,
 						log_order: false,
@@ -278,7 +275,7 @@ describe('Error scenario fixtures', () => {
 					const local_repos = get_fixture_repos(fixture);
 
 					// Validate dependency graph - should detect cycles
-					const {publishing_order: order} = validate_dependency_graph(local_repos, undefined, {
+					const {publishing_order: order} = validate_dependency_graph(local_repos, {
 						throw_on_prod_cycles: false,
 						log_cycles: false,
 						log_order: false,
@@ -411,7 +408,7 @@ describe('JSON output format tests', () => {
 	test('analyze output has expected JSON structure', () => {
 		const local_repos = get_fixture_repos(fixture);
 
-		const result = validate_dependency_graph(local_repos, undefined, {
+		const result = validate_dependency_graph(local_repos, {
 			throw_on_prod_cycles: false,
 			log_cycles: false,
 			log_order: false,

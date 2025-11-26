@@ -30,7 +30,7 @@ test('detects breaking change cascades', async () => {
 		},
 	};
 
-	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, {ops: mock_ops});
 
 	// pkg-a should have a breaking change (0.x.x minor bump)
 	expect(plan.version_changes.find((vc) => vc.package_name === 'pkg-a')?.breaking).toBe(true);
@@ -61,7 +61,7 @@ test('handles bump escalation', async () => {
 		},
 	};
 
-	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, {ops: mock_ops});
 
 	// pkg-b should have bump escalation due to breaking dep
 	const pkg_b_change = plan.version_changes.find((vc) => vc.package_name === 'pkg-b');
@@ -91,7 +91,7 @@ test('generates auto-changesets for dependency updates', async () => {
 		},
 	};
 
-	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, {ops: mock_ops});
 
 	// pkg-b should get auto-changeset for dependency update
 	const pkg_b_change = plan.version_changes.find((vc) => vc.package_name === 'pkg-b');
@@ -116,7 +116,7 @@ test('handles circular dev dependencies', async () => {
 		predict_next_version: async () => null,
 	};
 
-	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, {ops: mock_ops});
 
 	// Should have info about dev cycles (not warnings anymore)
 	expect(plan.info.some((i) => i.includes('dev dependency cycle(s) detected'))).toBe(true);
@@ -141,7 +141,7 @@ test('detects production circular dependencies', async () => {
 		predict_next_version: async () => null,
 	};
 
-	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, {ops: mock_ops});
 
 	// Should have errors for production cycles
 	expect(plan.errors.some((e) => e.includes('Production dependency cycle'))).toBe(true);
@@ -184,7 +184,7 @@ test('warns when MAX_ITERATIONS reached without convergence', async () => {
 		},
 	};
 
-	const plan = await generate_publishing_plan(repos, undefined, mock_ops);
+	const plan = await generate_publishing_plan(repos, {ops: mock_ops});
 
 	// Should have a warning about MAX_ITERATIONS
 	const convergence_warning = plan.warnings.find((w) => w.includes('Reached maximum iterations'));

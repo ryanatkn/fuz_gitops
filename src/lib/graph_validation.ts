@@ -38,14 +38,14 @@ export interface GraphValidationResult {
  */
 export const validate_dependency_graph = (
 	repos: Array<LocalRepo>,
-	log?: Logger,
 	options: {
+		log?: Logger;
 		throw_on_prod_cycles?: boolean;
 		log_cycles?: boolean;
 		log_order?: boolean;
 	} = {},
 ): GraphValidationResult => {
-	const {throw_on_prod_cycles = true, log_cycles = true, log_order = true} = options;
+	const {log, throw_on_prod_cycles = true, log_cycles = true, log_order = true} = options;
 
 	// Build dependency graph
 	log?.info('📊 Analyzing dependencies...');

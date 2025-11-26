@@ -65,7 +65,7 @@ export const task: Task<Args> = {
 		log.info(`  Found ${local_repos.length} local repos`);
 
 		// Generate publishing plan
-		const plan = await generate_publishing_plan(local_repos, log, undefined, {verbose});
+		const plan = await generate_publishing_plan(local_repos, {log, verbose});
 
 		// Format and output using output_helpers
 		await format_and_output(plan, create_plan_formatters({verbose}), {format, outfile, log});

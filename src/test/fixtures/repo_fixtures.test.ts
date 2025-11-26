@@ -155,7 +155,7 @@ const test_fixture = async (fixture: RepoFixtureSet): Promise<void> => {
 	const repos = fixture_to_local_repos(fixture);
 	const ops = create_mock_changeset_ops(fixture);
 
-	const plan = await generate_publishing_plan(repos, undefined, ops);
+	const plan = await generate_publishing_plan(repos, {ops});
 
 	// Check publishing order
 	assert.deepEqual(

@@ -41,25 +41,39 @@ import type {
 	GitopsOperations,
 } from './operations.js';
 
+/** Wrap an async function that returns a value */
+const wrap_with_value = async <T>(
+	fn: () => Promise<T>,
+): Promise<{ok: true; value: T} | {ok: false; message: string}> => {
+	try {
+		const value = await fn();
+		return {ok: true, value};
+	} catch (error) {
+		return {ok: false, message: String(error)};
+	}
+};
+
+/** Wrap an async function, ignoring its return value */
+const wrap_void = async (
+	fn: () => Promise<unknown>,
+): Promise<{ok: true} | {ok: false; message: string}> => {
+	try {
+		await fn();
+		return {ok: true};
+	} catch (error) {
+		return {ok: false, message: String(error)};
+	}
+};
+
 export const default_changeset_operations: ChangesetOperations = {
 	has_changesets: async (options) => {
 		const {repo} = options;
-		try {
-			const value = await has_changesets(repo);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => has_changesets(repo));
 	},
 
 	read_changesets: async (options) => {
 		const {repo, log} = options;
-		try {
-			const value = await read_changesets(repo, log);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => read_changesets(repo, log));
 	},
 
 	predict_next_version: async (options) => {
@@ -69,7 +83,6 @@ export const default_changeset_operations: ChangesetOperations = {
 			if (result === null) {
 				return null;
 			}
-			// predict_next_version returns {version, bump_type}, we need to wrap it in OK
 			return {ok: true, ...result};
 		} catch (error) {
 			return {ok: false, message: String(error)};
@@ -81,182 +94,96 @@ export const default_git_operations: GitOperations = {
 	// Core git info
 	current_branch_name: async (options) => {
 		const {cwd} = options ?? EMPTY_OBJECT;
-		try {
-			const value = await git_current_branch_name_required(cwd ? {cwd} : undefined);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => git_current_branch_name_required(cwd ? {cwd} : undefined));
 	},
 
 	current_commit_hash: async (options) => {
 		const {branch, cwd} = options ?? EMPTY_OBJECT;
-		try {
-			const value = await git_current_commit_hash_required(branch, cwd ? {cwd} : undefined);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => git_current_commit_hash_required(branch, cwd ? {cwd} : undefined));
 	},
 
 	check_clean_workspace: async (options) => {
 		const {cwd} = options ?? EMPTY_OBJECT;
-		try {
-			const value = await git_check_clean_workspace_as_boolean(cwd ? {cwd} : undefined);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => git_check_clean_workspace_as_boolean(cwd ? {cwd} : undefined));
 	},
 
 	// Branch operations
 	checkout: async (options) => {
 		const {branch, cwd} = options;
-		try {
-			await git_checkout(branch, cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_checkout(branch, cwd ? {cwd} : undefined));
 	},
 
 	pull: async (options) => {
 		const {origin, branch, cwd} = options ?? EMPTY_OBJECT;
-		try {
-			await spawn('git', ['pull', origin || 'origin', branch || ''], cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() =>
+			spawn('git', ['pull', origin || 'origin', branch || ''], cwd ? {cwd} : undefined),
+		);
 	},
 
 	switch_branch: async (options) => {
 		const {branch, pull, cwd} = options;
-		try {
-			await git_switch_branch(branch as GitBranch, pull, cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_switch_branch(branch as GitBranch, pull, cwd ? {cwd} : undefined));
 	},
 
 	has_remote: async (options) => {
 		const {remote, cwd} = options ?? EMPTY_OBJECT;
-		try {
-			const value = await git_has_remote(remote, cwd ? {cwd} : undefined);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => git_has_remote(remote, cwd ? {cwd} : undefined));
 	},
 
 	// Staging and committing
 	add: async (options) => {
 		const {files, cwd} = options;
-		try {
-			await git_add(files, cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_add(files, cwd ? {cwd} : undefined));
 	},
 
 	commit: async (options) => {
 		const {message, cwd} = options;
-		try {
-			await git_commit(message, cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_commit(message, cwd ? {cwd} : undefined));
 	},
 
 	add_and_commit: async (options) => {
 		const {files, message, cwd} = options;
-		try {
-			await git_add_and_commit(files, message, cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_add_and_commit(files, message, cwd ? {cwd} : undefined));
 	},
 
 	has_changes: async (options) => {
 		const {cwd} = options ?? EMPTY_OBJECT;
-		try {
-			const value = await git_has_changes(cwd ? {cwd} : undefined);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => git_has_changes(cwd ? {cwd} : undefined));
 	},
 
 	get_changed_files: async (options) => {
 		const {cwd} = options ?? EMPTY_OBJECT;
-		try {
-			const value = await git_get_changed_files(cwd ? {cwd} : undefined);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => git_get_changed_files(cwd ? {cwd} : undefined));
 	},
 
 	// Tagging
 	tag: async (options) => {
 		const {tag_name, message, cwd} = options;
-		try {
-			await git_tag(tag_name, message, cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_tag(tag_name, message, cwd ? {cwd} : undefined));
 	},
 
 	push_tag: async (options) => {
 		const {tag_name, origin, cwd} = options;
-		try {
-			await git_push_tag(tag_name, origin as GitOrigin, cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_push_tag(tag_name, origin as GitOrigin, cwd ? {cwd} : undefined));
 	},
 
 	// Stashing
 	stash: async (options) => {
 		const {message, cwd} = options ?? EMPTY_OBJECT;
-		try {
-			await git_stash(message, cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_stash(message, cwd ? {cwd} : undefined));
 	},
 
 	stash_pop: async (options) => {
 		const {cwd} = options ?? EMPTY_OBJECT;
-		try {
-			await git_stash_pop(cwd ? {cwd} : undefined);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => git_stash_pop(cwd ? {cwd} : undefined));
 	},
 
 	// File change detection
 	has_file_changed: async (options) => {
 		const {from_commit, to_commit, file_path, cwd} = options;
-		try {
-			const value = await git_has_file_changed(
-				from_commit,
-				to_commit,
-				file_path,
-				cwd ? {cwd} : undefined,
-			);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() =>
+			git_has_file_changed(from_commit, to_commit, file_path, cwd ? {cwd} : undefined),
+		);
 	},
 };
 
@@ -288,7 +215,7 @@ export const default_npm_operations: NpmOperations = {
 	wait_for_package: async (options) => {
 		const {pkg, version, wait_options, log} = options;
 		try {
-			await wait_for_package(pkg, version, wait_options, log);
+			await wait_for_package(pkg, version, {...wait_options, log});
 			return {ok: true};
 		} catch (error) {
 			return {ok: false, message: String(error), timeout: true};
@@ -297,12 +224,7 @@ export const default_npm_operations: NpmOperations = {
 
 	check_package_available: async (options) => {
 		const {pkg, version, log} = options;
-		try {
-			const value = await check_package_available(pkg, version, log);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => check_package_available(pkg, version, {log}));
 	},
 
 	check_auth: async () => {
@@ -369,22 +291,12 @@ export const default_preflight_operations: PreflightOperations = {
 export const default_fs_operations: FsOperations = {
 	readFile: async (options) => {
 		const {path, encoding} = options;
-		try {
-			const value = await readFile(path, encoding);
-			return {ok: true, value};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_with_value(() => readFile(path, encoding));
 	},
 
 	writeFile: async (options) => {
 		const {path, content} = options;
-		try {
-			await writeFile(path, content);
-			return {ok: true};
-		} catch (error) {
-			return {ok: false, message: String(error)};
-		}
+		return wrap_void(() => writeFile(path, content));
 	},
 };
 

@@ -85,14 +85,14 @@ describe('npm_registry', () => {
 		});
 
 		it('logs debug message on error', async () => {
-			const logger = create_mock_logger();
+			const log = create_mock_logger();
 			vi.mocked(spawn_out).mockRejectedValue(new Error('network timeout'));
 
-			await check_package_available('test-pkg', '1.2.3', logger);
+			await check_package_available('test-pkg', '1.2.3', {log});
 
-			expect(logger.debug_calls.length).toBe(1);
-			expect(logger.debug_calls[0]).toContain('test-pkg@1.2.3');
-			expect(logger.debug_calls[0]).toContain('network timeout');
+			expect(log.debug_calls.length).toBe(1);
+			expect(log.debug_calls[0]).toContain('test-pkg@1.2.3');
+			expect(log.debug_calls[0]).toContain('network timeout');
 		});
 
 		it('handles scoped package names', async () => {
@@ -260,7 +260,7 @@ describe('npm_registry', () => {
 		});
 
 		it('logs progress every 5 attempts', async () => {
-			const logger = create_mock_logger();
+			const log = create_mock_logger();
 			let attempt = 0;
 			vi.mocked(spawn_out).mockImplementation(async () => {
 				attempt++;
@@ -274,24 +274,24 @@ describe('npm_registry', () => {
 				initial_delay: 10,
 			};
 
-			await wait_for_package('test-pkg', '1.0.0', options, logger);
+			await wait_for_package('test-pkg', '1.0.0', {...options, log});
 
 			// Should log at attempts 5 and 10
-			const progress_logs = logger.info_calls.filter((log) => log.includes('Still waiting'));
+			const progress_logs = log.info_calls.filter((log) => log.includes('Still waiting'));
 			expect(progress_logs.length).toBe(2);
 			expect(progress_logs[0]).toContain('attempt 5/30');
 			expect(progress_logs[1]).toContain('attempt 10/30');
 		});
 
 		it('logs success message when package becomes available', async () => {
-			const logger = create_mock_logger();
+			const log = create_mock_logger();
 			vi.mocked(spawn_out).mockResolvedValue({stdout: '1.0.0'} as any);
 
-			await wait_for_package('test-pkg', '1.0.0', {}, logger);
+			await wait_for_package('test-pkg', '1.0.0', {log});
 
-			expect(logger.info_calls.length).toBe(1);
-			expect(logger.info_calls[0]).toContain('test-pkg@1.0.0');
-			expect(logger.info_calls[0]).toContain('available on NPM');
+			expect(log.info_calls.length).toBe(1);
+			expect(log.info_calls[0]).toContain('test-pkg@1.0.0');
+			expect(log.info_calls[0]).toContain('available on NPM');
 		});
 
 		it('uses default options when not specified', async () => {
@@ -388,14 +388,14 @@ describe('npm_registry', () => {
 		});
 
 		it('logs debug message on error', async () => {
-			const logger = create_mock_logger();
+			const log = create_mock_logger();
 			vi.mocked(spawn_out).mockRejectedValue(new Error('npm error'));
 
-			await get_package_info('test-pkg', logger);
+			await get_package_info('test-pkg', {log});
 
-			expect(logger.debug_calls.length).toBe(1);
-			expect(logger.debug_calls[0]).toContain('test-pkg');
-			expect(logger.debug_calls[0]).toContain('npm error');
+			expect(log.debug_calls.length).toBe(1);
+			expect(log.debug_calls[0]).toContain('test-pkg');
+			expect(log.debug_calls[0]).toContain('npm error');
 		});
 
 		it('handles scoped packages', async () => {
@@ -467,12 +467,12 @@ describe('npm_registry', () => {
 		});
 
 		it('passes logger to get_package_info', async () => {
-			const logger = create_mock_logger();
+			const log = create_mock_logger();
 			vi.mocked(spawn_out).mockRejectedValue(new Error('error'));
 
-			await package_exists('test-pkg', logger);
+			await package_exists('test-pkg', {log});
 
-			expect(logger.debug_calls.length).toBe(1);
+			expect(log.debug_calls.length).toBe(1);
 		});
 	});
 });

@@ -23,6 +23,7 @@ export interface PublishingOptions {
 	max_wait?: number;
 	skip_install?: boolean;
 	log?: Logger;
+	ops?: GitopsOperations;
 }
 
 export interface PublishedVersion {
@@ -45,10 +46,9 @@ export interface PublishingResult {
 export const publish_repos = async (
 	repos: Array<LocalRepo>,
 	options: PublishingOptions,
-	ops: GitopsOperations = default_gitops_operations,
 ): Promise<PublishingResult> => {
 	const start_time = Date.now();
-	const {dry_run, update_deps, log} = options;
+	const {dry_run, update_deps, log, ops = default_gitops_operations} = options;
 
 	// Preflight checks (skip for dry runs since we're not actually publishing)
 	if (!dry_run) {
@@ -74,7 +74,8 @@ export const publish_repos = async (
 	}
 
 	// Build dependency graph and validate
-	const {publishing_order: order} = validate_dependency_graph(repos, log, {
+	const {publishing_order: order} = validate_dependency_graph(repos, {
+		log,
 		throw_on_prod_cycles: true,
 		log_cycles: true,
 		log_order: true,
@@ -195,14 +196,12 @@ export const publish_repos = async (
 								);
 								changed_repos.add(dependent_repo.library.name); // Mark as changed for deployment
 								changed_in_iteration.add(dependent_repo.library.name); // Track for batch install
-								await update_package_json(
-									dependent_repo,
-									updates,
-									options.version_strategy || 'caret',
-									published, // Pass published versions for changeset generation
+								await update_package_json(dependent_repo, updates, {
+									strategy: options.version_strategy || 'caret',
+									published_versions: published,
 									log,
-									ops.git,
-								);
+									git_ops: ops.git,
+								});
 							}
 						}
 					}
@@ -285,14 +284,12 @@ export const publish_repos = async (
 				log?.info(`  Updating ${dev_updates.size} dev dependencies in ${repo.library.name}`);
 				changed_repos.add(repo.library.name); // Mark as changed for deployment
 				dev_updated_repos.add(repo.library.name); // Track for batch install
-				await update_package_json(
-					repo,
-					dev_updates,
-					options.version_strategy || 'caret',
-					published, // Pass published versions for changeset generation
+				await update_package_json(repo, dev_updates, {
+					strategy: options.version_strategy || 'caret',
+					published_versions: published,
 					log,
-					ops.git,
-				);
+					git_ops: ops.git,
+				});
 			}
 		}
 	}

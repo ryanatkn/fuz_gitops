@@ -43,7 +43,8 @@ export const task: Task<Args> = {
 		const {local_repos} = await get_gitops_ready({path, dir, download: false, log});
 
 		// Build dependency graph and validate (but don't throw on cycles for analyze)
-		const {graph, publishing_order: order} = validate_dependency_graph(local_repos, log, {
+		const {graph, publishing_order: order} = validate_dependency_graph(local_repos, {
+			log,
 			throw_on_prod_cycles: false, // Analyze should report, not throw
 			log_cycles: false, // We'll show cycles in our formatted output
 			log_order: false, // We'll show order in our formatted output
