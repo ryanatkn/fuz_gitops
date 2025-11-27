@@ -1,5 +1,11 @@
 # @ryanatkn/fuz_gitops
 
+## 0.56.0
+
+### Minor Changes
+
+- add `verbose` option and rework some interfaces ([#41](https://github.com/ryanatkn/fuz_gitops/pull/41))
+
 ## 0.55.0
 
 ### Minor Changes
