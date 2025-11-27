@@ -45,22 +45,22 @@ export const library_json: LibraryJson = {
 		},
 		devDependencies: {
 			'@changesets/changelog-git': '^0.2.1',
-			'@ryanatkn/belt': '^0.40.1',
+			'@ryanatkn/belt': '^0.41.1',
 			'@ryanatkn/eslint-config': '^0.9.0',
-			'@ryanatkn/fuz': '^0.167.0',
+			'@ryanatkn/fuz': '^0.168.0',
 			'@ryanatkn/fuz_code': '^0.36.0',
-			'@ryanatkn/gro': '^0.179.0',
+			'@ryanatkn/gro': '^0.180.0',
 			'@ryanatkn/moss': '^0.39.0',
 			'@sveltejs/adapter-static': '^3.0.10',
 			'@sveltejs/kit': '^2.49.0',
-			'@sveltejs/package': '^2.5.6',
+			'@sveltejs/package': '^2.5.7',
 			'@sveltejs/vite-plugin-svelte': '^6.2.1',
 			'@types/node': '^24.10.1',
 			eslint: '^9.39.1',
 			'eslint-plugin-svelte': '^3.13.0',
 			prettier: '^3.6.2',
 			'prettier-plugin-svelte': '^3.4.0',
-			svelte: '^5.44.1',
+			svelte: '^5.45.2',
 			'svelte-check': '^4.3.4',
 			tslib: '^2.8.1',
 			typescript: '^5.9.3',
@@ -148,7 +148,7 @@ export const library_json: LibraryJson = {
 							'Creates a changeset file for dependency updates.\nReturns the path to the created changeset file.',
 						source_line: 28,
 						type_signature:
-							'(repo: LocalRepo, updates: DependencyVersionChange[], log?: Logger | undefined): Promise<string>',
+							'(repo: LocalRepo, updates: DependencyVersionChange[], options?: { log?: Logger | undefined; }): Promise<string>',
 						return_type: 'Promise<string>',
 						parameters: [
 							{
@@ -160,9 +160,9 @@ export const library_json: LibraryJson = {
 								type: 'DependencyVersionChange[]',
 							},
 							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
+								name: 'options',
+								type: '{ log?: Logger | undefined; }',
+								default_value: '{}',
 							},
 						],
 					},
@@ -171,7 +171,7 @@ export const library_json: LibraryJson = {
 						kind: 'function',
 						doc_comment:
 							'Generates markdown changeset content for dependency updates.\n\nCreates properly formatted changeset with YAML frontmatter, summary,\nand categorized list of breaking vs regular updates. Output format\nmatches changesets CLI for consistency.',
-						source_line: 94,
+						source_line: 95,
 						type_signature:
 							'(package_name: string, updates: DependencyVersionChange[], bump_type: "major" | "minor" | "patch"): string',
 						return_type: 'string',
@@ -197,7 +197,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'create_dependency_updates',
 						kind: 'function',
-						source_line: 138,
+						source_line: 139,
 						type_signature:
 							'(dependencies: Map<string, string>, published_versions: Map<string, PublishedVersion>): DependencyVersionChange[]',
 						return_type: 'DependencyVersionChange[]',
@@ -674,6 +674,39 @@ export const library_json: LibraryJson = {
 						type_signature: 'VersionStrategy',
 					},
 					{
+						name: 'UpdatePackageJsonOptions',
+						kind: 'type',
+						source_line: 16,
+						type_signature: 'UpdatePackageJsonOptions',
+						properties: [
+							{
+								name: 'strategy',
+								kind: 'variable',
+								type_signature: 'VersionStrategy',
+							},
+							{
+								name: 'published_versions',
+								kind: 'variable',
+								type_signature: 'Map<string, PublishedVersion>',
+							},
+							{
+								name: 'log',
+								kind: 'variable',
+								type_signature: 'Logger',
+							},
+							{
+								name: 'git_ops',
+								kind: 'variable',
+								type_signature: 'GitOperations',
+							},
+							{
+								name: 'fs_ops',
+								kind: 'variable',
+								type_signature: 'FsOperations',
+							},
+						],
+					},
+					{
 						name: 'update_package_json',
 						kind: 'function',
 						doc_comment:
@@ -684,9 +717,9 @@ export const library_json: LibraryJson = {
 								description: 'file operations or git operations fail',
 							},
 						],
-						source_line: 32,
+						source_line: 38,
 						type_signature:
-							'(repo: LocalRepo, updates: Map<string, string>, strategy?: VersionStrategy, published_versions?: Map<string, PublishedVersion> | undefined, log?: Logger | undefined, git_ops?: GitOperations, fs_ops?: FsOperations): Promise<...>',
+							'(repo: LocalRepo, updates: Map<string, string>, options?: UpdatePackageJsonOptions): Promise<void>',
 						return_type: 'Promise<void>',
 						parameters: [
 							{
@@ -698,40 +731,46 @@ export const library_json: LibraryJson = {
 								type: 'Map<string, string>',
 							},
 							{
-								name: 'strategy',
-								type: 'VersionStrategy',
-								description: 'how to format version ranges (default: caret)',
-								default_value: "'caret'",
+								name: 'options',
+								type: 'UpdatePackageJsonOptions',
+								default_value: '{}',
 							},
+						],
+					},
+					{
+						name: 'UpdateAllReposOptions',
+						kind: 'type',
+						source_line: 174,
+						type_signature: 'UpdateAllReposOptions',
+						properties: [
 							{
-								name: 'published_versions',
-								type: 'Map<string, PublishedVersion> | undefined',
-								optional: true,
-								description: 'if provided, generates auto-changesets for updates',
+								name: 'strategy',
+								kind: 'variable',
+								type_signature: 'VersionStrategy',
 							},
 							{
 								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
+								kind: 'variable',
+								type_signature: 'Logger',
 							},
 							{
 								name: 'git_ops',
-								type: 'GitOperations',
-								default_value: 'default_git_operations',
+								kind: 'variable',
+								type_signature: 'GitOperations',
 							},
 							{
 								name: 'fs_ops',
-								type: 'FsOperations',
-								default_value: 'default_fs_operations',
+								kind: 'variable',
+								type_signature: 'FsOperations',
 							},
 						],
 					},
 					{
 						name: 'update_all_repos',
 						kind: 'function',
-						source_line: 165,
+						source_line: 181,
 						type_signature:
-							'(repos: LocalRepo[], published: Map<string, string>, strategy?: VersionStrategy, log?: Logger | undefined, git_ops?: GitOperations, fs_ops?: FsOperations): Promise<...>',
+							'(repos: LocalRepo[], published: Map<string, string>, options?: UpdateAllReposOptions): Promise<{ updated: number; failed: { repo: string; error: Error; }[]; }>',
 						return_type: 'Promise<{ updated: number; failed: { repo: string; error: Error; }[]; }>',
 						parameters: [
 							{
@@ -743,31 +782,16 @@ export const library_json: LibraryJson = {
 								type: 'Map<string, string>',
 							},
 							{
-								name: 'strategy',
-								type: 'VersionStrategy',
-								default_value: "'caret'",
-							},
-							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
-							},
-							{
-								name: 'git_ops',
-								type: 'GitOperations',
-								default_value: 'default_git_operations',
-							},
-							{
-								name: 'fs_ops',
-								type: 'FsOperations',
-								default_value: 'default_fs_operations',
+								name: 'options',
+								type: 'UpdateAllReposOptions',
+								default_value: '{}',
 							},
 						],
 					},
 					{
 						name: 'find_updates_needed',
 						kind: 'function',
-						source_line: 223,
+						source_line: 242,
 						type_signature:
 							'(repo: LocalRepo, published: Map<string, string>): Map<string, { current: string; new: string; type: "dependencies" | "devDependencies" | "peerDependencies"; }>',
 						return_type:
@@ -1316,7 +1340,7 @@ export const library_json: LibraryJson = {
 						],
 						source_line: 31,
 						type_signature:
-							'(repo_info: GithubRepoInfo, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined): Promise<...>',
+							'(repo_info: GithubRepoInfo, options?: { cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined; log?: Logger | undefined; token?: string | undefined; api_version?: string | undefined; }): Promise<...>',
 						return_type:
 							'Promise<{ number: number; title: string; user: { login: string; }; draft: boolean; }[] | null>',
 						parameters: [
@@ -1325,24 +1349,9 @@ export const library_json: LibraryJson = {
 								type: 'GithubRepoInfo',
 							},
 							{
-								name: 'cache',
-								type: 'Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined',
-								optional: true,
-							},
-							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
-							},
-							{
-								name: 'token',
-								type: 'string | undefined',
-								optional: true,
-							},
-							{
-								name: 'api_version',
-								type: 'string | undefined',
-								optional: true,
+								name: 'options',
+								type: '{ cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined; log?: Logger | undefined; token?: string | undefined; api_version?: string | undefined; }',
+								default_value: '{}',
 							},
 						],
 					},
@@ -1353,14 +1362,14 @@ export const library_json: LibraryJson = {
 						see_also: [
 							'https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference',
 						],
-						source_line: 63,
+						source_line: 66,
 						type_signature:
 							'ZodObject<{ status: ZodEnum<{ queued: "queued"; in_progress: "in_progress"; completed: "completed"; }>; conclusion: ZodNullable<ZodEnum<{ success: "success"; failure: "failure"; neutral: "neutral"; cancelled: "cancelled"; skipped: "skipped"; timed_out: "timed_out"; action_required: "action_required"; }>>; }, $strip>',
 					},
 					{
 						name: 'GithubCheckRuns',
 						kind: 'type',
-						source_line: 70,
+						source_line: 73,
 						type_signature:
 							'ZodObject<{ total_count: ZodNumber; check_runs: ZodArray<ZodObject<{ status: ZodEnum<{ queued: "queued"; in_progress: "in_progress"; completed: "completed"; }>; conclusion: ZodNullable<ZodEnum<{ success: "success"; ... 5 more ...; action_required: "action_required"; }>>; }, $strip>>; }, $strip>',
 					},
@@ -1371,9 +1380,9 @@ export const library_json: LibraryJson = {
 						see_also: [
 							'https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-runs-for-a-git-reference',
 						],
-						source_line: 79,
+						source_line: 82,
 						type_signature:
-							'(repo_info: GithubRepoInfo, cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined, log?: Logger | undefined, token?: string | undefined, api_version?: string | undefined, ref?: string): Promise<...>',
+							'(repo_info: GithubRepoInfo, options?: { cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined; log?: Logger | undefined; token?: string | undefined; api_version?: string | undefined; ref?: string | undefined; }): Promise<...>',
 						return_type:
 							'Promise<{ status: "queued" | "in_progress" | "completed"; conclusion: "success" | "failure" | "neutral" | "cancelled" | "skipped" | "timed_out" | "action_required" | null; } | null>',
 						parameters: [
@@ -1382,29 +1391,9 @@ export const library_json: LibraryJson = {
 								type: 'GithubRepoInfo',
 							},
 							{
-								name: 'cache',
-								type: 'Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined',
-								optional: true,
-							},
-							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
-							},
-							{
-								name: 'token',
-								type: 'string | undefined',
-								optional: true,
-							},
-							{
-								name: 'api_version',
-								type: 'string | undefined',
-								optional: true,
-							},
-							{
-								name: 'ref',
-								type: 'string',
-								default_value: "'main'",
+								name: 'options',
+								type: '{ cache?: Map<string, { key: string; url: string; params: any; value: any; etag: string | null; last_modified: string | null; }> | undefined; log?: Logger | undefined; token?: string | undefined; api_version?: string | undefined; ref?: string | undefined; }',
+								default_value: '{}',
 							},
 						],
 					},
@@ -1804,7 +1793,7 @@ export const library_json: LibraryJson = {
 						],
 						source_line: 39,
 						type_signature:
-							'(repos: LocalRepo[], log?: Logger | undefined, options?: { throw_on_prod_cycles?: boolean | undefined; log_cycles?: boolean | undefined; log_order?: boolean | undefined; }): GraphValidationResult',
+							'(repos: LocalRepo[], options?: { log?: Logger | undefined; throw_on_prod_cycles?: boolean | undefined; log_cycles?: boolean | undefined; log_order?: boolean | undefined; }): GraphValidationResult',
 						return_type: 'GraphValidationResult',
 						return_description:
 							'graph validation result with graph, publishing order, and detected cycles',
@@ -1814,13 +1803,8 @@ export const library_json: LibraryJson = {
 								type: 'LocalRepo[]',
 							},
 							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
-							},
-							{
 								name: 'options',
-								type: '{ throw_on_prod_cycles?: boolean | undefined; log_cycles?: boolean | undefined; log_order?: boolean | undefined; }',
+								type: '{ log?: Logger | undefined; throw_on_prod_cycles?: boolean | undefined; log_cycles?: boolean | undefined; log_order?: boolean | undefined; }',
 								default_value: '{}',
 							},
 						],
@@ -2318,7 +2302,7 @@ export const library_json: LibraryJson = {
 					},
 				],
 				module_comment: 'Verbose logging functions for publishing plan diagnostic output.',
-				dependents: ['publishing_plan.ts'],
+				dependents: ['publishing_plan_logging.ts'],
 			},
 			{
 				path: 'ModulesDetail.svelte',
@@ -2582,6 +2566,11 @@ export const library_json: LibraryJson = {
 						type_signature: 'WaitOptions',
 						properties: [
 							{
+								name: 'log',
+								kind: 'variable',
+								type_signature: 'Logger',
+							},
+							{
 								name: 'max_attempts',
 								kind: 'variable',
 								type_signature: 'number',
@@ -2606,7 +2595,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'PackageInfo',
 						kind: 'type',
-						source_line: 13,
+						source_line: 14,
 						type_signature: 'PackageInfo',
 						properties: [
 							{
@@ -2624,9 +2613,9 @@ export const library_json: LibraryJson = {
 					{
 						name: 'check_package_available',
 						kind: 'function',
-						source_line: 18,
+						source_line: 19,
 						type_signature:
-							'(pkg: string, version: string, log?: Logger | undefined): Promise<boolean>',
+							'(pkg: string, version: string, options?: { log?: Logger | undefined; }): Promise<boolean>',
 						return_type: 'Promise<boolean>',
 						parameters: [
 							{
@@ -2638,9 +2627,9 @@ export const library_json: LibraryJson = {
 								type: 'string',
 							},
 							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
+								name: 'options',
+								type: '{ log?: Logger | undefined; }',
+								default_value: '{}',
 							},
 						],
 					},
@@ -2655,9 +2644,8 @@ export const library_json: LibraryJson = {
 								description: 'timeout reached or max attempts exceeded',
 							},
 						],
-						source_line: 55,
-						type_signature:
-							'(pkg: string, version: string, options?: WaitOptions, log?: Logger | undefined): Promise<void>',
+						source_line: 57,
+						type_signature: '(pkg: string, version: string, options?: WaitOptions): Promise<void>',
 						return_type: 'Promise<void>',
 						parameters: [
 							{
@@ -2673,11 +2661,6 @@ export const library_json: LibraryJson = {
 								type: 'WaitOptions',
 								default_value: '{}',
 							},
-							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
-							},
 						],
 					},
 					{
@@ -2685,8 +2668,9 @@ export const library_json: LibraryJson = {
 						kind: 'function',
 						doc_comment:
 							"Fetches package metadata from NPM registry.\n\nReturns name and latest version. Returns null if package doesn't exist\nor registry is unreachable.",
-						source_line: 112,
-						type_signature: '(pkg: string, log?: Logger | undefined): Promise<PackageInfo | null>',
+						source_line: 114,
+						type_signature:
+							'(pkg: string, options?: { log?: Logger | undefined; }): Promise<PackageInfo | null>',
 						return_type: 'Promise<PackageInfo | null>',
 						return_description: 'package info or null on error/not found',
 						parameters: [
@@ -2695,17 +2679,18 @@ export const library_json: LibraryJson = {
 								type: 'string',
 							},
 							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
+								name: 'options',
+								type: '{ log?: Logger | undefined; }',
+								default_value: '{}',
 							},
 						],
 					},
 					{
 						name: 'package_exists',
 						kind: 'function',
-						source_line: 131,
-						type_signature: '(pkg: string, log?: Logger | undefined): Promise<boolean>',
+						source_line: 137,
+						type_signature:
+							'(pkg: string, options?: { log?: Logger | undefined; }): Promise<boolean>',
 						return_type: 'Promise<boolean>',
 						parameters: [
 							{
@@ -2713,9 +2698,9 @@ export const library_json: LibraryJson = {
 								type: 'string',
 							},
 							{
-								name: 'log',
-								type: 'Logger | undefined',
-								optional: true,
+								name: 'options',
+								type: '{ log?: Logger | undefined; }',
+								default_value: '{}',
 							},
 						],
 					},
@@ -2728,50 +2713,50 @@ export const library_json: LibraryJson = {
 					{
 						name: 'default_changeset_operations',
 						kind: 'variable',
-						source_line: 44,
+						source_line: 68,
 						type_signature: 'ChangesetOperations',
 					},
 					{
 						name: 'default_git_operations',
 						kind: 'variable',
-						source_line: 80,
+						source_line: 93,
 						type_signature: 'GitOperations',
 					},
 					{
 						name: 'default_process_operations',
 						kind: 'variable',
-						source_line: 263,
+						source_line: 190,
 						type_signature: 'ProcessOperations',
 					},
 					{
 						name: 'default_npm_operations',
 						kind: 'variable',
-						source_line: 287,
+						source_line: 214,
 						type_signature: 'NpmOperations',
 					},
 					{
 						name: 'default_preflight_operations',
 						kind: 'variable',
-						source_line: 363,
+						source_line: 285,
 						type_signature: 'PreflightOperations',
 					},
 					{
 						name: 'default_fs_operations',
 						kind: 'variable',
-						source_line: 369,
+						source_line: 291,
 						type_signature: 'FsOperations',
 					},
 					{
 						name: 'default_build_operations',
 						kind: 'variable',
-						source_line: 391,
+						source_line: 303,
 						type_signature: 'BuildOperations',
 					},
 					{
 						name: 'default_gitops_operations',
 						kind: 'variable',
 						doc_comment: 'Combined default operations for all gitops functionality.',
-						source_line: 415,
+						source_line: 327,
 						type_signature: 'GitopsOperations',
 					},
 				],
@@ -3450,12 +3435,118 @@ export const library_json: LibraryJson = {
 				dependents: ['operations_defaults.ts'],
 			},
 			{
+				path: 'publishing_plan_helpers.ts',
+				declarations: [
+					{
+						name: 'calculate_dependency_updates',
+						kind: 'function',
+						doc_comment:
+							'Calculates all dependency updates between packages based on predicted versions.\n\nIterates through all repos, checking prod, peer, and dev dependencies to find\nwhich packages will need dependency version bumps after publishing.\n\nAlso tracks "breaking cascades" - when a breaking change propagates to dependents.',
+						source_line: 20,
+						type_signature:
+							'(repos: LocalRepo[], predicted_versions: Map<string, string>, breaking_packages: Set<string>): { dependency_updates: DependencyUpdate[]; breaking_cascades: Map<...>; }',
+						return_type:
+							'{ dependency_updates: DependencyUpdate[]; breaking_cascades: Map<string, string[]>; }',
+						parameters: [
+							{
+								name: 'repos',
+								type: 'LocalRepo[]',
+							},
+							{
+								name: 'predicted_versions',
+								type: 'Map<string, string>',
+							},
+							{
+								name: 'breaking_packages',
+								type: 'Set<string>',
+							},
+						],
+					},
+					{
+						name: 'get_required_bump_for_dependencies',
+						kind: 'function',
+						doc_comment:
+							'Determines the required bump type for a package based on its dependency updates.\n\nReturns null if no prod/peer dependency updates, otherwise returns the minimum\nrequired bump type (major for breaking deps, patch otherwise).\n\nRespects pre-1.0 semver conventions (minor for breaking in 0.x).',
+						source_line: 111,
+						type_signature:
+							'(repo: LocalRepo, dependency_updates: DependencyUpdate[], breaking_packages: Set<string>): BumpType | null',
+						return_type: 'BumpType | null',
+						parameters: [
+							{
+								name: 'repo',
+								type: 'LocalRepo',
+							},
+							{
+								name: 'dependency_updates',
+								type: 'DependencyUpdate[]',
+							},
+							{
+								name: 'breaking_packages',
+								type: 'Set<string>',
+							},
+						],
+					},
+				],
+				module_comment:
+					'Helper functions for publishing plan calculations.\n\nExtracted from publishing_plan.ts to reduce file size.',
+				dependencies: ['version_utils.ts'],
+				dependents: ['publishing_plan.ts'],
+			},
+			{
+				path: 'publishing_plan_logging.ts',
+				declarations: [
+					{
+						name: 'LogPlanOptions',
+						kind: 'type',
+						source_line: 13,
+						type_signature: 'LogPlanOptions',
+						properties: [
+							{
+								name: 'verbose',
+								kind: 'variable',
+								type_signature: 'boolean',
+							},
+						],
+						also_exported_from: ['publishing_plan.ts'],
+					},
+					{
+						name: 'log_publishing_plan',
+						kind: 'function',
+						doc_comment:
+							'Logs a complete publishing plan to the console.\n\nDisplays errors, publishing order, version changes grouped by scenario,\ndependency-only updates, warnings, and a summary.',
+						source_line: 117,
+						type_signature: '(plan: PublishingPlan, log: Logger, options?: LogPlanOptions): void',
+						return_type: 'void',
+						parameters: [
+							{
+								name: 'plan',
+								type: 'PublishingPlan',
+							},
+							{
+								name: 'log',
+								type: 'Logger',
+							},
+							{
+								name: 'options',
+								type: 'LogPlanOptions',
+								default_value: '{}',
+							},
+						],
+						also_exported_from: ['publishing_plan.ts'],
+					},
+				],
+				module_comment:
+					'Logging and formatting functions for publishing plans.\n\nExtracted from publishing_plan.ts to reduce file size.',
+				dependencies: ['log_verbose.ts'],
+				dependents: ['publishing_plan.ts'],
+			},
+			{
 				path: 'publishing_plan.ts',
 				declarations: [
 					{
 						name: 'VersionChange',
 						kind: 'type',
-						source_line: 19,
+						source_line: 20,
 						type_signature: 'VersionChange',
 						properties: [
 							{
@@ -3513,7 +3604,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'DependencyUpdate',
 						kind: 'type',
-						source_line: 32,
+						source_line: 33,
 						type_signature: 'DependencyUpdate',
 						properties: [
 							{
@@ -3551,7 +3642,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'VerboseChangesetDetail',
 						kind: 'type',
-						source_line: 42,
+						source_line: 43,
 						type_signature: 'VerboseChangesetDetail',
 						properties: [
 							{
@@ -3569,7 +3660,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'VerboseIterationPackage',
 						kind: 'type',
-						source_line: 47,
+						source_line: 48,
 						type_signature: 'VerboseIterationPackage',
 						properties: [
 							{
@@ -3617,7 +3708,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'VerboseIteration',
 						kind: 'type',
-						source_line: 58,
+						source_line: 59,
 						type_signature: 'VerboseIteration',
 						properties: [
 							{
@@ -3640,7 +3731,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'VerbosePropagationChain',
 						kind: 'type',
-						source_line: 64,
+						source_line: 65,
 						type_signature: 'VerbosePropagationChain',
 						properties: [
 							{
@@ -3658,7 +3749,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'VerboseGraphSummary',
 						kind: 'type',
-						source_line: 69,
+						source_line: 70,
 						type_signature: 'VerboseGraphSummary',
 						properties: [
 							{
@@ -3696,7 +3787,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'VerboseData',
 						kind: 'type',
-						source_line: 78,
+						source_line: 79,
 						type_signature: 'VerboseData',
 						properties: [
 							{
@@ -3729,7 +3820,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'PublishingPlan',
 						kind: 'type',
-						source_line: 86,
+						source_line: 87,
 						type_signature: 'PublishingPlan',
 						properties: [
 							{
@@ -3777,7 +3868,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'GeneratePlanOptions',
 						kind: 'type',
-						source_line: 216,
+						source_line: 98,
 						type_signature: 'GeneratePlanOptions',
 						properties: [
 							{
@@ -3802,7 +3893,7 @@ export const library_json: LibraryJson = {
 						kind: 'function',
 						doc_comment:
 							'Generates a publishing plan showing what would happen during publishing.\nShows version changes, dependency updates, and breaking change cascades.\nUses fixed-point iteration to resolve transitive cascades.',
-						source_line: 227,
+						source_line: 109,
 						type_signature:
 							'(repos: LocalRepo[], options?: GeneratePlanOptions): Promise<PublishingPlan>',
 						return_type: 'Promise<PublishingPlan>',
@@ -3818,47 +3909,13 @@ export const library_json: LibraryJson = {
 							},
 						],
 					},
-					{
-						name: 'LogPlanOptions',
-						kind: 'type',
-						source_line: 651,
-						type_signature: 'LogPlanOptions',
-						properties: [
-							{
-								name: 'verbose',
-								kind: 'variable',
-								type_signature: 'boolean',
-							},
-						],
-					},
-					{
-						name: 'log_publishing_plan',
-						kind: 'function',
-						source_line: 750,
-						type_signature: '(plan: PublishingPlan, log: Logger, options?: LogPlanOptions): void',
-						return_type: 'void',
-						parameters: [
-							{
-								name: 'plan',
-								type: 'PublishingPlan',
-							},
-							{
-								name: 'log',
-								type: 'Logger',
-							},
-							{
-								name: 'options',
-								type: 'LogPlanOptions',
-								default_value: '{}',
-							},
-						],
-					},
 				],
 				dependencies: [
 					'constants.ts',
 					'graph_validation.ts',
-					'log_verbose.ts',
 					'operations_defaults.ts',
+					'publishing_plan_helpers.ts',
+					'publishing_plan_logging.ts',
 					'version_utils.ts',
 				],
 				dependents: ['gitops_plan.task.ts', 'gitops_publish.task.ts', 'gitops_validate.task.ts'],
@@ -4758,6 +4815,7 @@ export const library_json: LibraryJson = {
 					'dependency_updater.ts',
 					'multi_repo_publisher.ts',
 					'publishing_plan.ts',
+					'publishing_plan_helpers.ts',
 				],
 			},
 		],
