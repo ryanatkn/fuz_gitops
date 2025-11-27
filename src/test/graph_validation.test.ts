@@ -71,12 +71,12 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			expect(() =>
-				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(TaskError);
-			expect(() =>
-				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(/Cannot publish with production\/peer dependency cycles/);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				TaskError,
+			);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				/Cannot publish with production\/peer dependency cycles/,
+			);
 		});
 
 		it('throws on peer dependency cycle', () => {
@@ -85,9 +85,9 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', peer_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			expect(() =>
-				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(TaskError);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				TaskError,
+			);
 		});
 
 		it('throws on mixed prod/peer cycle', () => {
@@ -96,9 +96,9 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', peer_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			expect(() =>
-				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(TaskError);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				TaskError,
+			);
 		});
 
 		it('throws on longer cycle (3+ packages)', () => {
@@ -108,9 +108,9 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-c', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			expect(() =>
-				validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: true}),
-			).toThrow(TaskError);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				TaskError,
+			);
 		});
 	});
 
@@ -121,7 +121,7 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			const result = validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: false});
+			const result = validate_dependency_graph(repos, {throw_on_prod_cycles: false});
 
 			expect(result.publishing_order).toEqual([]);
 			expect(result.production_cycles).toHaveLength(1);
@@ -141,7 +141,7 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-d', version: '1.0.0', deps: {'pkg-c': '^1.0.0'}}),
 			];
 
-			const result = validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: false});
+			const result = validate_dependency_graph(repos, {throw_on_prod_cycles: false});
 
 			expect(result.publishing_order).toEqual([]);
 			expect(result.production_cycles).toHaveLength(2);
@@ -154,7 +154,7 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'plugin-b', version: '1.0.0', peer_deps: {'plugin-a': '^1.0.0'}}),
 			];
 
-			const result = validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: false});
+			const result = validate_dependency_graph(repos, {throw_on_prod_cycles: false});
 
 			expect(result.publishing_order).toEqual([]);
 			expect(result.production_cycles).toHaveLength(1);
@@ -226,7 +226,7 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'dev-b', version: '1.0.0', dev_deps: {'dev-a': '^1.0.0'}}),
 			];
 
-			const result = validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: false});
+			const result = validate_dependency_graph(repos, {throw_on_prod_cycles: false});
 
 			expect(result.production_cycles).toHaveLength(1);
 			expect(result.dev_cycles).toHaveLength(1);
@@ -259,7 +259,7 @@ describe('validate_dependency_graph', () => {
 			];
 
 			// Should not crash even though we're passing undefined logger
-			const result = validate_dependency_graph(repos, undefined, {
+			const result = validate_dependency_graph(repos, {
 				throw_on_prod_cycles: false,
 				log_cycles: false,
 			});
@@ -273,7 +273,7 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'app', version: '1.0.0', deps: {lib: '^1.0.0'}}),
 			];
 
-			const result = validate_dependency_graph(repos, undefined, {log_order: false});
+			const result = validate_dependency_graph(repos, {log_order: false});
 
 			expect(result.publishing_order).toEqual(['lib', 'app']);
 		});
@@ -284,7 +284,7 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', dev_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			const result = validate_dependency_graph(repos, undefined, {
+			const result = validate_dependency_graph(repos, {
 				throw_on_prod_cycles: false,
 				log_cycles: false,
 				log_order: false,
@@ -326,7 +326,7 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'self-dep', version: '1.0.0', deps: {'self-dep': '^1.0.0'}}),
 			];
 
-			const result = validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: false});
+			const result = validate_dependency_graph(repos, {throw_on_prod_cycles: false});
 
 			expect(result.publishing_order).toEqual([]);
 			expect(result.production_cycles).toHaveLength(1);
@@ -364,7 +364,7 @@ describe('validate_dependency_graph', () => {
 			];
 
 			// Should not crash with undefined logger even though log_cycles defaults to true
-			const result = validate_dependency_graph(repos, undefined);
+			const result = validate_dependency_graph(repos);
 
 			expect(result.publishing_order).toEqual(['lib', 'app']);
 		});
@@ -391,7 +391,7 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			const result = validate_dependency_graph(repos, undefined, {throw_on_prod_cycles: false});
+			const result = validate_dependency_graph(repos, {throw_on_prod_cycles: false});
 
 			// Verify we can call graph methods
 			const cycles = result.graph.detect_cycles();

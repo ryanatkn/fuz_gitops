@@ -30,11 +30,14 @@ export type GithubPullRequests = z.infer<typeof GithubPullRequests>;
  */
 export const fetch_github_pull_requests = async (
 	repo_info: GithubRepoInfo,
-	cache?: FetchValueCache,
-	log?: Logger,
-	token?: string,
-	api_version?: string,
+	options: {
+		cache?: FetchValueCache;
+		log?: Logger;
+		token?: string;
+		api_version?: string;
+	} = {},
 ): Promise<GithubPullRequests | null> => {
+	const {cache, log, token, api_version} = options;
 	if (!repo_info.owner_name) throw Error('owner_name is required');
 	const headers = api_version ? new Headers({'x-github-api-version': api_version}) : undefined;
 	const url = `https://api.github.com/repos/${repo_info.owner_name}/${repo_info.repo_name}/pulls`;
@@ -78,12 +81,15 @@ export type GithubCheckRuns = z.infer<typeof GithubCheckRuns>;
  */
 export const fetch_github_check_runs = async (
 	repo_info: GithubRepoInfo,
-	cache?: FetchValueCache,
-	log?: Logger,
-	token?: string,
-	api_version?: string,
-	ref = 'main',
+	options: {
+		cache?: FetchValueCache;
+		log?: Logger;
+		token?: string;
+		api_version?: string;
+		ref?: string;
+	} = {},
 ): Promise<GithubCheckRunsItem | null> => {
+	const {cache, log, token, api_version, ref = 'main'} = options;
 	if (!repo_info.owner_name) throw Error('owner_name is required');
 	const headers = api_version ? new Headers({'x-github-api-version': api_version}) : undefined;
 	const url = `https://api.github.com/repos/${repo_info.owner_name}/${repo_info.repo_name}/commits/${ref}/check-runs`;

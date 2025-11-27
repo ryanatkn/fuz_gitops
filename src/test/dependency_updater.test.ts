@@ -84,7 +84,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['dep-a', '1.1.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			expect(updated).toBeDefined();
@@ -122,7 +122,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['dev-a', '2.0.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			const parsed = JSON.parse(updated!);
@@ -157,7 +157,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['peer-a', '3.1.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			const parsed = JSON.parse(updated!);
@@ -192,7 +192,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['dep-a', '1.1.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'tilde', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {strategy: 'tilde', git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			const parsed = JSON.parse(updated!);
@@ -227,7 +227,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['dep-a', '1.1.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'exact', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {strategy: 'exact', git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			const parsed = JSON.parse(updated!);
@@ -262,7 +262,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['@ryanatkn/belt', '0.39.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			const parsed = JSON.parse(updated!);
@@ -297,7 +297,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['dep-a', '1.1.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'gte', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {strategy: 'gte', git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			const parsed = JSON.parse(updated!);
@@ -344,7 +344,7 @@ describe('dependency_updater', () => {
 			]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			const parsed = JSON.parse(updated!);
@@ -377,7 +377,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['dep-a', '1.1.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			const updated = fs.get(package_json_path);
 			// Check it has tabs (JSON.stringify uses tabs)
@@ -409,7 +409,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['dep-a', '1.1.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			expect(git_ops.added_files).toContain('package.json');
 			expect(git_ops.commits).toHaveLength(1);
@@ -423,7 +423,7 @@ describe('dependency_updater', () => {
 			const updates: Map<string, string> = new Map();
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			expect(git_ops.added_files).toHaveLength(0);
 			expect(git_ops.commits).toHaveLength(0);
@@ -454,7 +454,7 @@ describe('dependency_updater', () => {
 			const updates = new Map([['dep-b', '2.0.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			await update_package_json(repo, updates, 'caret', undefined, undefined, git_ops, fs);
+			await update_package_json(repo, updates, {git_ops, fs_ops: fs});
 
 			expect(git_ops.commits).toHaveLength(0);
 		});
@@ -591,7 +591,7 @@ describe('dependency_updater', () => {
 			const published = new Map([['lib', '1.5.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			const result = await update_all_repos(repos, published, 'caret', undefined, git_ops, fs);
+			const result = await update_all_repos(repos, published, {git_ops, fs_ops: fs});
 
 			expect(result.updated).toBe(2);
 			expect(result.failed).toHaveLength(0);
@@ -624,7 +624,7 @@ describe('dependency_updater', () => {
 			const published = new Map([['lib', '1.5.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			const result = await update_all_repos(repos, published, 'caret', undefined, git_ops, fs);
+			const result = await update_all_repos(repos, published, {git_ops, fs_ops: fs});
 
 			expect(result.updated).toBe(1); // only pkg-a
 		});
@@ -639,7 +639,7 @@ describe('dependency_updater', () => {
 			const published = new Map([['lib', '1.5.0']]);
 			const git_ops = create_trackable_git_ops();
 
-			const result = await update_all_repos(repos, published, 'caret', undefined, git_ops, fs);
+			const result = await update_all_repos(repos, published, {git_ops, fs_ops: fs});
 
 			expect(result.updated).toBe(0);
 			expect(result.failed).toHaveLength(1);

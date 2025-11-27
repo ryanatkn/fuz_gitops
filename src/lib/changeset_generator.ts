@@ -28,8 +28,9 @@ export interface DependencyVersionChange {
 export const create_changeset_for_dependency_updates = async (
 	repo: LocalRepo,
 	updates: Array<DependencyVersionChange>,
-	log?: Logger,
+	options: {log?: Logger} = {},
 ): Promise<string> => {
+	const {log} = options;
 	const changesets_dir = join(repo.repo_dir, '.changeset');
 
 	// Ensure .changeset directory exists

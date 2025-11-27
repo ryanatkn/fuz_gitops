@@ -13,6 +13,14 @@ import {default_git_operations, default_fs_operations} from './operations_defaul
 
 export type VersionStrategy = 'exact' | 'caret' | 'tilde' | 'gte';
 
+export interface UpdatePackageJsonOptions {
+	strategy?: VersionStrategy;
+	published_versions?: Map<string, PublishedVersion>;
+	log?: Logger;
+	git_ops?: GitOperations;
+	fs_ops?: FsOperations;
+}
+
 /**
  * Updates package.json dependencies and creates changeset if needed.
  *
@@ -25,19 +33,20 @@ export type VersionStrategy = 'exact' | 'caret' | 'tilde' | 'gte';
  * Uses version strategy to determine prefix (exact, caret, tilde) while preserving
  * existing prefixes when possible.
  *
- * @param strategy how to format version ranges (default: caret)
- * @param published_versions if provided, generates auto-changesets for updates
  * @throws {Error} if file operations or git operations fail
  */
 export const update_package_json = async (
 	repo: LocalRepo,
 	updates: Map<string, string>,
-	strategy: VersionStrategy = 'caret',
-	published_versions?: Map<string, PublishedVersion>,
-	log?: Logger,
-	git_ops: GitOperations = default_git_operations,
-	fs_ops: FsOperations = default_fs_operations,
+	options: UpdatePackageJsonOptions = {},
 ): Promise<void> => {
+	const {
+		strategy = 'caret',
+		published_versions,
+		log,
+		git_ops = default_git_operations,
+		fs_ops = default_fs_operations,
+	} = options;
 	if (updates.size === 0) return;
 
 	const package_json_path = join(repo.repo_dir, 'package.json');
@@ -136,7 +145,7 @@ export const update_package_json = async (
 			const changeset_path = await create_changeset_for_dependency_updates(
 				repo,
 				dependency_updates,
-				log,
+				{log},
 			);
 
 			// Add changeset to git
@@ -162,14 +171,24 @@ export const update_package_json = async (
 	}
 };
 
+export interface UpdateAllReposOptions {
+	strategy?: VersionStrategy;
+	log?: Logger;
+	git_ops?: GitOperations;
+	fs_ops?: FsOperations;
+}
+
 export const update_all_repos = async (
 	repos: Array<LocalRepo>,
 	published: Map<string, string>,
-	strategy: VersionStrategy = 'caret',
-	log?: Logger,
-	git_ops: GitOperations = default_git_operations,
-	fs_ops: FsOperations = default_fs_operations,
+	options: UpdateAllReposOptions = {},
 ): Promise<{updated: number; failed: Array<{repo: string; error: Error}>}> => {
+	const {
+		strategy = 'caret',
+		log,
+		git_ops = default_git_operations,
+		fs_ops = default_fs_operations,
+	} = options;
 	let updated_count = 0;
 	const failed: Array<{repo: string; error: Error}> = [];
 
@@ -207,7 +226,7 @@ export const update_all_repos = async (
 		if (updates.size === 0) continue;
 
 		try {
-			await update_package_json(repo, updates, strategy, undefined, log, git_ops, fs_ops); // eslint-disable-line no-await-in-loop
+			await update_package_json(repo, updates, {strategy, log, git_ops, fs_ops}); // eslint-disable-line no-await-in-loop
 			updated_count++;
 			log?.info(`    Updated ${updates.size} dependencies in ${repo.library.name}`);
 		} catch (error) {

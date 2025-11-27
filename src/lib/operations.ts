@@ -24,7 +24,7 @@
  * **Test usage:**
  * ```typescript
  * const mock_ops = create_mock_operations();
- * const result = await publish_repos(repos, options, mock_ops);
+ * const result = await publish_repos(repos, {...options, ops: mock_ops});
  * // Assert on result without any real git/npm calls
  * ```
  *

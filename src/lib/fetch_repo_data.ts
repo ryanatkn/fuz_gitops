@@ -35,25 +35,23 @@ export const fetch_repo_data = async (
 
 		// CI status
 		await wait(delay);
-		const check_runs = await fetch_github_check_runs(
-			library,
+		const check_runs = await fetch_github_check_runs(library, {
 			cache,
 			log,
 			token,
-			github_api_version,
-			repo_config.branch,
-		);
+			api_version: github_api_version,
+			ref: repo_config.branch,
+		});
 		if (!check_runs) log?.error('failed to fetch CI status: ' + repo_url);
 
 		// pull requests
 		await wait(delay);
-		const pull_requests = await fetch_github_pull_requests(
-			library,
+		const pull_requests = await fetch_github_pull_requests(library, {
 			cache,
 			log,
 			token,
-			github_api_version,
-		);
+			api_version: github_api_version,
+		});
 		if (!pull_requests) log?.error('failed to fetch issues: ' + repo_url);
 
 		repos.push({

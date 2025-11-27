@@ -315,21 +315,23 @@ gro gitops_sync --download    # clone missing repos
 gro gitops_sync --check       # verify repos are ready without fetching data
 
 # Publishing
-gro gitops_validate      # validate configuration (runs analyze, plan, and dry run)
-gro gitops_analyze       # analyze dependencies and changesets
-gro gitops_plan          # generate publishing plan
-gro gitops_publish       # publish repos in dependency order (interactive y/n prompt)
+gro gitops_validate          # validate configuration (runs analyze, plan, and dry run)
+gro gitops_analyze           # analyze dependencies and changesets
+gro gitops_plan              # generate publishing plan
+gro gitops_plan --verbose    # show additional details
+gro gitops_publish           # publish repos in dependency order (interactive y/n prompt)
 gro gitops_publish --dry_run # dry run without preflight checks
 gro gitops_publish --no-plan # skip interactive plan confirmation
+gro gitops_publish --verbose # show additional details in plan
 
 # Output formats (analyze, plan, publish)
 gro gitops_analyze --format json --outfile analysis.json
 gro gitops_plan --format markdown --outfile plan.md
 
 # Development
-gro dev                  # start dev server
-gro build               # build static site
-gro deploy              # deploy to GitHub Pages
+gro dev        # start dev server
+gro build      # build static site
+gro deploy     # deploy to GitHub Pages
 
 # Fixture Management
 gro src/test/fixtures/generate_repos # generate test git repos from fixture data

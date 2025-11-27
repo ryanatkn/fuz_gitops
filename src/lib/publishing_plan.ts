@@ -4,16 +4,18 @@ import {styleText as st} from 'node:util';
 import type {LocalRepo} from './local_repo.js';
 import type {BumpType} from './semver.js';
 import {validate_dependency_graph} from './graph_validation.js';
-import {
-	needs_update,
-	is_breaking_change,
-	compare_bump_types,
-	calculate_next_version,
-} from './version_utils.js';
+import {is_breaking_change, compare_bump_types, calculate_next_version} from './version_utils.js';
 import type {ChangesetOperations} from './operations.js';
 import {default_changeset_operations} from './operations_defaults.js';
-import {log_list} from './log_helpers.js';
 import {MAX_ITERATIONS} from './constants.js';
+import type {DependencyGraph} from './dependency_graph.ts';
+import {
+	calculate_dependency_updates,
+	get_required_bump_for_dependencies,
+} from './publishing_plan_helpers.js';
+
+// Re-export logging functions
+export {log_publishing_plan, type LogPlanOptions} from './publishing_plan_logging.js';
 
 export interface VersionChange {
 	package_name: string;
@@ -31,9 +33,55 @@ export interface VersionChange {
 export interface DependencyUpdate {
 	dependent_package: string;
 	updated_dependency: string;
+	current_version: string;
 	new_version: string;
 	type: 'dependencies' | 'devDependencies' | 'peerDependencies';
 	causes_republish: boolean;
+}
+
+// Verbose data types for diagnostic output
+export interface VerboseChangesetDetail {
+	package_name: string;
+	files: Array<{filename: string; bump_type: BumpType; summary: string}>;
+}
+
+export interface VerboseIterationPackage {
+	name: string;
+	changeset_count: number;
+	bump_from_changesets: BumpType | null;
+	required_bump: BumpType | null;
+	triggering_dep: string | null;
+	action: 'publish' | 'auto_changeset' | 'escalation' | 'skip';
+	version_to: string | null;
+	is_breaking: boolean;
+}
+
+export interface VerboseIteration {
+	iteration: number;
+	packages: Array<VerboseIterationPackage>;
+	new_changes: number;
+}
+
+export interface VerbosePropagationChain {
+	source: string;
+	chain: Array<{pkg: string; dep_type: 'prod' | 'peer'; action: string}>;
+}
+
+export interface VerboseGraphSummary {
+	package_count: number;
+	internal_dep_count: number;
+	prod_peer_edges: Array<{from: string; to: string; type: 'prod' | 'peer'}>;
+	dev_edges: Array<{from: string; to: string}>;
+	prod_cycle_count: number;
+	dev_cycle_count: number;
+}
+
+export interface VerboseData {
+	changeset_details: Array<VerboseChangesetDetail>;
+	iterations: Array<VerboseIteration>;
+	propagation_chains: Array<VerbosePropagationChain>;
+	graph_summary: VerboseGraphSummary;
+	total_iterations: number;
 }
 
 export interface PublishingPlan {
@@ -44,123 +92,14 @@ export interface PublishingPlan {
 	warnings: Array<string>;
 	info: Array<string>; // Informational status (not warnings)
 	errors: Array<string>;
+	verbose_data?: VerboseData;
 }
 
-const calculate_dependency_updates = (
-	repos: Array<LocalRepo>,
-	predicted_versions: Map<string, string>,
-	breaking_packages: Set<string>,
-): {
-	dependency_updates: Array<DependencyUpdate>;
-	breaking_cascades: Map<string, Array<string>>;
-} => {
-	const dependency_updates: Array<DependencyUpdate> = [];
-	const breaking_cascades: Map<string, Array<string>> = new Map();
-
-	for (const repo of repos) {
-		// Check prod dependencies
-		if (repo.dependencies) {
-			for (const [dep_name, current_version] of repo.dependencies) {
-				const new_version = predicted_versions.get(dep_name);
-				if (new_version && needs_update(current_version, new_version)) {
-					dependency_updates.push({
-						dependent_package: repo.library.name,
-						updated_dependency: dep_name,
-						new_version,
-						type: 'dependencies',
-						causes_republish: true,
-					});
-
-					if (breaking_packages.has(dep_name)) {
-						const cascades = breaking_cascades.get(dep_name) || [];
-						if (!cascades.includes(repo.library.name)) {
-							cascades.push(repo.library.name);
-						}
-						breaking_cascades.set(dep_name, cascades);
-					}
-				}
-			}
-		}
-
-		// Check peer dependencies
-		if (repo.peer_dependencies) {
-			for (const [dep_name, current_version] of repo.peer_dependencies) {
-				const new_version = predicted_versions.get(dep_name);
-				if (new_version && needs_update(current_version, new_version)) {
-					dependency_updates.push({
-						dependent_package: repo.library.name,
-						updated_dependency: dep_name,
-						new_version,
-						type: 'peerDependencies',
-						causes_republish: true,
-					});
-
-					if (breaking_packages.has(dep_name)) {
-						const cascades = breaking_cascades.get(dep_name) || [];
-						if (!cascades.includes(repo.library.name)) {
-							cascades.push(repo.library.name);
-						}
-						breaking_cascades.set(dep_name, cascades);
-					}
-				}
-			}
-		}
-
-		// Check dev dependencies
-		if (repo.dev_dependencies) {
-			for (const [dep_name, current_version] of repo.dev_dependencies) {
-				const new_version = predicted_versions.get(dep_name);
-				if (new_version && needs_update(current_version, new_version)) {
-					dependency_updates.push({
-						dependent_package: repo.library.name,
-						updated_dependency: dep_name,
-						new_version,
-						type: 'devDependencies',
-						causes_republish: false,
-					});
-				}
-			}
-		}
-	}
-
-	return {dependency_updates, breaking_cascades};
-};
-
-const get_required_bump_for_dependencies = (
-	repo: LocalRepo,
-	dependency_updates: Array<DependencyUpdate>,
-	breaking_packages: Set<string>,
-): BumpType | null => {
-	// Check if this repo has any prod/peer dependency updates
-	const relevant_updates = dependency_updates.filter(
-		(update) =>
-			update.dependent_package === repo.library.name &&
-			(update.type === 'dependencies' || update.type === 'peerDependencies'),
-	);
-
-	if (relevant_updates.length === 0) {
-		return null;
-	}
-
-	// Check if any of these dependencies have breaking changes
-	const has_breaking_deps = relevant_updates.some((update) =>
-		breaking_packages.has(update.updated_dependency),
-	);
-
-	const current_version = repo.library.package_json.version || '0.0.0';
-	const [major] = current_version.split('.').map(Number);
-	const is_pre_1_0 = major === 0;
-
-	if (has_breaking_deps) {
-		// Breaking changes propagate
-		// Pre-1.0: use minor for breaking changes
-		// 1.0+: use major for breaking changes
-		return is_pre_1_0 ? 'minor' : 'major';
-	}
-
-	// For non-breaking dependency updates, use patch
-	return 'patch';
-};
+export interface GeneratePlanOptions {
+	log?: Logger;
+	ops?: ChangesetOperations;
+	verbose?: boolean;
+}
 
 /**
  * Generates a publishing plan showing what would happen during publishing.
@@ -169,22 +108,27 @@ const get_required_bump_for_dependencies = (
  */
 export const generate_publishing_plan = async (
 	repos: Array<LocalRepo>,
-	log?: Logger,
-	ops: ChangesetOperations = default_changeset_operations,
+	options: GeneratePlanOptions = {},
 ): Promise<PublishingPlan> => {
+	const {log, ops = default_changeset_operations, verbose} = options;
 	log?.info(st('cyan', 'Generating publishing plan...'));
 
 	const warnings: Array<string> = [];
 	const info: Array<string> = []; // Informational status (not warnings)
 	const errors: Array<string> = [];
 
+	// Verbose data collection
+	const verbose_changeset_details: Array<VerboseChangesetDetail> = [];
+	const verbose_iterations: Array<VerboseIteration> = [];
+
 	// Build dependency graph and validate
 	let publishing_order: Array<string>;
 	let production_cycles: Array<Array<string>>;
 	let dev_cycles: Array<Array<string>>;
+	let graph: DependencyGraph | null = null;
 
 	try {
-		const validation = validate_dependency_graph(repos, undefined, {
+		const validation = validate_dependency_graph(repos, {
 			throw_on_prod_cycles: false, // Collect errors instead of throwing
 			log_cycles: false, // We'll handle our own error collection
 			log_order: false, // Plan generation doesn't need to log order
@@ -192,6 +136,7 @@ export const generate_publishing_plan = async (
 		publishing_order = validation.publishing_order;
 		production_cycles = validation.production_cycles;
 		dev_cycles = validation.dev_cycles;
+		graph = validation.graph; // Store for verbose output
 
 		// Add topological sort error if present
 		if (validation.sort_error) {
@@ -255,6 +200,26 @@ export const generate_publishing_plan = async (
 				continue;
 			}
 
+			// Capture changeset details for verbose output
+			if (verbose) {
+				const changesets_result = await ops.read_changesets({repo, log}); // eslint-disable-line no-await-in-loop
+				if (changesets_result.ok) {
+					const files = changesets_result.value
+						.filter((cs) => cs.packages.some((p) => p.name === pkg_name))
+						.map((cs) => {
+							const pkg_entry = cs.packages.find((p) => p.name === pkg_name);
+							return {
+								filename: cs.filename,
+								bump_type: pkg_entry?.bump_type || prediction.bump_type,
+								summary: cs.summary,
+							};
+						});
+					if (files.length > 0) {
+						verbose_changeset_details.push({package_name: pkg_name, files});
+					}
+				}
+			}
+
 			{
 				const old_version = repo.library.package_json.version || '0.0.0';
 				const is_breaking = is_breaking_change(old_version, prediction.bump_type);
@@ -286,6 +251,10 @@ export const generate_publishing_plan = async (
 		changed = false;
 		iteration++;
 
+		// Verbose iteration tracking
+		const verbose_iteration_packages: Array<VerboseIterationPackage> = [];
+		let verbose_new_changes = 0;
+
 		// Recalculate dependency updates based on current predicted versions
 		// (breaking_cascades not needed during iteration, only calculated at the end)
 		const {dependency_updates} = calculate_dependency_updates(
@@ -305,6 +274,20 @@ export const generate_publishing_plan = async (
 				breaking_packages,
 			);
 
+			// Find triggering dependency for verbose output
+			let triggering_dep: string | null = null;
+			if (required_bump) {
+				const relevant_updates = dependency_updates.filter(
+					(u) =>
+						u.dependent_package === pkg_name &&
+						(u.type === 'dependencies' || u.type === 'peerDependencies') &&
+						breaking_packages.has(u.updated_dependency),
+				);
+				if (relevant_updates.length > 0) {
+					triggering_dep = `${relevant_updates[0]!.updated_dependency} BREAKING`;
+				}
+			}
+
 			// Check if already in version_changes (has changesets)
 			const existing_entry = version_changes.find((vc) => vc.package_name === pkg_name);
 
@@ -318,6 +301,24 @@ export const generate_publishing_plan = async (
 					// Only mark as changed if version actually changed
 					if (existing_entry.to !== new_version) {
 						changed = true;
+						verbose_new_changes++;
+
+						// Capture verbose data before updating
+						if (verbose) {
+							const changeset_detail = verbose_changeset_details.find(
+								(d) => d.package_name === pkg_name,
+							);
+							verbose_iteration_packages.push({
+								name: pkg_name,
+								changeset_count: changeset_detail?.files.length || 1,
+								bump_from_changesets: existing_entry.bump_type,
+								required_bump,
+								triggering_dep,
+								action: 'escalation',
+								version_to: new_version,
+								is_breaking: is_breaking_change(old_version, required_bump),
+							});
+						}
 
 						existing_entry.needs_bump_escalation = true;
 						existing_entry.existing_bump = existing_entry.bump_type;
@@ -342,8 +343,23 @@ export const generate_publishing_plan = async (
 				// Check if this is a new version (not already in version_changes)
 				if (!predicted_versions.has(pkg_name)) {
 					changed = true;
+					verbose_new_changes++;
 
 					const is_breaking = is_breaking_change(old_version, required_bump);
+
+					// Capture verbose data
+					if (verbose) {
+						verbose_iteration_packages.push({
+							name: pkg_name,
+							changeset_count: 0,
+							bump_from_changesets: null,
+							required_bump,
+							triggering_dep,
+							action: 'auto_changeset',
+							version_to: new_version,
+							is_breaking,
+						});
+					}
 
 					if (is_breaking) {
 						breaking_packages.add(pkg_name);
@@ -363,6 +379,15 @@ export const generate_publishing_plan = async (
 					predicted_versions.set(pkg_name, new_version);
 				}
 			}
+		}
+
+		// Store verbose iteration data
+		if (verbose && (verbose_iteration_packages.length > 0 || iteration === 1)) {
+			verbose_iterations.push({
+				iteration,
+				packages: verbose_iteration_packages,
+				new_changes: verbose_new_changes,
+			});
 		}
 	}
 
@@ -427,6 +452,72 @@ export const generate_publishing_plan = async (
 		}
 	}
 
+	// Build verbose data if requested
+	let verbose_data: VerboseData | undefined;
+	if (verbose) {
+		// Build propagation chains from breaking_cascades
+		const propagation_chains: Array<VerbosePropagationChain> = [];
+		for (const [source, affected] of breaking_cascades) {
+			const chain: Array<{pkg: string; dep_type: 'prod' | 'peer'; action: string}> = [];
+			for (const pkg of affected) {
+				// Determine dep type and action
+				const update = dependency_updates.find(
+					(u) => u.dependent_package === pkg && u.updated_dependency === source,
+				);
+				const dep_type: 'prod' | 'peer' = update?.type === 'peerDependencies' ? 'peer' : 'prod';
+				const version_change = version_changes.find((vc) => vc.package_name === pkg);
+				let action = 'update';
+				if (version_change?.will_generate_changeset) {
+					action = 'auto-changeset';
+				} else if (version_change?.needs_bump_escalation) {
+					action = 'bump escalation';
+				}
+				chain.push({pkg, dep_type, action});
+			}
+			if (chain.length > 0) {
+				propagation_chains.push({source, chain});
+			}
+		}
+
+		// Build graph summary
+		const prod_peer_edges: Array<{from: string; to: string; type: 'prod' | 'peer'}> = [];
+		const dev_edges: Array<{from: string; to: string}> = [];
+		let internal_dep_count = 0;
+
+		for (const [pkg_name, node] of graph.nodes) {
+			for (const [dep_name, spec] of node.dependencies) {
+				// Only count internal dependencies (deps that are also in the graph)
+				if (graph.nodes.has(dep_name)) {
+					internal_dep_count++;
+					if (spec.type === 'dev') {
+						dev_edges.push({from: pkg_name, to: dep_name});
+					} else {
+						prod_peer_edges.push({
+							from: pkg_name,
+							to: dep_name,
+							type: spec.type === 'peer' ? 'peer' : 'prod',
+						});
+					}
+				}
+			}
+		}
+
+		verbose_data = {
+			changeset_details: verbose_changeset_details,
+			iterations: verbose_iterations,
+			propagation_chains,
+			graph_summary: {
+				package_count: graph.nodes.size,
+				internal_dep_count,
+				prod_peer_edges,
+				dev_edges,
+				prod_cycle_count: production_cycles.length,
+				dev_cycle_count: dev_cycles.length,
+			},
+			total_iterations: iteration,
+		};
+	}
+
 	return {
 		publishing_order,
 		version_changes,
@@ -435,165 +526,6 @@ export const generate_publishing_plan = async (
 		warnings,
 		info,
 		errors,
+		verbose_data,
 	};
-};
-
-const log_version_change_group = (
-	changes: Array<VersionChange>,
-	header: string,
-	color: 'cyan' | 'yellow',
-	log: Logger,
-	extra_info?: (change: VersionChange) => string,
-): void => {
-	if (changes.length === 0) return;
-
-	log.info(st(color, header));
-	for (const change of changes) {
-		const breaking_indicator = change.bump_type === 'major' ? ' (BREAKING)' : '';
-		const extra = extra_info ? ` ${extra_info(change)}` : '';
-		log.info(
-			`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
-				`(${change.bump_type})${extra}${breaking_indicator}`,
-		);
-	}
-};
-
-export const log_publishing_plan = (plan: PublishingPlan, log: Logger): void => {
-	const {
-		publishing_order,
-		version_changes,
-		dependency_updates,
-		breaking_cascades,
-		warnings,
-		info,
-		errors,
-	} = plan;
-
-	// Errors
-	if (errors.length > 0) {
-		log.error(st('red', 'Errors found:'));
-		for (const error of errors) {
-			log.error(`  • ${error}`);
-		}
-	}
-
-	// Publishing order
-	if (publishing_order.length > 0) {
-		log.info(st('cyan', 'Publishing Order:'));
-		log.info(`  ${publishing_order.join(' → ')}`);
-	}
-
-	// Version changes
-	if (version_changes.length > 0) {
-		// Separate packages by how they will be published
-		const with_changesets = version_changes.filter(
-			(vc) => vc.has_changesets && !vc.needs_bump_escalation,
-		);
-		const with_escalation = version_changes.filter((vc) => vc.needs_bump_escalation);
-		const with_auto_changesets = version_changes.filter((vc) => vc.will_generate_changeset);
-
-		// Log each group with appropriate formatting
-		log_version_change_group(with_changesets, 'Version Changes (from changesets):', 'cyan', log);
-
-		// Escalation changes need extra explanation after each
-		if (with_escalation.length > 0) {
-			log.info(st('yellow', 'Version Changes (bump escalation required):'));
-			for (const change of with_escalation) {
-				const breaking_indicator = change.bump_type === 'major' ? ' (BREAKING)' : '';
-				log.info(
-					`  • ${change.package_name}: ${change.from} → ${st('green', change.to)} ` +
-						`(${change.existing_bump} → ${change.required_bump})${breaking_indicator}`,
-				);
-				log.info(
-					st(
-						'dim',
-						`    Changesets specify ${change.existing_bump}, but dependencies require ${change.required_bump}`,
-					),
-				);
-			}
-		}
-
-		log_version_change_group(
-			with_auto_changesets,
-			'Version Changes (auto-generated for dependency updates):',
-			'cyan',
-			log,
-			() => '[auto-changeset]',
-		);
-	} else {
-		log.info(st('yellow', '⚠️  No packages to publish'));
-	}
-
-	// Dependency cascades
-	if (breaking_cascades.size > 0) {
-		const cascade_items = Array.from(breaking_cascades).map(
-			([pkg, affected]) => `${pkg} affects: ${affected.join(', ')}`,
-		);
-		log_list(cascade_items, 'Dependency Cascades:', 'yellow', log);
-	}
-
-	// Dependency updates
-	if (dependency_updates.length > 0) {
-		// Group by package, then by dependency name
-		const updates_by_package: Map<string, Map<string, Array<DependencyUpdate>>> = new Map();
-		for (const update of dependency_updates) {
-			if (!updates_by_package.has(update.dependent_package)) {
-				updates_by_package.set(update.dependent_package, new Map());
-			}
-			const pkg_updates = updates_by_package.get(update.dependent_package)!;
-			const dep_updates = pkg_updates.get(update.updated_dependency) || [];
-			dep_updates.push(update);
-			pkg_updates.set(update.updated_dependency, dep_updates);
-		}
-
-		log.info(st('cyan', 'Dependency Updates:'));
-		for (const [pkg, deps_map] of updates_by_package) {
-			log.info(`  ${pkg}:`);
-			for (const [dep_name, updates] of deps_map) {
-				// Guard against empty updates array
-				if (updates.length === 0) continue;
-
-				// Collect all dependency types for this dependency
-				const types: Array<string> = [];
-				let causes_republish = false;
-				for (const update of updates) {
-					if (update.type === 'dependencies') types.push('prod');
-					else if (update.type === 'peerDependencies') types.push('peer');
-					else types.push('dev');
-					if (update.causes_republish) causes_republish = true;
-				}
-
-				// Check if this triggers auto-changeset
-				const existing_change = version_changes.find((vc) => vc.package_name === pkg);
-				const needs_auto_changeset =
-					causes_republish && existing_change?.will_generate_changeset === true;
-
-				// Format output
-				const type_list = types.join(', ');
-				const republish = needs_auto_changeset ? ' (triggers auto-changeset)' : '';
-				log.info(`    ${dep_name} → ${updates[0]!.new_version} [${type_list}]${republish}`);
-			}
-		}
-	}
-
-	// Warnings (actual issues requiring attention)
-	log_list(warnings, '⚠️  Warnings:', 'yellow', log, 'warn');
-
-	// Info (packages with no changes to publish - normal status)
-	if (info.length > 0) {
-		log.info(st('dim', 'ℹ️  No changes to publish:'));
-		log.info(
-			st('dim', '(These packages have no changesets and no dependency updates - this is normal)'),
-		);
-		log_list(info, '', 'dim', log);
-	}
-
-	// Summary
-	const major_bump_count = version_changes.filter((vc) => vc.bump_type === 'major').length;
-	log.info(st('cyan', 'Summary:'));
-	log.info(`  • ${version_changes.length} packages to publish`);
-	log.info(`  • ${dependency_updates.length} dependency updates`);
-	log.info(`  • ${major_bump_count} packages with major version bumps`);
-	log.info(`  • ${warnings.length} warnings`);
-	log.info(`  • ${errors.length} errors`);
 };

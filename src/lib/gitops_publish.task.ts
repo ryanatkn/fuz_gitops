@@ -49,6 +49,7 @@ export const Args = z.strictObject({
 		.meta({description: 'skip npm install after dependency updates'})
 		.default(false),
 	outfile: z.string().meta({description: 'write output to file instead of logging'}).optional(),
+	verbose: z.boolean().meta({description: 'show additional details in plan output'}).default(false),
 });
 export type Args = z.infer<typeof Args>;
 
@@ -68,6 +69,7 @@ export const task: Task<Args> = {
 			max_wait,
 			skip_install,
 			outfile,
+			verbose,
 		} = args;
 
 		// Load repos
@@ -81,8 +83,8 @@ export const task: Task<Args> = {
 		// Show plan if requested (skip for dry runs)
 		if (plan && !dry_run) {
 			log.info(st('cyan', 'Publishing Plan'));
-			const plan_result = await generate_publishing_plan(repos, log);
-			log_publishing_plan(plan_result, log);
+			const plan_result = await generate_publishing_plan(repos, {log, verbose});
+			log_publishing_plan(plan_result, log, {verbose});
 
 			if (plan_result.errors.length > 0) {
 				throw new Error('Cannot proceed with publishing due to errors');
