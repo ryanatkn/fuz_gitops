@@ -37,7 +37,7 @@ export const log_verbose_changeset_details = (
 	if (details.length === 0) return;
 
 	log.info(st('dim', SEPARATOR));
-	log.info(st('dim', 'Verbose: Changeset Details'));
+	log.info(st('dim', 'Changeset Details'));
 	log.info(st('dim', SEPARATOR));
 
 	for (const pkg of details) {
@@ -61,7 +61,7 @@ export const log_verbose_iteration_details = (
 	if (iterations.length === 0) return;
 
 	log.info(st('dim', SEPARATOR));
-	log.info(st('dim', 'Verbose: Fixed-Point Iteration'));
+	log.info(st('dim', 'Fixed-Point Iteration'));
 	log.info(st('dim', SEPARATOR));
 
 	for (const iter of iterations) {
@@ -127,7 +127,7 @@ export const log_verbose_propagation_chains = (
 	if (chains.length === 0) return;
 
 	log.info(st('dim', SEPARATOR));
-	log.info(st('dim', 'Verbose: Breaking Change Propagation'));
+	log.info(st('dim', 'Breaking Change Propagation'));
 	log.info(st('dim', SEPARATOR));
 
 	for (const chain of chains) {
@@ -150,7 +150,7 @@ export const log_verbose_propagation_chains = (
  */
 export const log_verbose_graph_summary = (summary: VerboseGraphSummary, log: Logger): void => {
 	log.info(st('dim', SEPARATOR));
-	log.info(st('dim', 'Verbose: Dependency Graph'));
+	log.info(st('dim', 'Dependency Graph'));
 	log.info(st('dim', SEPARATOR));
 
 	log.info(

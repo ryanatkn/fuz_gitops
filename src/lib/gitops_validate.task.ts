@@ -5,7 +5,7 @@ import {styleText as st} from 'node:util';
 import {get_gitops_ready} from './gitops_task_helpers.js';
 import {validate_dependency_graph} from './graph_validation.js';
 import {DependencyGraphBuilder} from './dependency_graph.js';
-import {generate_publishing_plan} from './publishing_plan.js';
+import {generate_publishing_plan, log_publishing_plan} from './publishing_plan.js';
 import {publish_repos, type PublishingOptions} from './multi_repo_publisher.js';
 import {log_dependency_analysis} from './log_helpers.js';
 
@@ -19,6 +19,7 @@ export const Args = z.strictObject({
 		.string()
 		.meta({description: 'path containing the repos, defaults to the parent of the `path` dir'})
 		.optional(),
+	verbose: z.boolean().meta({description: 'show additional details'}).default(false),
 });
 export type Args = z.infer<typeof Args>;
 
@@ -28,7 +29,7 @@ export const task: Task<Args> = {
 	summary:
 		'validate gitops configuration by running all read-only commands and checking for issues',
 	run: async ({args, log}) => {
-		const {path, dir} = args;
+		const {path, dir, verbose} = args;
 
 		log.info(st('cyan', 'Running Gitops Validation Suite'));
 		log.info(st('dim', 'This runs all read-only commands and checks for consistency.'));
@@ -115,7 +116,7 @@ export const task: Task<Args> = {
 		log.info(st('yellow', 'Running gitops_plan...'));
 		const plan_start = Date.now();
 		try {
-			const plan = await generate_publishing_plan(local_repos);
+			const plan = await generate_publishing_plan(local_repos, {log: undefined, verbose});
 			const plan_duration = Date.now() - plan_start;
 
 			const warnings = plan.warnings.length;
@@ -130,6 +131,9 @@ export const task: Task<Args> = {
 			});
 
 			log.info(st('green', `  ✓ gitops_plan completed in ${plan_duration}ms`));
+			if (verbose) {
+				log_publishing_plan(plan, log, {verbose});
+			}
 			if (warnings > 0) {
 				log.warn(st('yellow', `  ⚠️  Found ${warnings} warning(s)`));
 			}
