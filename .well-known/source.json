@@ -1,6 +1,6 @@
 {
   "name": "@ryanatkn/fuz_gitops",
-  "version": "0.55.0",
+  "version": "0.56.0",
   "modules": [
     {
       "path": "changeset_generator.ts",
@@ -106,8 +106,16 @@
           "kind": "type"
         },
         {
+          "name": "UpdatePackageJsonOptions",
+          "kind": "type"
+        },
+        {
           "name": "update_package_json",
           "kind": "function"
+        },
+        {
+          "name": "UpdateAllReposOptions",
+          "kind": "type"
         },
         {
           "name": "update_all_repos",
@@ -667,8 +675,42 @@
       ]
     },
     {
+      "path": "publishing_plan_helpers.ts",
+      "declarations": [
+        {
+          "name": "calculate_dependency_updates",
+          "kind": "function"
+        },
+        {
+          "name": "get_required_bump_for_dependencies",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "path": "publishing_plan_logging.ts",
+      "declarations": [
+        {
+          "name": "LogPlanOptions",
+          "kind": "type"
+        },
+        {
+          "name": "log_publishing_plan",
+          "kind": "function"
+        }
+      ]
+    },
+    {
       "path": "publishing_plan.ts",
       "declarations": [
+        {
+          "name": "log_publishing_plan",
+          "kind": "function"
+        },
+        {
+          "name": "LogPlanOptions",
+          "kind": "type"
+        },
         {
           "name": "VersionChange",
           "kind": "type"
@@ -678,15 +720,39 @@
           "kind": "type"
         },
         {
+          "name": "VerboseChangesetDetail",
+          "kind": "type"
+        },
+        {
+          "name": "VerboseIterationPackage",
+          "kind": "type"
+        },
+        {
+          "name": "VerboseIteration",
+          "kind": "type"
+        },
+        {
+          "name": "VerbosePropagationChain",
+          "kind": "type"
+        },
+        {
+          "name": "VerboseGraphSummary",
+          "kind": "type"
+        },
+        {
+          "name": "VerboseData",
+          "kind": "type"
+        },
+        {
           "name": "PublishingPlan",
           "kind": "type"
         },
         {
-          "name": "generate_publishing_plan",
-          "kind": "function"
+          "name": "GeneratePlanOptions",
+          "kind": "type"
         },
         {
-          "name": "log_publishing_plan",
+          "name": "generate_publishing_plan",
           "kind": "function"
         }
       ]
