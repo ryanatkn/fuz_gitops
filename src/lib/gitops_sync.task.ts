@@ -69,7 +69,7 @@ export const task: Task<Args> = {
 		const repos_json = await fetch_repo_data(local_repos, token, cache.data, log);
 
 		// TODO should package_json be provided in the Gro task/gen contexts? check if it's always loaded
-		const package_json = await load_package_json();
+		const package_json = load_package_json();
 		const repo_specifier =
 			package_json.name === '@ryanatkn/fuz_gitops'
 				? '$lib/repo.svelte.js'

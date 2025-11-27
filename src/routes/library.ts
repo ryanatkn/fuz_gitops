@@ -2204,107 +2204,6 @@ export const library_json: LibraryJson = {
 				dependents: ['gitops_analyze.task.ts', 'gitops_validate.task.ts'],
 			},
 			{
-				path: 'log_verbose.ts',
-				declarations: [
-					{
-						name: 'log_verbose',
-						kind: 'function',
-						doc_comment: 'Logs all verbose sections in order.',
-						source_line: 21,
-						type_signature: '(data: VerboseData, log: Logger): void',
-						return_type: 'void',
-						parameters: [
-							{
-								name: 'data',
-								type: 'VerboseData',
-							},
-							{
-								name: 'log',
-								type: 'Logger',
-							},
-						],
-					},
-					{
-						name: 'log_verbose_changeset_details',
-						kind: 'function',
-						doc_comment: 'Logs changeset file details per package.',
-						source_line: 33,
-						type_signature: '(details: VerboseChangesetDetail[], log: Logger): void',
-						return_type: 'void',
-						parameters: [
-							{
-								name: 'details',
-								type: 'VerboseChangesetDetail[]',
-							},
-							{
-								name: 'log',
-								type: 'Logger',
-							},
-						],
-					},
-					{
-						name: 'log_verbose_iteration_details',
-						kind: 'function',
-						doc_comment: 'Logs fixed-point iteration details.',
-						source_line: 56,
-						type_signature: '(iterations: VerboseIteration[], total: number, log: Logger): void',
-						return_type: 'void',
-						parameters: [
-							{
-								name: 'iterations',
-								type: 'VerboseIteration[]',
-							},
-							{
-								name: 'total',
-								type: 'number',
-							},
-							{
-								name: 'log',
-								type: 'Logger',
-							},
-						],
-					},
-					{
-						name: 'log_verbose_propagation_chains',
-						kind: 'function',
-						doc_comment: 'Logs breaking change propagation chains as tree structure.',
-						source_line: 123,
-						type_signature: '(chains: VerbosePropagationChain[], log: Logger): void',
-						return_type: 'void',
-						parameters: [
-							{
-								name: 'chains',
-								type: 'VerbosePropagationChain[]',
-							},
-							{
-								name: 'log',
-								type: 'Logger',
-							},
-						],
-					},
-					{
-						name: 'log_verbose_graph_summary',
-						kind: 'function',
-						doc_comment: 'Logs dependency graph summary.',
-						source_line: 151,
-						type_signature: '(summary: VerboseGraphSummary, log: Logger): void',
-						return_type: 'void',
-						parameters: [
-							{
-								name: 'summary',
-								type: 'VerboseGraphSummary',
-							},
-							{
-								name: 'log',
-								type: 'Logger',
-							},
-						],
-					},
-				],
-				module_comment: 'Verbose logging functions for publishing plan diagnostic output.',
-				dependents: ['publishing_plan_logging.ts'],
-			},
-			{
 				path: 'ModulesDetail.svelte',
 				declarations: [
 					{
@@ -3498,7 +3397,7 @@ export const library_json: LibraryJson = {
 					{
 						name: 'LogPlanOptions',
 						kind: 'type',
-						source_line: 13,
+						source_line: 21,
 						type_signature: 'LogPlanOptions',
 						properties: [
 							{
@@ -3514,7 +3413,7 @@ export const library_json: LibraryJson = {
 						kind: 'function',
 						doc_comment:
 							'Logs a complete publishing plan to the console.\n\nDisplays errors, publishing order, version changes grouped by scenario,\ndependency-only updates, warnings, and a summary.',
-						source_line: 117,
+						source_line: 136,
 						type_signature: '(plan: PublishingPlan, log: Logger, options?: LogPlanOptions): void',
 						return_type: 'void',
 						parameters: [
@@ -3536,8 +3435,7 @@ export const library_json: LibraryJson = {
 					},
 				],
 				module_comment:
-					'Logging and formatting functions for publishing plans.\n\nExtracted from publishing_plan.ts to reduce file size.',
-				dependencies: ['log_verbose.ts'],
+					'Logging and formatting functions for publishing plans.\n\nIncludes both regular plan output and verbose diagnostic sections.',
 				dependents: ['publishing_plan.ts'],
 			},
 			{
