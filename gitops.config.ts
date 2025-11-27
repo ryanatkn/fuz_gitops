@@ -13,7 +13,7 @@ const config: CreateGitopsConfig = () => {
 			'https://github.com/ryanatkn/fuz_code',
 			{
 				repo_url: 'https://github.com/ryanatkn/fuz_gitops',
-				branch: 'verbose',
+				branch: 'main',
 			},
 		],
 	};
