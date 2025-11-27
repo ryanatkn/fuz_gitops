@@ -71,12 +71,12 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			expect(() =>
-				validate_dependency_graph(repos, {throw_on_prod_cycles: true}),
-			).toThrow(TaskError);
-			expect(() =>
-				validate_dependency_graph(repos, {throw_on_prod_cycles: true}),
-			).toThrow(/Cannot publish with production\/peer dependency cycles/);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				TaskError,
+			);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				/Cannot publish with production\/peer dependency cycles/,
+			);
 		});
 
 		it('throws on peer dependency cycle', () => {
@@ -85,9 +85,9 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', peer_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			expect(() =>
-				validate_dependency_graph(repos, {throw_on_prod_cycles: true}),
-			).toThrow(TaskError);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				TaskError,
+			);
 		});
 
 		it('throws on mixed prod/peer cycle', () => {
@@ -96,9 +96,9 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-b', version: '1.0.0', peer_deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			expect(() =>
-				validate_dependency_graph(repos, {throw_on_prod_cycles: true}),
-			).toThrow(TaskError);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				TaskError,
+			);
 		});
 
 		it('throws on longer cycle (3+ packages)', () => {
@@ -108,9 +108,9 @@ describe('validate_dependency_graph', () => {
 				create_mock_repo({name: 'pkg-c', version: '1.0.0', deps: {'pkg-a': '^1.0.0'}}),
 			];
 
-			expect(() =>
-				validate_dependency_graph(repos, {throw_on_prod_cycles: true}),
-			).toThrow(TaskError);
+			expect(() => validate_dependency_graph(repos, {throw_on_prod_cycles: true})).toThrow(
+				TaskError,
+			);
 		});
 	});
 
