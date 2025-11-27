@@ -1,5 +1,5 @@
 ---
-'@ryanatkn/fuz_gitops': patch
+'@ryanatkn/fuz_gitops': minor
 ---
 
-add `verbose` option
+add `verbose` option and rework some interfaces
